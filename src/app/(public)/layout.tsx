@@ -9,10 +9,10 @@ const footerColumns: Array<{
   {
     title: "Produit",
     links: [
-      { href: "#fonctionnalites", label: "Fonctionnalités" },
-      { href: "#tarifs", label: "Tarifs" },
+      { href: "/#fonctionnalites", label: "Fonctionnalités" },
+      { href: "/#tarifs", label: "Tarifs" },
       { href: "/marketplace", label: "Marketplace" },
-      { href: "#faq", label: "FAQ" },
+      { href: "/#faq", label: "FAQ" },
     ],
   },
   {
@@ -114,16 +114,31 @@ export default function PublicLayout({
                     {col.title}
                   </h3>
                   <ul className="space-y-4">
-                    {col.links.map((l) => (
-                      <li key={l.href}>
-                        <a
-                          href={l.href}
-                          className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
-                        >
-                          {l.label}
-                        </a>
-                      </li>
-                    ))}
+                    {col.links.map((l) => {
+                      const isExternal = /^https?:|^mailto:/.test(l.href);
+                      if (isExternal) {
+                        return (
+                          <li key={l.href}>
+                            <a
+                              href={l.href}
+                              className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
+                            >
+                              {l.label}
+                            </a>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={l.href}>
+                          <Link
+                            href={l.href}
+                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
+                          >
+                            {l.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}

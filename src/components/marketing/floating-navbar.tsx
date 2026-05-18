@@ -10,9 +10,9 @@ import { CartBadge } from "@/components/marketing/cart-badge";
 import { cn } from "@/lib/utils";
 
 const navLinks: Array<{ href: string; label: string }> = [
-  { href: "#fonctionnalites", label: "Fonctionnalités" },
-  { href: "#pour-qui", label: "Pour qui" },
-  { href: "#tarifs", label: "Tarifs" },
+  { href: "/#fonctionnalites", label: "Fonctionnalités" },
+  { href: "/#pour-qui", label: "Pour qui" },
+  { href: "/#tarifs", label: "Tarifs" },
   { href: "/marketplace", label: "Marketplace" },
 ];
 
@@ -65,13 +65,13 @@ export function FloatingNavbar() {
             <ul className="flex items-center gap-1 rounded-full bg-foreground/5 p-1 backdrop-blur-md">
               {navLinks.map((l) => (
                 <li key={l.href}>
-                  <a
+                  <Link
                     href={l.href}
                     className="relative whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground transition-all hover:text-foreground group"
                   >
                     {l.label}
                     <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-brand rounded-full transition-all group-hover:w-4" />
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -130,13 +130,13 @@ export function FloatingNavbar() {
               <ul className="space-y-2">
                 {navLinks.map((l) => (
                   <li key={l.href}>
-                    <a
+                    <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
                       className="block rounded-xl px-4 py-3 text-lg font-semibold text-foreground hover:bg-foreground/5"
                     >
                       {l.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

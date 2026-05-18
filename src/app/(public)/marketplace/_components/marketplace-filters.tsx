@@ -18,12 +18,12 @@ import { cn } from "@/lib/utils";
 
 const SECTEURS = [
   { label: "Tous", value: "all", icon: Layers },
-  { label: "Alimentation", value: "Alimentation", icon: Utensils },
-  { label: "Beauté", value: "Beauté", icon: Sparkles },
-  { label: "Prêt-à-porter", value: "Prêt-à-porter", icon: Shirt },
-  { label: "Technologies", value: "Technologies", icon: Laptop },
-  { label: "Services", value: "Services", icon: Briefcase },
-  { label: "Autre", value: "Autre", icon: Store }
+  { label: "Alimentation", value: "ALIMENTATION", icon: Utensils },
+  { label: "Beauté", value: "BEAUTE", icon: Sparkles },
+  { label: "Prêt-à-porter", value: "HABILLEMENT", icon: Shirt },
+  { label: "Technologies", value: "ELECTRONIQUE", icon: Laptop },
+  { label: "Services", value: "SERVICES", icon: Briefcase },
+  { label: "Autre", value: "AUTRE", icon: Store }
 ];
 
 export function MarketplaceFilters() {
