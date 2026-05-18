@@ -65,7 +65,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
   if (!activeSubscription) {
     // If no active subscription found, fallback to Starter plan from database
     const starterPlan = await prisma.plan.findFirst({
-      where: { codePlan: "STARTER" },
+      where: { codePlan: "STARTER" } as any,
     });
 
     result = {
@@ -73,7 +73,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
       nom: starterPlan?.nom || "Starter",
       maxBoutiques: starterPlan?.maxBoutiques ?? 1,
       maxProduits: starterPlan?.maxProduits ?? 50,
-      maxMembres: starterPlan?.maxMembres ?? 1,
+      maxMembres: (starterPlan as any)?.maxMembres ?? 1,
       features: (starterPlan?.features as string[]) || ["1 boutique max", "50 produits max"],
       isActive: false, // No active paying subscription
       essaiFin: null,
@@ -101,7 +101,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
 
       // Fallback to Starter plan
       const starterPlan = await prisma.plan.findFirst({
-        where: { codePlan: "STARTER" },
+        where: { codePlan: "STARTER" } as any,
       });
 
       result = {
@@ -109,7 +109,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
         nom: starterPlan?.nom || "Starter",
         maxBoutiques: starterPlan?.maxBoutiques ?? 1,
         maxProduits: starterPlan?.maxProduits ?? 50,
-        maxMembres: starterPlan?.maxMembres ?? 1,
+        maxMembres: (starterPlan as any)?.maxMembres ?? 1,
         features: (starterPlan?.features as string[]) || ["1 boutique max", "50 produits max"],
         isActive: false,
         essaiFin: null,
@@ -118,11 +118,11 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
       };
     } else {
       result = {
-        codePlan: activeSubscription.plan.codePlan || "STARTER",
+        codePlan: (activeSubscription.plan as any).codePlan || "STARTER",
         nom: activeSubscription.plan.nom,
         maxBoutiques: activeSubscription.plan.maxBoutiques,
         maxProduits: activeSubscription.plan.maxProduits,
-        maxMembres: activeSubscription.plan.maxMembres,
+        maxMembres: (activeSubscription.plan as any).maxMembres,
         features: (activeSubscription.plan.features as string[]) || [],
         isActive: true,
         essaiFin: activeSubscription.essaiFin,
