@@ -41,7 +41,7 @@ async function main() {
       email: "admin@gestionpro.com",
       password: hash,
       role: "ADMIN",
-      emailVerifiedAt: new Date(),
+      emailVerified: new Date(),
     },
   });
 
@@ -125,7 +125,7 @@ async function main() {
       email: "amadou@example.com",
       password: hash,
       role: "VENDEUR",
-      emailVerifiedAt: new Date(),
+      emailVerified: new Date(),
     },
   });
 
@@ -252,7 +252,7 @@ async function main() {
       email: "awa@example.com",
       password: hash,
       role: "VENDEUR",
-      emailVerifiedAt: new Date(),
+      emailVerified: new Date(),
     },
   });
 
