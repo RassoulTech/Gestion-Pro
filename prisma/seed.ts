@@ -35,18 +35,18 @@ async function main() {
   const hash = await bcrypt.hash("Admin123!", 12);
 
   // ─── ADMIN ──────────────────────────────────
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: "Admin GestionPro",
       email: "admin@gestionpro.com",
       password: hash,
       role: "ADMIN",
       emailVerified: new Date(),
-    },
+    } as any,
   });
 
   // ─── PLANS ──────────────────────────────────
-  const [planGratuit, planPro, planEntreprise] = await Promise.all([
+  const [planGratuit, planPro, _planEntreprise] = await Promise.all([
     prisma.plan.create({
       data: {
         nom: "Starter",
@@ -63,7 +63,7 @@ async function main() {
           "Stock basique",
           "Support email"
         ],
-      },
+      } as any,
     }),
     prisma.plan.create({
       data: {
@@ -87,7 +87,7 @@ async function main() {
           "Export PDF/Excel",
           "Support prioritaire"
         ],
-      },
+      } as any,
     }),
     prisma.plan.create({
       data: {
@@ -114,7 +114,7 @@ async function main() {
           "Accès admin avancé",
           "Automatisations avancées"
         ],
-      },
+      } as any,
     }),
   ]);
 
@@ -126,7 +126,7 @@ async function main() {
       password: hash,
       role: "VENDEUR",
       emailVerified: new Date(),
-    },
+    } as any,
   });
 
   const vendeur1 = await prisma.vendeur.create({
@@ -253,7 +253,7 @@ async function main() {
       password: hash,
       role: "VENDEUR",
       emailVerified: new Date(),
-    },
+    } as any,
   });
 
   const vendeur2 = await prisma.vendeur.create({
