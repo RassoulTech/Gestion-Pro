@@ -38,6 +38,9 @@ export default async function BoutiquesPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
+  // Les admins n'ont pas de profil vendeur — bascule directe vers leur espace.
+  if (session.user.role === "ADMIN") redirect("/admin/dashboard");
+
   const vendeur = await prisma.vendeur.findUnique({
     where: { userId: session.user.id },
     select: {

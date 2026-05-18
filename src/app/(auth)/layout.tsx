@@ -12,7 +12,9 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  if (session?.user) redirect("/boutiques");
+  if (session?.user) {
+    redirect(session.user.role === "ADMIN" ? "/admin/dashboard" : "/boutiques");
+  }
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +30,14 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { update } = useSession();
+  const { data: session, update } = useSession();
+
+  // Les admins n'ont pas à créer de profil vendeur.
+  useEffect(() => {
+    if (session?.user?.role === "ADMIN") {
+      router.replace("/admin/dashboard");
+    }
+  }, [session, router]);
 
   const form = useForm<CreateVendeurProfileInput>({
     resolver: zodResolver(createVendeurProfileSchema),
