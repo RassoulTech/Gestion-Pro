@@ -28,7 +28,62 @@ async function VendeursContent() {
 
   return (
     <>
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/90 shadow-xl shadow-zinc-100/40 backdrop-blur-md dark:border-zinc-800/60 dark:bg-zinc-950/90 dark:shadow-none">
+      {/* Mobile Card View (md:hidden) */}
+      <div className="grid gap-4 md:hidden">
+        {vendeurs.length === 0 ? (
+          <div className="text-center py-10 text-zinc-400">
+            Aucun vendeur trouvé sur la plateforme.
+          </div>
+        ) : (
+          vendeurs.map((v) => {
+            const initials = `${v.prenom.charAt(0)}${v.nom.charAt(0)}`.toUpperCase();
+            const avatarGrad = getGradient(v.prenom + v.nom);
+            return (
+              <div
+                key={v.id}
+                className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-5 shadow-sm backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${avatarGrad} text-white font-bold text-sm shadow-md`}>
+                      {initials}
+                    </div>
+                    <div>
+                      <span className="block font-bold text-zinc-900 dark:text-zinc-50 leading-tight">
+                        {v.prenom} {v.nom}
+                      </span>
+                      <span className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500 font-mono">ID: {v.id.slice(0, 8)}</span>
+                    </div>
+                  </div>
+                  <StatusBadge status={v.statut} />
+                </div>
+
+                <div className="mt-4 space-y-2 border-t border-zinc-100 pt-3 dark:border-zinc-900 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><Mail className="h-3 w-3" /> Email</span>
+                    <span className="font-mono text-zinc-700 dark:text-zinc-300 break-all max-w-[200px] text-right">{v.email}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><Store className="h-3 w-3" /> Boutiques</span>
+                    <span className="font-bold text-zinc-800 dark:text-zinc-200">{v._count.boutiques}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><Calendar className="h-3 w-3" /> Inscription</span>
+                    <span className="font-medium text-zinc-500 dark:text-zinc-400">{formatDate(v.createdAt)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-900">
+                  <ToggleStatusButton id={v.id} currentStatut={v.statut} type="vendeur" />
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Table View (md:block) */}
+      <div className="hidden md:block relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/90 shadow-xl shadow-zinc-100/40 backdrop-blur-md dark:border-zinc-800/60 dark:bg-zinc-950/90 dark:shadow-none">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

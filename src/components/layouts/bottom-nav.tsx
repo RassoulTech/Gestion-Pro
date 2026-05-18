@@ -35,7 +35,14 @@ type NavItem = {
 
 type BottomNavItem = NavItem;
 
-function getBottomNavItems(boutiqueId?: string): BottomNavItem[] {
+function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavItem[] {
+  if (isAdmin) {
+    return [
+      { label: "Accueil", href: "/admin/dashboard", icon: LayoutDashboard },
+      { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
+      { label: "Boutiques", href: "/admin/boutiques", icon: Store },
+    ];
+  }
   if (!boutiqueId) {
     return [{ label: "Boutiques", href: "/boutiques", icon: Store }];
   }
@@ -48,7 +55,17 @@ function getBottomNavItems(boutiqueId?: string): BottomNavItem[] {
   ];
 }
 
-function getMoreMenuItems(boutiqueId: string): NavItem[] {
+function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
+  if (isAdmin) {
+    return [
+      { label: "Abonnements", href: "/admin/abonnements", icon: Wallet },
+      { label: "Plans", href: "/admin/plans", icon: Tag },
+      { label: "Revenus", href: "/admin/revenus", icon: BarChart3 },
+      { label: "Logs", href: "/admin/logs", icon: Settings },
+      { label: "Mes Boutiques", href: "/boutiques", icon: Store },
+    ];
+  }
+  if (!boutiqueId) return [];
   const base = `/boutiques/${boutiqueId}`;
   return [
     { label: "Catégories", href: `${base}/categories`, icon: Tag },
@@ -98,21 +115,22 @@ function SheetFooter({ onClose }: { onClose: () => void }) {
 }
 
 export function BottomNav() {
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
   const params = useParams();
   const boutiqueId = params?.id as string | undefined;
+  const isAdmin = pathname.startsWith("/admin");
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
-  const items = getBottomNavItems(boutiqueId);
-  const moreItems = boutiqueId ? getMoreMenuItems(boutiqueId) : [];
+  const items = getBottomNavItems(boutiqueId, isAdmin);
+  const moreItems = isAdmin ? getMoreMenuItems(undefined, true) : (boutiqueId ? getMoreMenuItems(boutiqueId) : []);
 
   // Check if any "more" item is active (but NOT if a main nav item is active)
   const mainHrefs = new Set(items.map((i) => i.href));
   const isMainNavActive = items.some(
     (item) =>
       pathname === item.href ||
-      (item.href.length > "/boutiques/".length &&
+      (item.href.length > (isAdmin ? "/admin/".length : "/boutiques/".length) &&
         pathname.startsWith(item.href + "/") &&
         !items.some(
           (other) =>
@@ -213,7 +231,7 @@ export function BottomNav() {
                 const Icon = item.icon;
                 const isActive =
                   pathname === item.href ||
-                  (item.href.length > "/boutiques/".length &&
+                  (item.href.length > (isAdmin ? "/admin/".length : "/boutiques/".length) &&
                     pathname.startsWith(item.href + "/"));
 
                 return (
@@ -264,7 +282,7 @@ export function BottomNav() {
             {items.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href.length > "/boutiques/".length &&
+                (item.href.length > (isAdmin ? "/admin/".length : "/boutiques/".length) &&
                   pathname.startsWith(item.href + "/") &&
                   !items.some(
                     (other) =>
@@ -306,7 +324,7 @@ export function BottomNav() {
             })}
 
             {/* Plus / More button */}
-            {boutiqueId && (
+            {(boutiqueId || isAdmin) && (
               <button
                 onClick={() => setSheetOpen((o) => !o)}
                 className={cn(

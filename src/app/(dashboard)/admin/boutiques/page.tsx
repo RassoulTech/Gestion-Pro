@@ -33,7 +33,67 @@ async function BoutiquesContent() {
 
   return (
     <>
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/90 shadow-xl shadow-zinc-100/40 backdrop-blur-md dark:border-zinc-800/60 dark:bg-zinc-950/90 dark:shadow-none">
+      {/* Mobile Card View (md:hidden) */}
+      <div className="grid gap-4 md:hidden">
+        {boutiques.length === 0 ? (
+          <div className="text-center py-10 text-zinc-400">
+            Aucune boutique trouvée sur la plateforme.
+          </div>
+        ) : (
+          boutiques.map((b) => {
+            const avatarColor = getSectorColor(b.secteurActivite);
+            return (
+              <div
+                key={b.id}
+                className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-5 shadow-sm backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/30 dark:text-violet-400 font-semibold shadow-sm border border-violet-100/50 dark:border-violet-900/30">
+                      <Store className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-zinc-900 dark:text-zinc-50 leading-tight">
+                        {b.nom}
+                      </span>
+                      <span className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500 font-mono">ID: {b.id.slice(0, 8)}</span>
+                    </div>
+                  </div>
+                  <StatusBadge status={b.statut} />
+                </div>
+
+                <div className="mt-4 space-y-2 border-t border-zinc-100 pt-3 dark:border-zinc-900 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><User className="h-3 w-3" /> Propriétaire</span>
+                    <span className="font-semibold text-zinc-700 dark:text-zinc-300">{b.vendeur.prenom} {b.vendeur.nom}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><Tag className="h-3 w-3" /> Secteur</span>
+                    <Badge variant="outline" className={`font-semibold px-2 py-0.5 rounded-lg border text-[10px] ${avatarColor}`}>
+                      {b.secteurActivite}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><Package className="h-3 w-3" /> Produits</span>
+                    <span className="font-bold text-zinc-800 dark:text-zinc-200">{b._count.produits}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-400 flex items-center gap-1"><Calendar className="h-3 w-3" /> Créée le</span>
+                    <span className="font-medium text-zinc-500 dark:text-zinc-400">{formatDate(b.createdAt)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-900">
+                  <ToggleStatusButton id={b.id} currentStatut={b.statut} type="boutique" />
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Table View (md:block) */}
+      <div className="hidden md:block relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/90 shadow-xl shadow-zinc-100/40 backdrop-blur-md dark:border-zinc-800/60 dark:bg-zinc-950/90 dark:shadow-none">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
