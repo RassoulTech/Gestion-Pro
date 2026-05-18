@@ -24,7 +24,7 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<PlanType[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY" | "PAYPAL">("WAVE");
+  const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY" | "PAYPAL" | "STRIPE">("STRIPE");
   const [step, setStep] = useState<1 | 2>(1);
 
   useEffect(() => {
@@ -203,7 +203,20 @@ export default function PricingPage() {
             <div className="space-y-3">
               <p className="text-xs font-black uppercase tracking-wider text-zinc-500">Moyen de paiement</p>
               
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                {/* STRIPE */}
+                <div
+                  onClick={() => setSelectedMethod("STRIPE")}
+                  className={cn(
+                    "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
+                    selectedMethod === "STRIPE" ? "border-brand bg-brand/5" : "border-zinc-800"
+                  )}
+                >
+                  <CreditCard className="h-5 w-5 text-brand" />
+                  <span className="text-[10px] font-black">Stripe / Carte</span>
+                </div>
+
+                {/* WAVE */}
                 <div
                   onClick={() => setSelectedMethod("WAVE")}
                   className={cn(
@@ -215,6 +228,7 @@ export default function PricingPage() {
                   <span className="text-[10px] font-black">Wave</span>
                 </div>
 
+                {/* ORANGE MONEY */}
                 <div
                   onClick={() => setSelectedMethod("ORANGE_MONEY")}
                   className={cn(
@@ -223,9 +237,10 @@ export default function PricingPage() {
                   )}
                 >
                   <Smartphone className="h-5 w-5 text-orange-500" />
-                  <span className="text-[10px] font-black">Orange</span>
+                  <span className="text-[10px] font-black">Orange Money</span>
                 </div>
 
+                {/* PAYPAL */}
                 <div
                   onClick={() => setSelectedMethod("PAYPAL")}
                   className={cn(
