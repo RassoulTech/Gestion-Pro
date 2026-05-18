@@ -1,0 +1,177 @@
+import { prisma } from "@/lib/prisma";
+
+export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "PAYPAL" | "CASH_ON_DELIVERY";
+
+export interface PaymentInitiationResult {
+  success: boolean;
+  paymentUrl?: string; // Redirect URL for Wave, Orange Money, or PayPal checkout
+  transactionRef?: string;
+  error?: string;
+}
+
+/**
+ * Service centralisé pour la gestion des paiements dans GestionPro.
+ * Ce module fournit la structure nécessaire pour intégrer les passerelles de paiement 
+ * locales (Wave, Orange Money via CinetPay, FedaPay, ou PayTech) et internationales (PayPal).
+ */
+export class PaymentService {
+  /**
+   * Initialise un paiement pour l'abonnement SaaS d'un vendeur (Orange Money, Wave, PayPal).
+   * 
+   * @param abonnementId L'ID de l'abonnement en cours d'activation
+   * @param amount Le montant en FCFA ou USD
+   * @param method La méthode sélectionnée
+   * @returns Un lien de redirection vers la passerelle sécurisée
+   */
+  static async initiateSubscriptionPayment(
+    abonnementId: string,
+    amount: number,
+    method: PaymentMethod
+  ): Promise<PaymentInitiationResult> {
+    try {
+      const abonnement = await prisma.abonnement.findUnique({
+        where: { id: abonnementId },
+        include: { plan: true },
+      });
+
+      if (!abonnement) {
+        return { success: false, error: "Abonnement introuvable." };
+      }
+
+      // Création de l'enregistrement de paiement en attente dans la base de données
+      const paiement = await prisma.paiement.create({
+        data: {
+          abonnementId: abonnement.id,
+          montant: amount,
+          methode: method,
+          statut: "EN_ATTENTE",
+          transactionRef: `SUB-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+        },
+      });
+
+      // ─── GUIDE D'INTÉGRATION DES PASSERELLES ───────────────────────
+      
+      // 1. SI WAVE / ORANGE MONEY (Exemple via FedaPay ou CinetPay) :
+      if (method === "WAVE" || method === "ORANGE_MONEY") {
+        /**
+         * Exemple d'intégration CinetPay / FedaPay :
+         * 
+         * const response = await fetch("https://api-checkout.cinetpay.com/v2/payment", {
+         *   method: "POST",
+         *   headers: { "Content-Type": "application/json" },
+         *   body: JSON.stringify({
+         *     apikey: process.env.CINETPAY_API_KEY,
+         *     site_id: process.env.CINETPAY_SITE_ID,
+         *     transaction_id: paiement.transactionRef,
+         *     amount: amount,
+         *     currency: "XOF",
+         *     description: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
+         *     notify_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/payment`,
+         *     return_url: `${process.env.NEXT_PUBLIC_APP_URL}/boutiques`,
+         *     channels: method === "WAVE" ? "MOBILE_MONEY" : "MOBILE_MONEY",
+         *   })
+         * });
+         * const data = await response.json();
+         * if (data.code === "201") {
+         *   return { success: true, paymentUrl: data.data.payment_url, transactionRef: paiement.transactionRef };
+         * }
+         */
+        
+        // Simulé pour le moment :
+        return {
+          success: true,
+          paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=${method}`,
+          transactionRef: paiement.transactionRef || undefined,
+        };
+      }
+
+      // 2. SI PAYPAL :
+      if (method === "PAYPAL") {
+        /**
+         * Exemple d'intégration PayPal (v2/checkout/orders) :
+         * 
+         * const response = await fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
+         *   method: "POST",
+         *   headers: {
+         *     "Content-Type": "application/json",
+         *     Authorization: `Bearer ${await getPayPalAccessToken()}`,
+         *   },
+         *   body: JSON.stringify({
+         *     intent: "CAPTURE",
+         *     purchase_units: [{
+         *       reference_id: paiement.transactionRef,
+         *       amount: { currency_code: "USD", value: (amount / 600).toFixed(2) }, // Conversion FCFA -> USD si nécessaire
+         *     }],
+         *     application_context: {
+         *       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/payment/paypal-return`,
+         *       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/boutiques`,
+         *     }
+         *   })
+         * });
+         * const order = await response.json();
+         * const approveUrl = order.links.find((l: any) => l.rel === "approve")?.href;
+         * return { success: true, paymentUrl: approveUrl, transactionRef: order.id };
+         */
+        return {
+          success: true,
+          paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=PAYPAL`,
+          transactionRef: paiement.transactionRef || undefined,
+        };
+      }
+
+      return { success: false, error: "Méthode de paiement non supportée." };
+    } catch (e: any) {
+      console.error("Erreur d'initialisation de paiement :", e);
+      return { success: false, error: e.message || "Erreur interne." };
+    }
+  }
+
+  /**
+   * Traite le retour du Webhook après confirmation de la transaction par la passerelle.
+   * 
+   * @param transactionRef La référence de transaction unique
+   * @param status Le statut retourné par la passerelle
+   * @returns Le statut mis à jour en base de données
+   */
+  static async handlePaymentWebhook(
+    transactionRef: string,
+    status: "SUCCESS" | "FAILED"
+  ) {
+    const paiement = await prisma.paiement.findFirst({
+      where: { transactionRef },
+      include: { abonnement: true },
+    });
+
+    if (!paiement) {
+      throw new Error(`Paiement introuvable pour la référence ${transactionRef}`);
+    }
+
+    if (status === "SUCCESS") {
+      // 1. Confirmer le paiement
+      await prisma.paiement.update({
+        where: { id: paiement.id },
+        data: { statut: "CONFIRME" },
+      });
+
+      // 2. Activer l'abonnement associé
+      await prisma.abonnement.update({
+        where: { id: paiement.abonnementId },
+        data: {
+          statut: "ACTIF",
+          dateDebut: new Date(),
+          dateFin: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Ex: +30 jours
+        },
+      });
+
+      return { success: true, message: "Abonnement activé avec succès." };
+    } else {
+      // Mettre le paiement en échec
+      await prisma.paiement.update({
+        where: { id: paiement.id },
+        data: { statut: "ECHOUE" },
+      });
+
+      return { success: false, message: "Le paiement a échoué." };
+    }
+  }
+}

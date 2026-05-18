@@ -1,0 +1,333 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from "react";
+import { redirect, notFound } from "next/navigation";
+import Image from "next/image";
+import { 
+  Plus, 
+  History,
+  Package,
+  Layers,
+  TrendingUp,
+  AlertTriangle,
+  ArrowRightLeft
+} from "lucide-react";
+import Link from "next/link";
+
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ProduitActions } from "./_components/produit-actions";
+import { ProduitFilters } from "./_components/produit-filters";
+
+interface ProduitsPageProps {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ q?: string; status?: string }>;
+}
+
+export default async function ProduitsPage({ params, searchParams }: ProduitsPageProps) {
+  const { id } = await params;
+  const { q, status } = await searchParams;
+  
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+
+  const boutique = await prisma.boutique.findUnique({
+    where: { id },
+    include: {
+      produits: {
+        include: {
+          categorie: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+
+  if (!boutique) notFound();
+
+  // In-memory advanced search and status filter matching
+  let filteredProduits = boutique.produits;
+  
+  if (q) {
+    const query = q.toLowerCase().trim();
+    filteredProduits = filteredProduits.filter(p => 
+      p.nom.toLowerCase().includes(query) || 
+      (p.code && p.code.toLowerCase().includes(query)) ||
+      (p.description && p.description.toLowerCase().includes(query))
+    );
+  }
+
+  if (status) {
+    if (status === "alert") {
+      filteredProduits = filteredProduits.filter(p => p.quantite <= p.seuilAlerte && p.quantite > 0);
+    } else if (status === "instock") {
+      filteredProduits = filteredProduits.filter(p => p.quantite > p.seuilAlerte);
+    } else if (status === "outofstock") {
+      filteredProduits = filteredProduits.filter(p => p.quantite === 0);
+    }
+  }
+
+  // Dashboard calculations for header KPIs
+  const totalCount = boutique.produits.length;
+  const filteredCount = filteredProduits.length;
+  const lowStockCount = boutique.produits.filter(p => p.quantite <= p.seuilAlerte && p.quantite > 0).length;
+  const outOfStockCount = boutique.produits.filter(p => p.quantite === 0).length;
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-8 sm:space-y-12 py-4 sm:py-6 px-4 sm:px-6">
+      
+      {/* Top Breadcrumb & Header */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest">
+            <Link href="/boutiques" className="hover:text-blue-500 transition-colors">Mes Boutiques</Link>
+            <span>/</span>
+            <Link href={`/boutiques/${id}`} className="hover:text-blue-500 transition-colors">{boutique.nom}</Link>
+            <span>/</span>
+            <span className="text-slate-600 dark:text-zinc-300">Inventaire</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-3">
+            <Package className="w-8 h-8 text-blue-500" />
+            Gestion de l&apos;inventaire
+          </h1>
+          <p className="text-slate-500 dark:text-zinc-400 text-sm font-medium">
+            Pilotez vos produits, gérez vos niveaux de stock critique et optimisez vos ventes pour <strong className="text-slate-700 dark:text-zinc-200">{boutique.nom}</strong>.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 self-stretch md:self-auto sm:justify-end">
+          <Button asChild variant="outline" className="flex-1 sm:flex-initial h-12 rounded-xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm">
+            <Link href={`/boutiques/${id}/stock`}>
+              <ArrowRightLeft className="mr-2 h-4 w-4 text-slate-500" />
+              Mouvements
+            </Link>
+          </Button>
+          <Button asChild variant="premium" className="flex-1 sm:flex-initial h-12 rounded-xl font-extrabold shadow-lg shadow-blue-500/10 text-xs sm:text-sm">
+            <Link href={`/boutiques/${id}/produits/new`}>
+              <Plus className="mr-2 h-4.5 w-4.5" />
+              Nouveau Produit
+            </Link>
+          </Button>
+        </div>
+      </div>
+
+      {/* Modern Dashboard KPI Cards row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total produits</span>
+          <p className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-zinc-100">{totalCount}</p>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Résultats trouvés</span>
+          <p className="text-2xl sm:text-3xl font-black text-blue-500">{filteredCount}</p>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-rose-500">Niveaux critiques</span>
+          <p className="text-2xl sm:text-3xl font-black text-rose-500">{lowStockCount}</p>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Ruptures de stock</span>
+          <p className="text-2xl sm:text-3xl font-black text-slate-700 dark:text-zinc-300">{outOfStockCount}</p>
+        </div>
+      </div>
+
+      {/* Dynamic Filters Component */}
+      <ProduitFilters />
+
+      {/* Desktop Table View (Hidden on mobile) */}
+      <div className="hidden md:block bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2rem] shadow-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table className="relative w-full">
+            <TableHeader className="bg-slate-50 dark:bg-zinc-800/50 sticky top-0 z-10 border-b border-slate-100 dark:border-zinc-800">
+              <TableRow className="border-none h-14">
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400 pl-8">Produit</TableHead>
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400">Code</TableHead>
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400">Catégorie</TableHead>
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400 text-right">Prix d&apos;Achat</TableHead>
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400 text-right">Prix de Vente</TableHead>
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400 text-center">Stock Actuel</TableHead>
+                <TableHead className="font-extrabold uppercase tracking-wider text-[10px] text-slate-500 dark:text-zinc-400 text-right pr-8">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredProduits.length > 0 ? (
+                filteredProduits.map((produit) => (
+                  <TableRow 
+                    key={produit.id} 
+                    className="border-slate-100 dark:border-zinc-800/80 hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors h-[68px]"
+                  >
+                    <TableCell className="pl-8 py-3.5">
+                      <div className="flex items-center gap-4.5">
+                        <div className="h-12 w-12 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center shrink-0 relative overflow-hidden shadow-inner">
+                          {produit.photo ? (
+                            <Image 
+                              src={produit.photo} 
+                              alt={produit.nom} 
+                              fill 
+                              className="object-cover" 
+                              unoptimized 
+                            />
+                          ) : (
+                            <Package className="h-6 w-6 text-slate-400 dark:text-zinc-500" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-extrabold text-slate-800 dark:text-zinc-100 text-sm truncate max-w-[220px]">{produit.nom}</p>
+                          {produit.description && (
+                            <p className="text-[11px] text-slate-400 truncate max-w-[220px] mt-0.5">{produit.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-mono text-xs text-slate-500 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-800 px-2 py-1 rounded">
+                        {produit.code || "—"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {produit.categorie ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-xs font-bold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20">
+                          <Layers className="w-3.5 h-3.5" />
+                          {produit.categorie.nom}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-slate-400">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold text-slate-600 dark:text-zinc-400">
+                      {produit.prixAchat ? `${produit.prixAchat.toLocaleString()} FCFA` : "—"}
+                    </TableCell>
+                    <TableCell className="text-right font-black text-blue-600 dark:text-blue-400">
+                      {produit.prixUnitaire.toLocaleString()} FCFA
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-black border ${
+                        produit.quantite === 0
+                          ? "bg-slate-100 text-slate-600 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
+                          : produit.quantite <= produit.seuilAlerte
+                            ? "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-500 dark:border-rose-500/20"
+                            : "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-500 dark:border-emerald-500/20"
+                      }`}>
+                        {produit.quantite === 0 ? "Rupture" : `${produit.quantite} en stock`}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right pr-8">
+                      <ProduitActions
+                        produitId={produit.id}
+                        boutiqueId={id}
+                        produitNom={produit.nom}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-72 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="h-16 w-16 bg-slate-50 dark:bg-zinc-800 rounded-full flex items-center justify-center text-slate-400">
+                        <Package className="w-8 h-8" />
+                      </div>
+                      <h3 className="font-extrabold text-slate-800 dark:text-zinc-200">Aucun produit trouvé</h3>
+                      <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-xs leading-relaxed">
+                        Ajustez vos filtres de recherche ou créez un nouveau produit pour enrichir l&apos;inventaire.
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Mobile Stacked Card View (Hidden on desktop) */}
+      <div className="md:hidden space-y-4">
+        {filteredProduits.length > 0 ? (
+          filteredProduits.map((produit) => (
+            <div 
+              key={produit.id} 
+              className="bg-white dark:bg-zinc-900 rounded-2xl border border-slate-100 dark:border-zinc-800 p-5 space-y-4 shadow-sm relative overflow-hidden"
+            >
+              {/* Product Header details */}
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-14 w-14 rounded-xl bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center shrink-0 relative overflow-hidden shadow-inner">
+                    {produit.photo ? (
+                      <Image 
+                        src={produit.photo} 
+                        alt={produit.nom} 
+                        fill 
+                        className="object-cover" 
+                        unoptimized 
+                      />
+                    ) : (
+                      <Package className="h-6 w-6 text-slate-400" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 text-sm truncate max-w-[170px]">{produit.nom}</h3>
+                    <p className="text-[10px] font-mono text-slate-400 mt-0.5">{produit.code || "Sans code barre"}</p>
+                    {produit.categorie && (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-[9px] font-bold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 mt-1">
+                        {produit.categorie.nom}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <ProduitActions
+                  produitId={produit.id}
+                  boutiqueId={id}
+                  produitNom={produit.nom}
+                />
+              </div>
+
+              {/* Price details & Stock badge */}
+              <div className="pt-3 border-t border-slate-100/50 dark:border-zinc-800/50 flex items-center justify-between gap-2">
+                <div className="space-y-0.5">
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Prix de Vente</span>
+                  <p className="font-black text-sm text-blue-600 dark:text-blue-400">{produit.prixUnitaire.toLocaleString()} FCFA</p>
+                </div>
+                
+                <div>
+                  <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-black border ${
+                    produit.quantite === 0
+                      ? "bg-slate-100 text-slate-600 border-slate-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700"
+                      : produit.quantite <= produit.seuilAlerte
+                        ? "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-500 dark:border-rose-500/20"
+                        : "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-500 dark:border-emerald-500/20"
+                  }`}>
+                    {produit.quantite === 0 ? "Rupture" : `${produit.quantite} en stock`}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-2xl p-8 text-center space-y-4 shadow-sm">
+            <div className="h-16 w-16 bg-slate-50 dark:bg-zinc-800 rounded-full flex items-center justify-center text-slate-400 mx-auto">
+              <Package className="w-8 h-8" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-extrabold text-slate-800 dark:text-zinc-200">Aucun produit</h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-xs leading-relaxed mx-auto">
+                Ajustez vos filtres de recherche ou créez un nouveau produit pour enrichir votre inventaire.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
