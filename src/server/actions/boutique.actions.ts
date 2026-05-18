@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { requireBoutiqueOwner } from "@/lib/permissions";
 import { generateCode, slugify } from "@/lib/utils";
+import { checkBoutiqueCreationLimit, checkMembreCreationLimit, clearQuotaCache } from "@/lib/quotas";
 import {
   createBoutiqueSchema,
   updateBoutiqueSchema,
@@ -16,21 +17,10 @@ export const createBoutique = vendeurActionClient
   .action(async ({ parsedInput, ctx }) => {
     const { vendeurId, user } = ctx;
 
-    // Vérification de la limite de boutiques selon le plan
-    const currentAbonnement = await prisma.abonnement.findFirst({
-      where: { vendeurId, statut: { in: ["ESSAI", "ACTIF"] } },
-      include: { plan: true },
-      orderBy: { createdAt: "desc" },
-    });
-
-    const boutiqueCount = await prisma.boutique.count({
-      where: { membres: { some: { vendeurId, role: "OWNER" } } },
-    });
-
-    const maxBoutiques = currentAbonnement?.plan.maxBoutiques ?? 1;
-
-    if (boutiqueCount >= maxBoutiques) {
-      throw new Error(`Votre plan actuel est limité à ${maxBoutiques} boutique(s).`);
+    // Centralized quota verification
+    const { allowed, count, max } = await checkBoutiqueCreationLimit(vendeurId);
+    if (!allowed) {
+      throw new Error(`Votre plan actuel est limité à ${max} boutique(s). Vous en possédez actuellement ${count}. Veuillez mettre à niveau votre forfait.`);
     }
 
     const baseSlug = slugify(parsedInput.nom);
@@ -79,6 +69,9 @@ export const createBoutique = vendeurActionClient
       subjectId: boutique.id,
       changes: { nom: boutique.nom, slug: boutique.slug },
     });
+
+    // Invalidate the memory cache for quotas
+    clearQuotaCache(vendeurId);
 
     return { boutique };
   });
@@ -164,4 +157,72 @@ export const checkBoutiqueLimitAction = vendeurActionClient
     const maxBoutiques = currentAbonnement?.plan.maxBoutiques ?? 1;
 
     return { limitReached: boutiqueCount >= maxBoutiques, boutiqueCount, maxBoutiques };
+  });
+
+export const inviteMembre = vendeurActionClient
+  .schema(
+    z.object({
+      boutiqueId: z.string().min(1),
+      email: z.string().email(),
+    })
+  )
+  .action(async ({ parsedInput, ctx }) => {
+    const { boutiqueId, email } = parsedInput;
+    const { vendeurId, user } = ctx;
+
+    // Must be the owner to invite members
+    await requireBoutiqueOwner(boutiqueId, vendeurId);
+
+    // Enforce member limit quota
+    const { allowed, count, max } = await checkMembreCreationLimit(boutiqueId, vendeurId);
+    if (!allowed) {
+      throw new Error(`Votre plan actuel est limité à ${max} membre(s) pour cette boutique. Vous avez déjà atteint cette limite.`);
+    }
+
+    // Find if user exists as Vendeur
+    const targetUser = await prisma.user.findUnique({
+      where: { email },
+      include: { vendeur: true },
+    });
+
+    if (!targetUser || !targetUser.vendeur) {
+      throw new Error("Aucun vendeur trouvé avec cette adresse email.");
+    }
+
+    const targetVendeurId = targetUser.vendeur.id;
+
+    // Check if already a member
+    const existingMember = await prisma.membreBoutique.findUnique({
+      where: {
+        boutiqueId_vendeurId: {
+          boutiqueId,
+          vendeurId: targetVendeurId,
+        },
+      },
+    });
+
+    if (existingMember) {
+      throw new Error("Cet utilisateur est déjà membre de cette boutique.");
+    }
+
+    const member = await prisma.membreBoutique.create({
+      data: {
+        boutiqueId,
+        vendeurId: targetVendeurId,
+        role: "STAFF",
+      },
+    });
+
+    await logActivity({
+      userId: user.id,
+      action: "MEMBRE_INVITED",
+      subjectType: "MembreBoutique",
+      subjectId: member.id,
+      changes: { boutiqueId, email },
+    });
+
+    // Invalidate quota cache
+    clearQuotaCache(vendeurId);
+
+    return { success: true, member };
   });

@@ -5,6 +5,7 @@ import { vendeurActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { requireBoutiqueAccess } from "@/lib/permissions";
+import { checkProduitCreationLimit, clearQuotaCache } from "@/lib/quotas";
 import {
   createProduitSchema,
   updateProduitSchema,
@@ -23,25 +24,10 @@ export const createProduit = vendeurActionClient
 
     await requireBoutiqueAccess(boutiqueId, vendeurId);
 
-    // Count existing products in this boutique to verify plan limit
-    const currentAbonnement = await prisma.abonnement.findFirst({
-      where: { vendeurId, statut: { in: ["ESSAI", "ACTIF"] } },
-      include: { plan: true },
-      orderBy: { createdAt: "desc" },
-    });
-
-    const maxProduits = currentAbonnement?.plan.maxProduits ?? 50;
-
-    const productCount = await prisma.produit.count({
-      where: { boutiqueId },
-    });
-
-    if (productCount >= maxProduits) {
-      throw new Error(
-        `Vous avez atteint la limite de ${maxProduits} produits du forfait ${
-          currentAbonnement?.plan.nom || "gratuit"
-        }. Passez au forfait Pro pour ajouter plus de produits.`
-      );
+    // Centralized quota verification
+    const { allowed, count, max } = await checkProduitCreationLimit(boutiqueId, vendeurId);
+    if (!allowed) {
+      throw new Error(`Votre plan actuel est limité à ${max} produits pour cette boutique. Vous en possédez actuellement ${count}. Veuillez mettre à niveau votre forfait.`);
     }
 
     const produit = await prisma.$transaction(async (tx) => {
@@ -84,6 +70,9 @@ export const createProduit = vendeurActionClient
       subjectId: produit.id,
       changes: { nom: produit.nom, boutiqueId },
     });
+
+    // Invalidate the memory cache for quotas
+    clearQuotaCache(vendeurId);
 
     return { produit };
   });

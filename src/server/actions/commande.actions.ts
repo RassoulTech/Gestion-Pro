@@ -6,6 +6,7 @@ import { vendeurActionClient } from "@/lib/safe-action";
 import { requireBoutiqueAccess } from "@/lib/permissions";
 import { logActivity } from "@/lib/activity-log";
 import { generateCode } from "@/lib/utils";
+import { isPremiumFeatureAllowed } from "@/lib/quotas";
 import {
   createCommandeClientSchema,
   createCommandeFournisseurSchema,
@@ -121,6 +122,12 @@ export const createVenteFlash = vendeurActionClient
   .schema(z.object({ boutiqueId: z.string(), data: createVenteFlashSchema }))
   .action(async ({ parsedInput: { boutiqueId, data }, ctx }) => {
     await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
+
+    // Secure Premium feature access
+    const isAllowed = await isPremiumFeatureAllowed(ctx.vendeurId, "VENTES_FLASH");
+    if (!isAllowed) {
+      throw new Error("Cette fonctionnalité est exclusive aux abonnés Pro et Enterprise. Veuillez mettre à niveau votre forfait.");
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       const code = generateCode("VF");
