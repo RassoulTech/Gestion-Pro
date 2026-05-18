@@ -92,18 +92,19 @@ enum StatutVendeur {
 }
 
 model Vendeur {
-  id            String         @id @default(cuid())
-  userId        String         @unique @map("user_id")
-  nom           String
-  prenom        String
-  email         String
-  telephone     String?
-  dateNaissance DateTime?      @map("date_naissance")
-  adresse       String?
-  photo         String?
-  statut        StatutVendeur  @default(ACTIF)
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
+  id               String         @id @default(cuid())
+  userId           String         @unique @map("user_id")
+  nom              String
+  prenom           String
+  email            String
+  telephone        String?
+  dateNaissance    DateTime?      @map("date_naissance")
+  adresse          String?
+  photo            String?
+  statut           StatutVendeur  @default(ACTIF)
+  stripeCustomerId String?        @map("stripe_customer_id")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
 
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   boutiques     Boutique[]
@@ -219,17 +220,20 @@ enum StatutAbonnement {
 }
 
 model Abonnement {
-  id             String            @id @default(cuid())
-  vendeurId      String            @map("vendeur_id")
-  planId         String            @map("plan_id")
-  essaiFin       DateTime?         @map("essai_fin")
-  dateDebut      DateTime          @map("date_debut")
-  dateFin        DateTime?         @map("date_fin")
-  statut         StatutAbonnement  @default(ESSAI)
-  moyenPaiement  String?           @map("moyen_paiement")
-  montant        Float
-  createdAt      DateTime          @default(now()) @map("created_at")
-  updatedAt      DateTime          @updatedAt @map("updated_at")
+  id                    String            @id @default(cuid())
+  vendeurId             String            @map("vendeur_id")
+  planId                String            @map("plan_id")
+  essaiFin              DateTime?         @map("essai_fin")
+  dateDebut             DateTime          @map("date_debut")
+  dateFin               DateTime?         @map("date_fin")
+  statut                StatutAbonnement  @default(ESSAI)
+  moyenPaiement         String?           @map("moyen_paiement")
+  montant               Float
+  stripeSubscriptionId  String?           @map("stripe_subscription_id")
+  cancelAtPeriodEnd     Boolean           @default(false) @map("cancel_at_period_end")
+  cinetpayPaymentToken  String?           @map("cinetpay_payment_token")
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
 
   vendeur        Vendeur           @relation(fields: [vendeurId], references: [id], onDelete: Cascade)
   plan           Plan              @relation(fields: [planId], references: [id])
@@ -246,13 +250,15 @@ enum StatutPaiement {
 }
 
 model Paiement {
-  id             String          @id @default(cuid())
-  abonnementId   String          @map("abonnement_id")
-  montant        Float
-  methode        String
-  statut         StatutPaiement  @default(EN_ATTENTE)
-  transactionRef String?         @map("transaction_ref")
-  createdAt      DateTime        @default(now()) @map("created_at")
+  id                    String          @id @default(cuid())
+  abonnementId          String          @map("abonnement_id")
+  montant               Float
+  methode               String
+  statut                StatutPaiement  @default(EN_ATTENTE)
+  transactionRef        String?         @map("transaction_ref")
+  cinetpayPaymentToken  String?         @map("cinetpay_payment_token")
+  metadata              Json?           @map("metadata")
+  createdAt             DateTime        @default(now()) @map("created_at")
 
   abonnement     Abonnement      @relation(fields: [abonnementId], references: [id], onDelete: Cascade)
 
@@ -348,17 +354,21 @@ enum EtatCommande {
 }
 
 model CommandeClient {
-  id         String        @id @default(cuid())
-  boutiqueId String        @map("boutique_id")
-  clientId   String?       @map("client_id")
-  userId     String?       @map("user_id")
-  code       String
-  date       DateTime      @default(now())
-  total      Float         @default(0)
-  etat       EtatCommande  @default(EN_ATTENTE)
-  notes      String?       @db.Text
-  createdAt  DateTime      @default(now()) @map("created_at")
-  updatedAt  DateTime      @updatedAt @map("updated_at")
+  id             String          @id @default(cuid())
+  boutiqueId     String          @map("boutique_id")
+  clientId       String?         @map("client_id")
+  userId         String?         @map("user_id")
+  code           String
+  date           DateTime        @default(now())
+  total          Float           @default(0)
+  etat           EtatCommande    @default(EN_ATTENTE)
+  statutPaiement StatutPaiement  @default(EN_ATTENTE) @map("statut_paiement")
+  modePaiement   String?         @map("mode_paiement")
+  paymentToken   String?         @map("payment_token")
+  metadata       Json?           @map("metadata")
+  notes          String?         @db.Text
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
 
   boutique   Boutique      @relation(fields: [boutiqueId], references: [id], onDelete: Cascade)
   client     Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
