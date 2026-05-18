@@ -23,15 +23,17 @@ declare module "@auth/core/jwt" {
   }
 }
 
-const googleEnabled = Boolean(
-  process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
-);
-
 /**
  * Configuration Auth.js partagée et compatible Edge runtime.
  * - Ne contient PAS l'adapter Prisma (incompatible Edge).
  * - Ne contient PAS le provider Credentials (bcrypt incompatible Edge).
  * - Utilisée par le middleware ET enrichie côté Node par lib/auth.ts.
+ *
+ * Note : on déclare TOUJOURS le provider Google même si les credentials
+ * sont absents au build. La détection conditionnelle (`googleEnabled`)
+ * peut faire dead-code-eliminer le provider quand Vercel évalue le bundle
+ * Edge → erreur "Configuration" trompeuse. Si les credentials manquent
+ * vraiment au runtime, NextAuth jettera une erreur explicite au signin.
  */
 export const authConfig = {
   session: { strategy: "jwt" },
@@ -41,15 +43,11 @@ export const authConfig = {
     error: "/login",
   },
   providers: [
-    ...(googleEnabled
-      ? [
-          Google({
-            clientId: process.env.AUTH_GOOGLE_ID,
-            clientSecret: process.env.AUTH_GOOGLE_SECRET,
-            allowDangerousEmailAccountLinking: true,
-          }),
-        ]
-      : []),
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID ?? "",
+      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
+      allowDangerousEmailAccountLinking: true,
+    }),
   ],
   callbacks: {
     jwt: async ({ token, user, trigger, session }) => {
