@@ -149,7 +149,7 @@ export const createMarketplaceCommande = actionClient
         };
       }
 
-      const stripe = (await import("@/lib/stripe")).stripe;
+      const stripe = (await import("@/lib/stripe")).getStripe();
 
       // Create Stripe checkout session for one-time order payment
       const session = await stripe.checkout.sessions.create({

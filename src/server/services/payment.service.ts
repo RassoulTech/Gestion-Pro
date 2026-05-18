@@ -69,7 +69,7 @@ export class PaymentService {
           };
         }
 
-        const stripe = (await import("@/lib/stripe")).stripe;
+        const stripe = (await import("@/lib/stripe")).getStripe();
 
         // Resolve/Create Stripe Customer
         const vendeurRow = (await prisma.vendeur.findUnique({

@@ -148,7 +148,7 @@ export const createStripePortalSession = vendeurActionClient
       throw new Error("Vous n'avez pas encore de compte client Stripe actif.");
     }
 
-    const stripe = (await import("@/lib/stripe")).stripe;
+    const stripe = (await import("@/lib/stripe")).getStripe();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     // Resolve or find the first boutique to redirect back to
