@@ -20,6 +20,7 @@ import {
   CreditCard,
   Activity,
   FileText,
+  Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,14 +37,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useBoutique } from "@/components/layouts/boutique-provider";
 
 // ─── Types ────────────────────────────────────────────────────
+
+type PlanCode = "STARTER" | "PRO" | "ENTERPRISE";
 
 type NavItem = {
   label: string;
   href: string;
   icon: React.ElementType;
+  /** Minimum plan required for this nav item. If undefined → accessible to all. */
+  requires?: PlanCode;
 };
+
+const PLAN_RANK: Record<PlanCode, number> = {
+  STARTER: 0,
+  PRO: 1,
+  ENTERPRISE: 2,
+};
+
+function isItemLocked(item: NavItem, currentPlan?: PlanCode): boolean {
+  if (!item.requires || !currentPlan) return false;
+  return PLAN_RANK[currentPlan] < PLAN_RANK[item.requires];
+}
 
 type SidebarProps = {
   boutiqueId?: string;
@@ -69,11 +86,11 @@ function getBoutiqueNav(boutiqueId: string): NavItem[] {
       href: `${base}/commandes-fournisseur`,
       icon: Truck,
     },
-    { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap },
-    { label: "Stock", href: `${base}/stock`, icon: Store },
+    { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
+    { label: "Stock", href: `${base}/stock`, icon: Store, requires: "PRO" },
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
-    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3 },
-    { label: "Membres", href: `${base}/membres`, icon: Users2 },
+    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
+    { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
     { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
     { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
   ];
@@ -102,11 +119,13 @@ function NavLink({
   pathname,
   collapsed,
   onClick,
+  locked,
 }: {
   item: NavItem;
   pathname: string;
   collapsed: boolean;
   onClick?: () => void;
+  locked?: boolean;
 }) {
   const Icon = item.icon;
 
@@ -140,7 +159,10 @@ function NavLink({
         )}
       />
       {!collapsed && (
-        <span className="truncate leading-none">{item.label}</span>
+        <span className="truncate leading-none flex-1">{item.label}</span>
+      )}
+      {!collapsed && locked && (
+        <Lock className="h-3 w-3 shrink-0 text-amber-500" aria-label="Plan supérieur requis" />
       )}
     </Link>
   );
@@ -149,8 +171,9 @@ function NavLink({
     return (
       <Tooltip>
         <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-        <TooltipContent side="right" className="text-xs">
+        <TooltipContent side="right" className="text-xs flex items-center gap-1.5">
           {item.label}
+          {locked && <Lock className="h-3 w-3 text-amber-500" />}
         </TooltipContent>
       </Tooltip>
     );
@@ -177,7 +200,16 @@ function SidebarContent({
   role?: string;
 }) {
   const pathname = usePathname();
-  
+
+  // Récupère le plan courant depuis le BoutiqueProvider, si disponible.
+  let currentPlan: PlanCode | undefined;
+  try {
+    const ctx = useBoutique();
+    currentPlan = ctx.plan?.isActive ? ctx.plan.codePlan : "STARTER";
+  } catch {
+    // Pas de provider (ex: page /boutiques)
+  }
+
   let navItems = globalNav;
   if (role === "ADMIN") {
     navItems = getAdminNav();
@@ -245,6 +277,7 @@ function SidebarContent({
                 pathname={pathname}
                 collapsed={collapsed}
                 onClick={onLinkClick}
+                locked={isItemLocked(item, currentPlan)}
               />
             ))}
           </TooltipProvider>

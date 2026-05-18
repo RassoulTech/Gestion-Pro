@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import type { SecteurActivite } from "@prisma/client";
+import type { SecteurActivite, Prisma } from "@prisma/client";
+import { env } from "@/env.mjs";
 
 export async function getVendeurBoutiques(vendeurId: string) {
   return prisma.boutique.findMany({
@@ -36,7 +37,11 @@ export async function getBoutiqueById(boutiqueId: string) {
 
 export async function getBoutiqueBySlug(slug: string) {
   return prisma.boutique.findFirst({
-    where: { slug, statut: "ACTIF" },
+    where: {
+      slug,
+      statut: "ACTIF",
+      ...marketplaceAccessFilter(),
+    },
     include: {
       vendeur: { select: { photo: true } },
       categories: true,
@@ -47,6 +52,32 @@ export async function getBoutiqueBySlug(slug: string) {
       },
     },
   });
+}
+
+/**
+ * Renvoie un fragment Prisma `where` qui restreint la visibilité publique
+ * d'une boutique au plan PRO ou ENTERPRISE actif (essai ou payant).
+ * En mode sandbox (BILLING_ENABLED ≠ "true"), aucun filtre n'est ajouté.
+ */
+function marketplaceAccessFilter(): Prisma.BoutiqueWhereInput {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return {};
+  }
+  return {
+    membres: {
+      some: {
+        role: "OWNER",
+        vendeur: {
+          abonnements: {
+            some: {
+              statut: { in: ["ESSAI", "ACTIF"] },
+              plan: { codePlan: { in: ["PRO", "ENTERPRISE"] } as any },
+            },
+          },
+        },
+      },
+    },
+  };
 }
 
 export async function getBoutiqueForSettings(boutiqueId: string) {
@@ -77,8 +108,9 @@ export async function getPublicBoutiques(params?: {
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 12;
 
-  const where = {
+  const where: Prisma.BoutiqueWhereInput = {
     statut: "ACTIF" as const,
+    ...marketplaceAccessFilter(),
     ...(params?.search && {
       nom: { contains: params.search, mode: "insensitive" as const },
     }),

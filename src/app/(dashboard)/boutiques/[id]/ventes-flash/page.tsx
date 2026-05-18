@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/loading";
 import { EmptyState } from "@/components/empty-state";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
-import { prisma } from "@/lib/prisma";
+import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
 export const metadata = { title: "Ventes Flash" };
 
@@ -63,29 +63,8 @@ async function VentesFlashContent({ boutiqueId }: { boutiqueId: string }) {
 
 export default async function VentesFlashPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
-  const boutique = await prisma.boutique.findUnique({
-    where: { id },
-    include: {
-      membres: {
-        where: { role: "OWNER" },
-        include: {
-          vendeur: {
-            include: {
-              abonnements: {
-                where: { statut: { in: ["ESSAI", "ACTIF"] } },
-                include: { plan: true },
-                orderBy: { createdAt: "desc" },
-                take: 1,
-              }
-            }
-          }
-        }
-      }
-    }
-  });
-
-  const currentPlanName = boutique?.membres[0]?.vendeur?.abonnements[0]?.plan?.nom ?? "Starter";
+  const quotas = await getBoutiqueOwnerQuotas(id);
+  const currentPlanName = quotas.nom;
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { BoutiqueProvider } from "@/components/layouts/boutique-provider";
+import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
 interface BoutiqueLayoutProps {
   children: React.ReactNode;
@@ -13,21 +14,33 @@ export default async function BoutiqueLayout({
 }: BoutiqueLayoutProps) {
   const { id } = await params;
 
-  const boutique = await prisma.boutique.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      nom: true,
-      slug: true,
-    },
-  });
+  const [boutique, quotas] = await Promise.all([
+    prisma.boutique.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        nom: true,
+        slug: true,
+      },
+    }),
+    getBoutiqueOwnerQuotas(id),
+  ]);
 
   if (!boutique) {
     notFound();
   }
 
   return (
-    <BoutiqueProvider boutique={boutique}>
+    <BoutiqueProvider
+      boutique={{
+        ...boutique,
+        plan: {
+          codePlan: quotas.codePlan as "STARTER" | "PRO" | "ENTERPRISE",
+          nom: quotas.nom,
+          isActive: quotas.isActive,
+        },
+      }}
+    >
       {children}
     </BoutiqueProvider>
   );

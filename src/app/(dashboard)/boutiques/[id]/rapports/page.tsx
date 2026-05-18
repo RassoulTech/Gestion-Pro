@@ -10,6 +10,7 @@ import { TopProductsChart } from "@/components/charts/top-products-chart";
 import { PageSkeleton } from "@/components/loading";
 import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
+import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
 export const metadata = { title: "Rapports" };
 
@@ -82,29 +83,13 @@ async function RapportsContent({ boutiqueId }: { boutiqueId: string }) {
 export default async function RapportsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  const boutique = await prisma.boutique.findUnique({
-    where: { id },
-    include: {
-      membres: {
-        where: { role: "OWNER" },
-        include: {
-          vendeur: {
-            include: {
-              abonnements: {
-                where: { statut: { in: ["ESSAI", "ACTIF"] } },
-                include: { plan: true },
-                orderBy: { createdAt: "desc" },
-                take: 1,
-              }
-            }
-          }
-        }
-      }
-    }
-  });
+  const [boutique, quotas] = await Promise.all([
+    prisma.boutique.findUnique({ where: { id }, select: { nom: true } }),
+    getBoutiqueOwnerQuotas(id),
+  ]);
 
   const boutiqueName = boutique?.nom ?? "Boutique";
-  const currentPlanName = boutique?.membres[0]?.vendeur?.abonnements[0]?.plan?.nom ?? "Starter";
+  const currentPlanName = quotas.nom;
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">

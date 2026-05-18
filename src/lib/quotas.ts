@@ -199,13 +199,72 @@ export async function isPremiumFeatureAllowed(
   featureCode: string
 ): Promise<boolean> {
   const quotas = await getVendeurQuotas(vendeurId);
+  // Only an actively-paying or trial-active plan unlocks premium features.
+  // An EXPIRE/ANNULE plan falls back to starter capabilities.
+  if (!quotas.isActive) {
+    const starterFeatures = ["POS_SIMPLE", "STOCK_BASIQUE"];
+    return starterFeatures.includes(featureCode);
+  }
   if (quotas.codePlan === "ENTERPRISE") return true;
   if (quotas.codePlan === "PRO") {
-    // Pro allowed features: advanced stock, sales report, marketplace, etc.
-    const allowedFeatures = ["POS_AVANCE", "VENTES_FLASH", "RAPPORTS_DETAILLES", "MARKETPLACE", "EXPORT"];
+    const allowedFeatures = [
+      "POS_AVANCE",
+      "VENTES_FLASH",
+      "RAPPORTS_DETAILLES",
+      "MARKETPLACE",
+      "EXPORT",
+      "STOCK_AVANCE",
+      "MULTI_MEMBRES",
+    ];
     return allowedFeatures.includes(featureCode);
   }
-  // Starter allowed features
   const starterFeatures = ["POS_SIMPLE", "STOCK_BASIQUE"];
   return starterFeatures.includes(featureCode);
+}
+
+/**
+ * Récupère les quotas du vendeur OWNER d'une boutique donnée.
+ * Sert pour les pages côté boutique (ventes-flash, rapports, membres, etc.)
+ * où l'on veut connaître le plan effectif de l'utilisateur consultant la boutique.
+ */
+export async function getBoutiqueOwnerQuotas(
+  boutiqueId: string
+): Promise<PlanQuotas> {
+  const owner = await prisma.membreBoutique.findFirst({
+    where: { boutiqueId, role: "OWNER" },
+    select: { vendeurId: true },
+  });
+  if (!owner) {
+    return {
+      codePlan: "STARTER",
+      nom: "Starter",
+      maxBoutiques: 1,
+      maxProduits: 50,
+      maxMembres: 1,
+      features: [],
+      isActive: false,
+      essaiFin: null,
+      dateFin: null,
+      statut: "EXPIRE",
+    };
+  }
+  return getVendeurQuotas(owner.vendeurId);
+}
+
+/**
+ * Vérifie si une boutique a accès au marketplace public (visibilité externe).
+ * Vrai uniquement si le vendeur OWNER a un plan PRO ou ENTERPRISE actif.
+ * Lorsque le billing est désactivé, retourne true (mode "sandbox" tout permis).
+ */
+export async function boutiqueHasMarketplaceAccess(
+  boutiqueId: string
+): Promise<boolean> {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return true;
+  }
+  const quotas = await getBoutiqueOwnerQuotas(boutiqueId);
+  return (
+    quotas.isActive &&
+    (quotas.codePlan === "PRO" || quotas.codePlan === "ENTERPRISE")
+  );
 }

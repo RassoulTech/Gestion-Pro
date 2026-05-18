@@ -22,18 +22,34 @@ import {
   Moon,
   User,
   LogOut,
+  Lock,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { useBoutique } from "@/components/layouts/boutique-provider";
+
+type PlanCode = "STARTER" | "PRO" | "ENTERPRISE";
 
 type NavItem = {
   label: string;
   href: string;
   icon: React.ElementType;
+  requires?: PlanCode;
 };
 
 type BottomNavItem = NavItem;
+
+const PLAN_RANK: Record<PlanCode, number> = {
+  STARTER: 0,
+  PRO: 1,
+  ENTERPRISE: 2,
+};
+
+function isLocked(item: NavItem, currentPlan?: PlanCode): boolean {
+  if (!item.requires || !currentPlan) return false;
+  return PLAN_RANK[currentPlan] < PLAN_RANK[item.requires];
+}
 
 function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavItem[] {
   if (isAdmin) {
@@ -51,7 +67,7 @@ function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavIte
     { label: "Accueil", href: base, icon: LayoutDashboard },
     { label: "Produits", href: `${base}/produits`, icon: Package },
     { label: "Ventes", href: `${base}/commandes`, icon: ShoppingCart },
-    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3 },
+    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
   ];
 }
 
@@ -71,10 +87,10 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
     { label: "Clients", href: `${base}/clients`, icon: Users },
     { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
     { label: "Achats Fournisseur", href: `${base}/commandes-fournisseur`, icon: Truck },
-    { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap },
-    { label: "Stock", href: `${base}/stock`, icon: Store },
+    { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
+    { label: "Stock", href: `${base}/stock`, icon: Store, requires: "PRO" },
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
-    { label: "Membres", href: `${base}/membres`, icon: Users2 },
+    { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
     { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
     { label: "Mes Boutiques", href: "/boutiques", icon: Store },
   ];
@@ -118,9 +134,17 @@ export function BottomNav() {
   const params = useParams();
   const boutiqueId = params?.id as string | undefined;
   const isAdmin = pathname.startsWith("/admin");
-  
+
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+
+  let currentPlan: PlanCode | undefined;
+  try {
+    const ctx = useBoutique();
+    currentPlan = ctx.plan?.isActive ? ctx.plan.codePlan : "STARTER";
+  } catch {
+    // Pas de provider (ex: /boutiques, /admin)
+  }
 
   const items = getBottomNavItems(boutiqueId, isAdmin);
   const moreItems = isAdmin ? getMoreMenuItems(undefined, true) : (boutiqueId ? getMoreMenuItems(boutiqueId) : []);
@@ -233,6 +257,7 @@ export function BottomNav() {
                   pathname === item.href ||
                   (item.href.length > (isAdmin ? "/admin/".length : "/boutiques/".length) &&
                     pathname.startsWith(item.href + "/"));
+                const locked = isLocked(item, currentPlan);
 
                 return (
                   <Link
@@ -240,7 +265,7 @@ export function BottomNav() {
                     href={item.href}
                     onClick={close}
                     className={cn(
-                      "flex flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-3 text-center transition-all duration-200 active:scale-90",
+                      "relative flex flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-3 text-center transition-all duration-200 active:scale-90",
                       isActive
                         ? "bg-brand/20 text-brand"
                         : "text-zinc-400 hover:bg-white/5 hover:text-white"
@@ -260,6 +285,9 @@ export function BottomNav() {
                     <span className="text-[10px] font-bold leading-tight">
                       {item.label}
                     </span>
+                    {locked && (
+                      <Lock className="absolute top-1.5 right-1.5 h-3 w-3 text-amber-500" aria-label="Plan supérieur requis" />
+                    )}
                   </Link>
                 );
               })}
@@ -292,6 +320,7 @@ export function BottomNav() {
                   ));
 
               const Icon = item.icon;
+              const locked = isLocked(item, currentPlan);
 
               return (
                 <Link
@@ -318,6 +347,9 @@ export function BottomNav() {
                   <span className="relative z-10">{item.label}</span>
                   {isActive && (
                     <span className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-brand" />
+                  )}
+                  {locked && (
+                    <Lock className="absolute top-0 right-1 h-2.5 w-2.5 text-amber-500" aria-label="Plan supérieur requis" />
                   )}
                 </Link>
               );

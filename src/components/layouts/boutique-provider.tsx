@@ -2,10 +2,17 @@
 
 import React, { createContext, useContext } from "react";
 
+export type BoutiquePlanInfo = {
+  codePlan: "STARTER" | "PRO" | "ENTERPRISE";
+  nom: string;
+  isActive: boolean;
+};
+
 export type BoutiqueContextValue = {
   id: string;
   nom: string;
   slug: string;
+  plan: BoutiquePlanInfo;
 };
 
 const BoutiqueContext = createContext<BoutiqueContextValue | null>(null);
