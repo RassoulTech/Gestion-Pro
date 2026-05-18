@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { signOut, useSession } from "next-auth/react";
 import { Sun, Moon, Menu, Store, User, LogOut } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Avatar,
@@ -143,23 +144,32 @@ export function Header({
   userEmail,
   userImage,
 }: HeaderProps) {
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin") ?? false;
+  const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : "GestionPro";
+
   return (
     <header
       className={cn(
-        "hidden lg:flex h-14 shrink-0 items-center gap-3 border-b border-zinc-100 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950",
+        "flex h-14 shrink-0 items-center gap-3 border-b border-zinc-100 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950",
       )}
     >
-      {/* Boutique name */}
-      {boutiqueName && (
-        <div className="flex flex-1 items-center justify-start">
-          <span className="truncate text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            {boutiqueName}
-          </span>
-        </div>
-      )}
-
-      {/* Spacer when no boutique name */}
-      {!boutiqueName && <div className="flex-1" />}
+      <div className="flex flex-1 items-center justify-start gap-2">
+        {/* Hamburger Menu for Mobile */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onToggleSidebar}
+          className="lg:hidden h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+          aria-label="Ouvrir le menu"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+        
+        <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-200">
+          {boutiqueName || defaultTitle}
+        </span>
+      </div>
 
       {/* Right-side controls */}
       <div className="ml-auto flex items-center gap-1">

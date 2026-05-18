@@ -7,6 +7,8 @@ import { BottomNav } from "@/components/layouts/bottom-nav";
 import { useBoutique } from "@/components/layouts/boutique-provider";
 import { useParams } from "next/navigation";
 
+import { usePathname } from "next/navigation";
+
 type DashboardShellProps = {
   children: React.ReactNode;
   userName?: string | null;
@@ -24,6 +26,8 @@ function BoutiqueAwareSidebar({
   onMobileClose: () => void;
   role?: string;
 }) {
+  const pathname = usePathname() || "";
+  const isAdminRoute = pathname.startsWith("/admin");
   const params = useParams();
   const boutiqueIdFromUrl = params?.id as string | undefined;
 
@@ -38,15 +42,16 @@ function BoutiqueAwareSidebar({
     // Not inside a BoutiqueProvider
   }
 
-  const finalBoutiqueId = boutiqueId || boutiqueIdFromUrl;
+  const finalBoutiqueId = isAdminRoute ? undefined : (boutiqueId || boutiqueIdFromUrl);
+  const finalBoutiqueName = isAdminRoute ? undefined : boutiqueName;
 
   return (
     <Sidebar
       boutiqueId={finalBoutiqueId}
-      boutiqueName={boutiqueName}
+      boutiqueName={finalBoutiqueName}
       mobileOpen={mobileOpen}
       onMobileClose={onMobileClose}
-      role={role}
+      role={isAdminRoute ? "ADMIN" : role}
     />
   );
 }
@@ -54,6 +59,8 @@ function BoutiqueAwareSidebar({
 function BoutiqueAwareHeader(
   props: Omit<DashboardShellProps, "children"> & { onToggleSidebar: () => void },
 ) {
+  const pathname = usePathname() || "";
+  const isAdminRoute = pathname.startsWith("/admin");
   const params = useParams();
   const boutiqueIdFromUrl = params?.id as string | undefined;
 
@@ -66,9 +73,11 @@ function BoutiqueAwareHeader(
     // Not inside a BoutiqueProvider
   }
 
+  const finalBoutiqueName = isAdminRoute ? undefined : (boutiqueName || (boutiqueIdFromUrl ? "Boutique" : undefined));
+
   return (
     <Header
-      boutiqueName={boutiqueName || (boutiqueIdFromUrl ? "Boutique" : undefined)}
+      boutiqueName={finalBoutiqueName}
       onToggleSidebar={props.onToggleSidebar}
       userName={props.userName}
       userEmail={props.userEmail}

@@ -38,7 +38,7 @@ type BottomNavItem = NavItem;
 function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavItem[] {
   if (isAdmin) {
     return [
-      { label: "Accueil", href: "/admin/dashboard", icon: LayoutDashboard },
+      { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
       { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
       { label: "Boutiques", href: "/admin/boutiques", icon: Store },
     ];
@@ -62,7 +62,6 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
       { label: "Plans", href: "/admin/plans", icon: Tag },
       { label: "Revenus", href: "/admin/revenus", icon: BarChart3 },
       { label: "Logs", href: "/admin/logs", icon: Settings },
-      { label: "Mes Boutiques", href: "/boutiques", icon: Store },
     ];
   }
   if (!boutiqueId) return [];
@@ -119,6 +118,7 @@ export function BottomNav() {
   const params = useParams();
   const boutiqueId = params?.id as string | undefined;
   const isAdmin = pathname.startsWith("/admin");
+  
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 

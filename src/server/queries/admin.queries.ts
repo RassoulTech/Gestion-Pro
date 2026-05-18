@@ -139,7 +139,7 @@ export async function getAllBoutiques(params?: {
     prisma.boutique.findMany({
       where,
       include: {
-        vendeur: { select: { id: true, nom: true, prenom: true } },
+        vendeur: { select: { id: true, nom: true, prenom: true, email: true } },
         _count: { select: { produits: true } },
       },
       orderBy: { createdAt: "desc" },
