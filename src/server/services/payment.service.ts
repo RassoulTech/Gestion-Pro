@@ -136,33 +136,53 @@ export class PaymentService {
         };
       }
 
-      // 1. SI WAVE / ORANGE MONEY (Exemple via FedaPay ou CinetPay) :
+      // 1. SI WAVE / ORANGE MONEY (Intégration réelle CinetPay si activé, sinon Mock de test) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
-        /**
-         * Exemple d'intégration CinetPay / FedaPay :
-         * 
-         * const response = await fetch("https://api-checkout.cinetpay.com/v2/payment", {
-         *   method: "POST",
-         *   headers: { "Content-Type": "application/json" },
-         *   body: JSON.stringify({
-         *     apikey: process.env.CINETPAY_API_KEY,
-         *     site_id: process.env.CINETPAY_SITE_ID,
-         *     transaction_id: paiement.transactionRef,
-         *     amount: amount,
-         *     currency: "XOF",
-         *     description: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
-         *     notify_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/payment`,
-         *     return_url: `${process.env.NEXT_PUBLIC_APP_URL}/boutiques`,
-         *     channels: method === "WAVE" ? "MOBILE_MONEY" : "MOBILE_MONEY",
-         *   })
-         * });
-         * const data = await response.json();
-         * if (data.code === "201") {
-         *   return { success: true, paymentUrl: data.data.payment_url, transactionRef: paiement.transactionRef };
-         * }
-         */
-        
-        // Simulé pour le moment :
+        if (process.env.CINETPAY_ENABLED === "true" || env.CINETPAY_ENABLED === "true") {
+          const { CinetPayClient } = await import("@/lib/cinetpay");
+          
+          const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+          const cpResponse = await CinetPayClient.initiatePayment({
+            transactionId: paiement.transactionRef || `SUB-${Date.now()}`,
+            amount: amount,
+            currency: "XOF",
+            description: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
+            notifyUrl: `${appUrl}/api/webhooks/cinetpay`,
+            returnUrl: `${appUrl}/facturation?success=true`,
+            channels: "MOBILE_MONEY",
+          });
+
+          if (cpResponse.code === "201" && cpResponse.data) {
+            // Enregistrer le token cinetpay
+            await prisma.abonnement.update({
+              where: { id: abonnementId },
+              data: {
+                cinetpayPaymentToken: cpResponse.data.payment_token
+              }
+            });
+
+            await prisma.paiement.update({
+              where: { id: paiement.id },
+              data: {
+                cinetpayPaymentToken: cpResponse.data.payment_token
+              }
+            });
+
+            return {
+              success: true,
+              paymentUrl: cpResponse.data.payment_url,
+              transactionRef: paiement.transactionRef || undefined,
+            };
+          } else {
+            console.error("CinetPay API error :", cpResponse);
+            return {
+              success: false,
+              error: cpResponse.message || "Impossible d'initier le paiement Mobile Money.",
+            };
+          }
+        }
+
+        // Sinon, simulation pour test bac à sable local :
         return {
           success: true,
           paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=${method}`,
