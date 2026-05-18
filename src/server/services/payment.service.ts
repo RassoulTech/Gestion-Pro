@@ -138,7 +138,7 @@ export class PaymentService {
 
       // 1. SI WAVE / ORANGE MONEY (Intégration réelle CinetPay si activé, sinon Mock de test) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
-        if (process.env.CINETPAY_ENABLED === "true" || env.CINETPAY_ENABLED === "true") {
+        if (process.env.CINETPAY_ENABLED === "true") {
           const { CinetPayClient } = await import("@/lib/cinetpay");
           
           const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";

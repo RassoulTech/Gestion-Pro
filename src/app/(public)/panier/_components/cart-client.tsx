@@ -179,12 +179,15 @@ export function CartClient() {
 
               <div className="space-y-3">
                 <Button
+                  asChild
                   size="lg"
                   variant="brand"
                   className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#2563EB] to-[#7C3AED] hover:from-[#2563EB]/90 hover:to-[#7C3AED]/90 text-white border-none"
                 >
-                  <ShoppingBag className="mr-2 h-5 w-5" />
-                  Finaliser la commande
+                  <Link href="/checkout" className="inline-flex items-center justify-center">
+                    <ShoppingBag className="mr-2 h-5 w-5" />
+                    Finaliser la commande
+                  </Link>
                 </Button>
                 <Button
                   asChild

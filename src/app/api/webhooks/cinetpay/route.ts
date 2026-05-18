@@ -31,6 +31,24 @@ export async function POST(req: Request) {
       verification.data &&
       verification.data.status === "ACCEPTED"
     ) {
+      // Check if transactionId belongs to a CommandeClient payment token
+      const orders = await prisma.commandeClient.findMany({
+        where: { paymentToken: transactionId },
+      });
+
+      if (orders.length > 0) {
+        await prisma.commandeClient.updateMany({
+          where: { id: { in: orders.map((o) => o.id) } },
+          data: {
+            statutPaiement: "CONFIRME",
+            etat: "VALIDEE",
+            metadata: JSON.parse(JSON.stringify(verification.data)),
+          },
+        });
+        console.log(`CinetPay marketplace orders for transaction ${transactionId} confirmed successfully!`);
+        return new NextResponse("Marketplace orders confirmed", { status: 200 });
+      }
+
       // Complete subscription payment in our system
       const result = await PaymentService.handlePaymentWebhook(transactionId, "SUCCESS");
 

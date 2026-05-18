@@ -28,6 +28,25 @@ export async function POST(req: Request) {
 
   try {
     if (event.type === "checkout.session.completed") {
+      const type = session.metadata?.type;
+      
+      if (type === "marketplace_order") {
+        const commandeIdsStr = session.metadata?.commandeIds;
+        if (commandeIdsStr) {
+          const commandeIds = commandeIdsStr.split(",");
+          await prisma.commandeClient.updateMany({
+            where: { id: { in: commandeIds } },
+            data: {
+              statutPaiement: "CONFIRME",
+              etat: "VALIDEE",
+              metadata: JSON.parse(JSON.stringify(session)),
+            },
+          });
+          console.log(`Stripe marketplace orders ${commandeIdsStr} confirmed successfully!`);
+        }
+        return new NextResponse("Marketplace orders confirmed", { status: 200 });
+      }
+
       const subscriptionId = session.subscription as string;
       const customerId = session.customer as string;
 

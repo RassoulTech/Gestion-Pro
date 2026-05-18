@@ -1,69 +1,23 @@
 "use client";
 
-import { useState, useEffect, use, startTransition } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, Check, Lock, Smartphone, CreditCard, ChevronRight, Loader2, Sparkles } from "lucide-react";
+import { Lock, Check, Smartphone, CreditCard, ChevronRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn, formatCurrency } from "@/lib/utils";
-import { simulateSuccessfulPayment } from "@/server/actions/subscription.actions";
+import { confirmMockOrderPayment } from "@/server/actions/marketplace-checkout.actions";
 
-// Generate clean visual pure CSS/Framer motion confettis
-function ConfettiEffect() {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; color: string; delay: number }>>([]);
-
-  useEffect(() => {
-    const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6", "#ef4444"];
-    const newParticles = Array.from({ length: 80 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100, // percentage width
-      y: -10 - Math.random() * 20, // start above screen
-      size: 5 + Math.random() * 10,
-      color: colors[Math.floor(Math.random() * colors.length)] || "#3b82f6",
-      delay: Math.random() * 2,
-    }));
-    setParticles(newParticles);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-50">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          initial={{ y: "-10vh", x: `${p.x}vw`, opacity: 1, rotate: 0 }}
-          animate={{
-            y: "110vh",
-            x: `${p.x + (Math.random() * 20 - 10)}vw`,
-            rotate: 360 * (Math.random() > 0.5 ? 1 : -1),
-            opacity: [1, 1, 0],
-          }}
-          transition={{
-            duration: 3 + Math.random() * 3,
-            delay: p.delay,
-            ease: "linear",
-            repeat: Infinity,
-          }}
-          className="absolute rounded-sm"
-          style={{
-            width: p.size,
-            height: p.size,
-            backgroundColor: p.color,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-export default function CheckoutMockPage() {
+export default function OrderCheckoutMockPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionRef = searchParams.get("ref") || "";
   const amountStr = searchParams.get("amount") || "0";
   const amount = parseInt(amountStr, 10);
   const method = (searchParams.get("method") || "WAVE").toUpperCase();
+  const ids = searchParams.get("ids") || "";
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -74,27 +28,27 @@ export default function CheckoutMockPage() {
   // Orange Money states
   const [omCode, setOmCode] = useState("");
 
-  // PayPal states
+  // PayPal/Credit Card states
   const [cardName, setCardName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
 
   useEffect(() => {
-    if (!transactionRef) {
-      toast.error("Référence de transaction introuvable.");
+    if (!transactionRef || !ids) {
+      toast.error("Paramètres de paiement invalides.");
     }
-  }, [transactionRef]);
+  }, [transactionRef, ids]);
 
   async function handlePaymentSuccess() {
-    if (!transactionRef) {
-      toast.error("Référence de transaction manquante.");
+    if (!transactionRef || !ids) {
+      toast.error("Référence de transaction ou identifiants de commande manquants.");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await simulateSuccessfulPayment({ transactionRef });
+      const res = await confirmMockOrderPayment({ ids, transactionRef });
 
       if (res?.serverError) {
         toast.error(res.serverError);
@@ -104,6 +58,11 @@ export default function CheckoutMockPage() {
       if (res?.data?.success) {
         setSuccess(true);
         toast.success("Paiement validé avec succès !");
+        
+        // Wait 1.5s then redirect to success page
+        setTimeout(() => {
+          router.push(`/checkout/success?success=true&method=${method.toLowerCase()}&ids=${ids}`);
+        }, 1500);
       } else {
         toast.error("Impossible de confirmer le paiement.");
       }
@@ -118,9 +77,7 @@ export default function CheckoutMockPage() {
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-white font-sans">
       {/* Dynamic light glows in background */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      {success && <ConfettiEffect />}
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <AnimatePresence mode="wait">
         {!success ? (
@@ -134,17 +91,17 @@ export default function CheckoutMockPage() {
             {/* Header info */}
             <div className="mb-6 text-center space-y-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 text-[10px] font-black uppercase tracking-widest">
-                <Lock className="h-3 w-3 text-brand" /> Passerelle de Test Sécurisée
+                <Lock className="h-3 w-3 text-emerald-500" /> Passerelle de Paiement Client (Démo)
               </span>
-              <h2 className="text-xl sm:text-2xl font-black">Simulation de Paiement</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Règlement de votre Commande</h2>
               <div className="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800 mt-4 flex items-center justify-between">
                 <div className="text-left">
                   <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Référence</p>
                   <p className="text-xs font-mono font-bold text-zinc-300 truncate max-w-[150px]">{transactionRef}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Montant</p>
-                  <p className="text-base font-black text-brand">{formatCurrency(amount)}</p>
+                  <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Total à Payer</p>
+                  <p className="text-base font-black text-emerald-400">{formatCurrency(amount)}</p>
                 </div>
               </div>
             </div>
@@ -153,12 +110,11 @@ export default function CheckoutMockPage() {
             {method === "WAVE" && (
               <div className="space-y-6">
                 <div className="p-6 rounded-2xl bg-sky-500 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
-                  {/* wave wave logo pingouin */}
                   <div className="h-14 w-14 rounded-full bg-white/20 flex items-center justify-center border border-white/30 text-white font-black text-xl shadow-inner">
                     🐧
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-black uppercase tracking-widest opacity-80">Validation Wave</p>
+                    <p className="text-xs font-black uppercase tracking-widest opacity-80">Validation Wave Mobile Money</p>
                     <p className="text-sm font-bold">Entrez votre code PIN pour valider</p>
                   </div>
                 </div>
@@ -182,7 +138,7 @@ export default function CheckoutMockPage() {
                       <button
                         key={num}
                         onClick={() => pin.length < 4 && setPin((p) => p + num)}
-                        className="h-12 w-12 rounded-full bg-zinc-800 hover:bg-zinc-700 text-lg font-black transition active:scale-95 flex items-center justify-center"
+                        className="h-12 w-12 rounded-full bg-zinc-800 hover:bg-zinc-700 text-lg font-black transition active:scale-95 flex items-center justify-center text-white"
                       >
                         {num}
                       </button>
@@ -195,7 +151,7 @@ export default function CheckoutMockPage() {
                     </button>
                     <button
                       onClick={() => pin.length < 4 && setPin((p) => p + "0")}
-                      className="h-12 w-12 rounded-full bg-zinc-800 hover:bg-zinc-700 text-lg font-black transition active:scale-95 flex items-center justify-center"
+                      className="h-12 w-12 rounded-full bg-zinc-800 hover:bg-zinc-700 text-lg font-black transition active:scale-95 flex items-center justify-center text-white"
                     >
                       0
                     </button>
@@ -204,10 +160,10 @@ export default function CheckoutMockPage() {
                       onClick={handlePaymentSuccess}
                       className={cn(
                         "h-12 w-12 rounded-full text-xs font-black transition active:scale-95 flex items-center justify-center",
-                        pin.length === 4 ? "bg-sky-500 text-white shadow-lg" : "bg-zinc-800 text-zinc-600 cursor-not-allowed"
+                        pin.length === 4 ? "bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "bg-zinc-800 text-zinc-650 cursor-not-allowed"
                       )}
                     >
-                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-5 w-5" />}
+                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-5 w-5 text-white" />}
                     </button>
                   </div>
                 </div>
@@ -236,7 +192,7 @@ export default function CheckoutMockPage() {
                       placeholder="••••••"
                       value={omCode}
                       onChange={(e) => setOmCode(e.target.value.replace(/\D/g, ""))}
-                      className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-center text-lg tracking-widest"
+                      className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-center text-lg tracking-widest text-white placeholder-zinc-600"
                     />
                   </div>
 
@@ -272,7 +228,7 @@ export default function CheckoutMockPage() {
                       placeholder="Mamadou Diallo"
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value)}
-                      className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold"
+                      className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-white placeholder-zinc-600"
                     />
                   </div>
 
@@ -287,7 +243,7 @@ export default function CheckoutMockPage() {
                         let formatted = val.match(/.{1,4}/g)?.join(" ") || val;
                         setCardNumber(formatted);
                       }}
-                      className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold"
+                      className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-white placeholder-zinc-600"
                     />
                   </div>
 
@@ -305,7 +261,7 @@ export default function CheckoutMockPage() {
                           }
                           setCardExpiry(val);
                         }}
-                        className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-center"
+                        className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-center text-white placeholder-zinc-600"
                       />
                     </div>
                     <div className="space-y-2">
@@ -315,7 +271,7 @@ export default function CheckoutMockPage() {
                         maxLength={3}
                         value={cardCvv}
                         onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, ""))}
-                        className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-center"
+                        className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold text-center text-white placeholder-zinc-600"
                       />
                     </div>
                   </div>
@@ -336,19 +292,18 @@ export default function CheckoutMockPage() {
             <div className="text-center mt-6">
               <Button
                 variant="link"
-                onClick={() => router.push("/boutiques")}
+                onClick={() => router.push("/panier")}
                 className="text-xs text-zinc-500 hover:text-zinc-300 font-bold"
               >
-                Annuler la transaction
+                Retourner au panier
               </Button>
             </div>
           </motion.div>
         ) : (
-          /* SUCCESS SCREEN */
+          /* SUCCESS INTERMEDIATE LOADER */
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
             className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 text-center space-y-6 shadow-2xl relative"
           >
             <div className="mx-auto h-20 w-20 rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white shadow-xl shadow-emerald-500/20">
@@ -359,38 +314,15 @@ export default function CheckoutMockPage() {
               <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest">
                 <Sparkles className="h-3 w-3" /> Succès !
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black">Abonnement Activé</h2>
+              <h2 className="text-2xl sm:text-3xl font-black text-white">Commande Validée</h2>
               <p className="text-zinc-400 text-sm font-semibold leading-relaxed">
-                Votre transaction a été validée. Votre nouveau plan est maintenant actif ! Vous pouvez profiter de toutes vos fonctionnalités premium.
+                Votre paiement a été traité avec succès. Vous allez être redirigé vers votre reçu de commande...
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-zinc-950/60 border border-zinc-800 space-y-3 text-left">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Modifications effectives :</p>
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2 text-xs font-bold text-zinc-300">
-                  <Check className="h-4 w-4 text-emerald-500 shrink-0" strokeWidth={3} />
-                  <span>Limite de boutiques mise à jour</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs font-bold text-zinc-300">
-                  <Check className="h-4 w-4 text-emerald-500 shrink-0" strokeWidth={3} />
-                  <span>Quota de produits élargi</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs font-bold text-zinc-300">
-                  <Check className="h-4 w-4 text-emerald-500 shrink-0" strokeWidth={3} />
-                  <span>Accès instantané aux rapports et ventes flash</span>
-                </li>
-              </ul>
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
             </div>
-
-            <Button
-              onClick={() => router.push("/boutiques")}
-              size="lg"
-              className="w-full h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black shadow-lg shadow-emerald-500/20 border-none"
-            >
-              Retourner au tableau de bord
-              <ChevronRight className="h-5 w-5 ml-1.5" />
-            </Button>
           </motion.div>
         )}
       </AnimatePresence>
