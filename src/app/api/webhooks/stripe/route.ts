@@ -40,7 +40,7 @@ export async function POST(req: Request) {
               statutPaiement: "CONFIRME",
               etat: "VALIDEE",
               metadata: JSON.parse(JSON.stringify(session)),
-            },
+            } as any,
           });
           console.log(`Stripe marketplace orders ${commandeIdsStr} confirmed successfully!`);
         }
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       // Update Vendeur customer ID if not set
       await prisma.vendeur.update({
         where: { id: vendeurId },
-        data: { stripeCustomerId: customerId },
+        data: { stripeCustomerId: customerId } as any,
       });
 
       // Update Abonnement
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
           dateDebut: new Date(),
           dateFin: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
           moyenPaiement: "Stripe",
-        },
+        } as any,
       });
 
       // Find or create payment
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
           data: {
             statut: "CONFIRME",
             metadata: JSON.parse(JSON.stringify(session)),
-          },
+          } as any,
         });
       } else {
         await prisma.paiement.create({
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
             statut: "CONFIRME",
             transactionRef: session.id,
             metadata: JSON.parse(JSON.stringify(session)),
-          },
+          } as any,
         });
       }
 
@@ -127,7 +127,7 @@ export async function POST(req: Request) {
       if (subscriptionId) {
         // Find abonnement
         const abonnement = await prisma.abonnement.findFirst({
-          where: { stripeSubscriptionId: subscriptionId },
+          where: { stripeSubscriptionId: subscriptionId } as any,
         });
 
         if (abonnement) {
@@ -149,7 +149,7 @@ export async function POST(req: Request) {
               statut: "CONFIRME",
               transactionRef: session.id || `INV-${Date.now()}`,
               metadata: JSON.parse(JSON.stringify(session)),
-            },
+            } as any,
           });
 
           // Clear quota cache
@@ -163,7 +163,7 @@ export async function POST(req: Request) {
       if (subscriptionId) {
         // Find and cancel abonnement
         const abonnement = await prisma.abonnement.findFirst({
-          where: { stripeSubscriptionId: subscriptionId },
+          where: { stripeSubscriptionId: subscriptionId } as any,
         });
 
         if (abonnement) {
@@ -186,7 +186,7 @@ export async function POST(req: Request) {
       const cancelAtPeriodEnd = session.cancel_at_period_end as boolean;
       if (subscriptionId) {
         const abonnement = await prisma.abonnement.findFirst({
-          where: { stripeSubscriptionId: subscriptionId },
+          where: { stripeSubscriptionId: subscriptionId } as any,
         });
 
         if (abonnement) {
@@ -194,7 +194,7 @@ export async function POST(req: Request) {
             where: { id: abonnement.id },
             data: {
               cancelAtPeriodEnd,
-            },
+            } as any,
           });
 
           // Clear quota cache

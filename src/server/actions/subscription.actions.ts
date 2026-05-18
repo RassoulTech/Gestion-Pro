@@ -144,7 +144,11 @@ export const createStripePortalSession = vendeurActionClient
       where: { id: vendeurId },
     });
 
-    if (!vendeur || !vendeur.stripeCustomerId) {
+    const stripeCustomerId = (vendeur as any)?.stripeCustomerId as
+      | string
+      | undefined;
+
+    if (!vendeur || !stripeCustomerId) {
       throw new Error("Vous n'avez pas encore de compte client Stripe actif.");
     }
 
@@ -155,12 +159,12 @@ export const createStripePortalSession = vendeurActionClient
     const boutique = await prisma.boutique.findFirst({
       where: { vendeurId }
     });
-    const returnUrl = boutique 
+    const returnUrl = boutique
       ? `${appUrl}/boutiques/${boutique.id}/facturation`
       : `${appUrl}/boutiques`;
 
     const session = await stripe.billingPortal.sessions.create({
-      customer: vendeur.stripeCustomerId,
+      customer: stripeCustomerId,
       return_url: returnUrl,
     });
 
