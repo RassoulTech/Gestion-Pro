@@ -3,8 +3,6 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
- 
-import { cn } from "@/lib/utils";
 
 export default async function AuthLayout({
   children,

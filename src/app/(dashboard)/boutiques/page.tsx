@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
  
-import { 
-  Plus, 
-  Store, 
-  ArrowRight, 
-  LayoutDashboard, 
-  Settings, 
-  Package, 
-  ShoppingCart, 
-  BarChart3, 
-  Star, 
-  MoreVertical, 
-  CheckCircle2, 
-  Sparkles, 
+import {
+  Plus,
+  Store,
+  LayoutDashboard,
+  Settings,
+  Package,
+  ShoppingCart,
+  BarChart3,
+  Star,
+  MoreVertical,
+  CheckCircle2,
+  Sparkles,
   ExternalLink,
   DollarSign
 } from "lucide-react";
@@ -24,7 +23,7 @@ import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,

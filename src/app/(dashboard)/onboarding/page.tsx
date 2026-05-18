@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
  
-import { Store, Rocket, ArrowRight } from "lucide-react";
+import { Rocket, ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import { createVendeurProfileSchema, type CreateVendeurProfileInput } from "@/schemas/vendeur.schema";
