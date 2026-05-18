@@ -191,18 +191,22 @@ model MembreBoutique {
 // ─── PLANS & ABONNEMENTS ──────────────────────────────────────
 
 model Plan {
-  id              String       @id @default(cuid())
-  nom             String
-  prix            Float
-  dureeEssaiJours Int          @default(90) @map("duree_essai_jours")
-  maxBoutiques    Int          @default(1) @map("max_boutiques")
-  maxProduits     Int          @default(100) @map("max_produits")
-  features        Json         @default("[]")
-  actif           Boolean      @default(true)
-  createdAt       DateTime     @default(now()) @map("created_at")
-  updatedAt       DateTime     @updatedAt @map("updated_at")
+  id                    String       @id @default(cuid())
+  nom                   String
+  prix                  Float
+  dureeEssaiJours       Int          @default(90) @map("duree_essai_jours")
+  maxBoutiques          Int          @default(1) @map("max_boutiques")
+  maxProduits           Int          @default(100) @map("max_produits")
+  maxMembres            Int          @default(1) @map("max_membres")
+  stripePriceIdMonthly  String?      @map("stripe_price_id_monthly")
+  stripePriceIdAnnual   String?      @map("stripe_price_id_annual")
+  codePlan              String?      @map("code_plan")
+  features              Json         @default("[]")
+  actif                 Boolean      @default(true)
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
 
-  abonnements     Abonnement[]
+  abonnements           Abonnement[]
 
   @@map("plans")
 }
