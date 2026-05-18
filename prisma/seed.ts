@@ -54,6 +54,8 @@ async function main() {
         dureeEssaiJours: 90,
         maxBoutiques: 1,
         maxProduits: 50,
+        maxMembres: 1,
+        codePlan: "STARTER",
         features: [
           "1 boutique maximum",
           "50 produits maximum",
@@ -70,6 +72,10 @@ async function main() {
         dureeEssaiJours: 90,
         maxBoutiques: 3,
         maxProduits: 500,
+        maxMembres: 5,
+        codePlan: "PRO",
+        stripePriceIdMonthly: process.env.STRIPE_PRICE_PRO_MONTHLY || "price_pro_monthly_mock",
+        stripePriceIdAnnual: process.env.STRIPE_PRICE_PRO_ANNUAL || "price_pro_annual_mock",
         features: [
           "Maximum 3 boutiques",
           "Jusqu'à 500 produits",
@@ -86,10 +92,14 @@ async function main() {
     prisma.plan.create({
       data: {
         nom: "Enterprise",
-        prix: 19000,
+        prix: 19900, // Mis à jour à 19 900 au lieu de 19 000
         dureeEssaiJours: 30,
         maxBoutiques: 999999, // illimitées
         maxProduits: 999999, // illimités
+        maxMembres: 999999, // illimités
+        codePlan: "ENTERPRISE",
+        stripePriceIdMonthly: process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "price_enterprise_monthly_mock",
+        stripePriceIdAnnual: process.env.STRIPE_PRICE_ENTERPRISE_ANNUAL || "price_enterprise_annual_mock",
         features: [
           "Boutiques illimitées",
           "Produits illimités",
