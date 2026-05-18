@@ -53,102 +53,138 @@ export class PaymentService {
 
       // ─── INTEGRATION STRIPE CHECKOUT ──────────────────────────────
       if (method === "STRIPE") {
+        const stripeEnabled = process.env.STRIPE_ENABLED === "true";
+        const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+        const stripeConfigured =
+          stripeEnabled &&
+          stripeSecret.length > 0 &&
+          !stripeSecret.includes("mock");
+
+        // Fallback sandbox local si Stripe n'est pas configuré en réel
+        if (!stripeConfigured) {
+          return {
+            success: true,
+            paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=STRIPE`,
+            transactionRef: paiement.transactionRef || undefined,
+          };
+        }
+
         const stripe = (await import("@/lib/stripe")).stripe;
 
         // Resolve/Create Stripe Customer
-        let stripeCustomerId = (await prisma.vendeur.findUnique({ where: { id: vendeurId } }))?.stripeCustomerId;
-        
+        const vendeurRow = (await prisma.vendeur.findUnique({
+          where: { id: vendeurId },
+        })) as any;
+        let stripeCustomerId: string | undefined = vendeurRow?.stripeCustomerId;
+
         if (!stripeCustomerId) {
-          // Fetch vendeur email
           const user = await prisma.user.findFirst({
-            where: {
-              vendeur: { id: vendeurId }
-            }
+            where: { vendeur: { id: vendeurId } },
           });
 
           if (user) {
             const customer = await stripe.customers.create({
               email: user.email || undefined,
               name: user.name || undefined,
-              metadata: { vendeurId }
+              metadata: { vendeurId },
             });
             stripeCustomerId = customer.id;
             await prisma.vendeur.update({
               where: { id: vendeurId },
-              data: { stripeCustomerId }
+              data: { stripeCustomerId } as any,
             });
           }
         }
 
         // Find price id based on plan or default monthly
-        let priceId = abonnement.plan.stripePriceIdMonthly;
+        const planAny = abonnement.plan as any;
+        let priceId: string | undefined = planAny.stripePriceIdMonthly;
         if (!priceId) {
-          if (abonnement.plan.codePlan === "PRO") {
-            priceId = process.env.STRIPE_PRICE_PRO_MONTHLY || "price_pro_monthly_mock";
-          } else if (abonnement.plan.codePlan === "ENTERPRISE") {
-            priceId = process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "price_enterprise_monthly_mock";
-          } else {
-            priceId = "price_starter_free";
+          if (planAny.codePlan === "PRO") {
+            priceId = process.env.STRIPE_PRICE_PRO_MONTHLY || "";
+          } else if (planAny.codePlan === "ENTERPRISE") {
+            priceId = process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "";
           }
         }
 
-        // Get app URL
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        // Refuser tout price ID factice ou manquant — Stripe rejetterait sinon.
+        if (!priceId || priceId.includes("mock")) {
+          return {
+            success: false,
+            error:
+              "Configuration Stripe incomplète : aucun price ID valide n'est défini pour ce plan. Contactez l'administrateur.",
+          };
+        }
 
-        // Create Checkout Session
+        // Redirection vers la facturation de la 1ère boutique du vendeur (route valide).
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const firstBoutique = await prisma.boutique.findFirst({
+          where: { vendeurId },
+          select: { id: true },
+        });
+        const facturationPath = firstBoutique
+          ? `/boutiques/${firstBoutique.id}/facturation`
+          : `/boutiques`;
+
         const session = await stripe.checkout.sessions.create({
           customer: stripeCustomerId || undefined,
-          line_items: [
-            {
-              price: priceId,
-              quantity: 1,
-            },
-          ],
+          line_items: [{ price: priceId, quantity: 1 }],
           mode: "subscription",
-          success_url: `${appUrl}/facturation?session_id={CHECKOUT_SESSION_ID}&success=true`,
-          cancel_url: `${appUrl}/facturation?success=false`,
+          success_url: `${appUrl}${facturationPath}?session_id={CHECKOUT_SESSION_ID}&success=true`,
+          cancel_url: `${appUrl}${facturationPath}?success=false`,
           subscription_data: {
             metadata: {
               vendeurId,
               abonnementId: abonnement.id,
-              planId: abonnement.plan.id
-            }
+              planId: abonnement.plan.id,
+            },
           },
           metadata: {
             vendeurId,
             abonnementId: abonnement.id,
-            planId: abonnement.plan.id
-          }
+            planId: abonnement.plan.id,
+          },
         });
 
-        // Update payment with checkout transaction ref (session id)
         await prisma.paiement.update({
           where: { id: paiement.id },
-          data: {
-            transactionRef: session.id
-          }
+          data: { transactionRef: session.id },
         });
 
         return {
           success: true,
           paymentUrl: session.url || undefined,
-          transactionRef: session.id
+          transactionRef: session.id,
         };
       }
 
       // 1. SI WAVE / ORANGE MONEY (Intégration réelle CinetPay si activé, sinon Mock de test) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
-        if (process.env.CINETPAY_ENABLED === "true") {
+        const cpKey = process.env.CINETPAY_API_KEY || "";
+        const cinetpayConfigured =
+          process.env.CINETPAY_ENABLED === "true" &&
+          cpKey.length > 0 &&
+          !cpKey.includes("mock");
+
+        if (cinetpayConfigured) {
           const { CinetPayClient } = await import("@/lib/cinetpay");
-          
+
           const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+          const firstBoutique = await prisma.boutique.findFirst({
+            where: { vendeurId },
+            select: { id: true },
+          });
+          const facturationPath = firstBoutique
+            ? `/boutiques/${firstBoutique.id}/facturation`
+            : `/boutiques`;
+
           const cpResponse = await CinetPayClient.initiatePayment({
             transactionId: paiement.transactionRef || `SUB-${Date.now()}`,
             amount: amount,
             currency: "XOF",
             description: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
             notifyUrl: `${appUrl}/api/webhooks/cinetpay`,
-            returnUrl: `${appUrl}/facturation?success=true`,
+            returnUrl: `${appUrl}${facturationPath}?success=true`,
             channels: "MOBILE_MONEY",
           });
 
@@ -157,15 +193,15 @@ export class PaymentService {
             await prisma.abonnement.update({
               where: { id: abonnementId },
               data: {
-                cinetpayPaymentToken: cpResponse.data.payment_token
-              }
+                cinetpayPaymentToken: cpResponse.data.payment_token,
+              } as any,
             });
 
             await prisma.paiement.update({
               where: { id: paiement.id },
               data: {
-                cinetpayPaymentToken: cpResponse.data.payment_token
-              }
+                cinetpayPaymentToken: cpResponse.data.payment_token,
+              } as any,
             });
 
             return {

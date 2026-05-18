@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, MailCheck } from "lucide-react";
@@ -26,10 +27,33 @@ import { PasswordInput } from "@/components/auth/password-input";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  OAuthSignin: "Impossible de démarrer l'inscription Google. Réessayez.",
+  OAuthCallback: "Échec du retour Google. Vérifiez votre connexion et réessayez.",
+  OAuthCreateAccount: "Impossible de créer le compte Google. Contactez le support.",
+  OAuthAccountNotLinked:
+    "Cette adresse est déjà utilisée avec une autre méthode de connexion.",
+  Callback: "Erreur de callback. Veuillez réessayer.",
+  AccessDenied: "Accès refusé par Google.",
+  Configuration:
+    "Inscription Google indisponible : configuration côté serveur incomplète.",
+};
+
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const oauthError = searchParams.get("error");
+    if (oauthError) {
+      toast.error(
+        OAUTH_ERROR_MESSAGES[oauthError] ??
+          "Une erreur est survenue lors de l'inscription."
+      );
+    }
+  }, [searchParams]);
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),

@@ -89,7 +89,7 @@ export const createMarketplaceCommande = actionClient
             modePaiement: paymentMethod,
             statutPaiement: "EN_ATTENTE",
             etat: "EN_ATTENTE",
-          },
+          } as any,
         });
 
         createdCommandeIds.push(order.id);
@@ -132,6 +132,23 @@ export const createMarketplaceCommande = actionClient
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     if (paymentMethod === "STRIPE") {
+      const stripeEnabled = process.env.STRIPE_ENABLED === "true";
+      const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+      const stripeConfigured =
+        stripeEnabled && stripeSecret.length > 0 && !stripeSecret.includes("mock");
+
+      if (!stripeConfigured) {
+        const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
+        await prisma.commandeClient.updateMany({
+          where: { id: { in: createdCommandeIds } },
+          data: { paymentToken: transactionRef } as any,
+        });
+        return {
+          success: true,
+          paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=STRIPE&ids=${createdCommandeIds.join(",")}`,
+        };
+      }
+
       const stripe = (await import("@/lib/stripe")).stripe;
 
       // Create Stripe checkout session for one-time order payment
@@ -161,7 +178,7 @@ export const createMarketplaceCommande = actionClient
       // Update paymentToken on the commands
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: session.id },
+        data: { paymentToken: session.id } as any,
       });
 
       return {
@@ -189,7 +206,7 @@ export const createMarketplaceCommande = actionClient
         if (cpResponse.code === "201" && cpResponse.data) {
           await prisma.commandeClient.updateMany({
             where: { id: { in: createdCommandeIds } },
-            data: { paymentToken: cpResponse.data.payment_token },
+            data: { paymentToken: cpResponse.data.payment_token } as any,
           });
 
           return {
@@ -202,7 +219,7 @@ export const createMarketplaceCommande = actionClient
       // Default sandbox simulation for test mobile money payments
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: transactionRef },
+        data: { paymentToken: transactionRef } as any,
       });
 
       return {
@@ -216,7 +233,7 @@ export const createMarketplaceCommande = actionClient
 
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: transactionRef },
+        data: { paymentToken: transactionRef } as any,
       });
 
       return {
@@ -248,7 +265,7 @@ export const confirmMockOrderPayment = actionClient
       data: {
         statutPaiement: "CONFIRME",
         etat: "VALIDEE",
-      },
+      } as any,
     });
 
     console.log(`Mock order payment confirmed for orders: ${ids} (ref: ${transactionRef})`);

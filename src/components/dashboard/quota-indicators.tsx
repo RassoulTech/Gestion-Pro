@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, AlertTriangle, ArrowRight, Lock, Check } from "lucide-react";
+import { Sparkles, AlertTriangle, ArrowRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UpgradeModal } from "./upgrade-modal";
 import { cn } from "@/lib/utils";
@@ -147,7 +147,7 @@ export function FeatureLock({
   children,
   allowedPlans = ["Pro", "Enterprise"],
   currentPlanName,
-  featureName,
+  featureName: _featureName,
   className,
 }: FeatureLockProps) {
   const [modalOpen, setModalOpen] = useState(false);

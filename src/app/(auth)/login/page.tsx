@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -28,11 +28,35 @@ import { PasswordInput } from "@/components/auth/password-input";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  OAuthSignin: "Impossible de démarrer la connexion Google. Réessayez.",
+  OAuthCallback: "Échec du retour Google. Vérifiez votre connexion et réessayez.",
+  OAuthCreateAccount: "Impossible de créer le compte Google. Contactez le support.",
+  OAuthAccountNotLinked:
+    "Cette adresse est déjà utilisée avec une autre méthode de connexion.",
+  Callback: "Erreur de callback. Veuillez réessayer.",
+  AccessDenied: "Accès refusé par Google.",
+  Configuration:
+    "Connexion Google indisponible : configuration côté serveur incomplète.",
+  Verification: "Lien de vérification invalide ou expiré.",
+};
+
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [needsVerification, setNeedsVerification] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const oauthError = searchParams.get("error");
+    if (oauthError) {
+      toast.error(
+        OAUTH_ERROR_MESSAGES[oauthError] ??
+          "Une erreur est survenue lors de la connexion."
+      );
+    }
+  }, [searchParams]);
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),

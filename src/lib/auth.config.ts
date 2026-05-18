@@ -35,6 +35,7 @@ const googleEnabled = Boolean(
  */
 export const authConfig = {
   session: { strategy: "jwt" },
+  trustHost: true,
   pages: {
     signIn: "/login",
     error: "/login",

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, startTransition } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Check, Sparkles, Loader2, CreditCard, ArrowRight, X } from "lucide-react";
+import { Check, Sparkles, Loader2, CreditCard, ArrowRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Sparkles, Loader2, CreditCard, ArrowRight, Smartphone, ShieldCheck } from "lucide-react";
+import { Check, Sparkles, Loader2, CreditCard, Smartphone } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
@@ -55,6 +55,9 @@ export default function PricingPage() {
         if (result.serverError.includes("connecté")) {
           toast.error("Veuillez vous connecter pour vous abonner.");
           router.push("/login?callbackUrl=/pricing");
+        } else if (result.serverError.includes("permissions")) {
+          toast.info("Créez d'abord votre profil vendeur pour souscrire à un plan.");
+          router.push("/onboarding");
         } else {
           toast.error(result.serverError);
         }
