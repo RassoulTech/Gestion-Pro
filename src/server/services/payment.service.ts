@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 
-export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "PAYPAL" | "CASH_ON_DELIVERY";
+export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "PAYPAL" | "CASH_ON_DELIVERY" | "STRIPE";
 
 export interface PaymentInitiationResult {
   success: boolean;
-  paymentUrl?: string; // Redirect URL for Wave, Orange Money, or PayPal checkout
+  paymentUrl?: string; // Redirect URL for Wave, Orange Money, PayPal, or Stripe checkout
   transactionRef?: string;
   error?: string;
 }
@@ -12,21 +12,23 @@ export interface PaymentInitiationResult {
 /**
  * Service centralisé pour la gestion des paiements dans GestionPro.
  * Ce module fournit la structure nécessaire pour intégrer les passerelles de paiement 
- * locales (Wave, Orange Money via CinetPay, FedaPay, ou PayTech) et internationales (PayPal).
+ * locales (Wave, Orange Money via CinetPay, FedaPay, ou PayTech) et internationales (PayPal, Stripe).
  */
 export class PaymentService {
   /**
-   * Initialise un paiement pour l'abonnement SaaS d'un vendeur (Orange Money, Wave, PayPal).
+   * Initialise un paiement pour l'abonnement SaaS d'un vendeur (Orange Money, Wave, PayPal, Stripe).
    * 
    * @param abonnementId L'ID de l'abonnement en cours d'activation
    * @param amount Le montant en FCFA ou USD
    * @param method La méthode sélectionnée
+   * @param vendeurId L'ID du vendeur
    * @returns Un lien de redirection vers la passerelle sécurisée
    */
   static async initiateSubscriptionPayment(
     abonnementId: string,
     amount: number,
-    method: PaymentMethod
+    method: PaymentMethod,
+    vendeurId: string
   ): Promise<PaymentInitiationResult> {
     try {
       const abonnement = await prisma.abonnement.findUnique({
@@ -49,8 +51,91 @@ export class PaymentService {
         },
       });
 
-      // ─── GUIDE D'INTÉGRATION DES PASSERELLES ───────────────────────
-      
+      // ─── INTEGRATION STRIPE CHECKOUT ──────────────────────────────
+      if (method === "STRIPE") {
+        const stripe = (await import("@/lib/stripe")).stripe;
+
+        // Resolve/Create Stripe Customer
+        let stripeCustomerId = (await prisma.vendeur.findUnique({ where: { id: vendeurId } }))?.stripeCustomerId;
+        
+        if (!stripeCustomerId) {
+          // Fetch vendeur email
+          const user = await prisma.user.findFirst({
+            where: {
+              vendeur: { id: vendeurId }
+            }
+          });
+
+          if (user) {
+            const customer = await stripe.customers.create({
+              email: user.email || undefined,
+              name: user.name || undefined,
+              metadata: { vendeurId }
+            });
+            stripeCustomerId = customer.id;
+            await prisma.vendeur.update({
+              where: { id: vendeurId },
+              data: { stripeCustomerId }
+            });
+          }
+        }
+
+        // Find price id based on plan or default monthly
+        let priceId = abonnement.plan.stripePriceIdMonthly;
+        if (!priceId) {
+          if (abonnement.plan.codePlan === "PRO") {
+            priceId = process.env.STRIPE_PRICE_PRO_MONTHLY || "price_pro_monthly_mock";
+          } else if (abonnement.plan.codePlan === "ENTERPRISE") {
+            priceId = process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "price_enterprise_monthly_mock";
+          } else {
+            priceId = "price_starter_free";
+          }
+        }
+
+        // Get app URL
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+        // Create Checkout Session
+        const session = await stripe.checkout.sessions.create({
+          customer: stripeCustomerId || undefined,
+          line_items: [
+            {
+              price: priceId,
+              quantity: 1,
+            },
+          ],
+          mode: "subscription",
+          success_url: `${appUrl}/facturation?session_id={CHECKOUT_SESSION_ID}&success=true`,
+          cancel_url: `${appUrl}/facturation?success=false`,
+          subscription_data: {
+            metadata: {
+              vendeurId,
+              abonnementId: abonnement.id,
+              planId: abonnement.plan.id
+            }
+          },
+          metadata: {
+            vendeurId,
+            abonnementId: abonnement.id,
+            planId: abonnement.plan.id
+          }
+        });
+
+        // Update payment with checkout transaction ref (session id)
+        await prisma.paiement.update({
+          where: { id: paiement.id },
+          data: {
+            transactionRef: session.id
+          }
+        });
+
+        return {
+          success: true,
+          paymentUrl: session.url || undefined,
+          transactionRef: session.id
+        };
+      }
+
       // 1. SI WAVE / ORANGE MONEY (Exemple via FedaPay ou CinetPay) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
         /**

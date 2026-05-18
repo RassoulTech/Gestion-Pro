@@ -14,7 +14,7 @@ export const initiatePlanSubscription = vendeurActionClient
   .schema(
     z.object({
       planId: z.string().min(1),
-      method: z.enum(["WAVE", "ORANGE_MONEY", "PAYPAL"]),
+      method: z.enum(["WAVE", "ORANGE_MONEY", "PAYPAL", "STRIPE"]),
     })
   )
   .action(async ({ parsedInput, ctx }) => {
@@ -44,7 +44,8 @@ export const initiatePlanSubscription = vendeurActionClient
     const paymentResult = await PaymentService.initiateSubscriptionPayment(
       abonnement.id,
       plan.prix,
-      method as PaymentMethod
+      method as PaymentMethod,
+      vendeurId
     );
 
     if (!paymentResult.success || !paymentResult.paymentUrl) {
