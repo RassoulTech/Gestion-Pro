@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use, startTransition } from "react";
+import { useState, useEffect, use, startTransition, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -57,7 +57,7 @@ function ConfettiEffect() {
   );
 }
 
-export default function CheckoutMockPage() {
+function MockPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionRef = searchParams.get("ref") || "";
@@ -395,5 +395,20 @@ export default function CheckoutMockPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function CheckoutMockPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-white font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-10 w-10 animate-spin text-brand" />
+          <p className="text-sm text-zinc-400 font-bold">Chargement de la simulation...</p>
+        </div>
+      </div>
+    }>
+      <MockPageContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { cn, formatCurrency } from "@/lib/utils";
 import { confirmMockOrderPayment } from "@/server/actions/marketplace-checkout.actions";
 
-export default function OrderCheckoutMockPage() {
+function OrderCheckoutMockPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const transactionRef = searchParams.get("ref") || "";
@@ -327,5 +327,20 @@ export default function OrderCheckoutMockPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function OrderCheckoutMockPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-white font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-10 w-10 animate-spin text-emerald-400" />
+          <p className="text-sm text-zinc-400 font-bold">Chargement du paiement...</p>
+        </div>
+      </div>
+    }>
+      <OrderCheckoutMockPageContent />
+    </Suspense>
   );
 }
