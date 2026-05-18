@@ -132,3 +132,47 @@ export const getPlansAction = vendeurActionClient
       orderBy: { prix: "asc" },
     });
   });
+
+/**
+ * Génère un lien vers le portail de facturation Stripe pour gérer son abonnement.
+ */
+export const createStripePortalSession = vendeurActionClient
+  .action(async ({ ctx }) => {
+    const { vendeurId, user } = ctx;
+
+    const vendeur = await prisma.vendeur.findUnique({
+      where: { id: vendeurId },
+    });
+
+    if (!vendeur || !vendeur.stripeCustomerId) {
+      throw new Error("Vous n'avez pas encore de compte client Stripe actif.");
+    }
+
+    const stripe = (await import("@/lib/stripe")).stripe;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+    // Resolve or find the first boutique to redirect back to
+    const boutique = await prisma.boutique.findFirst({
+      where: { vendeurId }
+    });
+    const returnUrl = boutique 
+      ? `${appUrl}/boutiques/${boutique.id}/facturation`
+      : `${appUrl}/boutiques`;
+
+    const session = await stripe.billingPortal.sessions.create({
+      customer: vendeur.stripeCustomerId,
+      return_url: returnUrl,
+    });
+
+    await logActivity({
+      userId: user.id,
+      action: `CREATED_STRIPE_PORTAL_SESSION`,
+      subjectType: "Vendeur",
+      subjectId: vendeurId,
+    });
+
+    return {
+      success: true,
+      url: session.url,
+    };
+  });

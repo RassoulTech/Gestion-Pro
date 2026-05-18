@@ -74,6 +74,7 @@ function getBoutiqueNav(boutiqueId: string): NavItem[] {
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
     { label: "Rapports", href: `${base}/rapports`, icon: BarChart3 },
     { label: "Membres", href: `${base}/membres`, icon: Users2 },
+    { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
     { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
   ];
 }
