@@ -4,8 +4,8 @@ import {
   Plus, 
   Search, 
   Filter, 
-  MoreHorizontal, 
-  Eye, 
+  MoreHorizontal,
+  Eye,
   ShoppingCart,
   Calendar,
   User,
@@ -13,7 +13,6 @@ import {
   Clock,
   XCircle,
   Truck,
-  Edit
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
@@ -174,15 +173,10 @@ export default async function CommandesPage({ params }: CommandesPageProps) {
                         <DropdownMenuContent align="end" className="rounded-xl border-none shadow-2xl">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="rounded-lg cursor-pointer">
-                            <Eye className="mr-2 h-4 w-4" /> Détails
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="rounded-lg cursor-pointer">
-                            <Edit className="mr-2 h-4 w-4" /> Modifier statut
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="rounded-lg cursor-pointer text-rose-500 hover:bg-rose-500/10 hover:text-rose-600">
-                            <XCircle className="mr-2 h-4 w-4" /> Annuler
+                          <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                            <Link href={`/boutiques/${id}/commandes/${commande.id}`}>
+                              <Eye className="mr-2 h-4 w-4" /> Détails
+                            </Link>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

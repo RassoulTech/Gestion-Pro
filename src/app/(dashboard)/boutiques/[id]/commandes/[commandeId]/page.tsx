@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CreditCard, Smartphone, Wallet } from "lucide-react";
 import { getCommandeById } from "@/server/queries/commande.queries";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { Separator } from "@/components/ui/separator";
+
+const PAYMENT_LABELS: Record<string, { label: string; icon: typeof CreditCard; color: string }> = {
+  WAVE: { label: "Wave", icon: Smartphone, color: "text-sky-500" },
+  ORANGE_MONEY: { label: "Orange Money", icon: Smartphone, color: "text-orange-500" },
+  STRIPE: { label: "Carte bancaire (Stripe)", icon: CreditCard, color: "text-indigo-500" },
+  PAYPAL: { label: "PayPal", icon: CreditCard, color: "text-blue-500" },
+  CASH_ON_DELIVERY: { label: "Paiement à la livraison", icon: Wallet, color: "text-emerald-500" },
+};
+
+const PAYMENT_STATUS: Record<string, { label: string; tone: string }> = {
+  EN_ATTENTE: { label: "En attente", tone: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  CONFIRME: { label: "Confirmé", tone: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
+  ECHOUE: { label: "Échoué", tone: "bg-rose-500/10 text-rose-600 border-rose-500/20" },
+  REMBOURSE: { label: "Remboursé", tone: "bg-zinc-500/10 text-zinc-600 border-zinc-500/20" },
+};
 
 export const metadata = { title: "Détail commande" };
 
@@ -87,12 +102,41 @@ export default async function CommandeDetailPage({
                   <p className="font-medium">{commande.client.nom} {commande.client.prenom}</p>
                   {commande.client.telephone && <p className="text-muted-foreground">{commande.client.telephone}</p>}
                   {commande.client.email && <p className="text-muted-foreground">{commande.client.email}</p>}
+                  {commande.client.adresse && <p className="text-muted-foreground">{commande.client.adresse}</p>}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">Client non renseigné</p>
               )}
             </CardContent>
           </Card>
+
+          {(commande.modePaiement || commande.statutPaiement) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Paiement</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {commande.modePaiement && (() => {
+                  const pay = PAYMENT_LABELS[commande.modePaiement];
+                  const Icon = pay?.icon ?? CreditCard;
+                  return (
+                    <div className="flex items-center gap-2">
+                      <Icon className={`h-4 w-4 ${pay?.color ?? "text-muted-foreground"}`} />
+                      <span className="font-medium">{pay?.label ?? commande.modePaiement}</span>
+                    </div>
+                  );
+                })()}
+                {commande.statutPaiement && (() => {
+                  const status = PAYMENT_STATUS[commande.statutPaiement];
+                  return (
+                    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest ${status?.tone ?? ""}`}>
+                      {status?.label ?? commande.statutPaiement}
+                    </span>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          )}
 
           {commande.notes && (
             <Card>
