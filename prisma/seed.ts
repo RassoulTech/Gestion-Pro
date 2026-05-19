@@ -92,7 +92,7 @@ async function main() {
     prisma.plan.create({
       data: {
         nom: "Enterprise",
-        prix: 199000,
+        prix: 19900,
         dureeEssaiJours: 30,
         maxBoutiques: 999999, // illimitées
         maxProduits: 999999, // illimités
