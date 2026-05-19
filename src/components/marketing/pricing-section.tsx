@@ -77,7 +77,7 @@ export function PricingSection() {
 
   function displayPrice(plan: Plan): { value: string; suffix: string } {
     if (plan.monthlyXOF === null) return { value: "Sur devis", suffix: "" };
-    if (plan.monthlyXOF === 0) return { value: "Gratuit", suffix: "14 jours" };
+    if (plan.monthlyXOF === 0) return { value: "Gratuit", suffix: "" };
     const value =
       currency === "XOF"
         ? formatPrice(plan.monthlyXOF, "XOF")
