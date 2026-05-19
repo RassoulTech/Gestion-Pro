@@ -24,7 +24,7 @@ const faqs: QA[] = [
   {
     question: "Combien de temps dure l'essai gratuit ?",
     answer:
-      "L'offre Starter est gratuite à vie pour 1 boutique et jusqu'à 100 produits. L'offre Pro inclut 14 jours d'essai sans carte bancaire — vous ne payez que si vous décidez de continuer.",
+      "L'offre Starter est gratuite à vie pour 1 boutique. L'offre Pro inclut un essai gratuit sans carte bancaire — vous ne payez que si vous décidez de continuer.",
   },
   {
     question: "GestionPro fonctionne-t-il avec une connexion lente ?",

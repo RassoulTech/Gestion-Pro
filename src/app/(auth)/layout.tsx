@@ -62,7 +62,7 @@ export default async function AuthLayout({
 
             <ul className="space-y-5">
               {[
-                "14 jours d'essai sans carte bancaire",
+                "Essai gratuit sans carte bancaire",
                 "Configuration en moins de 2 minutes",
                 "Données 100 % sécurisées et chiffrées",
               ].map((item) => (
