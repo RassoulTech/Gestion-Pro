@@ -165,7 +165,7 @@ export default function ConfidentialitePage() {
                 8. Nous contacter
               </h2>
               <p>
-                Pour toute question ou demande de support relative à la gestion et au traitement de vos données personnelles, vous pouvez adresser un message à notre délégué à la protection des données (DPO) par email à : dpo@gestionpro.africa.
+                Pour toute question ou demande de support relative à la gestion et au traitement de vos données personnelles, vous pouvez adresser un message à notre délégué à la protection des données (DPO) par email à : **dionemhd1@gmail.com**.
               </p>
             </section>
           </motion.div>

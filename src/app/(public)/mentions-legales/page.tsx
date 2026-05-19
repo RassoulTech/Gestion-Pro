@@ -105,7 +105,7 @@ export default function MentionsLegalesPage() {
               <ul className="list-disc pl-5 space-y-1">
                 <li>**NINEA** : 008945623 2B2</li>
                 <li>**Registre du Commerce (RCCM)** : SN-DKR-2025-B-12345</li>
-                <li>**Contact e-mail** : contact@gestionpro.africa</li>
+                <li>**Contact e-mail** : dionemhd1@gmail.com</li>
               </ul>
             </section>
 

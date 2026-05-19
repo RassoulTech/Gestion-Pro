@@ -218,7 +218,7 @@ export default function SupportPage() {
               </p>
             </div>
             <a
-              href="https://wa.me/221770000000"
+              href="https://wa.me/221773831364"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-12 items-center justify-center rounded-2xl bg-violet-600 text-white text-xs font-black uppercase tracking-wider hover:bg-violet-750 shadow-lg shadow-violet-600/20 transition-all self-start px-6"
@@ -238,10 +238,10 @@ export default function SupportPage() {
               </p>
             </div>
             <a
-              href="tel:+221770000000"
+              href="tel:+221773831364"
               className="inline-flex h-12 items-center justify-center rounded-2xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider hover:bg-emerald-750 shadow-lg shadow-emerald-600/20 transition-all self-start px-6"
             >
-              Appeler le +221 77 000 00 00
+              Appeler le +221 77 383 13 64
             </a>
           </div>
         </div>

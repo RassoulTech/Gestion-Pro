@@ -170,7 +170,7 @@ export default function OnboardingPage() {
                         <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Téléphone</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="+221 77 000 00 00" 
+                            placeholder="+221 77 383 13 64" 
                             className="h-12 rounded-xl bg-foreground/5 border-none px-4 font-bold" 
                             {...field} 
                             value={field.value ?? ""}

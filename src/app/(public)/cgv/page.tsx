@@ -165,7 +165,7 @@ export default function CGVPage() {
                 8. Règlement des litiges
               </h2>
               <p>
-                Toute réclamation doit d&apos;abord être soumise au service client à l&apos;adresse commercial@gestionpro.africa. À défaut de résolution amiable sous 30 jours, le litige sera tranché exclusivement par les tribunaux compétents de Dakar, Sénégal, sous l&apos;application stricte du droit sénégalais et de l&apos;OHADA.
+                Toute réclamation doit d&apos;abord être soumise au service client à l&apos;adresse **dionemhd1@gmail.com**. À défaut de résolution amiable sous 30 jours, le litige sera tranché exclusivement par les tribunaux compétents de Dakar, Sénégal, sous l&apos;application stricte du droit sénégalais et de l&apos;OHADA.
               </p>
             </section>
           </motion.div>

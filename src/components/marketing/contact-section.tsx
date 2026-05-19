@@ -93,16 +93,16 @@ export function ContactSection() {
               {
                 icon: <Mail className="h-6 w-6 text-violet-600 dark:text-violet-400" />,
                 title: "Email direct",
-                value: "contact@gestionpro.africa",
+                value: "dionemhd1@gmail.com",
                 desc: "Réponse en moins de 24 heures",
-                href: "mailto:contact@gestionpro.africa"
+                href: "mailto:dionemhd1@gmail.com"
               },
               {
                 icon: <MessageSquare className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />,
                 title: "Support WhatsApp",
-                value: "+221 77 000 00 00",
+                value: "+221 77 383 13 64",
                 desc: "Conseillers disponibles 7j/7",
-                href: "https://wa.me/221770000000"
+                href: "https://wa.me/221773831364"
               }
             ].map((card, idx) => (
               <motion.a

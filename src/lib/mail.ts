@@ -170,7 +170,7 @@ export const sendContactNotificationEmail = async (
   payload: ContactPayload
 ): Promise<MailResult> => {
   const to =
-    process.env.CONTACT_TO_EMAIL || smtpUser || "contact@gestionpro.africa";
+    process.env.CONTACT_TO_EMAIL || smtpUser || "dionemhd1@gmail.com";
 
   if (!transporter) {
     console.warn("⚠️ SMTP non configuré. Notification contact NON envoyée.");
