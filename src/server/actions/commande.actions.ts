@@ -101,9 +101,53 @@ export const updateEtatCommande = vendeurActionClient
   .action(async ({ parsedInput: { boutiqueId, commandeId, data }, ctx }) => {
     await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
 
-    const commande = await prisma.commandeClient.update({
+    // Load current state to enforce valid transitions and restock on cancellation
+    const current = await prisma.commandeClient.findFirst({
       where: { id: commandeId, boutiqueId },
-      data: { etat: data.etat },
+      include: { lignes: true },
+    });
+    if (!current) {
+      throw new Error("Commande introuvable.");
+    }
+
+    // Block transitions out of terminal states
+    if (current.etat === "ANNULEE" || current.etat === "LIVREE") {
+      if (current.etat !== data.etat) {
+        throw new Error(
+          `Cette commande est ${current.etat === "LIVREE" ? "livrée" : "annulée"}, elle ne peut plus changer d'état.`
+        );
+      }
+    }
+
+    // Stock was decremented at order creation regardless of etat, so a cancellation
+    // must restore it. Only do it on the actual transition into ANNULEE.
+    const isCancelling =
+      data.etat === "ANNULEE" && current.etat !== "ANNULEE";
+
+    const commande = await prisma.$transaction(async (tx) => {
+      if (isCancelling) {
+        for (const ligne of current.lignes) {
+          await tx.produit.update({
+            where: { id: ligne.produitId },
+            data: { quantite: { increment: ligne.quantite } },
+          });
+          await tx.mouvementStock.create({
+            data: {
+              boutiqueId,
+              produitId: ligne.produitId,
+              type: "ENTREE",
+              quantite: ligne.quantite,
+              sourceType: "AnnulationCommande",
+              sourceId: commandeId,
+            },
+          });
+        }
+      }
+
+      return tx.commandeClient.update({
+        where: { id: commandeId, boutiqueId },
+        data: { etat: data.etat },
+      });
     });
 
     await logActivity({
@@ -111,10 +155,17 @@ export const updateEtatCommande = vendeurActionClient
       action: "commande.updateEtat",
       subjectType: "CommandeClient",
       subjectId: commandeId,
-      changes: { etat: data.etat },
+      changes: {
+        from: current.etat,
+        to: data.etat,
+        restockedLignes: isCancelling ? current.lignes.length : 0,
+      },
     });
 
     revalidatePath(`/boutiques/${boutiqueId}/commandes`);
+    revalidatePath(`/boutiques/${boutiqueId}/commandes/${commandeId}`);
+    revalidatePath(`/boutiques/${boutiqueId}/produits`);
+    revalidatePath(`/boutiques/${boutiqueId}/stock`);
     return commande;
   });
 

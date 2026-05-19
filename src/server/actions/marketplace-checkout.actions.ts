@@ -59,30 +59,24 @@ export const createMarketplaceCommande = actionClient
       password,
     } = parsedInput;
 
-    // 1. Identify buyer: existing session, or optional new account
+    // 1. Identify buyer and pre-check account creation if requested
     const session = await auth();
-    let buyerUserId: string | null = session?.user?.id ?? null;
+    const existingUserId: string | null = session?.user?.id ?? null;
+    const willCreateAccount = !existingUserId && !!createAccount && !!emailClient && !!password;
 
-    if (!buyerUserId && createAccount && emailClient && password) {
+    // Pre-hash and pre-check the email outside the transaction (these are not DB writes,
+    // and the bcrypt hash is CPU-bound — keep it out of the tx for shorter lock time).
+    let hashedPasswordForNewUser: string | null = null;
+    if (willCreateAccount) {
       const existingByEmail = await prisma.user.findUnique({
-        where: { email: emailClient },
+        where: { email: emailClient! },
       });
       if (existingByEmail) {
         throw new Error(
           "Un compte existe déjà avec cet email. Connectez-vous d'abord ou utilisez une autre adresse."
         );
       }
-      const hashedPassword = await bcrypt.hash(password, 12);
-      const newUser = await prisma.user.create({
-        data: {
-          name: nomClient,
-          email: emailClient,
-          password: hashedPassword,
-          role: "CLIENT",
-          emailVerified: new Date(),
-        } as any,
-      });
-      buyerUserId = newUser.id;
+      hashedPasswordForNewUser = await bcrypt.hash(password!, 12);
     }
 
     // 2. Group items by boutique
@@ -113,9 +107,24 @@ export const createMarketplaceCommande = actionClient
 
     const createdCommandeIds: string[] = [];
     let totalAmount = 0;
+    let buyerUserId: string | null = existingUserId;
 
-    // 3. Persist orders + upsert Client per boutique
+    // 3. Persist orders + upsert Client per boutique (user creation is inside
+    // the transaction so a failure cleans up the account too)
     await prisma.$transaction(async (tx) => {
+      if (willCreateAccount && hashedPasswordForNewUser) {
+        const newUser = await tx.user.create({
+          data: {
+            name: nomClient,
+            email: emailClient!,
+            password: hashedPasswordForNewUser,
+            role: "CLIENT",
+            emailVerified: new Date(),
+          } as any,
+        });
+        buyerUserId = newUser.id;
+      }
+
       for (const [boutiqueId, boutiqueItems] of Object.entries(itemsByBoutique)) {
         // Find existing client by phone (or by email if available)
         let client = await tx.client.findFirst({
