@@ -41,45 +41,58 @@ export function Hero() {
       </div>
 
       <div className="container-app relative z-10">
-        <div className="mx-auto max-w-4xl text-center">
+        <div className="mx-auto max-w-5xl text-center">
           {/* Eyebrow */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: EASE }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-1.5 text-xs font-bold text-brand backdrop-blur-md uppercase tracking-widest"
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-5 py-2 text-xs font-bold text-brand backdrop-blur-md uppercase tracking-wider shadow-sm"
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>L&apos;excellence au service de votre commerce</span>
+            <Sparkles className="h-4 w-4 animate-pulse" />
+            <span>L&apos;EXCELLENCE COMMERCIALE SANS COMPROMIS</span>
           </motion.div>
 
           {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
-            className="text-display text-5xl md:text-7xl lg:text-8xl tracking-tight text-foreground"
-          >
-            Maîtrisez chaque <br />
-            <span className="text-shimmer">détail.</span>
-          </motion.h1>
+          <h1 className="text-display text-5xl md:text-7xl lg:text-8xl tracking-tight text-foreground font-black leading-[1.08] select-none">
+            <span className="block overflow-hidden pb-1">
+              <motion.span
+                initial={{ opacity: 0, y: "100%" }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, ease: EASE, delay: 0.1 }}
+                className="block"
+              >
+                L&apos;intelligence commerciale
+              </motion.span>
+            </span>
+            <span className="block overflow-hidden py-1">
+              <motion.span
+                initial={{ opacity: 0, y: "100%" }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, ease: EASE, delay: 0.25 }}
+                className="block text-shimmer"
+              >
+                redéfinie pour l&apos;Afrique.
+              </motion.span>
+            </span>
+          </h1>
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
-            className="mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed font-medium"
+            transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
+            className="mx-auto mt-8 max-w-3xl text-lg md:text-xl text-muted-foreground/90 leading-relaxed font-normal"
           >
-            L&apos;écosystème ultime pour les commerçants visionnaires. 
-            Gérez vos boutiques, analysez vos performances et dominez votre marché avec une simplicité déconcertante.
+            GestionPro unifie la gestion de stock en temps réel, la facturation certifiée, le suivi financier de pointe et la synchronisation multi-boutiques. 
+            Une plateforme ultra-rapide, moderne et sécurisée, conçue pour propulser l&apos;élite des entrepreneurs.
           </motion.p>
 
           {/* Actions */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.55 }}
             className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Button asChild size="xl" variant="brand" className="group relative overflow-hidden px-8 h-14 text-lg">

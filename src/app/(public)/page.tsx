@@ -9,9 +9,9 @@ import { ContactSection } from "@/components/marketing/contact-section";
 import { CTAFinal } from "@/components/marketing/cta-final";
 
 export const metadata: Metadata = {
-  title: "GestionPro — La plateforme tout-en-un pour les commerçants africains",
+  title: "GestionPro — L'intelligence commerciale au service de votre réussite",
   description:
-    "Gérez vos boutiques, votre stock, vos ventes, vos clients et vos fournisseurs depuis une seule plateforme. Pensé pour le Sénégal, la Côte d'Ivoire et le Mali.",
+    "La plateforme d'excellence pour piloter votre commerce en Afrique. Gestion de stock en temps réel, facturation intelligente, multi-boutiques et comptabilité simplifiée.",
 };
 
 export default function LandingPage() {
