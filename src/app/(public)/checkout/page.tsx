@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { 
-  ArrowLeft, ShoppingBag, Loader2, Sparkles, ShieldCheck, 
-  MapPin, Phone, User, MessageSquare, CreditCard 
+import {
+  ArrowLeft, ShoppingBag, Loader2, ShieldCheck,
+  MapPin, Phone, User, MessageSquare, Mail, KeyRound
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,15 +21,29 @@ type PaymentMethodType = "WAVE" | "ORANGE_MONEY" | "PAYPAL" | "STRIPE" | "CASH_O
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const { items, totalPrice, totalItems, clearCart } = useCart();
   const [isPending, startTransition] = useTransition();
 
   // Form states
   const [nomClient, setNomClient] = useState("");
+  const [emailClient, setEmailClient] = useState("");
   const [telephoneClient, setTelephoneClient] = useState("");
   const [adresseLivraison, setAdresseLivraison] = useState("");
   const [notes, setNotes] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("WAVE");
+  const [createAccount, setCreateAccount] = useState(false);
+  const [password, setPassword] = useState("");
+
+  // Prefill if user is already logged in
+  const isLoggedIn = !!session?.user;
+  useEffect(() => {
+    if (isLoggedIn) {
+      if (session?.user?.name && !nomClient) setNomClient(session.user.name);
+      if (session?.user?.email && !emailClient) setEmailClient(session.user.email);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
 
   if (items.length === 0) {
     return (
@@ -74,15 +89,28 @@ export default function CheckoutPage() {
       toast.error("Veuillez spécifier l'adresse de livraison.");
       return;
     }
+    if (createAccount && !isLoggedIn) {
+      if (!emailClient.trim()) {
+        toast.error("L'email est obligatoire pour créer un compte.");
+        return;
+      }
+      if (password.length < 8) {
+        toast.error("Le mot de passe doit contenir au moins 8 caractères.");
+        return;
+      }
+    }
 
     startTransition(async () => {
       try {
         const result = await createMarketplaceCommande({
           nomClient,
+          emailClient: emailClient.trim() || undefined,
           telephoneClient,
           adresseLivraison,
           notes: notes || undefined,
           paymentMethod,
+          createAccount: createAccount && !isLoggedIn,
+          password: createAccount && !isLoggedIn ? password : undefined,
           items: items.map(item => ({
             produitId: item.produitId,
             quantite: item.quantite,
@@ -158,6 +186,14 @@ export default function CheckoutPage() {
                   Informations de Livraison
                 </h2>
 
+                {/* Connected user info */}
+                {isLoggedIn && (
+                  <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/20 px-4 py-3 text-xs font-bold text-emerald-300 flex items-center gap-2">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Connecté en tant que <span className="text-white">{session?.user?.email}</span> — votre commande sera ajoutée à votre historique.
+                  </div>
+                )}
+
                 <div className="grid gap-5 sm:grid-cols-2">
                   {/* Name field */}
                   <div className="space-y-2">
@@ -171,6 +207,21 @@ export default function CheckoutPage() {
                       value={nomClient}
                       onChange={(e) => setNomClient(e.target.value)}
                       className="h-12 rounded-xl bg-zinc-950 border-zinc-800 focus:border-zinc-700 text-white placeholder-zinc-600 font-bold"
+                    />
+                  </div>
+
+                  {/* Email field */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-emerald-400" /> Email {isLoggedIn ? "" : "(recommandé)"}
+                    </label>
+                    <Input
+                      type="email"
+                      placeholder="mamadou@example.com"
+                      value={emailClient}
+                      onChange={(e) => setEmailClient(e.target.value)}
+                      disabled={isLoggedIn}
+                      className="h-12 rounded-xl bg-zinc-950 border-zinc-800 focus:border-zinc-700 text-white placeholder-zinc-600 font-bold disabled:opacity-60"
                     />
                   </div>
 
@@ -190,13 +241,13 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Delivery Address field */}
-                  <div className="space-y-2 sm:col-span-2">
+                  <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Adresse de livraison complète *
+                      <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Adresse de livraison *
                     </label>
                     <Input
                       type="text"
-                      placeholder="Dakar Plateau, Rue 12 x Avenue Lamine Gueye"
+                      placeholder="Dakar Plateau, Rue 12"
                       required
                       value={adresseLivraison}
                       onChange={(e) => setAdresseLivraison(e.target.value)}
@@ -217,6 +268,42 @@ export default function CheckoutPage() {
                     />
                   </div>
                 </div>
+
+                {/* Create account option (only for non-logged users) */}
+                {!isLoggedIn && (
+                  <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 space-y-3">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={createAccount}
+                        onChange={(e) => setCreateAccount(e.target.checked)}
+                        className="mt-1 h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-500/30"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-black text-white">Créer un compte pour suivre mes commandes</p>
+                        <p className="text-[11px] text-zinc-400 font-semibold mt-0.5">
+                          Retrouvez l'historique de vos achats, sauvegardez votre adresse et passez commande plus vite la prochaine fois.
+                        </p>
+                      </div>
+                    </label>
+
+                    {createAccount && (
+                      <div className="space-y-2 pl-7">
+                        <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                          <KeyRound className="w-3.5 h-3.5 text-emerald-400" /> Mot de passe (8 caractères minimum)
+                        </label>
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          minLength={8}
+                          className="h-12 rounded-xl bg-zinc-950 border-zinc-800 focus:border-zinc-700 text-white placeholder-zinc-600 font-bold"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Card: Payment method Selection */}

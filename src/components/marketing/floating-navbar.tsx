@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, Package, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { CartBadge } from "@/components/marketing/cart-badge";
@@ -21,6 +22,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export function FloatingNavbar() {
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -81,19 +84,38 @@ export function FloatingNavbar() {
           <div className="hidden shrink-0 items-center gap-2 md:flex">
             <ThemeToggle className="h-9 w-9 rounded-xl" />
             <CartBadge className="h-9 w-9 rounded-xl" />
-            <Button asChild variant="ghost" className="h-9 rounded-xl font-medium">
-              <Link href="/login">Connexion</Link>
-            </Button>
-            <Button
-              asChild
-              variant="brand"
-              className="h-9 rounded-xl px-5 font-semibold shadow-lg shadow-brand/10 hover:shadow-brand/20 active-press"
-            >
-              <Link href="/register">
-                Essai gratuit
-                <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </Button>
+            {isLoggedIn ? (
+              <>
+                <Button asChild variant="ghost" className="h-9 rounded-xl font-medium gap-1.5">
+                  <Link href="/mes-commandes">
+                    <Package className="h-4 w-4" />
+                    Mes commandes
+                  </Link>
+                </Button>
+                <Button asChild variant="brand" className="h-9 rounded-xl px-5 font-semibold shadow-lg shadow-brand/10 hover:shadow-brand/20 active-press">
+                  <Link href="/boutiques">
+                    Mon espace
+                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost" className="h-9 rounded-xl font-medium">
+                  <Link href="/login">Connexion</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="brand"
+                  className="h-9 rounded-xl px-5 font-semibold shadow-lg shadow-brand/10 hover:shadow-brand/20 active-press"
+                >
+                  <Link href="/register">
+                    Essai gratuit
+                    <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile UI */}
@@ -139,14 +161,34 @@ export function FloatingNavbar() {
                     </Link>
                   </li>
                 ))}
+                {isLoggedIn && (
+                  <li>
+                    <Link
+                      href="/mes-commandes"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-lg font-semibold text-foreground hover:bg-foreground/5"
+                    >
+                      <Package className="h-4 w-4" />
+                      Mes commandes
+                    </Link>
+                  </li>
+                )}
               </ul>
               <div className="mt-6 grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
-                <Button asChild variant="outline" size="lg" className="rounded-2xl h-12">
-                  <Link href="/login" onClick={() => setOpen(false)}>Connexion</Link>
-                </Button>
-                <Button asChild variant="brand" size="lg" className="rounded-2xl h-12">
-                  <Link href="/register" onClick={() => setOpen(false)}>S&apos;inscrire</Link>
-                </Button>
+                {isLoggedIn ? (
+                  <Button asChild variant="brand" size="lg" className="rounded-2xl h-12 col-span-2">
+                    <Link href="/boutiques" onClick={() => setOpen(false)}>Mon espace</Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button asChild variant="outline" size="lg" className="rounded-2xl h-12">
+                      <Link href="/login" onClick={() => setOpen(false)}>Connexion</Link>
+                    </Button>
+                    <Button asChild variant="brand" size="lg" className="rounded-2xl h-12">
+                      <Link href="/register" onClick={() => setOpen(false)}>S&apos;inscrire</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </motion.div>
           </>
