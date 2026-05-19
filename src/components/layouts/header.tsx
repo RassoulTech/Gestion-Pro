@@ -155,7 +155,8 @@ export function Header({
       )}
     >
       <div className="flex flex-1 items-center justify-start gap-2">
-        {/* Hamburger Menu for Mobile */}
+        {/* Hamburger Menu hidden on mobile as bottom navigation is preferred */}
+        {/*
         <Button
           variant="ghost"
           size="icon"
@@ -165,6 +166,7 @@ export function Header({
         >
           <Menu className="h-5 w-5" />
         </Button>
+        */}
         
         <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-200">
           {boutiqueName || defaultTitle}
