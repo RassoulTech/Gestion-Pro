@@ -22,7 +22,17 @@
       "PowerShell(gh *)",
       "Bash(git remote *)",
       "Bash(npm run *)",
-      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/)"
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/)",
+      "mcp__claude_ai_Supabase__list_tables",
+      "PowerShell(winget install *)",
+      "PowerShell($env:Path = \"C:\\\\Program Files\\\\GitHub CLI;$env:Path\"; & \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" --version)",
+      "Bash(gh *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" --version)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" --version; & \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth status)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" repo view RassoulTech/Gestion-Pro --json name,defaultBranchRef,visibility,url)"
     ]
   }
 }
