@@ -30,8 +30,9 @@ export async function POST(request: Request) {
     const result = await PaymentService.handlePaymentWebhook(transactionId, status);
 
     return NextResponse.json(result, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur interne";
     console.error("Erreur Webhook Paiement :", error);
-    return NextResponse.json({ error: error.message || "Erreur interne" }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

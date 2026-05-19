@@ -120,7 +120,7 @@ export const createMarketplaceCommande = actionClient
             password: hashedPasswordForNewUser,
             role: "CLIENT",
             emailVerified: new Date(),
-          } as any,
+          },
         });
         buyerUserId = newUser.id;
       }
@@ -184,7 +184,7 @@ export const createMarketplaceCommande = actionClient
             modePaiement: paymentMethod,
             statutPaiement: "EN_ATTENTE",
             etat: "EN_ATTENTE",
-          } as any,
+          },
         });
 
         createdCommandeIds.push(order.id);
@@ -233,7 +233,7 @@ export const createMarketplaceCommande = actionClient
         const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
         await prisma.commandeClient.updateMany({
           where: { id: { in: createdCommandeIds } },
-          data: { paymentToken: transactionRef } as any,
+          data: { paymentToken: transactionRef },
         });
         return {
           success: true,
@@ -270,7 +270,7 @@ export const createMarketplaceCommande = actionClient
 
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: stripeSession.id } as any,
+        data: { paymentToken: stripeSession.id },
       });
 
       return {
@@ -299,7 +299,7 @@ export const createMarketplaceCommande = actionClient
         if (cpResponse.code === "201" && cpResponse.data) {
           await prisma.commandeClient.updateMany({
             where: { id: { in: createdCommandeIds } },
-            data: { paymentToken: cpResponse.data.payment_token } as any,
+            data: { paymentToken: cpResponse.data.payment_token },
           });
 
           return {
@@ -312,7 +312,7 @@ export const createMarketplaceCommande = actionClient
 
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: transactionRef } as any,
+        data: { paymentToken: transactionRef },
       });
 
       return {
@@ -327,7 +327,7 @@ export const createMarketplaceCommande = actionClient
 
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: transactionRef } as any,
+        data: { paymentToken: transactionRef },
       });
 
       return {
@@ -361,7 +361,7 @@ export const confirmMockOrderPayment = actionClient
       data: {
         statutPaiement: "CONFIRME",
         etat: "VALIDEE",
-      } as any,
+      },
     });
 
     console.log(`Mock order payment confirmed for orders: ${ids} (ref: ${transactionRef})`);

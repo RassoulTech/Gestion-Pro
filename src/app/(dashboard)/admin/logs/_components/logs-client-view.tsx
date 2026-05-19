@@ -11,7 +11,7 @@ interface Log {
   action: string;
   subjectType: string | null;
   subjectId: string | null;
-  changes: any;
+  changes: unknown;
   ipAddress: string | null;
   userAgent: string | null;
   createdAt: Date;
@@ -276,7 +276,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
                             </div>
                           )}
 
-                          {log.changes && (
+                          {log.changes != null && (
                             <div className="rounded-2xl border border-zinc-200/40 bg-zinc-950 p-4 font-mono text-xs text-zinc-200 shadow-inner">
                               <div className="flex items-center gap-2 text-[9px] font-black text-zinc-500 uppercase tracking-wider mb-2 border-b border-zinc-900 pb-1.5">
                                 <Terminal className="h-3 w-3" /> Données de la modification (Payload)

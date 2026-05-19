@@ -25,9 +25,10 @@ export function ManageStripeButton({ hasStripeCustomer }: ManageStripeButtonProp
       } else {
         throw new Error(result?.serverError || "Impossible de générer le lien de facturation Stripe.");
       }
-    } catch (err: any) {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Une erreur est survenue.";
       console.error("Stripe Portal Error:", err);
-      setError(err.message || "Une erreur est survenue.");
+      setError(message);
     } finally {
       setLoading(false);
     }

@@ -152,7 +152,7 @@ export default function CheckoutPage() {
         } else {
           toast.error("Impossible d'enregistrer votre commande. Veuillez réessayer.");
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("Checkout submit error:", err);
         toast.error("Une erreur s'est produite. Veuillez réessayer.");
       }

@@ -41,9 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!valid) return null;
 
         // ⚠️ SECURITY : refuser la connexion si l'email n'est pas vérifié.
-        // Cast as any : le champ Prisma a été renommé en `emailVerified`
-        // pour matcher le PrismaAdapter — relancer `npx prisma generate`.
-        if (!(user as any).emailVerified) return null;
+        if (!user.emailVerified) return null;
 
         return {
           id: user.id,

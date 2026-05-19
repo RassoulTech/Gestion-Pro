@@ -77,7 +77,7 @@ function marketplaceAccessFilter(): Prisma.BoutiqueWhereInput {
         vendeur: {
           abonnements: {
             some: {
-              plan: { codePlan: { in: ["PRO", "ENTERPRISE"] } as any },
+              plan: { codePlan: { in: ["PRO", "ENTERPRISE"] } },
               OR: [
                 {
                   statut: "ACTIF",

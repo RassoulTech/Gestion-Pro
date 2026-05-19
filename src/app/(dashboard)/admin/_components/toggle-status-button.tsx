@@ -33,8 +33,9 @@ export function ToggleStatusButton({ id, currentStatut, type }: ToggleStatusButt
             toast.error("Une erreur est survenue lors de la mise à jour.");
           }
         }
-      } catch (err: any) {
-        toast.error(err.message || "Erreur de traitement.");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Erreur de traitement.";
+        toast.error(message);
       }
     });
   };

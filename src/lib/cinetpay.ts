@@ -20,6 +20,21 @@ export interface CinetPayInitiateResponse {
   };
 }
 
+export interface CinetPayVerifyResponse {
+  code: string;
+  message: string;
+  data?: {
+    amount?: number;
+    currency?: string;
+    status?: string;
+    payment_method?: string;
+    description?: string;
+    operator_id?: string;
+    payment_date?: string;
+    [key: string]: unknown;
+  };
+}
+
 export class CinetPayClient {
   private static apiKey = env.CINETPAY_API_KEY || "";
   private static siteId = env.CINETPAY_SITE_ID || "";
@@ -46,16 +61,16 @@ export class CinetPayClient {
       });
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error) {
       console.error("CinetPay initiation error:", error);
       return {
         code: "-1",
-        message: error.message || "Failed to contact CinetPay API",
+        message: error instanceof Error ? error.message : "Failed to contact CinetPay API",
       };
     }
   }
 
-  static async verifyPayment(transactionId: string): Promise<any> {
+  static async verifyPayment(transactionId: string): Promise<CinetPayVerifyResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/payment/check`, {
         method: "POST",
@@ -70,11 +85,11 @@ export class CinetPayClient {
       });
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error) {
       console.error("CinetPay verification error:", error);
       return {
         code: "-1",
-        message: error.message || "Failed to contact CinetPay API",
+        message: error instanceof Error ? error.message : "Failed to contact CinetPay API",
       };
     }
   }

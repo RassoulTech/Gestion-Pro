@@ -91,8 +91,9 @@ export async function POST(req: Request) {
     }
 
     return new NextResponse("Webhook processed", { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error("CinetPay webhook processing error:", error);
-    return new NextResponse(`Error: ${error.message}`, { status: 500 });
+    return new NextResponse(`Error: ${message}`, { status: 500 });
   }
 }

@@ -76,10 +76,11 @@ export async function GET(request: Request) {
       count: updatedCount.count,
       expiredIds: expiredAbonnements.map((a) => a.id),
     });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error("Error processing expired subscriptions cron:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: message },
       { status: 500 }
     );
   }

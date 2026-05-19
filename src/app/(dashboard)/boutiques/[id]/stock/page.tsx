@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Mouvements de stock" };
 async function StockContent({ boutiqueId }: { boutiqueId: string }) {
   const { data: mouvements } = await getMouvementsStock(boutiqueId, { perPage: 250 });
 
-  return <StockClient mouvements={mouvements as any} />;
+  return <StockClient mouvements={mouvements} />;
 }
 
 export default async function StockPage({ params }: { params: Promise<{ id: string }> }) {

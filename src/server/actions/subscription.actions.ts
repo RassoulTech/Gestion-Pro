@@ -144,9 +144,7 @@ export const createStripePortalSession = vendeurActionClient
       where: { id: vendeurId },
     });
 
-    const stripeCustomerId = (vendeur as any)?.stripeCustomerId as
-      | string
-      | undefined;
+    const stripeCustomerId = vendeur?.stripeCustomerId ?? undefined;
 
     if (!vendeur || !stripeCustomerId) {
       throw new Error("Vous n'avez pas encore de compte client Stripe actif.");

@@ -69,7 +69,7 @@ export const resendVerificationEmail = actionClient
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
     // Réponse générique pour éviter l'énumération d'emails
-    if (!existingUser || (existingUser as any).emailVerified) {
+    if (!existingUser || existingUser.emailVerified) {
       return { success: "Si un compte non vérifié existe avec cet email, un nouveau lien vient d'être envoyé." };
     }
 
@@ -116,7 +116,7 @@ export const loginPrecheck = actionClient
       return { status: "invalid_credentials" as const };
     }
 
-    if (!(user as any).emailVerified) {
+    if (!user.emailVerified) {
       const token = await generateVerificationToken(user.email);
       const mail = await sendVerificationEmail(token.identifier, token.token);
       return {
@@ -226,7 +226,7 @@ export const verifyEmail = actionClient
       data: {
         emailVerified: new Date(),
         email: existingToken.identifier, // Fallback if email changed
-      } as any,
+      },
     });
 
     await prisma.verificationToken.delete({

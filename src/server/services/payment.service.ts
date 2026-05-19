@@ -72,10 +72,10 @@ export class PaymentService {
         const stripe = (await import("@/lib/stripe")).getStripe();
 
         // Resolve/Create Stripe Customer
-        const vendeurRow = (await prisma.vendeur.findUnique({
+        const vendeurRow = await prisma.vendeur.findUnique({
           where: { id: vendeurId },
-        })) as any;
-        let stripeCustomerId: string | undefined = vendeurRow?.stripeCustomerId;
+        });
+        let stripeCustomerId: string | undefined = vendeurRow?.stripeCustomerId ?? undefined;
 
         if (!stripeCustomerId) {
           const user = await prisma.user.findFirst({
@@ -91,18 +91,18 @@ export class PaymentService {
             stripeCustomerId = customer.id;
             await prisma.vendeur.update({
               where: { id: vendeurId },
-              data: { stripeCustomerId } as any,
+              data: { stripeCustomerId },
             });
           }
         }
 
         // Find price id based on plan or default monthly
-        const planAny = abonnement.plan as any;
-        let priceId: string | undefined = planAny.stripePriceIdMonthly;
+        const plan = abonnement.plan;
+        let priceId: string | undefined = plan.stripePriceIdMonthly ?? undefined;
         if (!priceId) {
-          if (planAny.codePlan === "PRO") {
+          if (plan.codePlan === "PRO") {
             priceId = process.env.STRIPE_PRICE_PRO_MONTHLY || "";
-          } else if (planAny.codePlan === "ENTERPRISE") {
+          } else if (plan.codePlan === "ENTERPRISE") {
             priceId = process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "";
           }
         }
@@ -194,14 +194,14 @@ export class PaymentService {
               where: { id: abonnementId },
               data: {
                 cinetpayPaymentToken: cpResponse.data.payment_token,
-              } as any,
+              },
             });
 
             await prisma.paiement.update({
               where: { id: paiement.id },
               data: {
                 cinetpayPaymentToken: cpResponse.data.payment_token,
-              } as any,
+              },
             });
 
             return {
@@ -261,9 +261,10 @@ export class PaymentService {
       }
 
       return { success: false, error: "Méthode de paiement non supportée." };
-    } catch (e: any) {
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Erreur interne.";
       console.error("Erreur d'initialisation de paiement :", e);
-      return { success: false, error: e.message || "Erreur interne." };
+      return { success: false, error: message };
     }
   }
 

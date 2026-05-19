@@ -23,7 +23,8 @@ export function getStripe(): Stripe {
   }
 
   cached = new Stripe(key, {
-    apiVersion: "2024-12-22.acacia" as any,
+    // @ts-expect-error pinned to acacia for backward-compat with prod webhook; SDK types only reflect the latest API version
+    apiVersion: "2024-12-22.acacia",
     typescript: true,
   });
 
