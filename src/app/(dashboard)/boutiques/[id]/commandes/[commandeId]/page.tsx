@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CreditCard, Smartphone, Wallet } from "lucide-react";
@@ -25,7 +26,7 @@ const PAYMENT_STATUS: Record<string, { label: string; tone: string }> = {
   REMBOURSE: { label: "Remboursé", tone: "bg-zinc-500/10 text-zinc-600 border-zinc-500/20" },
 };
 
-export const metadata = { title: "Détail commande" };
+export const metadata: Metadata = { title: "Détail commande" };
 
 export default async function CommandeDetailPage({
   params,

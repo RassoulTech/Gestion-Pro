@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getAllVendeurs } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
 import { VendeursClientTable } from "./_components/vendeurs-client-table";
 import { Users } from "lucide-react";
 
-export const metadata = { title: "Vendeurs - Admin" };
+export const metadata: Metadata = { title: "Vendeurs - Admin" };
 
 async function VendeursContent() {
   const { data: vendeurs, total } = await getAllVendeurs();

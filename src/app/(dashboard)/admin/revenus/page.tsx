@@ -1,8 +1,9 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { RevenusClientView } from "./_components/revenus-client-view";
 import { TrendingUp } from "lucide-react";
 
-export const metadata = { title: "Revenus - Admin" };
+export const metadata: Metadata = { title: "Revenus - Admin" };
 
 export default async function AdminRevenusPage() {
   const [totalRevenu, revenuMois, recentPaiements] = await Promise.all([

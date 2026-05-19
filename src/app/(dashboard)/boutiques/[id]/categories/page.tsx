@@ -1,9 +1,10 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getBoutiqueCategories } from "@/server/queries/categorie.queries";
 import { CategoriesClient } from "./_components/categories-client";
 import { TableSkeleton } from "@/components/loading";
 
-export const metadata = { title: "Catégories" };
+export const metadata: Metadata = { title: "Catégories" };
 
 async function CategoriesContent({ boutiqueId }: { boutiqueId: string }) {
   const categories = await getBoutiqueCategories(boutiqueId);

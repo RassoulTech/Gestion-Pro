@@ -220,7 +220,7 @@ export function StockClient({ mouvements }: StockClientProps) {
                   <TableHead className="h-14 font-black uppercase text-[10px] tracking-widest pl-4">Produit / SKU</TableHead>
                   <TableHead className="h-14 font-black uppercase text-[10px] tracking-widest text-center">Mouvement</TableHead>
                   <TableHead className="h-14 font-black uppercase text-[10px] tracking-widest text-right">Quantité</TableHead>
-                  <TableHead className="h-14 font-black uppercase text-[10px] tracking-widest text-right pr-8">Source d'origine</TableHead>
+                  <TableHead className="h-14 font-black uppercase text-[10px] tracking-widest text-right pr-8">Source d&apos;origine</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
+ 
 import React from "react";
 import { redirect, notFound } from "next/navigation";
 import Image from "next/image";

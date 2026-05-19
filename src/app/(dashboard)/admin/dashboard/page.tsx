@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import {
   Users,
@@ -20,7 +21,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { PlatformChart } from "./_components/platform-chart";
 import Link from "next/link";
 
-export const metadata = { title: "Admin Dashboard - Control Center" };
+export const metadata: Metadata = { title: "Admin Dashboard - Control Center" };
 
 async function AdminStatsContent() {
   const stats = await getAdminStats();

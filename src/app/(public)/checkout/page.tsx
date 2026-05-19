@@ -177,7 +177,7 @@ export default function CheckoutPage() {
           </Button>
           <div className="space-y-1">
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
-              Finaliser l'achat
+              Finaliser l&apos;achat
             </h1>
             <p className="text-zinc-400 text-sm sm:text-base font-semibold">
               Renseignez vos coordonnées et procédez au paiement sécurisé.
@@ -296,7 +296,7 @@ export default function CheckoutPage() {
                       <div className="flex-1">
                         <p className="text-sm font-black text-white">Créer un compte pour suivre mes commandes</p>
                         <p className="text-[11px] text-zinc-400 font-semibold mt-0.5">
-                          Retrouvez l'historique de vos achats, sauvegardez votre adresse et passez commande plus vite la prochaine fois.
+                          Retrouvez l&apos;historique de vos achats, sauvegardez votre adresse et passez commande plus vite la prochaine fois.
                         </p>
                       </div>
                     </label>
@@ -349,7 +349,7 @@ export default function CheckoutPage() {
                         Wave Mobile
                         <span className="inline-block text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 uppercase">Populaire</span>
                       </h4>
-                      <p className="text-[10px] text-zinc-500 font-bold mt-0.5">Orange, Tigo, Expresso (Côte d'Ivoire, Sénégal...)</p>
+                      <p className="text-[10px] text-zinc-500 font-bold mt-0.5">Orange, Tigo, Expresso (Côte d&apos;Ivoire, Sénégal...)</p>
                     </div>
                   </button>
 
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
             {/* Financial Summary */}
             <div className="border-t border-zinc-800 pt-6 space-y-3.5">
               <div className="flex justify-between items-center text-xs font-bold text-zinc-400">
-                <span>Nombre d'articles :</span>
+                <span>Nombre d&apos;articles :</span>
                 <span className="text-zinc-200">{totalItems}</span>
               </div>
               <div className="flex justify-between items-center text-xs font-bold text-zinc-400">

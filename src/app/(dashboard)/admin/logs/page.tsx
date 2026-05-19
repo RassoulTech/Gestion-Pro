@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getActivityLogs } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
 import { LogsClientView } from "./_components/logs-client-view";
 import { Activity } from "lucide-react";
 
-export const metadata = { title: "Journal d'Audit - Admin" };
+export const metadata: Metadata = { title: "Journal d'Audit - Admin" };
 
 async function LogsContent() {
   const { data: logs, total } = await getActivityLogs();

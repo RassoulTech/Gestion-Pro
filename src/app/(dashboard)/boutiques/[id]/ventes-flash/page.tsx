@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Zap, ShoppingBag } from "lucide-react";
 import { getBoutiqueVentesFlash } from "@/server/queries/commande.queries";
@@ -10,7 +11,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
-export const metadata = { title: "Ventes Flash" };
+export const metadata: Metadata = { title: "Ventes Flash" };
 
 async function VentesFlashContent({ boutiqueId }: { boutiqueId: string }) {
   const { data: ventes } = await getBoutiqueVentesFlash(boutiqueId);

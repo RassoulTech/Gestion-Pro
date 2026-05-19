@@ -50,7 +50,7 @@ function BoutiqueAwareSidebar({
       boutiqueId={finalBoutiqueId}
       boutiqueName={finalBoutiqueName}
       mobileOpen={mobileOpen}
-      onMobileClose={onMobileClose}
+      onMobileCloseAction={onMobileClose}
       role={isAdminRoute ? "ADMIN" : role}
     />
   );
@@ -78,7 +78,7 @@ function BoutiqueAwareHeader(
   return (
     <Header
       boutiqueName={finalBoutiqueName}
-      onToggleSidebar={props.onToggleSidebar}
+      onToggleSidebarAction={props.onToggleSidebar}
       userName={props.userName}
       userEmail={props.userEmail}
       userImage={props.userImage}

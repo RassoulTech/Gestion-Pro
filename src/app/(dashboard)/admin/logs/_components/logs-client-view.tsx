@@ -10,7 +10,7 @@ interface Log {
   id: string;
   action: string;
   subjectType: string | null;
-  subjectId: String | null;
+  subjectId: string | null;
   changes: any;
   ipAddress: string | null;
   userAgent: string | null;

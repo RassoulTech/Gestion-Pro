@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -16,7 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDateTime, cn } from "@/lib/utils";
 
-export const metadata = { title: "Mes commandes — GestionPro" };
+export const metadata: Metadata = { title: "Mes commandes — GestionPro" };
 
 const ETAT_META: Record<
   string,
@@ -59,7 +60,7 @@ export default async function MesCommandesPage() {
         {/* Header */}
         <div className="space-y-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest">
-            <Package className="h-3 w-3" /> Historique d'achats
+            <Package className="h-3 w-3" /> Historique d&apos;achats
           </span>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight">Mes commandes</h1>
           <p className="text-zinc-400 font-semibold text-sm sm:text-base">
@@ -94,7 +95,7 @@ export default async function MesCommandesPage() {
               <ShoppingBag className="h-10 w-10 text-zinc-500" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-xl sm:text-2xl font-black">Aucune commande pour l'instant</h2>
+              <h2 className="text-xl sm:text-2xl font-black">Aucune commande pour l&apos;instant</h2>
               <p className="text-zinc-400 text-sm font-semibold max-w-md mx-auto">
                 Explorez le marketplace pour découvrir des boutiques et passer votre première commande.
               </p>

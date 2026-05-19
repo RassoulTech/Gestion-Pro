@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getMouvementsStock } from "@/server/queries/stock.queries";
 import { TableSkeleton } from "@/components/loading";
@@ -5,7 +6,7 @@ import { StockClient } from "./_components/stock-client";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
-export const metadata = { title: "Mouvements de stock" };
+export const metadata: Metadata = { title: "Mouvements de stock" };
 
 async function StockContent({ boutiqueId }: { boutiqueId: string }) {
   const { data: mouvements } = await getMouvementsStock(boutiqueId, { perPage: 250 });

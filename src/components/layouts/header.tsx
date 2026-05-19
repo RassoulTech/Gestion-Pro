@@ -27,7 +27,7 @@ import {
 
 type HeaderProps = {
   boutiqueName?: string;
-  onToggleSidebar?: () => void;
+  onToggleSidebarAction?: () => void;
   /** Pre-fetched user info from server – used as fallback before session loads */
   userName?: string | null;
   userEmail?: string | null;
@@ -139,7 +139,7 @@ function UserMenu({
 
 export function Header({
   boutiqueName,
-  onToggleSidebar,
+  onToggleSidebarAction,
   userName,
   userEmail,
   userImage,
@@ -160,7 +160,7 @@ export function Header({
         <Button
           variant="ghost"
           size="icon"
-          onClick={onToggleSidebar}
+          onClick={onToggleSidebarAction}
           className="lg:hidden h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
           aria-label="Ouvrir le menu"
         >

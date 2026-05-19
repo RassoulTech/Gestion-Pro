@@ -66,7 +66,7 @@ type SidebarProps = {
   boutiqueId?: string;
   boutiqueName?: string;
   mobileOpen?: boolean;
-  onMobileClose?: () => void;
+  onMobileCloseAction?: () => void;
   role?: string;
 };
 
@@ -307,7 +307,7 @@ export function Sidebar({
   boutiqueId,
   boutiqueName,
   mobileOpen = false,
-  onMobileClose,
+  onMobileCloseAction,
   role,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
@@ -331,7 +331,7 @@ export function Sidebar({
       </aside>
 
       {/* Mobile sheet */}
-      <Sheet open={mobileOpen} onOpenChange={(open) => !open && onMobileClose?.()}>
+      <Sheet open={mobileOpen} onOpenChange={(open) => !open && onMobileCloseAction?.()}>
         <SheetContent side="left" className="w-[220px] p-0">
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation</SheetTitle>
@@ -340,7 +340,7 @@ export function Sidebar({
             boutiqueId={boutiqueId}
             boutiqueName={boutiqueName}
             collapsed={false}
-            onLinkClick={onMobileClose}
+            onLinkClick={onMobileCloseAction}
             role={role}
           />
         </SheetContent>

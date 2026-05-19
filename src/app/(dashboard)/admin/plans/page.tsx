@@ -1,8 +1,9 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { PlansClientView } from "./_components/plans-client-view";
 import { Sparkles } from "lucide-react";
 
-export const metadata = { title: "Plans Tarifaires - Admin" };
+export const metadata: Metadata = { title: "Plans Tarifaires - Admin" };
 
 export default async function AdminPlansPage() {
   const plans = await prisma.plan.findMany({ orderBy: { prix: "asc" } });

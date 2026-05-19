@@ -77,7 +77,7 @@ export function Testimonials() {
 
             <blockquote className="flex-1">
               <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-300 font-semibold italic sm:text-[15px]">
-                "{t.quote}"
+                &quot;{t.quote}&quot;
               </p>
             </blockquote>
 

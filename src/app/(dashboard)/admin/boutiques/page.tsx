@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getAllBoutiques } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
 import { BoutiquesClientTable } from "./_components/boutiques-client-table";
 import { Store } from "lucide-react";
 
-export const metadata = { title: "Boutiques - Admin" };
+export const metadata: Metadata = { title: "Boutiques - Admin" };
 
 async function BoutiquesContent() {
   const { data: boutiques, total } = await getAllBoutiques();

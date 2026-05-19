@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { TrendingUp, Package, Users } from "lucide-react";
 import { getBoutiqueStats, getVentesParJour, getTopProduits } from "@/server/queries/dashboard.queries";
@@ -12,7 +13,7 @@ import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
-export const metadata = { title: "Rapports" };
+export const metadata: Metadata = { title: "Rapports" };
 
 async function RapportsContent({ boutiqueId }: { boutiqueId: string }) {
   const [stats, ventesJour, topProduits] = await Promise.all([

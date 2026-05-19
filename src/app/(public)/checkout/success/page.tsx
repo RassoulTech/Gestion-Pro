@@ -174,7 +174,7 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
               className="w-full h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black shadow-lg shadow-emerald-500/20 border-none transition-transform duration-200 active:scale-95 flex items-center justify-center gap-2"
             >
               <ShoppingBag className="h-5 w-5" />
-              Retourner à l'accueil
+              Retourner à l&apos;accueil
             </Button>
           </Link>
         </div>

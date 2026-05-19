@@ -1,9 +1,10 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getBoutiqueFournisseurs } from "@/server/queries/fournisseur.queries";
 import { TableSkeleton } from "@/components/loading";
 import { FournisseursClient } from "./_components/fournisseurs-client";
 
-export const metadata = { title: "Fournisseurs" };
+export const metadata: Metadata = { title: "Fournisseurs" };
 
 async function FournisseursContent({ boutiqueId }: { boutiqueId: string }) {
   const fournisseurs = await getBoutiqueFournisseurs(boutiqueId);

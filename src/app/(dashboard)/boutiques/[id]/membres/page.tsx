@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -7,7 +8,7 @@ import { Users } from "lucide-react";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
-export const metadata = { title: "Membres" };
+export const metadata: Metadata = { title: "Membres" };
 
 const avatarColors = [
   "bg-brand/10 text-brand",

@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,7 +11,7 @@ import { EmptyState } from "@/components/empty-state";
 import { MarketplaceFilters } from "./_components/marketplace-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 
-export const metadata = { title: "Marketplace Public — GestionPro" };
+export const metadata: Metadata = { title: "Marketplace Public — GestionPro" };
 
 function BoutiqueCardSkeleton() {
   return (

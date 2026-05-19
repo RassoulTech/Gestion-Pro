@@ -283,8 +283,8 @@ function MockPageContent() {
                       value={cardNumber}
                       maxLength={19}
                       onChange={(e) => {
-                        let val = e.target.value.replace(/\D/g, "");
-                        let formatted = val.match(/.{1,4}/g)?.join(" ") || val;
+                        const val = e.target.value.replace(/\D/g, "");
+                        const formatted = val.match(/.{1,4}/g)?.join(" ") || val;
                         setCardNumber(formatted);
                       }}
                       className="h-12 rounded-xl bg-zinc-800/80 border-none font-bold"

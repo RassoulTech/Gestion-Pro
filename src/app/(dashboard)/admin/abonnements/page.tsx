@@ -1,8 +1,9 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { AbonnementsClientTable } from "./_components/abonnements-client-table";
 import { CreditCard } from "lucide-react";
 
-export const metadata = { title: "Abonnements - Admin" };
+export const metadata: Metadata = { title: "Abonnements - Admin" };
 
 export default async function AdminAbonnementsPage() {
   const abonnements = await prisma.abonnement.findMany({

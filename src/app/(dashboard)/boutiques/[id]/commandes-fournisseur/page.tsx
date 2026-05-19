@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Truck, FileText } from "lucide-react";
 import { getBoutiqueCommandesFournisseur } from "@/server/queries/commande.queries";
@@ -8,7 +9,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { TableSkeleton } from "@/components/loading";
 import { EmptyState } from "@/components/empty-state";
 
-export const metadata = { title: "Commandes fournisseur" };
+export const metadata: Metadata = { title: "Commandes fournisseur" };
 
 async function CommandesFournisseurContent({ boutiqueId }: { boutiqueId: string }) {
   const { data: commandes } = await getBoutiqueCommandesFournisseur(boutiqueId);
