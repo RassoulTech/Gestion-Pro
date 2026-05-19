@@ -10,7 +10,17 @@
       "Bash(git pull *)",
       "mcp__claude_ai_Supabase__execute_sql",
       "mcp__claude_ai_Supabase__list_projects",
-      "Bash(findstr /I \"BILLING\")"
+      "Bash(findstr /I \"BILLING\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(findstr \"prix:\")",
+      "Bash(findstr \"monthlyXOF\")",
+      "Bash(findstr \"BILLING_ENABLED\")",
+      "Bash(findstr \"^\\\\.env$\\\\|^\\\\.env\\\\.\")",
+      "Bash(git check-ignore *)",
+      "Bash(gh pr *)",
+      "PowerShell(gh *)",
+      "Bash(git remote *)"
     ]
   }
 }
