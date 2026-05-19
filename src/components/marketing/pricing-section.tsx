@@ -55,7 +55,7 @@ const plans: Plan[] = [
   },
   {
     name: "Enterprise",
-    monthlyXOF: 199000,
+    monthlyXOF: 19900,
     description: "Pour les réseaux de boutiques et multi-équipes.",
     features: [
       "Boutiques illimitées",
