@@ -210,21 +210,6 @@ export default function CheckoutPage() {
                     />
                   </div>
 
-                  {/* Email field */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-emerald-400" /> Email {isLoggedIn ? "" : "(recommandé)"}
-                    </label>
-                    <Input
-                      type="email"
-                      placeholder="mamadou@example.com"
-                      value={emailClient}
-                      onChange={(e) => setEmailClient(e.target.value)}
-                      disabled={isLoggedIn}
-                      className="h-12 rounded-xl bg-zinc-950 border-zinc-800 focus:border-zinc-700 text-white placeholder-zinc-600 font-bold disabled:opacity-60"
-                    />
-                  </div>
-
                   {/* Telephone field */}
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
@@ -240,14 +225,29 @@ export default function CheckoutPage() {
                     />
                   </div>
 
-                  {/* Delivery Address field */}
-                  <div className="space-y-2">
+                  {/* Email field (new) */}
+                  <div className="space-y-2 sm:col-span-2">
                     <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Adresse de livraison *
+                      <Mail className="w-3.5 h-3.5 text-emerald-400" /> Email {isLoggedIn ? "" : "(recommandé)"}
+                    </label>
+                    <Input
+                      type="email"
+                      placeholder="mamadou@example.com"
+                      value={emailClient}
+                      onChange={(e) => setEmailClient(e.target.value)}
+                      disabled={isLoggedIn}
+                      className="h-12 rounded-xl bg-zinc-950 border-zinc-800 focus:border-zinc-700 text-white placeholder-zinc-600 font-bold disabled:opacity-60"
+                    />
+                  </div>
+
+                  {/* Delivery Address field */}
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Adresse de livraison complète *
                     </label>
                     <Input
                       type="text"
-                      placeholder="Dakar Plateau, Rue 12"
+                      placeholder="Dakar Plateau, Rue 12 x Avenue Lamine Gueye"
                       required
                       value={adresseLivraison}
                       onChange={(e) => setAdresseLivraison(e.target.value)}
