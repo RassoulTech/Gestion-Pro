@@ -66,25 +66,30 @@ export default function PublicLayout({
 
       <main className="flex-1">{children}</main>
 
-      {/* ── Footer ─────────────────────────────────────────────────────── */}
-      <footer className="relative border-t border-border/50 bg-background/50 backdrop-blur-md">
-        <div className="container-app py-16 md:py-24">
+      {/* ── Premium Footer ─────────────────────────────────────────────────────── */}
+      <footer className="relative border-t border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl overflow-hidden py-16 md:py-24">
+        {/* Glowing Decorative Radial Orbs */}
+        <div className="absolute -bottom-10 left-1/4 w-96 h-96 bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute -bottom-10 right-1/4 w-96 h-96 bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="container-app relative z-10">
           <div className="grid gap-12 md:grid-cols-12">
-            <div className="md:col-span-4">
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform">
-                  <span className="text-lg font-black">G</span>
+            {/* Brand Card Column */}
+            <div className="md:col-span-4 space-y-6">
+              <Link href="/" className="flex items-center gap-2.5 group self-start">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-emerald-500 text-white shadow-lg shadow-violet-600/20 group-hover:rotate-6 transition-all duration-500">
+                  <span className="text-xl font-black">G</span>
                 </div>
-                <span className="text-xl font-bold tracking-tight text-foreground">
+                <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
                   GestionPro
                 </span>
               </Link>
-              <p className="mt-6 max-w-sm text-base leading-relaxed text-muted-foreground">
-                La solution ultime pour digitaliser votre commerce en Afrique de l&apos;Ouest.
-                Simplicité, fiabilité, croissance.
+              <p className="max-w-sm text-sm font-semibold leading-relaxed text-zinc-500 dark:text-zinc-400">
+                La solution ultime de commerce et gestion pour digitaliser votre commerce en Afrique de l&apos;Ouest. Simplicité, fiabilité, croissance.
               </p>
 
-              <ul className="mt-8 flex gap-4">
+              {/* High-End Social Icons */}
+              <ul className="flex gap-3">
                 {socials.map((s) => {
                   const Icon = s.icon;
                   const isExternal = /^https?:/.test(s.href);
@@ -97,7 +102,7 @@ export default function PublicLayout({
                           target: "_blank",
                           rel: "noopener noreferrer",
                         })}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-all hover:border-brand hover:text-brand hover:-translate-y-1"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 text-zinc-500 dark:text-zinc-400 transition-all hover:bg-violet-600/10 hover:text-violet-600 dark:hover:text-violet-400 hover:border-violet-600/30 hover:-translate-y-1 hover:shadow-md"
                       >
                         <Icon className="h-5 w-5" strokeWidth={1.5} />
                       </a>
@@ -107,22 +112,21 @@ export default function PublicLayout({
               </ul>
             </div>
 
+            {/* Links Columns Grid */}
             <div className="grid grid-cols-2 gap-8 md:col-span-8 md:grid-cols-4">
               {footerColumns.map((col) => (
-                <div key={col.title}>
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-foreground mb-6">
+                <div key={col.title} className="space-y-5">
+                  <h3 className="text-xs font-black uppercase tracking-[0.25em] text-zinc-900 dark:text-zinc-50">
                     {col.title}
                   </h3>
-                  <ul className="space-y-4">
+                  <ul className="space-y-3.5">
                     {col.links.map((l) => {
                       const isExternal = /^https?:|^mailto:/.test(l.href);
+                      const linkClass = "text-sm font-semibold text-zinc-500 dark:text-zinc-400 transition-all hover:text-violet-600 dark:hover:text-violet-400 inline-block hover:translate-x-1";
                       if (isExternal) {
                         return (
                           <li key={l.href}>
-                            <a
-                              href={l.href}
-                              className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
-                            >
+                            <a href={l.href} className={linkClass}>
                               {l.label}
                             </a>
                           </li>
@@ -130,10 +134,7 @@ export default function PublicLayout({
                       }
                       return (
                         <li key={l.href}>
-                          <Link
-                            href={l.href}
-                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
-                          >
+                          <Link href={l.href} className={linkClass}>
                             {l.label}
                           </Link>
                         </li>
@@ -145,15 +146,21 @@ export default function PublicLayout({
             </div>
           </div>
 
-          <div className="mt-20 flex flex-col items-start justify-between gap-6 border-t border-border/50 pt-10 sm:flex-row sm:items-center">
-            <p className="text-sm text-muted-foreground font-medium">
-              © {new Date().getFullYear()} GestionPro. Fabriqué avec passion pour l&apos;Afrique.
+          {/* Divider */}
+          <div className="mt-16 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+            <p className="text-xs text-zinc-400 font-semibold">
+              © {new Date().getFullYear()} GestionPro. Fabriqué avec passion pour l&apos;Afrique. Tous droits réservés.
             </p>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-success/10 border border-success/20">
-                <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                <span className="text-xs font-bold text-success uppercase tracking-wider">Opérationnel</span>
-              </div>
+            
+            {/* Operational Status Pulse */}
+            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-inner">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                Opérationnel
+              </span>
             </div>
           </div>
         </div>

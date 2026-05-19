@@ -67,28 +67,27 @@ function ResetPasswordInner() {
   if (!token) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+        initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.6, ease: EASE }}
         className="space-y-8 text-center"
       >
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10 border border-destructive/20 shadow-inner">
           <AlertTriangle className="h-8 w-8 text-destructive" />
         </div>
 
         <div className="space-y-3">
-          <h1 className="text-3xl font-black tracking-tight text-foreground">
+          <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
             Lien invalide
           </h1>
-          <p className="text-base font-medium text-muted-foreground leading-relaxed">
-            Ce lien de réinitialisation est invalide ou a expiré.
-            Veuillez en demander un nouveau.
+          <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Ce lien de réinitialisation est invalide ou a expiré. Veuillez en demander un nouveau.
           </p>
         </div>
 
         <Link
           href="/forgot-password"
-          className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white transition-all hover:opacity-90 shadow-xl shadow-brand/20"
+          className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-6 py-3.5 text-sm font-black text-white hover:bg-violet-750 transition-all shadow-xl shadow-violet-600/20"
         >
           Demander un nouveau lien
         </Link>
@@ -100,28 +99,27 @@ function ResetPasswordInner() {
   if (success) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+        initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.6, ease: EASE }}
         className="space-y-8 text-center"
       >
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success/10">
-          <CheckCircle className="h-8 w-8 text-success" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 shadow-inner">
+          <CheckCircle className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
         </div>
 
         <div className="space-y-3">
-          <h1 className="text-3xl font-black tracking-tight text-foreground">
+          <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
             Mot de passe modifié !
           </h1>
-          <p className="text-base font-medium text-muted-foreground leading-relaxed">
-            Votre mot de passe a été réinitialisé avec succès.
-            Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
+          <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
           </p>
         </div>
 
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white transition-all hover:opacity-90 shadow-xl shadow-brand/20"
+          className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-6 py-3.5 text-sm font-black text-white hover:bg-violet-750 transition-all shadow-xl shadow-violet-600/20"
         >
           Se connecter
         </Link>
@@ -131,16 +129,16 @@ function ResetPasswordInner() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+      initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.6, ease: EASE }}
       className="space-y-10"
     >
       <div className="space-y-3">
-        <h1 className="text-4xl font-black tracking-tight text-foreground">
+        <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
           Nouveau mot de passe
         </h1>
-        <p className="text-base font-medium text-muted-foreground">
+        <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
           Choisissez un nouveau mot de passe sécurisé pour votre compte.
         </p>
       </div>
@@ -152,14 +150,14 @@ function ResetPasswordInner() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                   Nouveau mot de passe
                 </FormLabel>
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
                     placeholder="8 caractères minimum"
-                    className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
+                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50"
                     {...field}
                   />
                 </FormControl>
@@ -173,14 +171,14 @@ function ResetPasswordInner() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                  Confirmer
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                  Confirmer le mot de passe
                 </FormLabel>
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
                     placeholder="Retapez le mot de passe"
-                    className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
+                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50"
                     {...field}
                   />
                 </FormControl>
@@ -193,18 +191,18 @@ function ResetPasswordInner() {
             type="submit"
             variant="brand"
             size="xl"
-            className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-brand/20 active-press"
+            className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-violet-600/20 bg-violet-600 text-white hover:bg-violet-750 border-none transition-all active-press"
             loading={loading}
           >
-            {loading ? "Réinitialisation…" : "Réinitialiser"}
+            {loading ? "Réinitialisation…" : "Réinitialiser le mot de passe"}
           </Button>
         </form>
       </Form>
 
-      <p className="text-center text-sm font-bold text-muted-foreground">
+      <p className="text-center text-sm font-bold text-zinc-500 dark:text-zinc-400">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-brand hover:underline underline-offset-4"
+          className="inline-flex items-center gap-2 text-violet-600 dark:text-violet-400 hover:underline underline-offset-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Retour à la connexion

@@ -70,28 +70,29 @@ export function FAQ() {
         className="mx-auto mt-14 max-w-3xl divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card"
       >
         {faqs.map((qa) => (
-          <motion.details
+          <motion.div
             key={qa.question}
             variants={itemVariants}
-            className="group [&_summary::-webkit-details-marker]:hidden"
           >
-            <summary
-              className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-7"
-            >
-              <span className="text-base font-medium text-foreground">
-                {qa.question}
-              </span>
-              <span
-                aria-hidden="true"
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-transform duration-200 group-open:rotate-45 group-open:border-brand group-open:text-brand"
+            <details className="group [&_summary::-webkit-details-marker]:hidden border-b border-border last:border-none">
+              <summary
+                className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-7"
               >
-                <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-              </span>
-            </summary>
-            <div className="px-6 pb-6 pr-14 text-sm leading-relaxed text-muted-foreground sm:px-7">
-              {qa.answer}
-            </div>
-          </motion.details>
+                <span className="text-base font-medium text-foreground">
+                  {qa.question}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-transform duration-200 group-open:rotate-45 group-open:border-brand group-open:text-brand"
+                >
+                  <Plus className="h-3.5 w-3.5" strokeWidth={2} />
+                </span>
+              </summary>
+              <div className="px-6 pb-6 pr-14 text-sm leading-relaxed text-muted-foreground sm:px-7">
+                {qa.answer}
+              </div>
+            </details>
+          </motion.div>
         ))}
       </motion.div>
     </Section>

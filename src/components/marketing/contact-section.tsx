@@ -34,6 +34,8 @@ const contactSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 export function ContactSection() {
   const [loading, setLoading] = useState(false);
 
@@ -66,40 +68,77 @@ export function ContactSection() {
   }
 
   return (
-    <Section id="contact" className="bg-zinc-50/50 dark:bg-zinc-900/50">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
-            Contactez-nous
+    <Section id="contact" className="relative overflow-hidden bg-zinc-50/30 dark:bg-zinc-950/20 py-24 md:py-32">
+      {/* Decorative Glow */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-600/5 blur-[150px] rounded-full pointer-events-none" />
+
+      <div className="mx-auto max-w-5xl z-10 relative">
+        <div className="mb-16 text-center max-w-2xl mx-auto">
+          <span className="inline-flex items-center gap-2 rounded-full bg-violet-500/10 px-4.5 py-1.5 text-xs font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-4">
+            Une question ?
+          </span>
+          <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+            Contactez <span className="text-shimmer">notre équipe.</span>
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Une question ? Un besoin spécifique ? Notre équipe est là pour vous accompagner.
+          <p className="mt-4 text-base font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Besoin d&apos;un conseil, d&apos;une démonstration personnalisée ou d&apos;un accompagnement ? Nos experts sont là pour propulser votre commerce.
           </p>
         </div>
 
-        <div className="grid gap-12 md:grid-cols-5">
-          <div className="md:col-span-2 space-y-8">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
-                <Mail className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="font-bold">Email</h3>
-                <p className="text-sm text-muted-foreground">contact@gestionpro.africa</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
-                <MessageSquare className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="font-bold">Support</h3>
-                <p className="text-sm text-muted-foreground">Disponible 7j/7 via WhatsApp</p>
-              </div>
-            </div>
+        <div className="grid gap-8 md:grid-cols-5 items-start">
+          {/* Contact Details */}
+          <div className="md:col-span-2 space-y-4">
+            {[
+              {
+                icon: <Mail className="h-6 w-6 text-violet-600 dark:text-violet-400" />,
+                title: "Email direct",
+                value: "contact@gestionpro.africa",
+                desc: "Réponse en moins de 24 heures",
+                href: "mailto:contact@gestionpro.africa"
+              },
+              {
+                icon: <MessageSquare className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />,
+                title: "Support WhatsApp",
+                value: "+221 77 000 00 00",
+                desc: "Conseillers disponibles 7j/7",
+                href: "https://wa.me/221770000000"
+              }
+            ].map((card, idx) => (
+              <motion.a
+                key={idx}
+                href={card.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, ease: EASE, delay: idx * 0.15 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                className="block p-6 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl hover:border-zinc-300 dark:hover:border-zinc-700/80 shadow-md transition-all duration-300"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200/20 dark:border-zinc-700/20 shadow-inner">
+                    {card.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-zinc-900 dark:text-zinc-50 text-sm">{card.title}</h3>
+                    <p className="font-black text-base text-zinc-800 dark:text-zinc-200 mt-0.5">{card.value}</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold mt-0.5">{card.desc}</p>
+                  </div>
+                </div>
+              </motion.a>
+            ))}
           </div>
 
-          <div className="md:col-span-3">
+          {/* Form */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="md:col-span-3 p-8 md:p-10 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl shadow-lg"
+          >
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid gap-6 sm:grid-cols-2">
@@ -108,9 +147,13 @@ export function ContactSection() {
                     name="nom"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nom complet</FormLabel>
+                        <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Nom complet</FormLabel>
                         <FormControl>
-                          <Input placeholder="Votre nom" {...field} className="rounded-xl border-none bg-background shadow-sm" />
+                          <Input 
+                            placeholder="Votre nom" 
+                            {...field} 
+                            className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50" 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -121,9 +164,13 @@ export function ContactSection() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="votre@email.com" {...field} className="rounded-xl border-none bg-background shadow-sm" />
+                          <Input 
+                            placeholder="votre@email.com" 
+                            {...field} 
+                            className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50" 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -135,9 +182,13 @@ export function ContactSection() {
                   name="sujet"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Sujet</FormLabel>
+                      <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Sujet</FormLabel>
                       <FormControl>
-                        <Input placeholder="De quoi s'agit-il ?" {...field} className="rounded-xl border-none bg-background shadow-sm" />
+                        <Input 
+                          placeholder="De quoi s'agit-il ?" 
+                          {...field} 
+                          className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50" 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -148,11 +199,11 @@ export function ContactSection() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Message</FormLabel>
+                      <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Message</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Dites-nous tout..."
-                          className="min-h-[150px] rounded-xl border-none bg-background shadow-sm"
+                          className="min-h-[140px] rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 p-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50 resize-none"
                           {...field}
                         />
                       </FormControl>
@@ -160,13 +211,18 @@ export function ContactSection() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" variant="brand" className="w-full h-12 rounded-xl font-bold" loading={loading}>
+                <Button 
+                  type="submit" 
+                  variant="brand" 
+                  className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-violet-600/20 bg-violet-600 text-white hover:bg-violet-750 border-none transition-all duration-300" 
+                  loading={loading}
+                >
                   Envoyer le message
-                  <Send className="ml-2 h-4 w-4" />
+                  <Send className="ml-2 h-4.5 w-4.5" />
                 </Button>
               </form>
             </Form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </Section>
