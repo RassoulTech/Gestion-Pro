@@ -126,16 +126,16 @@ export const createMarketplaceCommande = actionClient
       }
 
       for (const [boutiqueId, boutiqueItems] of Object.entries(itemsByBoutique)) {
-        // Find existing client by phone (or by email if available)
+        // Find existing client deterministically: phone is the strongest identifier
+        // (mobile-money flows). Fall back to email only when there is no phone match.
         let client = await tx.client.findFirst({
-          where: {
-            boutiqueId,
-            OR: [
-              { telephone: telephoneClient },
-              ...(emailClient ? [{ email: emailClient }] : []),
-            ],
-          },
+          where: { boutiqueId, telephone: telephoneClient },
         });
+        if (!client && emailClient) {
+          client = await tx.client.findFirst({
+            where: { boutiqueId, email: emailClient },
+          });
+        }
 
         if (client) {
           // Enrich client with any missing data from this order
@@ -238,6 +238,7 @@ export const createMarketplaceCommande = actionClient
         return {
           success: true,
           paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=STRIPE&ids=${createdCommandeIds.join(",")}`,
+          accountCreatedEmail: willCreateAccount ? emailClient : undefined,
         };
       }
 
@@ -275,6 +276,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: stripeSession.url || undefined,
+        accountCreatedEmail: willCreateAccount ? emailClient : undefined,
       };
     }
 
@@ -303,6 +305,7 @@ export const createMarketplaceCommande = actionClient
           return {
             success: true,
             paymentUrl: cpResponse.data.payment_url,
+            accountCreatedEmail: willCreateAccount ? emailClient : undefined,
           };
         }
       }
@@ -315,6 +318,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=${paymentMethod}&ids=${createdCommandeIds.join(",")}`,
+        accountCreatedEmail: willCreateAccount ? emailClient : undefined,
       };
     }
 
@@ -329,6 +333,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=PAYPAL&ids=${createdCommandeIds.join(",")}`,
+        accountCreatedEmail: willCreateAccount ? emailClient : undefined,
       };
     }
 
@@ -336,6 +341,7 @@ export const createMarketplaceCommande = actionClient
     return {
       success: true,
       paymentUrl: `/checkout/success?success=true&method=cod&ids=${createdCommandeIds.join(",")}`,
+      accountCreatedEmail: willCreateAccount ? emailClient : undefined,
     };
   });
 

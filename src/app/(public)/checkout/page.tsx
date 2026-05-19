@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import {
   ArrowLeft, ShoppingBag, Loader2, ShieldCheck,
@@ -125,9 +125,23 @@ export default function CheckoutPage() {
 
         if (result?.data?.success) {
           toast.success("Commande enregistrée avec succès !");
-          
+
           // Clear cart immediately upon successful action call
           clearCart();
+
+          // If we just created an account for this buyer, sign them in silently
+          // so they land on /mes-commandes already authenticated.
+          if (result.data.accountCreatedEmail && password) {
+            try {
+              await signIn("credentials", {
+                email: result.data.accountCreatedEmail,
+                password,
+                redirect: false,
+              });
+            } catch (signInErr) {
+              console.warn("Auto sign-in after account creation failed:", signInErr);
+            }
+          }
 
           // Redirect client to payment URL or success screen
           if (result.data.paymentUrl) {
