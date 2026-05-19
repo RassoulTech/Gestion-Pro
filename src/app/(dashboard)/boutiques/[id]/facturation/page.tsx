@@ -84,7 +84,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
       {/* Header / Hero */}
       <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] bg-zinc-950 p-6 sm:p-12 text-white shadow-2xl">
         <div className="absolute right-0 top-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-brand/30 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-indigo-500/20 blur-[100px]" />
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-slate-500/10 blur-[100px]" />
 
         <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="space-y-4">
@@ -297,7 +297,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                             <span className="inline-flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-md text-[10px] font-black uppercase text-slate-600 dark:text-zinc-400">
                               {payment.methode === "STRIPE" ? (
                                 <>
-                                  <CreditCard className="h-3 w-3 text-indigo-500" /> Stripe
+                                  <CreditCard className="h-3 w-3 text-brand" /> Stripe
                                 </>
                               ) : (
                                 <>

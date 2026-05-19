@@ -12,8 +12,8 @@ import { EtatActions } from "./_components/etat-actions";
 
 const PAYMENT_LABELS: Record<string, { label: string; icon: typeof CreditCard; color: string }> = {
   WAVE: { label: "Wave", icon: Smartphone, color: "text-sky-500" },
-  ORANGE_MONEY: { label: "Orange Money", icon: Smartphone, color: "text-orange-500" },
-  STRIPE: { label: "Carte bancaire (Stripe)", icon: CreditCard, color: "text-indigo-500" },
+  ORANGE_MONEY: { label: "Orange Money", icon: Smartphone, color: "text-amber-500" },
+  STRIPE: { label: "Carte bancaire (Stripe)", icon: CreditCard, color: "text-blue-500" },
   PAYPAL: { label: "PayPal", icon: CreditCard, color: "text-blue-500" },
   CASH_ON_DELIVERY: { label: "Paiement à la livraison", icon: Wallet, color: "text-emerald-500" },
 };

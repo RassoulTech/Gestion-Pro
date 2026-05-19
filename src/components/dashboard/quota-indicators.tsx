@@ -33,7 +33,7 @@ export function UpgradeBanner({ currentPlanName, essaiFin, className }: UpgradeB
     <>
       <div
         className={cn(
-          "relative overflow-hidden rounded-2xl p-4 bg-gradient-to-r from-brand/10 via-rose-500/5 to-transparent border border-brand/20 dark:border-brand/30 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md",
+          "relative overflow-hidden rounded-2xl p-4 bg-gradient-to-r from-brand/10 via-slate-500/5 to-transparent border border-brand/20 dark:border-brand/30 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md",
           className
         )}
       >
@@ -162,7 +162,7 @@ export function FeatureLock({
   return (
     <>
       <div className={cn("relative group cursor-not-allowed", className)} onClick={() => setModalOpen(true)}>
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-brand to-rose-500 rounded-xl blur opacity-0 group-hover:opacity-10 transition duration-500" />
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-brand to-slate-800 rounded-xl blur opacity-0 group-hover:opacity-10 transition duration-500" />
         
         {/* Lock Overlay Badge */}
         <div className="absolute top-2 right-2 z-10 h-6 w-6 rounded-lg bg-zinc-950/80 border border-white/10 flex items-center justify-center text-brand shadow backdrop-blur-sm">

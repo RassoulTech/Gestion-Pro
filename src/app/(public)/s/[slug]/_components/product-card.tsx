@@ -95,7 +95,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
           
           <Button
             size="sm"
-            className="rounded-xl px-3 h-9 font-extrabold text-[11px] bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-none shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300"
+            className="rounded-xl px-3 h-9 font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300"
             onClick={handleAddToCart}
             disabled={produit.quantite <= 0}
           >

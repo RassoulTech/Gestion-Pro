@@ -30,7 +30,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
   return (
     <div className="relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/80 p-6 shadow-lg shadow-zinc-100/50 backdrop-blur-md transition-all duration-300 hover:shadow-xl dark:border-zinc-800/60 dark:bg-zinc-950/80 dark:shadow-none">
       {/* Decorative gradient glowing orb inside the card */}
-      <div className="absolute -right-32 -top-32 -z-10 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl" />
+      <div className="absolute -right-32 -top-32 -z-10 h-64 w-64 rounded-full bg-brand/10 blur-3xl" />
       <div className="absolute -left-32 -bottom-32 -z-10 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -39,7 +39,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
             <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
               Activité & Croissance
             </h3>
-            <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-700 dark:bg-violet-950/30 dark:text-violet-300">
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 border border-brand/20 px-2 py-0.5 text-[10px] font-black text-brand">
               <TrendingUp className="h-3 w-3" /> +24% ce mois
             </span>
           </div>
@@ -49,7 +49,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 px-3 py-1.5 dark:border-zinc-900 dark:bg-zinc-900/50">
-            <span className="h-2 w-2 rounded-full bg-violet-600 shadow-[0_0_8px_#7c3aed] dark:bg-violet-500" />
+            <span className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_#2563eb]" />
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
               Revenus : {formatCurrency(revenuMensuel)}/mois
             </span>
@@ -68,8 +68,8 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
           <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorInscriptions" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
@@ -109,10 +109,10 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between gap-6">
                           <span className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-                            <span className="h-1.5 w-1.5 rounded-full bg-violet-600" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
                             Revenus
                           </span>
-                          <span className="text-xs font-bold text-violet-700 dark:text-violet-400">
+                          <span className="text-xs font-bold text-brand">
                             {formatCurrency(val0 as number)}
                           </span>
                         </div>
@@ -135,7 +135,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
             <Area
               type="monotone"
               dataKey="Revenus"
-              stroke="#7c3aed"
+              stroke="#2563eb"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorRevenus)"

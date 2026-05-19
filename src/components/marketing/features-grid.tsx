@@ -22,7 +22,7 @@ export function FeaturesGrid() {
   return (
     <Section id="fonctionnalites" tone="default" size="xl" className="relative overflow-hidden">
       {/* Decorative Glow Spotlights */}
-      <div className="absolute top-1/3 left-0 w-96 h-96 bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/3 left-0 w-96 h-96 bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
       <SectionHeader
@@ -40,11 +40,11 @@ export function FeaturesGrid() {
         {/* Large Feature: POS */}
         <BentoCard
           className="md:col-span-4 md:row-span-1"
-          icon={<Zap className="w-6 h-6 text-violet-600 dark:text-violet-400" />}
+          icon={<Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
           title="POS Caisses Ultra-Rapide"
           description="Enregistrez vos ventes en un éclair. Synchronisation instantanée avec votre stock et votre comptabilité, même hors-ligne."
           visual={<POSVisual />}
-          accentColor="rgba(124, 58, 237, 0.15)"
+          accentColor="rgba(37, 99, 235, 0.15)"
         />
 
         {/* Medium Feature: Stock */}
@@ -70,11 +70,11 @@ export function FeaturesGrid() {
         {/* Medium Feature: Marketplace */}
         <BentoCard
           className="md:col-span-4 md:row-span-1"
-          icon={<Globe className="w-6 h-6 text-amber-600 dark:text-amber-400" />}
+          icon={<Globe className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
           title="Marketplace Intégré"
           description="Déployez votre vitrine en ligne en un clic. Vos clients locaux commandent directement, vous encaissez et livrez."
           visual={<MarketplaceVisual />}
-          accentColor="rgba(245, 158, 11, 0.15)"
+          accentColor="rgba(37, 99, 235, 0.15)"
         />
       </div>
     </Section>
@@ -87,7 +87,7 @@ function BentoCard({
   icon, 
   visual, 
   className,
-  accentColor = "rgba(124, 58, 237, 0.1)"
+  accentColor = "rgba(37, 99, 235, 0.1)"
 }: { 
   title: string; 
   description: string; 
@@ -103,7 +103,7 @@ function BentoCard({
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: EASE }}
       className={cn(
-        "group relative overflow-hidden rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 p-8 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700/80 transition-all duration-500 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:shadow-violet-600/[0.02]",
+        "group relative overflow-hidden rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 p-8 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700/80 transition-all duration-500 backdrop-blur-xl shadow-lg hover:shadow-2xl hover:shadow-blue-600/[0.02]",
         className
       )}
     >
@@ -135,7 +135,7 @@ function BentoCard({
       )}
 
       {/* Edge border hover glow */}
-      <div className="absolute inset-0 border border-transparent rounded-3xl group-hover:border-violet-600/10 dark:group-hover:border-violet-400/10 pointer-events-none transition-colors duration-500" />
+      <div className="absolute inset-0 border border-transparent rounded-3xl group-hover:border-blue-600/10 dark:group-hover:border-blue-400/10 pointer-events-none transition-colors duration-500" />
     </motion.div>
   );
 }
@@ -146,8 +146,8 @@ function POSVisual() {
       {/* Glassmorphic simulated POS interface */}
       <div className="w-full bg-white/70 dark:bg-zinc-900/80 backdrop-blur-md rounded-xl border border-zinc-200/40 dark:border-zinc-800/40 p-3 space-y-2.5 shadow-lg shadow-black/[0.02]">
         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800/50 pb-2">
-          <div className="h-3.5 w-24 bg-violet-600/10 dark:bg-violet-400/10 rounded-md animate-pulse" />
-          <span className="text-[10px] font-black text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-full">Panier</span>
+          <div className="h-3.5 w-24 bg-blue-600/10 dark:bg-blue-400/10 rounded-md animate-pulse" />
+          <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">Panier</span>
         </div>
         <div className="space-y-1.5">
           {[
@@ -214,7 +214,7 @@ function MultiStoreVisual() {
     <div className="absolute inset-0 flex items-center justify-center gap-4 px-6">
       {[
         { name: "Dakar", value: "Actif", bg: "bg-sky-500/10 border-sky-500/20 text-sky-600 dark:text-sky-400" },
-        { name: "Abidjan", value: "Actif", bg: "bg-violet-500/10 border-violet-500/20 text-violet-600 dark:text-violet-400" }
+        { name: "Abidjan", value: "Actif", bg: "bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400" }
       ].map((store, i) => (
         <motion.div
           key={store.name}

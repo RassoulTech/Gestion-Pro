@@ -23,13 +23,13 @@ function getPlanDesign(nomPlan: string) {
   const name = nomPlan.toLowerCase();
   if (name.includes("pro") || name.includes("premium") || name.includes("gold") || name.includes("avance")) {
     return {
-      gradient: "from-violet-600/10 via-indigo-600/5 to-transparent",
-      accentBorder: "border-violet-500/40 dark:border-violet-500/60 shadow-[0_0_20px_rgba(124,58,237,0.15)]",
+      gradient: "from-blue-600/10 via-sky-600/5 to-transparent",
+      accentBorder: "border-blue-500/40 dark:border-blue-500/60 shadow-[0_0_20px_rgba(37,99,235,0.15)]",
       textClass: "text-zinc-950 dark:text-zinc-50",
-      badgeColor: "bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-none shadow-[0_0_12px_rgba(124,58,237,0.4)]",
+      badgeColor: "bg-gradient-to-r from-blue-600 to-sky-600 text-white border-none shadow-[0_0_12px_rgba(37,99,235,0.4)]",
       icon: Flame,
-      iconColor: "text-violet-600 dark:text-violet-400",
-      bgGlow: "bg-gradient-to-tr from-violet-600/20 to-indigo-600/20",
+      iconColor: "text-blue-600 dark:text-blue-400",
+      bgGlow: "bg-gradient-to-tr from-blue-600/20 to-sky-600/20",
       popular: true,
     };
   }
@@ -79,7 +79,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
             {/* Popular/Featured Banner */}
             {design.popular && (
               <div className="absolute right-0 top-0 h-16 w-16 overflow-hidden">
-                <div className="absolute top-3 right-[-31px] w-24 rotate-45 bg-gradient-to-r from-violet-600 to-indigo-600 text-[9px] font-black text-center text-white py-1 uppercase tracking-wider shadow-md">
+                <div className="absolute top-3 right-[-31px] w-24 rotate-45 bg-gradient-to-r from-blue-600 to-sky-600 text-[9px] font-black text-center text-white py-1 uppercase tracking-wider shadow-md">
                   Recommandé
                 </div>
               </div>

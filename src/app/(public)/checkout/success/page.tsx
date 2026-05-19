@@ -46,7 +46,7 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
         <div className="absolute top-10 left-[10%] w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
         <div className="absolute top-32 right-[20%] w-3 h-3 bg-blue-400 rounded-full animate-bounce" />
         <div className="absolute bottom-40 left-[15%] w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse" />
-        <div className="absolute bottom-20 right-[15%] w-3 h-3 bg-purple-400 rounded-full animate-ping" />
+        <div className="absolute bottom-20 right-[15%] w-3 h-3 bg-sky-400 rounded-full animate-ping" />
       </div>
 
       <div className="w-full max-w-2xl relative z-10 space-y-8 mt-6">

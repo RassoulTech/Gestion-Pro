@@ -31,7 +31,7 @@ const buttonVariants = cva(
         brand:
           "bg-brand text-brand-foreground shadow-sm hover:bg-brand/90 hover:shadow-md hover:shadow-brand/20",
         premium:
-          "bg-gradient-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md hover:shadow-lg hover:shadow-blue-500/25 hover:shadow-purple-500/25 hover:-translate-y-0.5 transition-all duration-300",
+          "bg-gradient-to-r from-[#2563EB] to-[#1E3A8A] text-white shadow-md hover:shadow-lg hover:shadow-blue-500/25 hover:shadow-sky-500/25 hover:-translate-y-0.5 transition-all duration-300",
         "brand-outline":
           "border border-brand/40 bg-transparent text-brand shadow-xs hover:border-brand hover:bg-brand/5",
         destructive:

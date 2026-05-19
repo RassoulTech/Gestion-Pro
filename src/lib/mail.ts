@@ -37,9 +37,9 @@ const getEmailWrapper = (title: string, content: string, footerNote?: string) =>
         <tr>
           <td align="center">
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06); border: 1px solid #f1f5f9;">
-              <!-- Beautiful Gradient Header Bar -->
+              <!-- Beautiful Brand Blue Gradient Header Bar -->
               <tr>
-                <td style="background: linear-gradient(135deg, #7c3aed 0%, #10b981 100%); height: 8px;"></td>
+                <td style="background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); height: 8px;"></td>
               </tr>
               
               <!-- Brand Identity Section -->
@@ -48,7 +48,7 @@ const getEmailWrapper = (title: string, content: string, footerNote?: string) =>
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td align="center">
-                        <div style="display: flex; align-items: center; justify-content: center; height: 52px; w-width: 52px; width: 52px; background: linear-gradient(135deg, #7c3aed 0%, #10b981 100%); border-radius: 16px; margin-bottom: 16px; box-shadow: 0 8px 16px -4px rgba(124, 58, 237, 0.25);">
+                        <div style="display: flex; align-items: center; justify-content: center; height: 52px; width: 52px; background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); border-radius: 16px; margin-bottom: 16px; box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.25);">
                           <span style="font-family: sans-serif; font-size: 26px; font-weight: 900; color: #ffffff; line-height: 52px; text-align: center; display: block; width: 52px;">G</span>
                         </div>
                         <span style="display: block; font-size: 20px; font-weight: 900; tracking-spacing: -0.025em; color: #0f172a; margin-top: 10px;">GestionPro</span>
@@ -122,7 +122,7 @@ export const sendVerificationEmail = async (
       Bienvenue à bord ! Nous sommes ravis de vous compter parmi nous. Pour finaliser la création de votre compte et démarrer l'aventure, veuillez vérifier votre adresse email.
     </p>
     <div style="text-align: center; margin: 32px 0;">
-      <a href="${confirmLink}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(124, 58, 237, 0.4); transition: all 0.2s ease;">
+      <a href="${confirmLink}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.4); transition: all 0.2s ease;">
         Confirmer mon adresse email
       </a>
     </div>
@@ -130,8 +130,8 @@ export const sendVerificationEmail = async (
       <p style="margin: 0 0 8px 0; font-size: 12px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
         Un problème avec le bouton ?
       </p>
-      <p style="margin: 0; font-size: 13px; color: #7c3aed; font-weight: 600; word-break: break-all;">
-        <a href="${confirmLink}" style="color: #7c3aed; text-decoration: none;">${confirmLink}</a>
+      <p style="margin: 0; font-size: 13px; color: #2563eb; font-weight: 600; word-break: break-all;">
+        <a href="${confirmLink}" style="color: #2563eb; text-decoration: none;">${confirmLink}</a>
       </p>
     </div>
   `;
@@ -184,7 +184,7 @@ export const sendContactNotificationEmail = async (
   const message = escapeHtml(payload.message).replace(/\n/g, "<br/>");
 
   const htmlContent = `
-    <h2 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 800; color: #0f172a; border-left: 4px solid #10b981; padding-left: 12px;">
+    <h2 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 800; color: #0f172a; border-left: 4px solid #2563eb; padding-left: 12px;">
       Nouveau message visiteur
     </h2>
     <p style="margin: 0 0 24px 0; font-size: 14px; color: #64748b; font-weight: 500;">
@@ -198,8 +198,8 @@ export const sendContactNotificationEmail = async (
       </tr>
       <tr>
         <td style="padding: 12px 16px; background-color: #f8fafc; font-size: 13px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Adresse Email</td>
-        <td style="padding: 12px 16px; font-size: 14px; font-weight: 600; color: #7c3aed; border-bottom: 1px solid #f1f5f9;">
-          <a href="mailto:${emailFromVisitor}" style="color: #7c3aed; text-decoration: none;">${emailFromVisitor}</a>
+        <td style="padding: 12px 16px; font-size: 14px; font-weight: 600; color: #2563eb; border-bottom: 1px solid #f1f5f9;">
+          <a href="mailto:${emailFromVisitor}" style="color: #2563eb; text-decoration: none;">${emailFromVisitor}</a>
         </td>
       </tr>
       <tr>
@@ -250,7 +250,7 @@ export const sendContactAutoReplyEmail = async (
     </p>
     
     <div style="text-align: center; margin: 32px 0;">
-      <a href="${domain}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.4); transition: all 0.2s ease;">
+      <a href="${domain}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.4); transition: all 0.2s ease;">
         Visiter notre site web
       </a>
     </div>
@@ -295,7 +295,7 @@ export const sendPasswordResetEmail = async (
       Vous avez demandé la réinitialisation de votre mot de passe pour votre compte GestionPro. Cliquez sur le bouton ci-dessous pour configurer un nouveau mot de passe.
     </p>
     <div style="text-align: center; margin: 32px 0;">
-      <a href="${resetLink}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(124, 58, 237, 0.4); transition: all 0.2s ease;">
+      <a href="${resetLink}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.4); transition: all 0.2s ease;">
         Réinitialiser mon mot de passe
       </a>
     </div>
@@ -304,8 +304,8 @@ export const sendPasswordResetEmail = async (
       <p style="margin: 0 0 8px 0; font-size: 12px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
         Ce lien expirera dans 1 heure. Un problème de bouton ?
       </p>
-      <p style="margin: 0; font-size: 13px; color: #7c3aed; font-weight: 600; word-break: break-all;">
-        <a href="${resetLink}" style="color: #7c3aed; text-decoration: none;">${resetLink}</a>
+      <p style="margin: 0; font-size: 13px; color: #2563eb; font-weight: 600; word-break: break-all;">
+        <a href="${resetLink}" style="color: #2563eb; text-decoration: none;">${resetLink}</a>
       </p>
     </div>
   `;

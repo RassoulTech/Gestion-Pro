@@ -57,7 +57,7 @@ async function BoutiqueGrid({
           <Link key={boutique.id} href={`/s/${boutique.slug}`} className="group flex">
             <div className="w-full relative flex flex-col p-7 rounded-[2.5rem] border border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-2xl hover:border-blue-500/30 hover:-translate-y-2.5 transition-all duration-500 ease-out overflow-hidden">
               {/* Decorative premium hover glow */}
-              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#2563EB]/10 to-[#7C3AED]/10 blur-3xl rounded-full group-hover:scale-175 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#2563EB]/10 to-sky-500/10 blur-3xl rounded-full group-hover:scale-175 transition-transform duration-700 pointer-events-none" />
               
               <div className="relative z-10 flex flex-col h-full justify-between">
                 
@@ -147,7 +147,7 @@ export default async function MarketplacePage({
         
         {/* Giant premium Hero Header */}
         <div className="max-w-3xl mx-auto text-center space-y-6 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-gradient-to-r from-blue-500/10 to-sky-500/10 rounded-full blur-[120px] pointer-events-none" />
           
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 text-xs font-extrabold text-blue-500 uppercase tracking-widest relative z-10 animate-fade-in">
             <Sparkles className="w-4 h-4" />
@@ -156,7 +156,7 @@ export default async function MarketplacePage({
           
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] relative z-10">
             Explorez notre <br />
-            <span className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">Marketplace.</span>
+            <span className="bg-gradient-to-r from-[#2563EB] to-sky-500 bg-clip-text text-transparent">Marketplace.</span>
           </h1>
           
           <p className="text-base sm:text-lg text-slate-500 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed relative z-10 font-medium">

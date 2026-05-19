@@ -118,7 +118,7 @@ function MockPageContent() {
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-white font-sans">
       {/* Dynamic light glows in background */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {success && <ConfettiEffect />}
 
@@ -217,13 +217,13 @@ function MockPageContent() {
             {/* ORANGE MONEY MOCK INTERFACE */}
             {method === "ORANGE_MONEY" && (
               <div className="space-y-6">
-                <div className="p-6 rounded-2xl bg-orange-600 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
+                <div className="p-6 rounded-2xl bg-amber-600 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
                   <div className="h-14 w-14 rounded-full bg-white/20 flex items-center justify-center border border-white/30 text-white font-black text-xl shadow-inner">
                     🍊
                   </div>
                   <div className="text-center space-y-1">
                     <p className="text-xs font-black uppercase tracking-widest opacity-80">Orange Money</p>
-                    <p className="text-xs text-orange-200 font-bold">Pour confirmer, tapez le code secret reçu par SMS</p>
+                    <p className="text-xs text-amber-200 font-bold">Pour confirmer, tapez le code secret reçu par SMS</p>
                   </div>
                 </div>
 
@@ -243,7 +243,7 @@ function MockPageContent() {
                   <Button
                     disabled={omCode.length < 6 || loading}
                     onClick={handlePaymentSuccess}
-                    className="w-full h-14 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-600/20 border-none"
+                    className="w-full h-14 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-black shadow-lg shadow-amber-600/20 border-none"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                     Valider le Paiement Orange Money

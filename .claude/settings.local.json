@@ -20,7 +20,9 @@
       "Bash(git check-ignore *)",
       "Bash(gh pr *)",
       "PowerShell(gh *)",
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/)"
     ]
   }
 }

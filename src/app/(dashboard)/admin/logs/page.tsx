@@ -18,8 +18,8 @@ export default function AdminLogsPage() {
       <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0 border-b border-zinc-100 pb-6 dark:border-zinc-900">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="rounded-xl bg-violet-50 p-2 dark:bg-violet-950/30">
-              <Activity className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+            <div className="rounded-xl bg-blue-50 p-2 dark:bg-blue-950/30">
+              <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
               Journal d&apos;Audit Plateforme

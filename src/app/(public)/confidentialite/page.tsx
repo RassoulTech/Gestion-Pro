@@ -27,7 +27,7 @@ export default function ConfidentialitePage() {
   return (
     <div className="relative pt-32 pb-24 overflow-hidden">
       {/* Decorative Blur */}
-      <div className="absolute top-1/4 left-10 w-[300px] h-[300px] bg-violet-600/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-10 w-[300px] h-[300px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10 space-y-16">
         {/* --- Hero Section --- */}
@@ -37,7 +37,7 @@ export default function ConfidentialitePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE }}
           >
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-black uppercase tracking-widest border border-violet-500/20">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-500/20">
               <Scale className="h-3 w-3" /> Protection de la Vie Privée
             </span>
           </motion.div>
@@ -72,16 +72,16 @@ export default function ConfidentialitePage() {
           >
             <div className="p-6 rounded-3xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-xl shadow-sm space-y-4">
               <h3 className="text-xs font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
-                <FileText className="h-4 w-4 text-violet-600" /> Table des matières
+                <FileText className="h-4 w-4 text-blue-600" /> Table des matières
               </h3>
               <ul className="space-y-2">
                 {sections.map((sec) => (
                   <li key={sec.id}>
                     <button
                       onClick={() => scrollToSection(sec.id)}
-                      className="text-left text-xs font-bold text-zinc-500 hover:text-violet-600 dark:text-zinc-400 dark:hover:text-violet-400 transition-colors py-1 flex items-center gap-1.5 group"
+                      className="text-left text-xs font-bold text-zinc-500 hover:text-blue-600 dark:text-zinc-400 dark:hover:text-blue-400 transition-colors py-1 flex items-center gap-1.5 group"
                     >
-                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-violet-500" />
+                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-blue-500" />
                       {sec.title}
                     </button>
                   </li>

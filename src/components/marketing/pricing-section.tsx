@@ -88,7 +88,7 @@ export function PricingSection() {
   return (
     <Section id="tarifs" tone="default" size="xl" className="relative overflow-hidden">
       {/* Decorative Glow */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
       <SectionHeader
@@ -138,12 +138,12 @@ export function PricingSection() {
               className={cn(
                 "relative flex flex-col p-8 rounded-3xl border transition-all duration-500 backdrop-blur-xl shadow-lg",
                 isHighlight 
-                  ? "border-violet-600/50 dark:border-violet-500/50 bg-white/70 dark:bg-zinc-900/70 shadow-xl shadow-violet-600/[0.03] md:scale-105 z-10" 
+                  ? "border-blue-600/50 dark:border-blue-500/50 bg-white/70 dark:bg-zinc-900/70 shadow-xl shadow-blue-600/[0.03] md:scale-105 z-10" 
                   : "border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 hover:border-zinc-300 dark:hover:border-zinc-700/80 hover:shadow-xl"
               )}
             >
               {isHighlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-violet-600 to-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-4.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-violet-600/20">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-4.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-blue-600/20">
                   <Sparkles className="w-3.5 h-3.5" />
                   Recommandé
                 </div>
@@ -151,13 +151,13 @@ export function PricingSection() {
 
               {/* Glowing decorative background for Highlighted card */}
               {isHighlight && (
-                <div className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-30 transition-opacity duration-700 z-0 bg-radial-gradient bg-gradient-to-b from-violet-600/10 to-transparent rounded-3xl" />
+                <div className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-30 transition-opacity duration-700 z-0 bg-radial-gradient bg-gradient-to-b from-blue-600/10 to-transparent rounded-3xl" />
               )}
 
               <div className="mb-8 relative z-10">
                 <h3 className={cn(
                   "text-xl font-extrabold mb-2",
-                  isHighlight ? "text-violet-600 dark:text-violet-400" : "text-zinc-900 dark:text-zinc-50"
+                  isHighlight ? "text-blue-600 dark:text-blue-400" : "text-zinc-900 dark:text-zinc-50"
                 )}>{plan.name}</h3>
                 <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">{plan.description}</p>
               </div>
@@ -175,7 +175,7 @@ export function PricingSection() {
                     <div className={cn(
                       "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 border",
                       isHighlight
-                        ? "bg-violet-600/10 border-violet-500/20 text-violet-600 dark:text-violet-400"
+                        ? "bg-blue-600/10 border-blue-500/20 text-blue-600 dark:text-blue-400"
                         : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                     )}>
                       <Check className="w-3.5 h-3.5" strokeWidth={3} />
@@ -192,7 +192,7 @@ export function PricingSection() {
                 className={cn(
                   "w-full rounded-2xl font-black text-base h-14 transition-all active-press relative z-10",
                   isHighlight 
-                    ? "bg-violet-600 text-white hover:bg-violet-700 shadow-lg shadow-violet-600/20 border-none" 
+                    ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 border-none" 
                     : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
                 )}
               >

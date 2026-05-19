@@ -69,7 +69,7 @@ export default function PublicLayout({
       {/* ── Premium Footer ─────────────────────────────────────────────────────── */}
       <footer className="relative border-t border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl overflow-hidden py-16 md:py-24">
         {/* Glowing Decorative Radial Orbs */}
-        <div className="absolute -bottom-10 left-1/4 w-96 h-96 bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute -bottom-10 left-1/4 w-96 h-96 bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute -bottom-10 right-1/4 w-96 h-96 bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="container-app relative z-10">
@@ -77,7 +77,7 @@ export default function PublicLayout({
             {/* Brand Card Column */}
             <div className="md:col-span-4 space-y-6">
               <Link href="/" className="flex items-center gap-2.5 group self-start">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-emerald-500 text-white shadow-lg shadow-violet-600/20 group-hover:rotate-6 transition-all duration-500">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-500 text-white shadow-lg shadow-blue-600/20 group-hover:rotate-6 transition-all duration-500">
                   <span className="text-xl font-black">G</span>
                 </div>
                 <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -102,7 +102,7 @@ export default function PublicLayout({
                           target: "_blank",
                           rel: "noopener noreferrer",
                         })}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 text-zinc-500 dark:text-zinc-400 transition-all hover:bg-violet-600/10 hover:text-violet-600 dark:hover:text-violet-400 hover:border-violet-600/30 hover:-translate-y-1 hover:shadow-md"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 text-zinc-500 dark:text-zinc-400 transition-all hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600/30 hover:-translate-y-1 hover:shadow-md"
                       >
                         <Icon className="h-5 w-5" strokeWidth={1.5} />
                       </a>
@@ -122,7 +122,7 @@ export default function PublicLayout({
                   <ul className="space-y-3.5">
                     {col.links.map((l) => {
                       const isExternal = /^https?:|^mailto:/.test(l.href);
-                      const linkClass = "text-sm font-semibold text-zinc-500 dark:text-zinc-400 transition-all hover:text-violet-600 dark:hover:text-violet-400 inline-block hover:translate-x-1";
+                      const linkClass = "text-sm font-semibold text-zinc-500 dark:text-zinc-400 transition-all hover:text-blue-600 dark:hover:text-blue-400 inline-block hover:translate-x-1";
                       if (isExternal) {
                         return (
                           <li key={l.href}>

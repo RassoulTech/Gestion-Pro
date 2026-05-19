@@ -70,12 +70,12 @@ export function ContactSection() {
   return (
     <Section id="contact" className="relative overflow-hidden bg-zinc-50/30 dark:bg-zinc-950/20 py-24 md:py-32">
       {/* Decorative Glow */}
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-violet-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-emerald-600/5 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="mx-auto max-w-5xl z-10 relative">
         <div className="mb-16 text-center max-w-2xl mx-auto">
-          <span className="inline-flex items-center gap-2 rounded-full bg-violet-500/10 px-4.5 py-1.5 text-xs font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-4">
+          <span className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-4.5 py-1.5 text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">
             Une question ?
           </span>
           <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
@@ -91,7 +91,7 @@ export function ContactSection() {
           <div className="md:col-span-2 space-y-4">
             {[
               {
-                icon: <Mail className="h-6 w-6 text-violet-600 dark:text-violet-400" />,
+                icon: <Mail className="h-6 w-6 text-blue-600 dark:text-blue-400" />,
                 title: "Email direct",
                 value: "dionemhd1@gmail.com",
                 desc: "Réponse en moins de 24 heures",
@@ -152,7 +152,7 @@ export function ContactSection() {
                           <Input 
                             placeholder="Votre nom" 
                             {...field} 
-                            className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50" 
+                            className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50" 
                           />
                         </FormControl>
                         <FormMessage />
@@ -169,7 +169,7 @@ export function ContactSection() {
                           <Input 
                             placeholder="votre@email.com" 
                             {...field} 
-                            className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50" 
+                            className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50" 
                           />
                         </FormControl>
                         <FormMessage />
@@ -187,7 +187,7 @@ export function ContactSection() {
                         <Input 
                           placeholder="De quoi s'agit-il ?" 
                           {...field} 
-                          className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50" 
+                          className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50" 
                         />
                       </FormControl>
                       <FormMessage />
@@ -203,7 +203,7 @@ export function ContactSection() {
                       <FormControl>
                         <Textarea
                           placeholder="Dites-nous tout..."
-                          className="min-h-[140px] rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 p-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50 resize-none"
+                          className="min-h-[140px] rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 p-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 resize-none"
                           {...field}
                         />
                       </FormControl>
@@ -214,7 +214,7 @@ export function ContactSection() {
                 <Button 
                   type="submit" 
                   variant="brand" 
-                  className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-violet-600/20 bg-violet-600 text-white hover:bg-violet-750 border-none transition-all duration-300" 
+                  className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-blue-600/20 bg-blue-600 text-white hover:bg-blue-700 border-none transition-all duration-300" 
                   loading={loading}
                 >
                   Envoyer le message

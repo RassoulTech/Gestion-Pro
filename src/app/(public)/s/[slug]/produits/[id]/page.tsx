@@ -69,7 +69,7 @@ export default async function ProduitPublicPage({ params }: Props) {
           {/* Product Image Section with ambient color glow */}
           <div className="relative group w-full">
             {/* Ambient background glow */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 opacity-20 blur-3xl rounded-[2.5rem] group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-sky-600 opacity-20 blur-3xl rounded-[2.5rem] group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
             
             <div className="relative aspect-square w-full rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 flex items-center justify-center overflow-hidden shadow-xl">
               {produit.photo ? (

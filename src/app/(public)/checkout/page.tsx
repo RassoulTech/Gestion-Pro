@@ -360,11 +360,11 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex items-center gap-4 p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden active:scale-98 group",
                       paymentMethod === "ORANGE_MONEY" 
-                        ? "bg-orange-500/10 border-orange-400 shadow-md shadow-orange-500/5" 
+                        ? "bg-amber-500/10 border-amber-500 shadow-md shadow-amber-500/5" 
                         : "bg-zinc-950 border-zinc-800/80 hover:border-zinc-700"
                     )}
                   >
-                    <div className="h-10 w-10 rounded-xl bg-orange-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
+                    <div className="h-10 w-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
                       🍊
                     </div>
                     <div>
@@ -420,11 +420,11 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex items-center gap-4 p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden active:scale-98 sm:col-span-2 group",
                       paymentMethod === "CASH_ON_DELIVERY" 
-                        ? "bg-purple-500/10 border-purple-400 shadow-md shadow-purple-500/5" 
+                        ? "bg-blue-500/10 border-blue-400 shadow-md shadow-blue-500/5" 
                         : "bg-zinc-950 border-zinc-800/80 hover:border-zinc-700"
                     )}
                   >
-                    <div className="h-10 w-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
+                    <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
                       🚚
                     </div>
                     <div>

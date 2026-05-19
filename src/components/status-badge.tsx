@@ -20,13 +20,13 @@ const statusConfig = {
   ACTIF: { label: "Actif", variant: "outline" as const, className: "border-emerald-500 text-emerald-700 dark:text-emerald-400" },
   SUSPENDU: { label: "Suspendu", variant: "outline" as const, className: "border-red-500 text-red-700 dark:text-red-400" },
   // Abonnement
-  ESSAI: { label: "Essai", variant: "outline" as const, className: "border-purple-500 text-purple-700 dark:text-purple-400" },
+  ESSAI: { label: "Essai", variant: "outline" as const, className: "border-slate-500 text-slate-700 dark:text-slate-400" },
   EXPIRE: { label: "Expiré", variant: "outline" as const, className: "border-gray-500 text-gray-700 dark:text-gray-400" },
   ANNULE: { label: "Annulé", variant: "outline" as const, className: "border-red-500 text-red-700 dark:text-red-400" },
   // Paiement
   CONFIRME: { label: "Confirmé", variant: "outline" as const, className: "border-emerald-500 text-emerald-700 dark:text-emerald-400" },
   ECHOUE: { label: "Échoué", variant: "outline" as const, className: "border-red-500 text-red-700 dark:text-red-400" },
-  REMBOURSE: { label: "Remboursé", variant: "outline" as const, className: "border-orange-500 text-orange-700 dark:text-orange-400" },
+  REMBOURSE: { label: "Remboursé", variant: "outline" as const, className: "border-slate-400 text-slate-600 dark:text-slate-400" },
   // Stock
   ENTREE: { label: "Entrée", variant: "outline" as const, className: "border-emerald-500 text-emerald-700 dark:text-emerald-400" },
   SORTIE: { label: "Sortie", variant: "outline" as const, className: "border-red-500 text-red-700 dark:text-red-400" },

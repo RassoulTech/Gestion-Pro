@@ -79,9 +79,9 @@ export default async function BoutiquesPage() {
     <div className="max-w-7xl mx-auto space-y-10 sm:space-y-14 py-4 sm:py-8 px-4 sm:px-6">
       
       {/* Top Banner and Navigation Portfolio */}
-      <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] bg-gradient-to-br from-slate-900 via-zinc-900 to-indigo-950 p-6 sm:p-12 text-white shadow-2xl">
+      <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] bg-gradient-to-br from-slate-900 via-zinc-900 to-slate-950 p-6 sm:p-12 text-white shadow-2xl">
         <div className="absolute right-0 top-0 -mr-20 -mt-20 h-80 w-80 rounded-full bg-blue-500/20 blur-[100px] animate-pulse" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-purple-500/20 blur-[100px]" />
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-slate-500/10 blur-[100px]" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div className="space-y-3">
@@ -91,7 +91,7 @@ export default async function BoutiquesPage() {
                 Tableau de Bord Vendeur
               </span>
               {currentPlan && (
-                <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 border-none rounded-lg px-2.5 py-0.5 text-[9px] uppercase tracking-wider font-extrabold shadow-md">
+                <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-lg px-2.5 py-0.5 text-[9px] uppercase tracking-wider font-extrabold shadow-md">
                   Plan {currentPlan.nom}
                 </Badge>
               )}
@@ -138,7 +138,7 @@ export default async function BoutiquesPage() {
           <div className="space-y-1">
             <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Produits total</span>
             <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-purple-400" />
+              <Package className="w-4 h-4 text-brand" />
               <span className="text-xl sm:text-2xl font-black">{totalProduits}</span>
             </div>
           </div>
@@ -283,8 +283,8 @@ export default async function BoutiquesPage() {
                         <DropdownMenuSeparator className="my-1.5" />
                         <DropdownMenuItem asChild className="rounded-xl cursor-pointer h-10 px-3">
                           <Link href={`/s/${boutique.slug}`} target="_blank">
-                            <ExternalLink className="mr-3 h-4 w-4 text-purple-500" />
-                            <span className="font-bold text-purple-500">Voir boutique publique</span>
+                            <ExternalLink className="mr-3 h-4 w-4 text-brand" />
+                            <span className="font-bold text-brand">Voir boutique publique</span>
                           </Link>
                         </DropdownMenuItem>
                       </DropdownMenuContent>

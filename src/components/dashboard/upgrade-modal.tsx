@@ -122,7 +122,7 @@ export function UpgradeModal({
                             ? isPro
                               ? "border-brand bg-white/5 shadow-lg shadow-brand/10 scale-[1.02]"
                               : isEnterprise
-                              ? "border-amber-500 bg-white/5 shadow-lg shadow-amber-500/10 scale-[1.02]"
+                              ? "border-zinc-400 bg-white/5 shadow-lg shadow-zinc-400/10 scale-[1.02]"
                               : "border-zinc-500 bg-white/5"
                             : "border-zinc-800 bg-zinc-900/40 hover:border-zinc-700"
                         )}
@@ -133,7 +133,7 @@ export function UpgradeModal({
                           </div>
                         )}
                         {isEnterprise && (
-                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full text-black shadow">
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-zinc-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full text-zinc-950 shadow">
                             Premium
                           </div>
                         )}
@@ -183,10 +183,10 @@ export function UpgradeModal({
                         onClick={() => setSelectedMethod("WAVE")}
                         className={cn(
                           "p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "WAVE" ? "border-sky-500 bg-sky-500/5" : "border-zinc-800"
+                          selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                         )}
                       >
-                        <div className="h-10 w-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500">
+                        <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", selectedMethod === "WAVE" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
                           <Smartphone className="h-5 w-5" />
                         </div>
                         <span className="text-xs font-black">Wave</span>
@@ -197,10 +197,10 @@ export function UpgradeModal({
                         onClick={() => setSelectedMethod("ORANGE_MONEY")}
                         className={cn(
                           "p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "ORANGE_MONEY" ? "border-orange-500 bg-orange-500/5" : "border-zinc-800"
+                          selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                         )}
                       >
-                        <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                        <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", selectedMethod === "ORANGE_MONEY" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
                           <Smartphone className="h-5 w-5" />
                         </div>
                         <span className="text-xs font-black">Orange Money</span>
@@ -211,10 +211,10 @@ export function UpgradeModal({
                         onClick={() => setSelectedMethod("PAYPAL")}
                         className={cn(
                           "p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "PAYPAL" ? "border-blue-500 bg-blue-500/5" : "border-zinc-800"
+                          selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                         )}
                       >
-                        <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", selectedMethod === "PAYPAL" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
                           <CreditCard className="h-5 w-5" />
                         </div>
                         <span className="text-xs font-black">PayPal</span>
@@ -248,7 +248,7 @@ export function UpgradeModal({
                 className={cn(
                   "h-12 px-6 rounded-xl font-black text-xs sm:text-sm shadow-xl shadow-brand/10 text-white",
                   selectedPlan?.nom === "Enterprise"
-                    ? "bg-amber-500 hover:bg-amber-600 text-black shadow-amber-500/15"
+                    ? "bg-zinc-200 hover:bg-zinc-300 text-zinc-950 shadow-zinc-200/15"
                     : "bg-brand hover:bg-brand/90"
                 )}
               >

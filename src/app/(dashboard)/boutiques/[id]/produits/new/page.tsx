@@ -402,7 +402,7 @@ export default function NewProductPage({ params }: NewProductPageProps) {
                     type="submit"
                     variant="brand"
                     size="xl"
-                    className="w-full h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-brand/20 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-none text-white"
+                    className="w-full h-20 rounded-[2rem] font-black text-xl shadow-2xl shadow-brand/20 transition-all hover:scale-[1.02] active:scale-[0.98] bg-brand hover:bg-brand/90 border-none text-white"
                     disabled={loading}
                   >
                     {loading ? "Enregistrement..." : "Enregistrer"}

@@ -18,7 +18,7 @@
 
   --color-primary: #2563eb;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #7c3aed;
+  --color-secondary: #475569;
   --color-secondary-foreground: #ffffff;
   --color-muted: #f1f5f9;
   --color-muted-foreground: #64748b;
@@ -30,7 +30,7 @@
 
   --color-success: #16a34a;
   --color-success-foreground: #ffffff;
-  --color-warning: #f59e0b;
+  --color-warning: #ca8a04;
   --color-warning-foreground: #0f172a;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
@@ -46,7 +46,7 @@
   --color-stock-low: var(--color-warning);
   --color-stock-out: var(--color-destructive);
 
-  --color-cmd-pending: #f59e0b;
+  --color-cmd-pending: #ca8a04;
   --color-cmd-validee: #3b82f6;
   --color-cmd-livree: var(--color-success);
   --color-cmd-annulee: var(--color-muted-foreground);
@@ -55,11 +55,11 @@
   --color-statut-suspendu: var(--color-destructive);
 
   /* ── Charts ──────────────────────────────────────────────────────────── */
-  --color-chart-1: #ff6b35;
+  --color-chart-1: #1e3a8a;
   --color-chart-2: #2563eb;
   --color-chart-3: #16a34a;
   --color-chart-4: #eab308;
-  --color-chart-5: #a855f7;
+  --color-chart-5: #64748b;
 
   /* ── Sidebar ─────────────────────────────────────────────────────────── */
   --color-sidebar: #fafafa;
@@ -224,7 +224,7 @@
 
     --color-primary: #3b82f6;
     --color-primary-foreground: #ffffff;
-    --color-secondary: #a78bfa;
+    --color-secondary: #94a3b8;
     --color-secondary-foreground: #ffffff;
     --color-muted: #1c1c1f;
     --color-muted-foreground: #a1a1aa;
@@ -247,11 +247,11 @@
     --color-input: #27272a;
     --color-ring: #fafafa;
 
-    --color-chart-1: #ff7849;
+    --color-chart-1: #60a5fa;
     --color-chart-2: #3b82f6;
     --color-chart-3: #22c55e;
     --color-chart-4: #facc15;
-    --color-chart-5: #c084fc;
+    --color-chart-5: #94a3b8;
 
     --color-sidebar: #111111;
     --color-sidebar-foreground: #a1a1aa;
@@ -262,7 +262,7 @@
     --color-sidebar-border: #27272a;
     --color-sidebar-ring: #a1a1aa;
 
-    --color-cmd-pending: #fbbf24;
+    --color-cmd-pending: #facc15;
     --color-cmd-validee: #60a5fa;
   }
 }

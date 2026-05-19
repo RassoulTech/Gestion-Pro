@@ -45,7 +45,7 @@ export function PremiumGuard({
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 max-w-xl w-full bg-white dark:bg-zinc-900/90 rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/80 shadow-2xl p-8 sm:p-10 text-center space-y-6 backdrop-blur-xl"
       >
-        <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-brand to-rose-500 flex items-center justify-center text-white shadow-xl shadow-brand/10">
+        <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-brand to-slate-800 flex items-center justify-center text-white shadow-xl shadow-brand/10">
           <Lock className="h-7 w-7" />
         </div>
 
@@ -86,7 +86,7 @@ export function PremiumGuard({
           <Button
             onClick={() => setModalOpen(true)}
             size="lg"
-            className="flex-1 h-14 rounded-2xl font-black text-sm bg-gradient-to-r from-brand to-rose-500 hover:from-brand/90 hover:to-rose-600 text-white shadow-xl shadow-brand/10 border-none"
+            className="flex-1 h-14 rounded-2xl font-black text-sm bg-gradient-to-r from-brand to-slate-800 hover:from-brand/90 hover:to-slate-800/90 text-white shadow-xl shadow-brand/10 border-none"
           >
             Débloquer maintenant
             <ArrowRight className="h-4 w-4 ml-2" />

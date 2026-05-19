@@ -45,7 +45,7 @@ const SECTEURS = [
     description: "Vêtements, chaussures, maroquinerie, bijoux et accessoires de mode.",
     icon: Shirt,
     subCategories: ["Prêt-à-porter", "Chaussures", "Maroquinerie", "Bijouterie", "Friperie", "Vêtements enfants", "Accessoires"],
-    color: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/30"
+    color: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-500/30"
   },
   { 
     value: "ELECTRONIQUE", 
@@ -77,7 +77,7 @@ const SECTEURS = [
     description: "Consulting, agences, éducation, location et autres prestations de services.",
     icon: Briefcase,
     subCategories: ["Freelance", "Conseil", "Agence", "Éducation", "Location voiture", "Pressing", "Nettoyage", "Imprimerie"],
-    color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 hover:border-amber-500/30"
+    color: "bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20 hover:bg-slate-500/20 hover:border-slate-500/30"
   },
   { 
     value: "QUINCAILLERIE", 
@@ -85,7 +85,7 @@ const SECTEURS = [
     description: "Outils de bricolage, peinture, matériaux de construction et électricité.",
     icon: Hammer,
     subCategories: ["Bricolage", "Peinture", "Électricité", "Plomberie", "Matériaux de construction", "Outillage"],
-    color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/20 hover:border-indigo-500/30"
+    color: "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20 hover:bg-zinc-500/20 hover:border-zinc-500/30"
   },
   { 
     value: "LIBRAIRIE", 
@@ -175,7 +175,7 @@ export default function NouvelleBoutiquePage() {
     return (
       <div className="mx-auto max-w-3xl p-6 lg:py-12">
         <Card className="border-none bg-card/50 shadow-2xl backdrop-blur-xl p-10 text-center space-y-6">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
             <AlertTriangle className="h-8 w-8" />
           </div>
           <h2 className="text-2xl font-black tracking-tight">Limite atteinte</h2>
@@ -323,7 +323,7 @@ export default function NouvelleBoutiquePage() {
                                             className={cn(
                                               "flex flex-col items-start p-4.5 rounded-2xl border text-left transition-all duration-300 relative group overflow-hidden bg-zinc-50/50 dark:bg-zinc-900/10",
                                               isSelected
-                                                ? "border-violet-600 bg-violet-600/5 dark:border-violet-500 dark:bg-violet-500/5 shadow-[0_0_15px_rgba(124,58,237,0.08)]"
+                                                ? "border-blue-600 bg-blue-600/5 dark:border-blue-500 dark:bg-blue-500/5 shadow-[0_0_15px_rgba(37,99,235,0.08)]"
                                                 : "border-zinc-200/60 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-800"
                                             )}
                                           >
@@ -335,7 +335,7 @@ export default function NouvelleBoutiquePage() {
                                                 <div className="font-extrabold text-sm text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
                                                   {sector.label}
                                                   {isSelected && (
-                                                    <span className="inline-flex items-center justify-center h-4.5 w-4.5 rounded-full bg-violet-600 dark:bg-violet-500 text-white shrink-0 shadow-md">
+                                                    <span className="inline-flex items-center justify-center h-4.5 w-4.5 rounded-full bg-blue-600 dark:bg-blue-500 text-white shrink-0 shadow-md">
                                                       <Check className="h-3 w-3" />
                                                     </span>
                                                   )}

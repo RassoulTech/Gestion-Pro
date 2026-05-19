@@ -81,7 +81,7 @@ export default function PricingPage() {
     <div className="min-h-screen bg-slate-950 text-white py-20 px-4 sm:px-6 relative overflow-hidden">
       {/* Background radial glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-brand/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-rose-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-slate-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-5xl mx-auto space-y-16 relative z-10">
         {/* Title */}
@@ -120,7 +120,7 @@ export default function PricingPage() {
                     isPro
                       ? "border-brand shadow-2xl shadow-brand/10 md:scale-105 z-10"
                       : isEnterprise
-                      ? "border-amber-500/50 shadow-2xl shadow-amber-500/5"
+                      ? "border-zinc-400/50 shadow-2xl shadow-zinc-400/5"
                       : "border-zinc-800"
                   )}
                 >
@@ -170,7 +170,7 @@ export default function PricingPage() {
                       isPro
                         ? "bg-brand hover:bg-brand/90 text-white shadow-xl shadow-brand/25"
                         : isEnterprise
-                        ? "bg-amber-500 hover:bg-amber-600 text-black shadow-xl shadow-amber-500/10"
+                        ? "bg-zinc-200 hover:bg-zinc-300 text-zinc-950 shadow-xl shadow-zinc-200/10"
                         : "bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
                     )}
                   >
@@ -212,10 +212,10 @@ export default function PricingPage() {
                   onClick={() => setSelectedMethod("STRIPE")}
                   className={cn(
                     "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "STRIPE" ? "border-brand bg-brand/5" : "border-zinc-800"
+                    selectedMethod === "STRIPE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                   )}
                 >
-                  <CreditCard className="h-5 w-5 text-brand" />
+                  <CreditCard className={cn("h-5 w-5", selectedMethod === "STRIPE" ? "text-brand" : "text-zinc-450")} />
                   <span className="text-[10px] font-black">Stripe / Carte</span>
                 </div>
 
@@ -224,10 +224,10 @@ export default function PricingPage() {
                   onClick={() => setSelectedMethod("WAVE")}
                   className={cn(
                     "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "WAVE" ? "border-sky-500 bg-sky-500/5" : "border-zinc-800"
+                    selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                   )}
                 >
-                  <Smartphone className="h-5 w-5 text-sky-500" />
+                  <Smartphone className={cn("h-5 w-5", selectedMethod === "WAVE" ? "text-brand" : "text-zinc-450")} />
                   <span className="text-[10px] font-black">Wave</span>
                 </div>
 
@@ -236,10 +236,10 @@ export default function PricingPage() {
                   onClick={() => setSelectedMethod("ORANGE_MONEY")}
                   className={cn(
                     "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "ORANGE_MONEY" ? "border-orange-500 bg-orange-500/5" : "border-zinc-800"
+                    selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                   )}
                 >
-                  <Smartphone className="h-5 w-5 text-orange-500" />
+                  <Smartphone className={cn("h-5 w-5", selectedMethod === "ORANGE_MONEY" ? "text-brand" : "text-zinc-450")} />
                   <span className="text-[10px] font-black">Orange Money</span>
                 </div>
 
@@ -248,10 +248,10 @@ export default function PricingPage() {
                   onClick={() => setSelectedMethod("PAYPAL")}
                   className={cn(
                     "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "PAYPAL" ? "border-blue-500 bg-blue-500/5" : "border-zinc-800"
+                    selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                   )}
                 >
-                  <CreditCard className="h-5 w-5 text-blue-500" />
+                  <CreditCard className={cn("h-5 w-5", selectedMethod === "PAYPAL" ? "text-brand" : "text-zinc-450")} />
                   <span className="text-[10px] font-black">PayPal</span>
                 </div>
               </div>

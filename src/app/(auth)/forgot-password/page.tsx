@@ -65,8 +65,8 @@ export default function ForgotPasswordPage() {
         transition={{ duration: 0.6, ease: EASE }}
         className="space-y-8 text-center"
       >
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-600/10 border border-violet-500/20 shadow-inner">
-          <Mail className="h-8 w-8 text-violet-600 dark:text-violet-400" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10 border border-blue-500/20 shadow-inner">
+          <Mail className="h-8 w-8 text-blue-600 dark:text-blue-400" />
         </div>
 
         <div className="space-y-3">
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
             </p>
             <Link
               href={devLink}
-              className="block break-all rounded-xl bg-white/60 dark:bg-zinc-950/60 border border-amber-500/20 px-3.5 py-2.5 text-xs font-bold text-violet-600 dark:text-violet-400 hover:bg-white dark:hover:bg-zinc-950 transition-all shadow-sm"
+              className="block break-all rounded-xl bg-white/60 dark:bg-zinc-950/60 border border-amber-500/20 px-3.5 py-2.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-white dark:hover:bg-zinc-950 transition-all shadow-sm"
             >
               {devLink}
             </Link>
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
               setSent(false);
               setDevLink(null);
             }}
-            className="text-violet-600 dark:text-violet-400 hover:underline underline-offset-4"
+            className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-4"
           >
             Renvoyer
           </button>
@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
                     type="email"
                     placeholder="votre@email.com"
                     autoComplete="email"
-                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50"
+                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
                     {...field}
                   />
                 </FormControl>
@@ -165,7 +165,7 @@ export default function ForgotPasswordPage() {
             type="submit"
             variant="brand"
             size="xl"
-            className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-violet-600/20 bg-violet-600 text-white hover:bg-violet-750 border-none transition-all active-press"
+            className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-blue-600/20 bg-blue-600 text-white hover:bg-blue-700 border-none transition-all active-press"
             loading={loading}
           >
             {loading ? "Envoi en cours…" : "Envoyer le lien"}
@@ -176,7 +176,7 @@ export default function ForgotPasswordPage() {
       <p className="text-center text-sm font-bold text-zinc-500 dark:text-zinc-400">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-violet-600 dark:text-violet-400 hover:underline underline-offset-4"
+          className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline underline-offset-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Retour à la connexion

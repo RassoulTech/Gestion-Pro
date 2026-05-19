@@ -56,7 +56,7 @@ export function ProduitFilters() {
     <div className="space-y-6">
       {/* Search Input Card */}
       <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-2xl blur-lg transition-all duration-300 group-focus-within:from-blue-500/10 group-focus-within:to-purple-500/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-sky-500/5 rounded-2xl blur-lg transition-all duration-300 group-focus-within:from-blue-500/10 group-focus-within:to-sky-500/10 pointer-events-none" />
         <div className="relative flex items-center gap-4 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 p-2 sm:p-3 rounded-2xl shadow-sm transition-all duration-300 group-focus-within:border-blue-500/30">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
