@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { Separator } from "@/components/ui/separator";
+import { EtatActions } from "./_components/etat-actions";
 
 const PAYMENT_LABELS: Record<string, { label: string; icon: typeof CreditCard; color: string }> = {
   WAVE: { label: "Wave", icon: Smartphone, color: "text-sky-500" },
@@ -107,6 +108,19 @@ export default async function CommandeDetailPage({
               ) : (
                 <p className="text-sm text-muted-foreground">Client non renseigné</p>
               )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Statut de la commande</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EtatActions
+                boutiqueId={boutiqueId}
+                commandeId={commande.id}
+                currentEtat={commande.etat}
+              />
             </CardContent>
           </Card>
 
