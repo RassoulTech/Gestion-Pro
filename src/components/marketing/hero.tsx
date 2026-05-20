@@ -54,7 +54,7 @@ export function Hero() {
           </motion.div>
 
           {/* Headline */}
-          <h1 className="text-display text-5xl md:text-7xl lg:text-8xl tracking-tight text-foreground font-black leading-[1.08] select-none">
+          <h1 className="text-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tight text-foreground font-black leading-[1.08] select-none">
             <span className="block overflow-hidden pb-1">
               <motion.span
                 initial={{ opacity: 0, y: "100%" }}

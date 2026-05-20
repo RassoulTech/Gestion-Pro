@@ -14,7 +14,7 @@ export function CartClient() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center py-16 sm:py-24">
         <div className="w-full max-w-xl mx-auto px-4 text-center">
-          <div className="relative p-10 sm:p-16 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[3rem] shadow-xl overflow-hidden">
+          <div className="relative p-6 sm:p-10 lg:p-16 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2rem] sm:rounded-[3rem] shadow-xl overflow-hidden">
             {/* Background design glow */}
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#EA580C]/10 to-[#F59E0B]/10 blur-3xl rounded-full pointer-events-none" />
             

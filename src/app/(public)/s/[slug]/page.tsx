@@ -33,8 +33,8 @@ export default async function BoutiquePubliquePage({ params }: Props) {
   const uncategorized = boutique.produits.filter((p) => !p.categorieId);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-12 sm:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-8 sm:py-12 lg:py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12">
         
         {/* Back to Marketplace */}
         <div>
@@ -47,7 +47,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
         </div>
 
         {/* Boutique Header */}
-        <div className="relative p-8 md:p-12 rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl">
+        <div className="relative p-5 sm:p-8 md:p-12 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl">
           {/* Subtle colored ambient glow */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
           

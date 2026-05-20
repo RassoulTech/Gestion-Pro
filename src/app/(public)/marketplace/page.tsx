@@ -143,8 +143,8 @@ export default async function MarketplacePage({
   const page = params.page ? parseInt(params.page, 10) : 1;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-16 sm:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16 sm:space-y-24">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-10 sm:py-16 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10 sm:space-y-16 lg:space-y-24">
         
         {/* Giant premium Hero Header */}
         <div className="max-w-3xl mx-auto text-center space-y-6 relative">
@@ -155,7 +155,7 @@ export default async function MarketplacePage({
             Marketplace Public
           </div>
           
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] relative z-10">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] relative z-10">
             Explorez notre <br />
             <span className="bg-gradient-to-r from-[#EA580C] to-orange-500 bg-clip-text text-transparent">Marketplace.</span>
           </h1>

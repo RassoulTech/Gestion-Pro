@@ -122,7 +122,7 @@ export function PricingSection() {
         </div>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch z-10 relative">
+      <div className="mt-10 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch z-10 relative">
         {plans.map((plan, i) => {
           const { value, suffix } = displayPrice(plan);
           const isHighlight = !!plan.highlight;
@@ -136,9 +136,9 @@ export function PricingSection() {
               transition={{ duration: 0.8, ease: EASE, delay: i * 0.1 }}
               whileHover={{ y: -8 }}
               className={cn(
-                "relative flex flex-col p-8 rounded-3xl border transition-all duration-500 backdrop-blur-xl shadow-lg",
-                isHighlight 
-                  ? "border-orange-600/50 dark:border-orange-500/50 bg-white/70 dark:bg-zinc-900/70 shadow-xl shadow-orange-600/[0.03] md:scale-105 z-10" 
+                "relative flex flex-col p-6 sm:p-8 rounded-3xl border transition-all duration-500 backdrop-blur-xl shadow-lg",
+                isHighlight
+                  ? "border-orange-600/50 dark:border-orange-500/50 bg-white/70 dark:bg-zinc-900/70 shadow-xl shadow-orange-600/[0.03] lg:scale-105 z-10"
                   : "border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 hover:border-zinc-300 dark:hover:border-zinc-700/80 hover:shadow-xl"
               )}
             >

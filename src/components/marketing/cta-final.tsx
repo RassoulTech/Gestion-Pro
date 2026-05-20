@@ -24,13 +24,13 @@ export function CTAFinal() {
         transition={{ duration: 0.8, ease: EASE }}
         className="container-app relative z-10"
       >
-        <div className="mx-auto max-w-4xl rounded-[3rem] border border-white/5 bg-white/2 backdrop-blur-3xl p-12 md:p-20 text-center shadow-2xl">
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold text-brand uppercase tracking-widest">
+        <div className="mx-auto max-w-4xl rounded-[2rem] sm:rounded-[3rem] border border-white/5 bg-white/2 backdrop-blur-3xl p-6 sm:p-12 md:p-20 text-center shadow-2xl">
+          <div className="mb-6 sm:mb-8 inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold text-brand uppercase tracking-widest">
             <Sparkles className="w-4 h-4" />
             C&apos;est le moment
           </div>
-          
-          <h2 className="text-display text-4xl md:text-6xl tracking-tight text-white mb-6">
+
+          <h2 className="text-display text-3xl sm:text-4xl md:text-6xl tracking-tight text-white mb-6">
             Prêt à transformer <br />
             votre <span className="text-shimmer">commerce ?</span>
           </h2>

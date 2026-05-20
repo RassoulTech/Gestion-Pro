@@ -39,72 +39,116 @@ export default async function CommandeDetailPage({
   if (!commande) notFound();
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center gap-4">
-        <Button asChild variant="ghost" size="icon">
-          <Link href={`/boutiques/${boutiqueId}/commandes`}>
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Commande {commande.code}</h1>
-          <p className="text-sm text-muted-foreground">{formatDateTime(commande.date)}</p>
+    <div className="space-y-5 sm:space-y-6 p-3 sm:p-6">
+      {/* Header — stack on mobile, inline on desktop */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex items-center gap-3">
+          <Button asChild variant="ghost" size="icon" className="shrink-0">
+            <Link href={`/boutiques/${boutiqueId}/commandes`}>
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight truncate">
+              Commande {commande.code}
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">{formatDateTime(commande.date)}</p>
+          </div>
         </div>
-        <StatusBadge status={commande.etat} />
+        <div className="sm:ml-auto">
+          <StatusBadge status={commande.etat} />
+        </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">Articles</CardTitle>
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-3">
+        {/* Articles — mobile-first: card list, then table on sm+ */}
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Articles ({commande.lignes.length})</CardTitle>
           </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Produit</TableHead>
-                  <TableHead>Code</TableHead>
-                  <TableHead className="text-right">Prix unit.</TableHead>
-                  <TableHead className="text-right">Qté</TableHead>
-                  <TableHead className="text-right">Sous-total</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {commande.lignes.map((ligne) => (
-                  <TableRow key={ligne.id}>
-                    <TableCell className="font-medium">{ligne.produit.nom}</TableCell>
-                    <TableCell className="text-muted-foreground">{ligne.produit.code}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(ligne.prixUnitaire)}</TableCell>
-                    <TableCell className="text-right">{ligne.quantite}</TableCell>
-                    <TableCell className="text-right font-medium">
+          <CardContent className="p-3 sm:p-6">
+            {/* Mobile card list */}
+            <ul className="space-y-3 sm:hidden">
+              {commande.lignes.map((ligne) => (
+                <li key={ligne.id} className="rounded-xl border border-zinc-100 dark:border-zinc-800 p-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm truncate">{ligne.produit.nom}</p>
+                      <p className="text-[11px] text-muted-foreground font-mono">{ligne.produit.code}</p>
+                    </div>
+                    <p className="text-sm font-black text-brand whitespace-nowrap">
                       {formatCurrency(ligne.prixUnitaire * ligne.quantite)}
-                    </TableCell>
+                    </p>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>
+                      {ligne.quantite} × {formatCurrency(ligne.prixUnitaire)}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Produit</TableHead>
+                    <TableHead>Code</TableHead>
+                    <TableHead className="text-right">Prix unit.</TableHead>
+                    <TableHead className="text-right">Qté</TableHead>
+                    <TableHead className="text-right">Sous-total</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {commande.lignes.map((ligne) => (
+                    <TableRow key={ligne.id}>
+                      <TableCell className="font-medium">{ligne.produit.nom}</TableCell>
+                      <TableCell className="text-muted-foreground font-mono text-xs">{ligne.produit.code}</TableCell>
+                      <TableCell className="text-right whitespace-nowrap">{formatCurrency(ligne.prixUnitaire)}</TableCell>
+                      <TableCell className="text-right">{ligne.quantite}</TableCell>
+                      <TableCell className="text-right font-medium whitespace-nowrap">
+                        {formatCurrency(ligne.prixUnitaire * ligne.quantite)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
             <Separator className="my-4" />
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between sm:justify-end gap-3">
+              <p className="text-sm text-muted-foreground sm:hidden">Total</p>
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{formatCurrency(commande.total)}</p>
+                <p className="hidden sm:block text-sm text-muted-foreground">Total</p>
+                <p className="text-xl sm:text-2xl font-bold">{formatCurrency(commande.total)}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
+        {/* Side cards */}
         <div className="space-y-4">
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-3">
               <CardTitle className="text-base">Client</CardTitle>
             </CardHeader>
             <CardContent>
               {commande.client ? (
                 <div className="space-y-1 text-sm">
-                  <p className="font-medium">{commande.client.nom} {commande.client.prenom}</p>
-                  {commande.client.telephone && <p className="text-muted-foreground">{commande.client.telephone}</p>}
-                  {commande.client.email && <p className="text-muted-foreground">{commande.client.email}</p>}
-                  {commande.client.adresse && <p className="text-muted-foreground">{commande.client.adresse}</p>}
+                  <p className="font-medium break-words">
+                    {commande.client.nom} {commande.client.prenom}
+                  </p>
+                  {commande.client.telephone && (
+                    <p className="text-muted-foreground break-words">{commande.client.telephone}</p>
+                  )}
+                  {commande.client.email && (
+                    <p className="text-muted-foreground break-words">{commande.client.email}</p>
+                  )}
+                  {commande.client.adresse && (
+                    <p className="text-muted-foreground break-words">{commande.client.adresse}</p>
+                  )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">Client non renseigné</p>
@@ -113,7 +157,7 @@ export default async function CommandeDetailPage({
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-3">
               <CardTitle className="text-base">Statut de la commande</CardTitle>
             </CardHeader>
             <CardContent>
@@ -127,17 +171,17 @@ export default async function CommandeDetailPage({
 
           {(commande.modePaiement || commande.statutPaiement) && (
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="text-base">Paiement</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 text-sm">
+              <CardContent className="space-y-3 text-sm">
                 {commande.modePaiement && (() => {
                   const pay = PAYMENT_LABELS[commande.modePaiement];
                   const Icon = pay?.icon ?? CreditCard;
                   return (
                     <div className="flex items-center gap-2">
-                      <Icon className={`h-4 w-4 ${pay?.color ?? "text-muted-foreground"}`} />
-                      <span className="font-medium">{pay?.label ?? commande.modePaiement}</span>
+                      <Icon className={`h-4 w-4 shrink-0 ${pay?.color ?? "text-muted-foreground"}`} />
+                      <span className="font-medium truncate">{pay?.label ?? commande.modePaiement}</span>
                     </div>
                   );
                 })()}
@@ -155,11 +199,13 @@ export default async function CommandeDetailPage({
 
           {commande.notes && (
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="text-base">Notes</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">{commande.notes}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
+                  {commande.notes}
+                </p>
               </CardContent>
             </Card>
           )}

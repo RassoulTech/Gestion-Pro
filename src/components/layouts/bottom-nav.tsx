@@ -250,7 +250,7 @@ export function BottomNav() {
 
           {/* Menu Grid */}
           <div className="max-h-[60vh] overflow-y-auto overscroll-contain px-3 pb-2">
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
               {moreItems.map((item, index) => {
                 const Icon = item.icon;
                 const isActive =

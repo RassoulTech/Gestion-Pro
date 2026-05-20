@@ -59,7 +59,7 @@ export function Testimonials() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: EASE, delay: i * 0.1 }}
             className={cn(
-              "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 p-8 shadow-lg hover:shadow-2xl hover:shadow-orange-600/[0.01]",
+              "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 p-6 sm:p-8 shadow-lg hover:shadow-2xl hover:shadow-orange-600/[0.01]",
               "transition-all duration-500 ease-out hover:-translate-y-2 hover:border-zinc-300 dark:hover:border-zinc-700/80 backdrop-blur-xl",
               i === 2 && "sm:col-span-2 lg:col-span-1"
             )}
