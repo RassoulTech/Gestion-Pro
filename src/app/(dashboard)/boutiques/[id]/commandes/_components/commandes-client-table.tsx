@@ -123,12 +123,6 @@ export function CommandesClientTable({
 
   async function handleStatusChange(commande: CommandeRow, nextEtat: Etat) {
     if (nextEtat === commande.etat) return;
-    if (commande.etat === "LIVREE" || commande.etat === "ANNULEE") {
-      toast.error(
-        `Cette commande est déjà ${commande.etat === "LIVREE" ? "livrée" : "annulée"} et ne peut plus changer d'état.`
-      );
-      return;
-    }
     setPendingId(commande.id);
     try {
       const result = await updateEtatCommande({
@@ -213,7 +207,6 @@ export function CommandesClientTable({
               {filtered.length > 0 ? (
                 filtered.map((commande) => {
                   const status = statusMap[commande.etat];
-                  const isTerminal = commande.etat === "LIVREE" || commande.etat === "ANNULEE";
                   const isPending = pendingId === commande.id;
                   return (
                     <TableRow
@@ -259,13 +252,12 @@ export function CommandesClientTable({
                           <Select
                             value={commande.etat}
                             onValueChange={(v) => handleStatusChange(commande, v as Etat)}
-                            disabled={isTerminal || isPending}
+                            disabled={isPending}
                           >
                             <SelectTrigger
                               className={cn(
                                 "h-8 w-[150px] rounded-full px-3 text-[11px] font-black uppercase tracking-wider border shadow-none",
-                                status.color,
-                                isTerminal && "opacity-90 cursor-not-allowed"
+                                status.color
                               )}
                             >
                               <span className="flex items-center gap-1.5">

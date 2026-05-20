@@ -101,7 +101,7 @@ export const updateEtatCommande = vendeurActionClient
   .action(async ({ parsedInput: { boutiqueId, commandeId, data }, ctx }) => {
     await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
 
-    // Load current state to enforce valid transitions and restock on cancellation
+    // Load current state to know what stock adjustment to apply
     const current = await prisma.commandeClient.findFirst({
       where: { id: commandeId, boutiqueId },
       include: { lignes: true },
@@ -110,19 +110,14 @@ export const updateEtatCommande = vendeurActionClient
       throw new Error("Commande introuvable.");
     }
 
-    // Block transitions out of terminal states
-    if (current.etat === "ANNULEE" || current.etat === "LIVREE") {
-      if (current.etat !== data.etat) {
-        throw new Error(
-          `Cette commande est ${current.etat === "LIVREE" ? "livrée" : "annulée"}, elle ne peut plus changer d'état.`
-        );
-      }
-    }
-
-    // Stock was decremented at order creation regardless of etat, so a cancellation
-    // must restore it. Only do it on the actual transition into ANNULEE.
+    // Transitions are always allowed (vendor may correct a misclick). Stock is
+    // reconciled on each transition crossing the ANNULEE boundary:
+    //  - entering ANNULEE  → restock (was decremented at creation)
+    //  - leaving ANNULEE   → re-decrement (commande becomes active again)
     const isCancelling =
       data.etat === "ANNULEE" && current.etat !== "ANNULEE";
+    const isReactivating =
+      current.etat === "ANNULEE" && data.etat !== "ANNULEE";
 
     const commande = await prisma.$transaction(async (tx) => {
       if (isCancelling) {
@@ -138,6 +133,35 @@ export const updateEtatCommande = vendeurActionClient
               type: "ENTREE",
               quantite: ligne.quantite,
               sourceType: "AnnulationCommande",
+              sourceId: commandeId,
+            },
+          });
+        }
+      } else if (isReactivating) {
+        // Vendor changed their mind after cancelling : re-take the stock that
+        // was restored. If stock has been sold elsewhere in the meantime, the
+        // produit row may go negative — we surface that to the vendor.
+        for (const ligne of current.lignes) {
+          const produit = await tx.produit.findUnique({
+            where: { id: ligne.produitId },
+            select: { nom: true, quantite: true },
+          });
+          if (produit && produit.quantite < ligne.quantite) {
+            throw new Error(
+              `Stock insuffisant pour réactiver cette commande : ${produit.nom} (disponible : ${produit.quantite}, requis : ${ligne.quantite}).`
+            );
+          }
+          await tx.produit.update({
+            where: { id: ligne.produitId },
+            data: { quantite: { decrement: ligne.quantite } },
+          });
+          await tx.mouvementStock.create({
+            data: {
+              boutiqueId,
+              produitId: ligne.produitId,
+              type: "SORTIE",
+              quantite: ligne.quantite,
+              sourceType: "ReactivationCommande",
               sourceId: commandeId,
             },
           });
@@ -159,6 +183,7 @@ export const updateEtatCommande = vendeurActionClient
         from: current.etat,
         to: data.etat,
         restockedLignes: isCancelling ? current.lignes.length : 0,
+        reSortieLignes: isReactivating ? current.lignes.length : 0,
       },
     });
 
