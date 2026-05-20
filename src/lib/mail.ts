@@ -3,7 +3,10 @@ import nodemailer from "nodemailer";
 const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 const smtpUser = process.env.SMTP_USER;
-const smtpPass = process.env.SMTP_PASS;
+// Google App Passwords are shown as "xxxx xxxx xxxx xxxx" in the UI — strip
+// spaces so a copy-paste with spaces still authenticates instead of failing
+// with a silent "Username and Password not accepted".
+const smtpPass = process.env.SMTP_PASS?.replace(/\s+/g, "");
 
 const transporter =
   smtpUser && smtpPass
@@ -16,11 +19,27 @@ const transporter =
       })
     : null;
 
+if (!transporter && process.env.NODE_ENV === "production") {
+  console.error(
+    "[mail] SMTP_USER/SMTP_PASS missing in production — outbound emails (contact, verification, password reset) will be skipped."
+  );
+}
+
 const emailFrom = process.env.SMTP_FROM || `GestionPro <${smtpUser}>`;
 
 const isDevExposeLink = !transporter && process.env.NODE_ENV !== "production";
 
-export type MailResult = { sent: boolean; devLink?: string };
+export type MailResult = { sent: boolean; devLink?: string; error?: string };
+
+/**
+ * Indique si le pipeline d'envoi d'email est opérationnel.
+ * Les actions serveur peuvent l'utiliser pour signaler à l'utilisateur que
+ * l'email a été enregistré mais n'a pas pu partir (cas Gmail App Password
+ * invalide / révoqué, env vars manquantes en prod, etc.).
+ */
+export function isMailConfigured(): boolean {
+  return transporter !== null;
+}
 
 // --- Premium Shared Email Header & Footer Generators ---
 const getEmailWrapper = (title: string, content: string, footerNote?: string) => {
@@ -145,8 +164,9 @@ export const sendVerificationEmail = async (
     });
     return { sent: true };
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email :", error);
-    return { sent: false };
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[mail] sendMail error:", msg);
+    return { sent: false, error: msg };
   }
 };
 
@@ -226,8 +246,9 @@ export const sendContactNotificationEmail = async (
     });
     return { sent: true };
   } catch (error) {
-    console.error("Erreur lors de l'envoi de la notification de contact :", error);
-    return { sent: false };
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[mail] contact notification error:", msg);
+    return { sent: false, error: msg };
   }
 };
 
@@ -270,8 +291,9 @@ export const sendContactAutoReplyEmail = async (
     });
     return { sent: true };
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'auto-reply contact :", error);
-    return { sent: false };
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[mail] contact auto-reply error:", msg);
+    return { sent: false, error: msg };
   }
 };
 
@@ -340,8 +362,9 @@ export const sendSubscriptionRenewalReminderEmail = async (
     });
     return { sent: true };
   } catch (error) {
-    console.error("Erreur lors de l'envoi du rappel de renouvellement :", error);
-    return { sent: false };
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[mail] renewal reminder error:", msg);
+    return { sent: false, error: msg };
   }
 };
 
@@ -386,8 +409,9 @@ export const sendSubscriptionExpiredEmail = async (
     });
     return { sent: true };
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email d'expiration :", error);
-    return { sent: false };
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[mail] subscription expired error:", msg);
+    return { sent: false, error: msg };
   }
 };
 
@@ -435,7 +459,8 @@ export const sendPasswordResetEmail = async (
     });
     return { sent: true };
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email de reset :", error);
-    return { sent: false };
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[mail] password reset error:", msg);
+    return { sent: false, error: msg };
   }
 };

@@ -48,8 +48,19 @@ export const registerUser = actionClient
       verificationToken.token
     );
 
+    if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+      // In prod, SMTP failed and there's no dev link to fall back on. Tell the
+      // user clearly instead of pretending the email is on its way.
+      console.error("[register] verification email failed:", mail.error);
+      throw new Error(
+        "Votre compte est créé, mais l'envoi de l'email de vérification a échoué (passerelle SMTP indisponible). Utilisez « Renvoyer l'email » dans quelques minutes ou contactez le support."
+      );
+    }
+
     return {
-      success: "Email de vérification envoyé !",
+      success: mail.sent
+        ? "Email de vérification envoyé !"
+        : "Compte créé. Email de vérification disponible via le lien de dev ci-dessous.",
       devLink: mail.devLink,
     };
   });

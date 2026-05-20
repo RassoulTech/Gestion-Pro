@@ -36,24 +36,37 @@ export const sendContactMessage = actionClient
     });
 
     // Notify the team and send an acknowledgement to the visitor in parallel.
-    // Email failures don't block the action — the message is already persisted in DB.
+    // Email failures don't lose the message — it's already persisted in DB — but
+    // we surface them so the visitor doesn't think a successful email went out
+    // when the SMTP credentials are actually broken / revoked / missing.
     const [adminMail, autoReplyMail] = await Promise.all([
       sendContactNotificationEmail({ nom, email, sujet, message }),
       sendContactAutoReplyEmail({ nom, email, sujet, message }),
     ]);
 
-    if (!adminMail.sent) {
-      console.warn(
-        "Le message a été enregistré mais la notification admin n'a pas pu partir."
+    const emailFailed = !adminMail.sent && !autoReplyMail.sent;
+    if (emailFailed) {
+      console.error(
+        "[contact] both emails failed — admin:",
+        adminMail.error,
+        "| autoReply:",
+        autoReplyMail.error
       );
+      return {
+        success:
+          "Votre message est bien enregistré côté serveur, mais notre passerelle email est temporairement indisponible. Nous vous recontacterons dès que possible.",
+        emailFailed: true as const,
+      };
+    }
+    if (!adminMail.sent) {
+      console.warn("[contact] admin notification failed:", adminMail.error);
     }
     if (!autoReplyMail.sent) {
-      console.warn(
-        "Le message a été enregistré mais l'auto-reply au visiteur n'a pas pu partir."
-      );
+      console.warn("[contact] visitor auto-reply failed:", autoReplyMail.error);
     }
 
     return {
       success: "Votre message a été envoyé avec succès ! Nous vous répondrons rapidement.",
+      emailFailed: false as const,
     };
   });
