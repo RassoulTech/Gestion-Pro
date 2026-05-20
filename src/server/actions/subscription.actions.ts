@@ -29,17 +29,38 @@ export const initiatePlanSubscription = vendeurActionClient
       throw new Error("Plan spécifié introuvable.");
     }
 
-    // On crée un abonnement temporaire en attente de paiement (statut ESSAI ou ACTIF lors du webhook)
-    const abonnement = await prisma.abonnement.create({
-      data: {
+    // Évite la duplication : si un Abonnement ESSAI pour le même plan existe déjà
+    // sans paiement confirmé, on le réutilise. Sans ça, chaque clic sur "S'abonner"
+    // crée un nouveau row et la table se remplit de doublons orphelins.
+    const pendingAbonnement = await prisma.abonnement.findFirst({
+      where: {
         vendeurId,
         planId: plan.id,
-        dateDebut: new Date(),
         statut: "ESSAI",
-        montant: plan.prix,
-        moyenPaiement: method,
+        paiements: { none: { statut: "CONFIRME" } },
       },
+      orderBy: { createdAt: "desc" },
     });
+
+    const abonnement = pendingAbonnement
+      ? await prisma.abonnement.update({
+          where: { id: pendingAbonnement.id },
+          data: {
+            dateDebut: new Date(),
+            moyenPaiement: method,
+            montant: plan.prix,
+          },
+        })
+      : await prisma.abonnement.create({
+          data: {
+            vendeurId,
+            planId: plan.id,
+            dateDebut: new Date(),
+            statut: "ESSAI",
+            montant: plan.prix,
+            moyenPaiement: method,
+          },
+        });
 
     const paymentResult = await PaymentService.initiateSubscriptionPayment(
       abonnement.id,
@@ -163,16 +184,37 @@ export const renewCurrentSubscription = vendeurActionClient
 
     const plan = lastAbonnement.plan;
 
-    const abonnement = await prisma.abonnement.create({
-      data: {
+    // Idem qu'initiatePlanSubscription : on réutilise tout Abonnement ESSAI
+    // pas encore payé pour ce plan plutôt que d'en empiler un nouveau.
+    const pendingAbonnement = await prisma.abonnement.findFirst({
+      where: {
         vendeurId,
         planId: plan.id,
-        dateDebut: new Date(),
         statut: "ESSAI",
-        montant: plan.prix,
-        moyenPaiement: method,
+        paiements: { none: { statut: "CONFIRME" } },
       },
+      orderBy: { createdAt: "desc" },
     });
+
+    const abonnement = pendingAbonnement
+      ? await prisma.abonnement.update({
+          where: { id: pendingAbonnement.id },
+          data: {
+            dateDebut: new Date(),
+            moyenPaiement: method,
+            montant: plan.prix,
+          },
+        })
+      : await prisma.abonnement.create({
+          data: {
+            vendeurId,
+            planId: plan.id,
+            dateDebut: new Date(),
+            statut: "ESSAI",
+            montant: plan.prix,
+            moyenPaiement: method,
+          },
+        });
 
     const paymentResult = await PaymentService.initiateSubscriptionPayment(
       abonnement.id,

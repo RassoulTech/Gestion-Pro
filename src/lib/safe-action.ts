@@ -1,5 +1,6 @@
 import { createSafeActionClient } from "next-safe-action";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 // Codes d'erreur internes mappés vers des messages utilisateurs.
 const KNOWN_ERROR_CODES: Record<string, string> = {
@@ -41,29 +42,65 @@ export const authActionClient = actionClient.use(async ({ next }) => {
   });
 });
 
+/**
+ * Vendeur middleware avec fallback DB.
+ *
+ * Le JWT peut ne pas contenir `vendeurId` dans plusieurs cas :
+ * - signin Google OAuth (PrismaAdapter ne joint pas Vendeur)
+ * - `update()` côté client échoue silencieusement après onboarding
+ * - JWT issued avant la création du profil vendeur
+ *
+ * Plutôt que de jeter FORBIDDEN aveuglément, on vérifie en DB si un
+ * Vendeur existe pour ce user. Ce coût (1 SELECT indexé) ne se paye
+ * que lorsque le token est désynchronisé.
+ */
 export const vendeurActionClient = authActionClient.use(
   async ({ ctx, next }) => {
-    if (!ctx.user.vendeurId) {
-      throw new Error("FORBIDDEN");
+    let vendeurId = ctx.user.vendeurId;
+
+    if (!vendeurId) {
+      const vendeur = await prisma.vendeur.findUnique({
+        where: { userId: ctx.user.id },
+        select: { id: true },
+      });
+      if (!vendeur) {
+        throw new Error("FORBIDDEN");
+      }
+      vendeurId = vendeur.id;
     }
 
     return next({
       ctx: {
         ...ctx,
-        vendeurId: ctx.user.vendeurId,
+        vendeurId,
       },
     });
   }
 );
 
+/**
+ * Admin middleware avec fallback DB sur le rôle.
+ *
+ * Idem : si le JWT a un rôle obsolète (ex. promotion en ADMIN après
+ * signin), on revalide via la DB plutôt que de bloquer à tort.
+ */
 export const adminActionClient = authActionClient.use(
   async ({ ctx, next }) => {
-    if (ctx.user.role !== "ADMIN") {
-      throw new Error("FORBIDDEN");
+    let role = ctx.user.role;
+
+    if (role !== "ADMIN") {
+      const user = await prisma.user.findUnique({
+        where: { id: ctx.user.id },
+        select: { role: true },
+      });
+      if (!user || user.role !== "ADMIN") {
+        throw new Error("FORBIDDEN");
+      }
+      role = user.role;
     }
 
     return next({
-      ctx,
+      ctx: { ...ctx, user: { ...ctx.user, role } },
     });
   }
 );

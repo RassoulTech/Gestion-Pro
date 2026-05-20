@@ -68,7 +68,9 @@
       "Bash(curl -s -o /dev/null -w \"HTTP=%{http_code}\\\\n\" http://localhost:3002/)",
       "Bash(curl -s -o /dev/null -w \"AUTH_SESSION=%{http_code}\\\\n\" http://localhost:3002/api/auth/session)",
       "Bash(curl -s -H \"Content-Type: application/json\" http://localhost:3002/api/auth/session)",
-      "Bash(curl -s -o /tmp/home.html -w \"HTTP=%{http_code} CT=%{content_type}\\\\n\" http://localhost:3002/)"
+      "Bash(curl -s -o /tmp/home.html -w \"HTTP=%{http_code} CT=%{content_type}\\\\n\" http://localhost:3002/)",
+      "Bash(git commit *)",
+      "Bash(npx vercel *)"
     ]
   }
 }

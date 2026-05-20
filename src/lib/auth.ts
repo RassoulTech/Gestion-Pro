@@ -21,7 +21,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const email = parsed.data.email;
         const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
-        
+
         // Limiter par IP (ex: max 5 requêtes par minute depuis la même IP)
         const ipResult = await authRatelimit.limit(ip);
         if (!ipResult.success) throw new Error("Too many attempts from this IP");
@@ -54,6 +54,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  // Override Node-side JWT callback : on enrichit avec un lookup Prisma que
+  // l'instance Edge (middleware.ts) ne peut pas faire. Le PrismaAdapter renvoie
+  // un User brut au signin OAuth, sans la relation Vendeur — sans ce backfill,
+  // les vendeurs créés via Google n'auraient jamais `vendeurId` en session et
+  // les actions `vendeurActionClient` retourneraient FORBIDDEN.
+  callbacks: {
+    ...authConfig.callbacks,
+    jwt: async (params) => {
+      const baseToken = await authConfig.callbacks!.jwt!(params);
+      if (!baseToken) return baseToken;
+      if (params.user && (baseToken.vendeurId === undefined || baseToken.vendeurId === null)) {
+        const vendeur = await prisma.vendeur.findUnique({
+          where: { userId: params.user.id as string },
+          select: { id: true },
+        });
+        if (vendeur) {
+          baseToken.vendeurId = vendeur.id;
+        }
+        // Garantir un role à jour pour les comptes OAuth (PrismaAdapter ne pose
+        // que `role` par défaut, et le seed/onboarding peuvent l'avoir modifié).
+        const dbUser = await prisma.user.findUnique({
+          where: { id: params.user.id as string },
+          select: { role: true },
+        });
+        if (dbUser) {
+          baseToken.role = dbUser.role;
+        }
+      }
+      return baseToken;
+    },
+  },
 });
 
 export async function getCurrentUser() {

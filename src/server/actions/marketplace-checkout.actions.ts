@@ -62,21 +62,40 @@ export const createMarketplaceCommande = actionClient
     // 1. Identify buyer and pre-check account creation if requested
     const session = await auth();
     const existingUserId: string | null = session?.user?.id ?? null;
-    const willCreateAccount = !existingUserId && !!createAccount && !!emailClient && !!password;
+    const wantsAccount = !existingUserId && !!createAccount && !!emailClient && !!password;
 
-    // Pre-hash and pre-check the email outside the transaction (these are not DB writes,
-    // and the bcrypt hash is CPU-bound — keep it out of the tx for shorter lock time).
+    // Three branches when wantsAccount is true :
+    //  a) email libre → on créera un nouveau User
+    //  b) email pris + mot de passe correct → on relie la commande au User existant
+    //     (un invité qui revient après avoir déjà créé son compte sur une commande passée)
+    //  c) email pris + mot de passe différent → erreur explicite (et on garde le checkout
+    //     en mode invité serait surprenant : on demande à l'utilisateur de se connecter)
     let hashedPasswordForNewUser: string | null = null;
-    if (willCreateAccount) {
+    let matchedExistingUserId: string | null = null;
+    let willCreateAccount = false;
+
+    if (wantsAccount) {
       const existingByEmail = await prisma.user.findUnique({
         where: { email: emailClient! },
+        select: { id: true, password: true },
       });
       if (existingByEmail) {
-        throw new Error(
-          "Un compte existe déjà avec cet email. Connectez-vous d'abord ou utilisez une autre adresse."
-        );
+        if (!existingByEmail.password) {
+          throw new Error(
+            "Cet email est déjà associé à un compte sans mot de passe (connexion Google). Connectez-vous via Google avant de commander."
+          );
+        }
+        const passwordOk = await bcrypt.compare(password!, existingByEmail.password);
+        if (!passwordOk) {
+          throw new Error(
+            "Cet email a déjà un compte. Connectez-vous d'abord, ou utilisez une autre adresse pour cette commande."
+          );
+        }
+        matchedExistingUserId = existingByEmail.id;
+      } else {
+        willCreateAccount = true;
+        hashedPasswordForNewUser = await bcrypt.hash(password!, 12);
       }
-      hashedPasswordForNewUser = await bcrypt.hash(password!, 12);
     }
 
     // 2. Group items by boutique
@@ -107,7 +126,7 @@ export const createMarketplaceCommande = actionClient
 
     const createdCommandeIds: string[] = [];
     let totalAmount = 0;
-    let buyerUserId: string | null = existingUserId;
+    let buyerUserId: string | null = existingUserId ?? matchedExistingUserId;
 
     // 3. Persist orders + upsert Client per boutique (user creation is inside
     // the transaction so a failure cleans up the account too)
@@ -238,7 +257,7 @@ export const createMarketplaceCommande = actionClient
         return {
           success: true,
           paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=STRIPE&ids=${createdCommandeIds.join(",")}`,
-          accountCreatedEmail: willCreateAccount ? emailClient : undefined,
+          accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
         };
       }
 
@@ -276,7 +295,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: stripeSession.url || undefined,
-        accountCreatedEmail: willCreateAccount ? emailClient : undefined,
+        accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
       };
     }
 
@@ -322,7 +341,7 @@ export const createMarketplaceCommande = actionClient
           return {
             success: true,
             paymentUrl: checkoutUrl,
-            accountCreatedEmail: willCreateAccount ? emailClient : undefined,
+            accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
           };
         }
 
@@ -337,7 +356,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=${paymentMethod}&ids=${createdCommandeIds.join(",")}`,
-        accountCreatedEmail: willCreateAccount ? emailClient : undefined,
+        accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
       };
     }
 
@@ -352,7 +371,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=PAYPAL&ids=${createdCommandeIds.join(",")}`,
-        accountCreatedEmail: willCreateAccount ? emailClient : undefined,
+        accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
       };
     }
 
@@ -360,7 +379,7 @@ export const createMarketplaceCommande = actionClient
     return {
       success: true,
       paymentUrl: `/checkout/success?success=true&method=cod&ids=${createdCommandeIds.join(",")}`,
-      accountCreatedEmail: willCreateAccount ? emailClient : undefined,
+      accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
     };
   });
 
