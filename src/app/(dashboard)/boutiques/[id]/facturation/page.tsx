@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { QuotaIndicator } from "@/components/dashboard/quota-indicators";
 import Link from "next/link";
 import { ManageStripeButton } from "./_components/manage-stripe-button";
+import { RenewSubscriptionButton } from "./_components/renew-subscription-button";
 
 interface FacturationPageProps {
   params: Promise<{ id: string }>;
@@ -55,6 +56,21 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
   const activeAbonnement = abonnements.find(
     (a) => a.statut === "ACTIF" || a.statut === "ESSAI"
   );
+
+  // Detect renewal need: expired, OR active/trial whose end date is within 7 days
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+  const lastAbonnement = abonnements[0];
+  const renewalRelevantEnd =
+    activeAbonnement?.dateFin ?? activeAbonnement?.essaiFin ?? null;
+  const renewalUrgent = lastAbonnement?.statut === "EXPIRE";
+  const renewalNeeded =
+    renewalUrgent ||
+    (!!renewalRelevantEnd &&
+      renewalRelevantEnd.getTime() - Date.now() <= SEVEN_DAYS_MS);
+  const renewalPlanName =
+    activeAbonnement?.plan.nom ?? lastAbonnement?.plan.nom ?? "";
+  const renewalAmount =
+    activeAbonnement?.plan.prix ?? lastAbonnement?.plan.prix ?? 0;
 
   // Get counts for quotas
   const boutiqueLimit = await checkBoutiqueCreationLimit(vendeur.id);
@@ -103,6 +119,14 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
           </div>
 
           <div className="flex flex-wrap gap-4">
+            {renewalNeeded && renewalPlanName && (
+              <RenewSubscriptionButton
+                planName={renewalPlanName}
+                amount={renewalAmount}
+                urgent={renewalUrgent}
+              />
+            )}
+
             <Button
               asChild
               size="lg"

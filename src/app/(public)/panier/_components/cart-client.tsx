@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -16,10 +16,10 @@ export function CartClient() {
         <div className="w-full max-w-xl mx-auto px-4 text-center">
           <div className="relative p-10 sm:p-16 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[3rem] shadow-xl overflow-hidden">
             {/* Background design glow */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#2563EB]/10 to-[#7C3AED]/10 blur-3xl rounded-full pointer-events-none" />
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#EA580C]/10 to-[#F59E0B]/10 blur-3xl rounded-full pointer-events-none" />
             
             <div className="relative z-10 space-y-6">
-              <div className="mx-auto h-24 w-24 rounded-full bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center text-blue-500 shadow-inner">
+              <div className="mx-auto h-24 w-24 rounded-full bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center text-orange-500 shadow-inner">
                 <ShoppingCart className="h-10 w-10 animate-bounce" />
               </div>
               <div className="space-y-2">
@@ -28,7 +28,7 @@ export function CartClient() {
                   Explorez le marketplace de GestionPro pour découvrir des boutiques de confiance et ajouter des articles.
                 </p>
               </div>
-              <Button asChild variant="brand" className="rounded-2xl px-8 h-13 font-black shadow-lg shadow-blue-500/20 w-full sm:w-auto">
+              <Button asChild variant="brand" className="rounded-2xl px-8 h-13 font-black shadow-lg shadow-orange-500/20 w-full sm:w-auto">
                 <Link href="/marketplace">
                   <ShoppingBag className="mr-2.5 h-5 w-5" />
                   Explorer le marketplace
@@ -72,7 +72,7 @@ export function CartClient() {
                 className="group relative flex flex-col sm:flex-row gap-5 p-5 sm:p-6 rounded-[2.5rem] border border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
               >
                 {/* Soft glow background */}
-                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-blue-500/5 blur-3xl rounded-full pointer-events-none" />
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-orange-500/5 blur-3xl rounded-full pointer-events-none" />
 
                 {/* Product Image */}
                 <div className="flex-shrink-0 h-24 w-24 sm:h-32 sm:w-32 rounded-2xl bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center overflow-hidden relative shadow-inner">
@@ -88,11 +88,11 @@ export function CartClient() {
                   <div className="space-y-1">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 text-base sm:text-lg truncate group-hover:text-blue-500 transition-colors">
+                        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 text-base sm:text-lg truncate group-hover:text-orange-500 transition-colors">
                           {item.nom}
                         </h3>
                         <p className="text-xs font-bold text-slate-400 dark:text-zinc-500 mt-0.5 uppercase tracking-wider flex items-center gap-1.5">
-                          <Store className="w-3.5 h-3.5 text-blue-500" />
+                          <Store className="w-3.5 h-3.5 text-orange-500" />
                           {item.boutiqueNom}
                         </p>
                       </div>
@@ -145,10 +145,10 @@ export function CartClient() {
           {/* Checkout Panel Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.5rem] p-7 sm:p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#2563EB]/10 to-[#7C3AED]/10 blur-3xl rounded-full pointer-events-none" />
+              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-gradient-to-br from-[#EA580C]/10 to-[#F59E0B]/10 blur-3xl rounded-full pointer-events-none" />
 
               <h2 className="text-xl font-black text-slate-800 dark:text-zinc-100 mb-6 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-blue-500" />
+                <CreditCard className="w-5 h-5 text-orange-500" />
                 Résumé de commande
               </h2>
 
@@ -156,7 +156,7 @@ export function CartClient() {
                 {items.map((item) => (
                   <div key={item.produitId} className="flex justify-between items-center text-xs sm:text-sm">
                     <span className="text-slate-500 dark:text-zinc-400 font-bold truncate mr-3">
-                      {item.nom} <span className="text-[10px] font-black text-blue-500 px-1.5 py-0.5 bg-blue-50 dark:bg-blue-500/10 rounded-md">x{item.quantite}</span>
+                      {item.nom} <span className="text-[10px] font-black text-orange-500 px-1.5 py-0.5 bg-orange-50 dark:bg-orange-500/10 rounded-md">x{item.quantite}</span>
                     </span>
                     <span className="font-extrabold text-slate-800 dark:text-zinc-200 flex-shrink-0">
                       {formatCurrency(item.prixUnitaire * item.quantite)}
@@ -171,7 +171,7 @@ export function CartClient() {
                     <span className="text-sm font-bold text-slate-400 uppercase tracking-wider block">Total TTC</span>
                     <span className="text-xs text-slate-400">Taxes incluses</span>
                   </div>
-                  <span className="text-3xl font-black text-blue-600 dark:text-blue-400 tracking-tight">
+                  <span className="text-3xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
                     {formatCurrency(totalPrice)}
                   </span>
                 </div>
@@ -182,7 +182,7 @@ export function CartClient() {
                   asChild
                   size="lg"
                   variant="brand"
-                  className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#2563EB] to-[#7C3AED] hover:from-[#2563EB]/90 hover:to-[#7C3AED]/90 text-white border-none"
+                  className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-[#EA580C] to-[#F59E0B] hover:from-[#EA580C]/90 hover:to-[#F59E0B]/90 text-white border-none"
                 >
                   <Link href="/checkout" className="inline-flex items-center justify-center">
                     <ShoppingBag className="mr-2 h-5 w-5" />

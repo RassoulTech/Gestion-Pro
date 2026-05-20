@@ -134,6 +134,75 @@ export const getPlansAction = vendeurActionClient
   });
 
 /**
+ * Renouvelle l'abonnement courant (ou le dernier en date) avec la méthode choisie.
+ * Utile pour PayDunya en one-shot : crée un nouvel Abonnement ESSAI lié au même plan
+ * et redirige le vendeur vers l'invoice de paiement.
+ */
+export const renewCurrentSubscription = vendeurActionClient
+  .schema(
+    z.object({
+      method: z.enum(["WAVE", "ORANGE_MONEY", "STRIPE"]),
+    })
+  )
+  .action(async ({ parsedInput, ctx }) => {
+    const { method } = parsedInput;
+    const { vendeurId, user } = ctx;
+
+    // Find the most recent subscription to reuse its plan
+    const lastAbonnement = await prisma.abonnement.findFirst({
+      where: { vendeurId },
+      include: { plan: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!lastAbonnement) {
+      throw new Error(
+        "Aucun abonnement précédent trouvé. Choisissez un plan via la page de tarification."
+      );
+    }
+
+    const plan = lastAbonnement.plan;
+
+    const abonnement = await prisma.abonnement.create({
+      data: {
+        vendeurId,
+        planId: plan.id,
+        dateDebut: new Date(),
+        statut: "ESSAI",
+        montant: plan.prix,
+        moyenPaiement: method,
+      },
+    });
+
+    const paymentResult = await PaymentService.initiateSubscriptionPayment(
+      abonnement.id,
+      plan.prix,
+      method as PaymentMethod,
+      vendeurId
+    );
+
+    if (!paymentResult.success || !paymentResult.paymentUrl) {
+      throw new Error(
+        paymentResult.error || "Échec de l'initialisation du paiement de renouvellement."
+      );
+    }
+
+    await logActivity({
+      userId: user.id,
+      action: `INITIATED_SUBSCRIPTION_RENEWAL`,
+      subjectType: "Abonnement",
+      subjectId: abonnement.id,
+      changes: { plan: plan.nom, price: plan.prix, method },
+    });
+
+    return {
+      success: true,
+      paymentUrl: paymentResult.paymentUrl,
+      transactionRef: paymentResult.transactionRef,
+    };
+  });
+
+/**
  * Génère un lien vers le portail de facturation Stripe pour gérer son abonnement.
  */
 export const createStripePortalSession = vendeurActionClient

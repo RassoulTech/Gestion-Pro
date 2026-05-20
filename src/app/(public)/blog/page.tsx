@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,7 +66,7 @@ export default function BlogPage() {
   return (
     <div className="relative pt-32 pb-24 overflow-hidden">
       {/* Decorative Orbs */}
-      <div className="absolute top-10 left-1/3 w-[350px] h-[350px] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-10 left-1/3 w-[350px] h-[350px] bg-orange-600/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-10 right-1/3 w-[350px] h-[350px] bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10 space-y-16">
@@ -88,7 +88,7 @@ export default function BlogPage() {
             transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
             className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50"
           >
-            Le Blog de <span className="bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">GestionPro</span>
+            Le Blog de <span className="bg-gradient-to-r from-orange-600 to-emerald-500 bg-clip-text text-transparent">GestionPro</span>
           </motion.h1>
 
           <motion.p
@@ -111,7 +111,7 @@ export default function BlogPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 ${
                   selectedCategory === cat
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/25"
                     : "bg-white/50 dark:bg-zinc-950/30 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 border border-zinc-200/40 dark:border-zinc-800/40"
                 }`}
               >
@@ -128,7 +128,7 @@ export default function BlogPage() {
               placeholder="Rechercher un article..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 pl-11 pr-5 rounded-2xl bg-white/50 dark:bg-zinc-950/30 border border-zinc-200/50 dark:border-zinc-800/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 text-sm font-semibold outline-none transition-all placeholder:text-zinc-400"
+              className="w-full h-11 pl-11 pr-5 rounded-2xl bg-white/50 dark:bg-zinc-950/30 border border-zinc-200/50 dark:border-zinc-800/50 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-sm font-semibold outline-none transition-all placeholder:text-zinc-400"
             />
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function BlogPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.5, delay: idx * 0.05, ease: EASE }}
-                  className="group rounded-3xl bg-white/55 dark:bg-zinc-900/55 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden backdrop-blur-xl hover:border-blue-500/20 hover:shadow-xl hover:shadow-blue-600/5 transition-all flex flex-col h-full"
+                  className="group rounded-3xl bg-white/55 dark:bg-zinc-900/55 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden backdrop-blur-xl hover:border-orange-500/20 hover:shadow-xl hover:shadow-orange-600/5 transition-all flex flex-col h-full"
                 >
                   <div className="relative h-56 overflow-hidden bg-zinc-100 dark:bg-zinc-950">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -154,7 +154,7 @@ export default function BlogPage() {
                       alt={art.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-4 left-4 inline-flex items-center px-3 py-1.5 rounded-xl bg-white/90 dark:bg-zinc-900/90 text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 shadow-sm border border-zinc-200/20 dark:border-zinc-800/20">
+                    <span className="absolute top-4 left-4 inline-flex items-center px-3 py-1.5 rounded-xl bg-white/90 dark:bg-zinc-900/90 text-xs font-black uppercase tracking-wider text-orange-600 dark:text-orange-400 shadow-sm border border-zinc-200/20 dark:border-zinc-800/20">
                       {art.category}
                     </span>
                   </div>
@@ -170,7 +170,7 @@ export default function BlogPage() {
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+                    <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-50 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors leading-tight">
                       {art.title}
                     </h3>
 
@@ -179,7 +179,7 @@ export default function BlogPage() {
                     </p>
 
                     <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-orange-600 dark:text-orange-400">
                         Lire l&apos;article <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                       </span>
                     </div>

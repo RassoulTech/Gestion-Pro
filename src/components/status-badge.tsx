@@ -1,4 +1,4 @@
-
+﻿
 
 
 
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 const statusConfig = {
   // Commande states
   EN_ATTENTE: { label: "En attente", variant: "outline" as const, className: "border-yellow-500 text-yellow-700 dark:text-yellow-400" },
-  VALIDEE: { label: "Validée", variant: "outline" as const, className: "border-blue-500 text-blue-700 dark:text-blue-400" },
+  VALIDEE: { label: "Validée", variant: "outline" as const, className: "border-orange-500 text-orange-700 dark:text-orange-400" },
   LIVREE: { label: "Livrée", variant: "outline" as const, className: "border-emerald-500 text-emerald-700 dark:text-emerald-400" },
   ANNULEE: { label: "Annulée", variant: "outline" as const, className: "border-red-500 text-red-700 dark:text-red-400" },
   // Vendeur / Boutique statut

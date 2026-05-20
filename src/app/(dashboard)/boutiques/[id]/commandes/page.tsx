@@ -45,7 +45,7 @@ interface CommandesPageProps {
 
 const statusMap = {
   EN_ATTENTE: { label: "En attente", icon: Clock, color: "text-amber-500 bg-amber-500/10" },
-  VALIDEE: { label: "Validée", icon: CheckCircle2, color: "text-blue-500 bg-blue-500/10" },
+  VALIDEE: { label: "Validée", icon: CheckCircle2, color: "text-orange-500 bg-orange-500/10" },
   LIVREE: { label: "Livrée", icon: Truck, color: "text-emerald-500 bg-emerald-500/10" },
   ANNULEE: { label: "Annulée", icon: XCircle, color: "text-rose-500 bg-rose-500/10" },
 };

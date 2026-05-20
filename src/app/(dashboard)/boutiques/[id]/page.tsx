@@ -127,8 +127,8 @@ export default async function BoutiqueDashboardPage({
       label: "Produits",
       value: boutique._count.produits,
       icon: Package,
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      color: "text-orange-500",
+      bg: "bg-orange-500/10",
       trend: "Stock",
     },
     {
@@ -143,8 +143,8 @@ export default async function BoutiqueDashboardPage({
       label: "Clients",
       value: boutique._count.clients,
       icon: Users,
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      color: "text-orange-500",
+      bg: "bg-orange-500/10",
       trend: "Total",
     },
     {

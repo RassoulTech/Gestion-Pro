@@ -2,15 +2,29 @@
 
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
+import type { Session } from "next-auth";
 
 /**
  * Wrapper client-side qui fournit Session + Theme à toute l'app.
- * Indispensable pour que useSession() fonctionne dans les Client Components
- * (ex: UserMenu, ThemeToggle).
+ * - `session` reçu du Server Component (root layout) → évite le fetch initial
+ *   `/api/auth/session` qui, en dev/Turbopack, peut renvoyer l'overlay HTML
+ *   pendant une recompilation et provoquer "ClientFetchError: Unexpected token <".
+ * - refetchOnWindowFocus=false + refetchInterval=0 : pas de polling, pas de
+ *   refetch au focus → la session reste celle hydratée côté serveur.
  */
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  session,
+}: {
+  children: React.ReactNode;
+  session: Session | null;
+}) {
   return (
-    <SessionProvider>
+    <SessionProvider
+      session={session}
+      refetchOnWindowFocus={false}
+      refetchInterval={0}
+    >
       <ThemeProvider
         attribute="class"
         defaultTheme="system"

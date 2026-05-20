@@ -56,10 +56,10 @@ export function ProduitFilters() {
     <div className="space-y-6">
       {/* Search Input Card */}
       <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-sky-500/5 rounded-2xl blur-lg transition-all duration-300 group-focus-within:from-blue-500/10 group-focus-within:to-sky-500/10 pointer-events-none" />
-        <div className="relative flex items-center gap-4 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 p-2 sm:p-3 rounded-2xl shadow-sm transition-all duration-300 group-focus-within:border-blue-500/30">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-orange-500/5 rounded-2xl blur-lg transition-all duration-300 group-focus-within:from-orange-500/10 group-focus-within:to-orange-500/10 pointer-events-none" />
+        <div className="relative flex items-center gap-4 bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 p-2 sm:p-3 rounded-2xl shadow-sm transition-all duration-300 group-focus-within:border-orange-500/30">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-zinc-500 group-focus-within:text-orange-500 transition-colors" />
             <Input
               type="text"
               placeholder="Rechercher par nom, code barre ou description..."
@@ -71,8 +71,8 @@ export function ProduitFilters() {
           {isPending && (
             <div className="pr-4">
               <span className="flex h-2.5 w-2.5 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
               </span>
             </div>
           )}

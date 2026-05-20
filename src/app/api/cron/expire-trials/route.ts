@@ -1,19 +1,42 @@
 import { NextResponse } from "next/server";
+import crypto from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { env } from "@/env.mjs";
 import { clearQuotaCache } from "@/lib/quotas";
+import {
+  sendSubscriptionExpiredEmail,
+  sendSubscriptionRenewalReminderEmail,
+} from "@/lib/mail";
+
+const REMINDER_WINDOW_DAYS = 3;
+
+function timingSafeEqualStr(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ab, bb);
+}
 
 export async function GET(request: Request) {
-  // 1. Authorization check
-  const authHeader = request.headers.get("authorization");
+  // CRON_SECRET MUST be configured. No hardcoded fallback — a missing secret
+  // would expose this endpoint to anyone and allow forced trial expirations.
+  const cronSecret = env.CRON_SECRET;
+  if (!cronSecret || cronSecret.length < 16) {
+    console.error("expire-trials: CRON_SECRET is missing or too short");
+    return NextResponse.json(
+      { error: "Server misconfiguration: CRON_SECRET is not set" },
+      { status: 500 }
+    );
+  }
+
+  const authHeader = request.headers.get("authorization") ?? "";
   const { searchParams } = new URL(request.url);
-  const querySecret = searchParams.get("secret");
+  const querySecret = searchParams.get("secret") ?? "";
 
-  const cronSecret = env.CRON_SECRET || "super-secret-cron-token-xyz";
-
-  // Accept either "Authorization: Bearer <secret>" or "?secret=<secret>"
+  const expectedHeader = `Bearer ${cronSecret}`;
   const isAuthorized =
-    authHeader === `Bearer ${cronSecret}` || querySecret === cronSecret;
+    timingSafeEqualStr(authHeader, expectedHeader) ||
+    timingSafeEqualStr(querySecret, cronSecret);
 
   if (!isAuthorized) {
     return NextResponse.json(
@@ -24,8 +47,65 @@ export async function GET(request: Request) {
 
   try {
     const now = new Date();
+    const reminderWindowEnd = new Date(
+      now.getTime() + REMINDER_WINDOW_DAYS * 24 * 60 * 60 * 1000
+    );
 
-    // 2. Find all active or trial subscriptions that have expired
+    // ─── STEP 1 ─ Send reminders for subscriptions expiring within REMINDER_WINDOW_DAYS ───
+    const upcomingExpirations = await prisma.abonnement.findMany({
+      where: {
+        statut: { in: ["ESSAI", "ACTIF"] },
+        lastReminderAt: null,
+        OR: [
+          {
+            statut: "ESSAI",
+            essaiFin: { gte: now, lte: reminderWindowEnd },
+          },
+          {
+            statut: "ACTIF",
+            dateFin: { gte: now, lte: reminderWindowEnd },
+          },
+        ],
+      },
+      include: {
+        plan: true,
+        vendeur: {
+          include: {
+            user: { select: { email: true, name: true } },
+            boutiques: { select: { id: true }, take: 1 },
+          },
+        },
+      },
+    });
+
+    let remindersSent = 0;
+    for (const abo of upcomingExpirations) {
+      const expiresAt =
+        abo.statut === "ESSAI" ? abo.essaiFin : abo.dateFin;
+      if (!expiresAt) continue;
+
+      const email = abo.vendeur?.user?.email;
+      if (!email) continue;
+
+      const result = await sendSubscriptionRenewalReminderEmail({
+        email,
+        vendeurName: abo.vendeur?.user?.name,
+        planName: abo.plan.nom,
+        expiresAt,
+        amount: abo.montant,
+        boutiqueId: abo.vendeur?.boutiques[0]?.id ?? null,
+      });
+
+      if (result.sent) {
+        remindersSent += 1;
+        await prisma.abonnement.update({
+          where: { id: abo.id },
+          data: { lastReminderAt: now },
+        });
+      }
+    }
+
+    // ─── STEP 2 ─ Expire subscriptions whose dateFin/essaiFin is past ───
     const expiredAbonnements = await prisma.abonnement.findMany({
       where: {
         statut: { in: ["ESSAI", "ACTIF"] },
@@ -40,45 +120,65 @@ export async function GET(request: Request) {
           },
         ],
       },
-      select: {
-        id: true,
-        vendeurId: true,
-        statut: true,
+      include: {
+        plan: true,
+        vendeur: {
+          include: {
+            user: { select: { email: true, name: true } },
+            boutiques: { select: { id: true }, take: 1 },
+          },
+        },
       },
     });
 
-    if (expiredAbonnements.length === 0) {
-      return NextResponse.json({
-        success: true,
-        message: "No expired subscriptions found.",
-        count: 0,
+    let expiredCount = 0;
+    let expiredEmailsSent = 0;
+
+    if (expiredAbonnements.length > 0) {
+      const result = await prisma.abonnement.updateMany({
+        where: {
+          id: { in: expiredAbonnements.map((a) => a.id) },
+        },
+        data: {
+          statut: "EXPIRE",
+        },
       });
-    }
+      expiredCount = result.count;
 
-    // 3. Mark them as expired
-    const updatedCount = await prisma.abonnement.updateMany({
-      where: {
-        id: { in: expiredAbonnements.map((a) => a.id) },
-      },
-      data: {
-        statut: "EXPIRE",
-      },
-    });
+      for (const abo of expiredAbonnements) {
+        clearQuotaCache(abo.vendeurId);
 
-    // 4. Invalidate the memory cache for all affected vendors
-    for (const abonnement of expiredAbonnements) {
-      clearQuotaCache(abonnement.vendeurId);
+        const email = abo.vendeur?.user?.email;
+        if (!email) continue;
+
+        const expiredAt =
+          abo.statut === "ESSAI" ? abo.essaiFin : abo.dateFin;
+
+        const mailResult = await sendSubscriptionExpiredEmail({
+          email,
+          vendeurName: abo.vendeur?.user?.name,
+          planName: abo.plan.nom,
+          expiresAt: expiredAt ?? now,
+          amount: abo.montant,
+          boutiqueId: abo.vendeur?.boutiques[0]?.id ?? null,
+        });
+
+        if (mailResult.sent) {
+          expiredEmailsSent += 1;
+        }
+      }
     }
 
     return NextResponse.json({
       success: true,
-      message: `Successfully processed and expired ${updatedCount.count} subscription(s).`,
-      count: updatedCount.count,
+      remindersSent,
+      expiredCount,
+      expiredEmailsSent,
       expiredIds: expiredAbonnements.map((a) => a.id),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error("Error processing expired subscriptions cron:", error);
+    console.error("Error processing expire-trials cron:", error);
     return NextResponse.json(
       { error: "Internal Server Error", details: message },
       { status: 500 }

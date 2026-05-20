@@ -49,7 +49,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2 rounded-lg border border-zinc-100 bg-zinc-50/50 px-3 py-1.5 dark:border-zinc-900 dark:bg-zinc-900/50">
-            <span className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_#2563eb]" />
+            <span className="h-2 w-2 rounded-full bg-brand shadow-[0_0_8px_#ea580c]" />
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
               Revenus : {formatCurrency(revenuMensuel)}/mois
             </span>
@@ -68,8 +68,8 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
           <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                <stop offset="5%" stopColor="#ea580c" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="#ea580c" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorInscriptions" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
@@ -135,7 +135,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
             <Area
               type="monotone"
               dataKey="Revenus"
-              stroke="#2563eb"
+              stroke="#ea580c"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorRevenus)"

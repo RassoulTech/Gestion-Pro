@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, use, startTransition, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -15,13 +15,13 @@ function ConfettiEffect() {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; color: string; delay: number }>>([]);
 
   useEffect(() => {
-    const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6", "#ef4444"];
+    const colors = ["#ea580c", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6", "#ef4444"];
     const newParticles = Array.from({ length: 80 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100, // percentage width
       y: -10 - Math.random() * 20, // start above screen
       size: 5 + Math.random() * 10,
-      color: colors[Math.floor(Math.random() * colors.length)] || "#3b82f6",
+      color: colors[Math.floor(Math.random() * colors.length)] || "#ea580c",
       delay: Math.random() * 2,
     }));
     setParticles(newParticles);
@@ -117,8 +117,8 @@ function MockPageContent() {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-white font-sans">
       {/* Dynamic light glows in background */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {success && <ConfettiEffect />}
 
@@ -152,7 +152,7 @@ function MockPageContent() {
             {/* WAVE MOCK INTERFACE */}
             {method === "WAVE" && (
               <div className="space-y-6">
-                <div className="p-6 rounded-2xl bg-sky-500 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
+                <div className="p-6 rounded-2xl bg-orange-500 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
                   {/* wave wave logo pingouin */}
                   <div className="h-14 w-14 rounded-full bg-white/20 flex items-center justify-center border border-white/30 text-white font-black text-xl shadow-inner">
                     🐧
@@ -170,7 +170,7 @@ function MockPageContent() {
                         key={idx}
                         className={cn(
                           "h-5 w-5 rounded-full border-2 transition-all duration-200",
-                          pin.length > idx ? "bg-sky-400 border-sky-400 scale-110" : "border-zinc-700 bg-zinc-850"
+                          pin.length > idx ? "bg-orange-400 border-orange-400 scale-110" : "border-zinc-700 bg-zinc-850"
                         )}
                       />
                     ))}
@@ -204,7 +204,7 @@ function MockPageContent() {
                       onClick={handlePaymentSuccess}
                       className={cn(
                         "h-12 w-12 rounded-full text-xs font-black transition active:scale-95 flex items-center justify-center",
-                        pin.length === 4 ? "bg-sky-500 text-white shadow-lg" : "bg-zinc-800 text-zinc-600 cursor-not-allowed"
+                        pin.length === 4 ? "bg-orange-500 text-white shadow-lg" : "bg-zinc-800 text-zinc-600 cursor-not-allowed"
                       )}
                     >
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-5 w-5" />}
@@ -255,13 +255,13 @@ function MockPageContent() {
             {/* PAYPAL MOCK INTERFACE */}
             {method === "PAYPAL" && (
               <div className="space-y-6">
-                <div className="p-6 rounded-2xl bg-blue-700 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
+                <div className="p-6 rounded-2xl bg-orange-700 text-white flex flex-col items-center gap-3 relative overflow-hidden shadow-lg">
                   <div className="h-14 w-14 rounded-full bg-white/20 flex items-center justify-center border border-white/30 text-white font-black text-xl shadow-inner">
                     💳
                   </div>
                   <div className="text-center space-y-1">
                     <p className="text-xs font-black uppercase tracking-widest opacity-80">PayPal / Carte de Crédit</p>
-                    <p className="text-xs text-blue-200 font-bold">Renseignez vos coordonnées de carte fictive</p>
+                    <p className="text-xs text-orange-200 font-bold">Renseignez vos coordonnées de carte fictive</p>
                   </div>
                 </div>
 
@@ -323,7 +323,7 @@ function MockPageContent() {
                   <Button
                     disabled={!cardName || cardNumber.length < 19 || cardExpiry.length < 5 || cardCvv.length < 3 || loading}
                     onClick={handlePaymentSuccess}
-                    className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-lg shadow-blue-600/20 border-none"
+                    className="w-full h-14 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black shadow-lg shadow-orange-600/20 border-none"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                     Valider le Paiement PayPal

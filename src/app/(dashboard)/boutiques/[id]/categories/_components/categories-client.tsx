@@ -81,18 +81,18 @@ export function CategoriesClient({ categories, boutiqueId }: { categories: Categ
 
   const form = useForm<CreateCategorieInput>({
     resolver: zodResolver(createCategorieSchema),
-    defaultValues: { nom: "", couleur: "#3b82f6" },
+    defaultValues: { nom: "", couleur: "#fb923c" },
   });
 
   function openCreate() {
     setEditingCategorie(null);
-    form.reset({ nom: "", couleur: "#3b82f6" });
+    form.reset({ nom: "", couleur: "#fb923c" });
     setOpen(true);
   }
 
   function openEdit(cat: Categorie) {
     setEditingCategorie(cat);
-    form.reset({ nom: cat.nom, couleur: cat.couleur || "#3b82f6" });
+    form.reset({ nom: cat.nom, couleur: cat.couleur || "#fb923c" });
     setOpen(true);
   }
 

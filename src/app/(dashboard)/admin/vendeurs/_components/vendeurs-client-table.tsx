@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,11 +26,11 @@ interface VendeursClientTableProps {
 }
 
 const gradients = [
-  "from-blue-500 to-sky-600",
+  "from-orange-500 to-orange-600",
   "from-emerald-400 to-teal-600",
-  "from-blue-500 to-cyan-600",
+  "from-orange-500 to-cyan-600",
   "from-rose-500 to-pink-600",
-  "from-sky-400 to-blue-600",
+  "from-orange-400 to-orange-600",
 ];
 
 function getGradient(name: string) {
@@ -57,19 +57,19 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
     <div className="space-y-6">
       {/* Premium Filter & Search Control Panel */}
       <div className="relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-blue-600/5 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-sky-600/5 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
         
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400 transition-colors group-focus-within:text-blue-500" />
+            <Search className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400 transition-colors group-focus-within:text-orange-500" />
             <input
               type="text"
               placeholder="Rechercher un vendeur par nom, prenom ou email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -90,7 +90,7 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
               onClick={() => setStatusFilter("TOUT")}
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "TOUT"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
               }`}
             >
@@ -130,8 +130,8 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
             className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[350px]"
           >
             <div className="relative mb-6">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 opacity-20 blur-xl animate-pulse" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-20 blur-xl animate-pulse" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
                 <Users className="h-8 w-8 animate-bounce" />
               </div>
             </div>
@@ -227,7 +227,7 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
                       return (
                         <TableRow
                           key={v.id}
-                          className="border-b border-zinc-100 hover:bg-blue-500/5 dark:border-zinc-900/60 dark:hover:bg-blue-500/5 transition-all duration-200"
+                          className="border-b border-zinc-100 hover:bg-orange-500/5 dark:border-zinc-900/60 dark:hover:bg-orange-500/5 transition-all duration-200"
                         >
                           <TableCell className="py-4 font-semibold text-zinc-950 dark:text-zinc-50 pl-6">
                             <div className="flex items-center space-x-3">

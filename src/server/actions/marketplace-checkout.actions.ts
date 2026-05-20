@@ -283,31 +283,50 @@ export const createMarketplaceCommande = actionClient
     if (paymentMethod === "WAVE" || paymentMethod === "ORANGE_MONEY") {
       const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
-      if (process.env.CINETPAY_ENABLED === "true") {
-        const { CinetPayClient } = await import("@/lib/cinetpay");
+      const pdMaster = process.env.PAYDUNYA_MASTER_KEY || "";
+      const paydunyaConfigured =
+        process.env.PAYDUNYA_ENABLED === "true" &&
+        pdMaster.length > 0 &&
+        !pdMaster.includes("mock");
 
-        const cpResponse = await CinetPayClient.initiatePayment({
+      if (paydunyaConfigured) {
+        const { PayDunyaClient, extractPayDunyaCheckoutUrl } = await import(
+          "@/lib/paydunya"
+        );
+
+        const pdResponse = await PayDunyaClient.initiateInvoice({
           transactionId: transactionRef,
           amount: totalAmount,
-          currency: "XOF",
-          description: `Commande GestionPro - ${createdCommandeIds.length} boutiques`,
-          notifyUrl: `${appUrl}/api/webhooks/cinetpay`,
-          returnUrl: `${appUrl}/checkout/success?success=true&method=cinetpay&ids=${createdCommandeIds.join(",")}`,
-          channels: "MOBILE_MONEY",
+          description: `Commande GestionPro - ${createdCommandeIds.length} boutique${createdCommandeIds.length > 1 ? "s" : ""}`,
+          cancelUrl: `${appUrl}/panier`,
+          returnUrl: `${appUrl}/checkout/success?success=true&method=paydunya&ids=${createdCommandeIds.join(",")}`,
+          callbackUrl: `${appUrl}/api/webhooks/paydunya`,
+          customerName: nomClient,
+          customerEmail: emailClient,
+          customerPhone: telephoneClient,
+          customData: {
+            kind: "marketplace_order",
+            commandeIds: createdCommandeIds.join(","),
+            transactionRef,
+          },
         });
 
-        if (cpResponse.code === "201" && cpResponse.data) {
+        const checkoutUrl = extractPayDunyaCheckoutUrl(pdResponse);
+
+        if (checkoutUrl && pdResponse.token) {
           await prisma.commandeClient.updateMany({
             where: { id: { in: createdCommandeIds } },
-            data: { paymentToken: cpResponse.data.payment_token },
+            data: { paymentToken: pdResponse.token },
           });
 
           return {
             success: true,
-            paymentUrl: cpResponse.data.payment_url,
+            paymentUrl: checkoutUrl,
             accountCreatedEmail: willCreateAccount ? emailClient : undefined,
           };
         }
+
+        console.error("PayDunya marketplace API error :", pdResponse);
       }
 
       await prisma.commandeClient.updateMany({

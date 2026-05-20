@@ -69,7 +69,7 @@ export default async function ProduitPublicPage({ params }: Props) {
           {/* Product Image Section with ambient color glow */}
           <div className="relative group w-full">
             {/* Ambient background glow */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-sky-600 opacity-20 blur-3xl rounded-[2.5rem] group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 opacity-20 blur-3xl rounded-[2.5rem] group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
             
             <div className="relative aspect-square w-full rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 flex items-center justify-center overflow-hidden shadow-xl">
               {produit.photo ? (
@@ -88,7 +88,7 @@ export default async function ProduitPublicPage({ params }: Props) {
               )}
               
               <div className="absolute top-6 left-6">
-                <Badge className="rounded-full px-4 py-1.5 bg-blue-500 text-white font-extrabold text-[10px] uppercase tracking-widest shadow-lg shadow-blue-500/20 border-none">
+                <Badge className="rounded-full px-4 py-1.5 bg-orange-500 text-white font-extrabold text-[10px] uppercase tracking-widest shadow-lg shadow-orange-500/20 border-none">
                   {produit.categorie?.nom || "Produit"}
                 </Badge>
               </div>
@@ -103,7 +103,7 @@ export default async function ProduitPublicPage({ params }: Props) {
               </h1>
               
               <div className="flex flex-wrap items-center gap-4">
-                <p className="text-3xl font-black text-blue-600 dark:text-blue-400 tracking-tight">
+                <p className="text-3xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
                   {formatCurrency(produit.prixUnitaire)}
                 </p>
                 
@@ -146,11 +146,11 @@ export default async function ProduitPublicPage({ params }: Props) {
 
             {/* Call to Actions Section */}
             <div className="bg-white/80 dark:bg-zinc-900/80 border border-slate-100 dark:border-zinc-800/80 rounded-[2.5rem] p-6 sm:p-8 shadow-xl relative overflow-hidden backdrop-blur-md">
-              <div className="absolute top-0 right-0 -mr-10 -mt-10 w-24 h-24 bg-blue-500/5 blur-2xl rounded-full" />
+              <div className="absolute top-0 right-0 -mr-10 -mt-10 w-24 h-24 bg-orange-500/5 blur-2xl rounded-full" />
               
               <div className="relative z-10 space-y-6">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-blue-500" />
+                  <Sparkles className="w-5 h-5 text-orange-500" />
                   <h3 className="text-lg font-black text-slate-800 dark:text-zinc-100">
                     Passer commande
                   </h3>

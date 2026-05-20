@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
+import { auth } from "@/lib/auth";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
+
   variable: "--font-inter",
 });
 
@@ -22,15 +24,17 @@ export const metadata: Metadata = {
   ),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
-        <Providers>
+        <Providers session={session}>
           {children}
           <Toaster richColors position="top-right" />
         </Providers>

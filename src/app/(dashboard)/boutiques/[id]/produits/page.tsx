@@ -91,14 +91,14 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest">
-            <Link href="/boutiques" className="hover:text-blue-500 transition-colors">Mes Boutiques</Link>
+            <Link href="/boutiques" className="hover:text-orange-500 transition-colors">Mes Boutiques</Link>
             <span>/</span>
-            <Link href={`/boutiques/${id}`} className="hover:text-blue-500 transition-colors">{boutique.nom}</Link>
+            <Link href={`/boutiques/${id}`} className="hover:text-orange-500 transition-colors">{boutique.nom}</Link>
             <span>/</span>
             <span className="text-slate-600 dark:text-zinc-300">Inventaire</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-3">
-            <Package className="w-8 h-8 text-blue-500" />
+            <Package className="w-8 h-8 text-orange-500" />
             Gestion de l&apos;inventaire
           </h1>
           <p className="text-slate-500 dark:text-zinc-400 text-sm font-medium">
@@ -113,7 +113,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
               Mouvements
             </Link>
           </Button>
-          <Button asChild variant="premium" className="flex-1 sm:flex-initial h-12 rounded-xl font-extrabold shadow-lg shadow-blue-500/10 text-xs sm:text-sm">
+          <Button asChild variant="premium" className="flex-1 sm:flex-initial h-12 rounded-xl font-extrabold shadow-lg shadow-orange-500/10 text-xs sm:text-sm">
             <Link href={`/boutiques/${id}/produits/new`}>
               <Plus className="mr-2 h-4.5 w-4.5" />
               Nouveau Produit
@@ -130,7 +130,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         </div>
         <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Résultats trouvés</span>
-          <p className="text-2xl sm:text-3xl font-black text-blue-500">{filteredCount}</p>
+          <p className="text-2xl sm:text-3xl font-black text-orange-500">{filteredCount}</p>
         </div>
         <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-rose-500">Niveaux critiques</span>
@@ -197,7 +197,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
                     </TableCell>
                     <TableCell>
                       {produit.categorie ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-xs font-bold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-xs font-bold text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20">
                           <Layers className="w-3.5 h-3.5" />
                           {produit.categorie.nom}
                         </span>
@@ -208,7 +208,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
                     <TableCell className="text-right font-semibold text-slate-600 dark:text-zinc-400">
                       {produit.prixAchat ? `${produit.prixAchat.toLocaleString()} FCFA` : "—"}
                     </TableCell>
-                    <TableCell className="text-right font-black text-blue-600 dark:text-blue-400">
+                    <TableCell className="text-right font-black text-orange-600 dark:text-orange-400">
                       {produit.prixUnitaire.toLocaleString()} FCFA
                     </TableCell>
                     <TableCell className="text-center">
@@ -279,7 +279,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
                     <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 text-sm truncate max-w-[170px]">{produit.nom}</h3>
                     <p className="text-[10px] font-mono text-slate-400 mt-0.5">{produit.code || "Sans code barre"}</p>
                     {produit.categorie && (
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-[9px] font-bold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 mt-1">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-orange-50 dark:bg-orange-500/10 text-[9px] font-bold text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20 mt-1">
                         {produit.categorie.nom}
                       </span>
                     )}
@@ -297,7 +297,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
               <div className="pt-3 border-t border-slate-100/50 dark:border-zinc-800/50 flex items-center justify-between gap-2">
                 <div className="space-y-0.5">
                   <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Prix de Vente</span>
-                  <p className="font-black text-sm text-blue-600 dark:text-blue-400">{produit.prixUnitaire.toLocaleString()} FCFA</p>
+                  <p className="font-black text-sm text-orange-600 dark:text-orange-400">{produit.prixUnitaire.toLocaleString()} FCFA</p>
                 </div>
                 
                 <div>

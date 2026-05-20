@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -45,7 +45,7 @@ const SECTEURS = [
     description: "Vêtements, chaussures, maroquinerie, bijoux et accessoires de mode.",
     icon: Shirt,
     subCategories: ["Prêt-à-porter", "Chaussures", "Maroquinerie", "Bijouterie", "Friperie", "Vêtements enfants", "Accessoires"],
-    color: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-500/30"
+    color: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/30"
   },
   { 
     value: "ELECTRONIQUE", 
@@ -53,7 +53,7 @@ const SECTEURS = [
     description: "Téléphones, ordinateurs, électroménager et gadgets électroniques.",
     icon: Smartphone,
     subCategories: ["Téléphones", "Ordinateurs", "Accessoires tech", "Électroménager", "Réparation", "Gadgets", "Sonorisation"],
-    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/30"
+    color: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/30"
   },
   { 
     value: "BEAUTE", 
@@ -323,7 +323,7 @@ export default function NouvelleBoutiquePage() {
                                             className={cn(
                                               "flex flex-col items-start p-4.5 rounded-2xl border text-left transition-all duration-300 relative group overflow-hidden bg-zinc-50/50 dark:bg-zinc-900/10",
                                               isSelected
-                                                ? "border-blue-600 bg-blue-600/5 dark:border-blue-500 dark:bg-blue-500/5 shadow-[0_0_15px_rgba(37,99,235,0.08)]"
+                                                ? "border-orange-600 bg-orange-600/5 dark:border-orange-500 dark:bg-orange-500/5 shadow-[0_0_15px_rgba(37,99,235,0.08)]"
                                                 : "border-zinc-200/60 dark:border-zinc-850 hover:border-zinc-300 dark:hover:border-zinc-800"
                                             )}
                                           >
@@ -335,7 +335,7 @@ export default function NouvelleBoutiquePage() {
                                                 <div className="font-extrabold text-sm text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
                                                   {sector.label}
                                                   {isSelected && (
-                                                    <span className="inline-flex items-center justify-center h-4.5 w-4.5 rounded-full bg-blue-600 dark:bg-blue-500 text-white shrink-0 shadow-md">
+                                                    <span className="inline-flex items-center justify-center h-4.5 w-4.5 rounded-full bg-orange-600 dark:bg-orange-500 text-white shrink-0 shadow-md">
                                                       <Check className="h-3 w-3" />
                                                     </span>
                                                   )}

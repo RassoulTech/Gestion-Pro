@@ -11,8 +11,8 @@ export interface PaymentInitiationResult {
 
 /**
  * Service centralisé pour la gestion des paiements dans GestionPro.
- * Ce module fournit la structure nécessaire pour intégrer les passerelles de paiement 
- * locales (Wave, Orange Money via CinetPay, FedaPay, ou PayTech) et internationales (PayPal, Stripe).
+ * Ce module fournit la structure nécessaire pour intégrer les passerelles de paiement
+ * locales (Wave, Orange Money via PayDunya) et internationales (PayPal, Stripe).
  */
 export class PaymentService {
   /**
@@ -39,6 +39,22 @@ export class PaymentService {
       if (!abonnement) {
         return { success: false, error: "Abonnement introuvable." };
       }
+
+      // A vendor must own at least one boutique before subscribing —
+      // success/cancel URLs redirect back to /boutiques/[id]/facturation.
+      // Without a boutique we'd hit /boutiques (no id) which doesn't exist.
+      const firstBoutique = await prisma.boutique.findFirst({
+        where: { vendeurId },
+        select: { id: true },
+      });
+      if (!firstBoutique) {
+        return {
+          success: false,
+          error: "Vous devez créer une boutique avant de souscrire à un plan.",
+        };
+      }
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const facturationPath = `/boutiques/${firstBoutique.id}/facturation`;
 
       // Création de l'enregistrement de paiement en attente dans la base de données
       const paiement = await prisma.paiement.create({
@@ -116,16 +132,6 @@ export class PaymentService {
           };
         }
 
-        // Redirection vers la facturation de la 1ère boutique du vendeur (route valide).
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-        const firstBoutique = await prisma.boutique.findFirst({
-          where: { vendeurId },
-          select: { id: true },
-        });
-        const facturationPath = firstBoutique
-          ? `/boutiques/${firstBoutique.id}/facturation`
-          : `/boutiques`;
-
         const session = await stripe.checkout.sessions.create({
           customer: stripeCustomerId || undefined,
           line_items: [{ price: priceId, quantity: 1 }],
@@ -158,64 +164,61 @@ export class PaymentService {
         };
       }
 
-      // 1. SI WAVE / ORANGE MONEY (Intégration réelle CinetPay si activé, sinon Mock de test) :
+      // 1. SI WAVE / ORANGE MONEY (Intégration réelle PayDunya si activé, sinon Mock de test) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
-        const cpKey = process.env.CINETPAY_API_KEY || "";
-        const cinetpayConfigured =
-          process.env.CINETPAY_ENABLED === "true" &&
-          cpKey.length > 0 &&
-          !cpKey.includes("mock");
+        const pdMaster = process.env.PAYDUNYA_MASTER_KEY || "";
+        const paydunyaConfigured =
+          process.env.PAYDUNYA_ENABLED === "true" &&
+          pdMaster.length > 0 &&
+          !pdMaster.includes("mock");
 
-        if (cinetpayConfigured) {
-          const { CinetPayClient } = await import("@/lib/cinetpay");
+        if (paydunyaConfigured) {
+          const { PayDunyaClient, extractPayDunyaCheckoutUrl } = await import(
+            "@/lib/paydunya"
+          );
 
-          const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-          const firstBoutique = await prisma.boutique.findFirst({
-            where: { vendeurId },
-            select: { id: true },
-          });
-          const facturationPath = firstBoutique
-            ? `/boutiques/${firstBoutique.id}/facturation`
-            : `/boutiques`;
-
-          const cpResponse = await CinetPayClient.initiatePayment({
+          const pdResponse = await PayDunyaClient.initiateInvoice({
             transactionId: paiement.transactionRef || `SUB-${Date.now()}`,
-            amount: amount,
-            currency: "XOF",
+            amount,
             description: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
-            notifyUrl: `${appUrl}/api/webhooks/cinetpay`,
+            cancelUrl: `${appUrl}${facturationPath}?success=false`,
             returnUrl: `${appUrl}${facturationPath}?success=true`,
-            channels: "MOBILE_MONEY",
+            callbackUrl: `${appUrl}/api/webhooks/paydunya`,
+            customData: {
+              kind: "subscription",
+              abonnementId: abonnement.id,
+              vendeurId,
+              transactionRef: paiement.transactionRef ?? undefined,
+            },
           });
 
-          if (cpResponse.code === "201" && cpResponse.data) {
-            // Enregistrer le token cinetpay
+          const checkoutUrl = extractPayDunyaCheckoutUrl(pdResponse);
+
+          if (checkoutUrl && pdResponse.token) {
             await prisma.abonnement.update({
               where: { id: abonnementId },
-              data: {
-                cinetpayPaymentToken: cpResponse.data.payment_token,
-              },
+              data: { paydunyaToken: pdResponse.token },
             });
 
             await prisma.paiement.update({
               where: { id: paiement.id },
-              data: {
-                cinetpayPaymentToken: cpResponse.data.payment_token,
-              },
+              data: { paydunyaToken: pdResponse.token },
             });
 
             return {
               success: true,
-              paymentUrl: cpResponse.data.payment_url,
+              paymentUrl: checkoutUrl,
               transactionRef: paiement.transactionRef || undefined,
             };
-          } else {
-            console.error("CinetPay API error :", cpResponse);
-            return {
-              success: false,
-              error: cpResponse.message || "Impossible d'initier le paiement Mobile Money.",
-            };
           }
+
+          console.error("PayDunya API error :", pdResponse);
+          return {
+            success: false,
+            error:
+              pdResponse.response_text ||
+              "Impossible d'initier le paiement Mobile Money.",
+          };
         }
 
         // Sinon, simulation pour test bac à sable local :
@@ -226,33 +229,8 @@ export class PaymentService {
         };
       }
 
-      // 2. SI PAYPAL :
+      // PayPal — no real integration yet, fall through to the sandbox checkout.
       if (method === "PAYPAL") {
-        /**
-         * Exemple d'intégration PayPal (v2/checkout/orders) :
-         * 
-         * const response = await fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
-         *   method: "POST",
-         *   headers: {
-         *     "Content-Type": "application/json",
-         *     Authorization: `Bearer ${await getPayPalAccessToken()}`,
-         *   },
-         *   body: JSON.stringify({
-         *     intent: "CAPTURE",
-         *     purchase_units: [{
-         *       reference_id: paiement.transactionRef,
-         *       amount: { currency_code: "USD", value: (amount / 600).toFixed(2) }, // Conversion FCFA -> USD si nécessaire
-         *     }],
-         *     application_context: {
-         *       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/payment/paypal-return`,
-         *       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/boutiques`,
-         *     }
-         *   })
-         * });
-         * const order = await response.json();
-         * const approveUrl = order.links.find((l: any) => l.rel === "approve")?.href;
-         * return { success: true, paymentUrl: approveUrl, transactionRef: order.id };
-         */
         return {
           success: true,
           paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=PAYPAL`,
@@ -288,32 +266,48 @@ export class PaymentService {
       throw new Error(`Paiement introuvable pour la référence ${transactionRef}`);
     }
 
+    // Idempotence: webhooks may be replayed by the gateway. Never re-mutate
+    // a payment that is already in a terminal state, and never let a FAILED
+    // event downgrade a previously confirmed payment.
+    if (paiement.statut === "CONFIRME") {
+      return { success: true, message: "Paiement déjà confirmé (idempotent)." };
+    }
+    if (status === "FAILED" && paiement.statut === "ECHOUE") {
+      return { success: false, message: "Paiement déjà marqué en échec." };
+    }
+
     if (status === "SUCCESS") {
-      // 1. Confirmer le paiement
+      const now = new Date();
+      // Extend from the current dateFin if the subscription is still running,
+      // so an early renewal cumulates instead of shrinking the remaining time.
+      const SUBSCRIPTION_PERIOD_MS = 30 * 24 * 60 * 60 * 1000;
+      const currentEnd = paiement.abonnement.dateFin;
+      const base =
+        currentEnd && currentEnd.getTime() > now.getTime() ? currentEnd : now;
+      const newDateFin = new Date(base.getTime() + SUBSCRIPTION_PERIOD_MS);
+
       await prisma.paiement.update({
         where: { id: paiement.id },
         data: { statut: "CONFIRME" },
       });
 
-      // 2. Activer l'abonnement associé
       await prisma.abonnement.update({
         where: { id: paiement.abonnementId },
         data: {
           statut: "ACTIF",
-          dateDebut: new Date(),
-          dateFin: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Ex: +30 jours
+          dateDebut: paiement.abonnement.dateDebut ?? now,
+          dateFin: newDateFin,
         },
       });
 
       return { success: true, message: "Abonnement activé avec succès." };
-    } else {
-      // Mettre le paiement en échec
-      await prisma.paiement.update({
-        where: { id: paiement.id },
-        data: { statut: "ECHOUE" },
-      });
-
-      return { success: false, message: "Le paiement a échoué." };
     }
+
+    await prisma.paiement.update({
+      where: { id: paiement.id },
+      data: { statut: "ECHOUE" },
+    });
+
+    return { success: false, message: "Le paiement a échoué." };
   }
 }

@@ -138,7 +138,7 @@ export default function ParametresPage() {
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10">
-                <Globe className="h-5 w-5 text-blue-400" />
+                <Globe className="h-5 w-5 text-orange-400" />
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 leading-none mb-1">Contact</p>
                   <p className="text-sm font-black">{form.watch("email") || "Non défini"}</p>

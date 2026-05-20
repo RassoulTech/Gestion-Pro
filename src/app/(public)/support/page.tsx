@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -73,7 +73,7 @@ export default function SupportPage() {
   return (
     <div className="relative pt-32 pb-24 overflow-hidden">
       {/* Decorative Glow */}
-      <div className="absolute top-1/4 left-10 w-[400px] h-[400px] bg-blue-600/5 blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-10 w-[400px] h-[400px] bg-orange-600/5 blur-[150px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 right-10 w-[400px] h-[400px] bg-emerald-600/5 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10 space-y-16">
@@ -84,7 +84,7 @@ export default function SupportPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE }}
           >
-            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-500/20">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-black uppercase tracking-widest border border-orange-500/20">
               <HelpCircle className="h-3 w-3" /> Centre d&apos;aide
             </span>
           </motion.div>
@@ -96,7 +96,7 @@ export default function SupportPage() {
             className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight"
           >
             Comment pouvons-nous <br />
-            <span className="bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">vous aider ?</span>
+            <span className="bg-gradient-to-r from-orange-600 to-emerald-500 bg-clip-text text-transparent">vous aider ?</span>
           </motion.h1>
 
           <motion.div
@@ -111,7 +111,7 @@ export default function SupportPage() {
               placeholder="Rechercher une question, une fonctionnalité..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-14 pl-12 pr-6 rounded-2xl bg-white/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 text-base font-semibold outline-none transition-all placeholder:text-zinc-400 shadow-lg"
+              className="w-full h-14 pl-12 pr-6 rounded-2xl bg-white/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-base font-semibold outline-none transition-all placeholder:text-zinc-400 shadow-lg"
             />
           </motion.div>
         </div>
@@ -134,11 +134,11 @@ export default function SupportPage() {
                   }}
                   className={`p-6 rounded-3xl border flex flex-col items-center text-center gap-3 transition-all duration-300 ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-xl shadow-blue-600/20 border-blue-600"
-                      : "bg-white/40 dark:bg-zinc-900/40 border-zinc-200/50 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:border-blue-500/30"
+                      ? "bg-orange-600 text-white shadow-xl shadow-orange-600/20 border-orange-600"
+                      : "bg-white/40 dark:bg-zinc-900/40 border-zinc-200/50 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:border-orange-500/30"
                   }`}
                 >
-                  <div className={`p-3 rounded-2xl ${isActive ? "bg-white/20 text-white" : "bg-blue-500/10 text-blue-600"}`}>
+                  <div className={`p-3 rounded-2xl ${isActive ? "bg-white/20 text-white" : "bg-orange-500/10 text-orange-600"}`}>
                     <Icon className="h-6 w-6" />
                   </div>
                   <span className="text-xs font-black uppercase tracking-wider">{cat.label}</span>
@@ -169,10 +169,10 @@ export default function SupportPage() {
                     >
                       <button
                         onClick={() => setExpandedIndex(isExpanded ? null : idx)}
-                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-black text-zinc-900 dark:text-zinc-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-black text-zinc-900 dark:text-zinc-50 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
                       >
                         <span className="text-base leading-tight">{faq.question}</span>
-                        <ChevronDown className={`h-5 w-5 text-zinc-400 shrink-0 transition-transform duration-300 ${isExpanded ? "rotate-180 text-blue-500" : ""}`} />
+                        <ChevronDown className={`h-5 w-5 text-zinc-400 shrink-0 transition-transform duration-300 ${isExpanded ? "rotate-180 text-orange-500" : ""}`} />
                       </button>
 
                       <AnimatePresence initial={false}>
@@ -206,9 +206,9 @@ export default function SupportPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto pt-8">
-          <div className="p-8 rounded-3xl bg-gradient-to-tr from-blue-600/10 to-sky-500/10 border border-blue-500/20 backdrop-blur-xl flex flex-col justify-between space-y-6">
+          <div className="p-8 rounded-3xl bg-gradient-to-tr from-orange-600/10 to-orange-500/10 border border-orange-500/20 backdrop-blur-xl flex flex-col justify-between space-y-6">
             <div className="space-y-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 dark:text-blue-400 shadow-inner">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-600/10 text-orange-600 dark:text-orange-400 shadow-inner">
                 <MessageSquare className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-50">Support par Chat (WhatsApp)</h3>

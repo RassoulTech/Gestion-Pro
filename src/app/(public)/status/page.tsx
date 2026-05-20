@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { CheckCircle2, Server, Database, MessageSquare, CreditCard, Activity, ArrowUpRight } from "lucide-react";
@@ -53,7 +53,7 @@ export default function StatusPage() {
     <div className="relative pt-32 pb-24 overflow-hidden">
       {/* Decorative Orbs */}
       <div className="absolute top-10 left-10 w-[300px] h-[300px] bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none animate-pulse" />
-      <div className="absolute bottom-10 right-10 w-[350px] h-[350px] bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[350px] h-[350px] bg-orange-600/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container-app relative z-10 max-w-4xl space-y-12">
         {/* --- Header Box --- */}

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Check, Sparkles, ShoppingBag, MapPin, Phone, User, Calendar, CreditCard, ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
@@ -39,14 +39,14 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
     <div className="min-h-screen bg-slate-950 text-white font-sans py-12 px-4 relative overflow-hidden flex flex-col items-center">
       {/* Background radial glows */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Confetti effect simulation */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-40">
         <div className="absolute top-10 left-[10%] w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
-        <div className="absolute top-32 right-[20%] w-3 h-3 bg-blue-400 rounded-full animate-bounce" />
+        <div className="absolute top-32 right-[20%] w-3 h-3 bg-orange-400 rounded-full animate-bounce" />
         <div className="absolute bottom-40 left-[15%] w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse" />
-        <div className="absolute bottom-20 right-[15%] w-3 h-3 bg-sky-400 rounded-full animate-ping" />
+        <div className="absolute bottom-20 right-[15%] w-3 h-3 bg-orange-400 rounded-full animate-ping" />
       </div>
 
       <div className="w-full max-w-2xl relative z-10 space-y-8 mt-6">
@@ -153,7 +153,7 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
                 <p className="text-[10px] text-zinc-500 font-bold uppercase">Moyen de règlement</p>
                 <p className="text-xs font-black text-zinc-300">
                   {method === "stripe" ? "Carte Bancaire (Stripe)" :
-                   method === "cinetpay" ? "Mobile Money (CinetPay)" :
+                   method === "paydunya" ? "Mobile Money (PayDunya)" :
                    method === "wave" ? "Wave Mobile Money" :
                    method === "orange_money" ? "Orange Money" :
                    method === "paypal" ? "Compte PayPal" : "Paiement à la livraison (Cash)"}

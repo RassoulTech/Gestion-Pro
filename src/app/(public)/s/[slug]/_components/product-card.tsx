@@ -43,7 +43,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
   return (
     <Link 
       href={`/s/${boutiqueSlug}/produits/${produit.id}`} 
-      className="flex flex-col h-full rounded-[2rem] border border-slate-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 shadow-sm hover:shadow-xl hover:border-blue-500/25 hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
+      className="flex flex-col h-full rounded-[2rem] border border-slate-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 shadow-sm hover:shadow-xl hover:border-orange-500/25 hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
     >
       <div className="aspect-square bg-slate-50 dark:bg-zinc-900/50 flex items-center justify-center relative overflow-hidden">
         {produit.photo ? (
@@ -72,12 +72,12 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
       </div>
 
       <div className="p-5 flex flex-col flex-1 space-y-2">
-        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-blue-500 transition-colors truncate text-sm">
+        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors truncate text-sm">
           {produit.nom}
         </h3>
         
         {produit.categorie && (
-          <span className="inline-flex max-w-fit px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-[9px] font-bold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20">
+          <span className="inline-flex max-w-fit px-2 py-0.5 rounded bg-orange-50 dark:bg-orange-500/10 text-[9px] font-bold text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20">
             {produit.categorie.nom}
           </span>
         )}
@@ -89,7 +89,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
         )}
 
         <div className="pt-3 mt-auto flex items-center justify-between gap-2 border-t border-slate-100/50 dark:border-zinc-800/50">
-          <p className="text-base font-black text-blue-600 dark:text-blue-400 tracking-tight">
+          <p className="text-base font-black text-orange-600 dark:text-orange-400 tracking-tight">
             {formatCurrency(produit.prixUnitaire)}
           </p>
           

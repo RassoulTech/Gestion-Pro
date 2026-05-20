@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useTransition, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -72,10 +72,10 @@ export function MarketplaceFilters() {
       
       {/* Premium Glassmorphism Search Card */}
       <div className="relative group max-w-2xl mx-auto">
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-sky-600 rounded-[2rem] opacity-20 blur-2xl group-hover:opacity-40 group-focus-within:opacity-40 transition-all duration-700 pointer-events-none" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 rounded-[2rem] opacity-20 blur-2xl group-hover:opacity-40 group-focus-within:opacity-40 transition-all duration-700 pointer-events-none" />
         <div className="relative bg-white/70 dark:bg-zinc-900/70 border border-slate-100 dark:border-zinc-800 p-4 rounded-[2rem] shadow-2xl backdrop-blur-xl transition-all duration-300">
           <div className="relative flex items-center">
-            <Search className="absolute left-5 h-6 w-6 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+            <Search className="absolute left-5 h-6 w-6 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
             <Input
               type="text"
               placeholder="Rechercher un commerce par nom..."
@@ -86,8 +86,8 @@ export function MarketplaceFilters() {
             {isPending && (
               <div className="absolute right-5">
                 <span className="flex h-3 w-3 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-600"></span>
                 </span>
               </div>
             )}

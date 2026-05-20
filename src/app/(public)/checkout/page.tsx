@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-slate-950 text-white py-12 lg:py-20 font-sans relative overflow-hidden">
       {/* Background visual glows */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         
@@ -322,10 +322,10 @@ export default function CheckoutPage() {
 
               {/* Card: Payment method Selection */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-6 sm:p-8 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-blue-500/5 blur-3xl rounded-full pointer-events-none" />
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-orange-500/5 blur-3xl rounded-full pointer-events-none" />
 
                 <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-blue-400 inline-block" />
+                  <span className="h-2 w-2 rounded-full bg-orange-400 inline-block" />
                   Méthode de Paiement
                 </h2>
 
@@ -337,17 +337,17 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex items-center gap-4 p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden active:scale-98 group",
                       paymentMethod === "WAVE" 
-                        ? "bg-sky-500/10 border-sky-400 shadow-md shadow-sky-500/5" 
+                        ? "bg-orange-500/10 border-orange-400 shadow-md shadow-orange-500/5" 
                         : "bg-zinc-950 border-zinc-800/80 hover:border-zinc-700"
                     )}
                   >
-                    <div className="h-10 w-10 rounded-xl bg-sky-500 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
+                    <div className="h-10 w-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
                       🐧
                     </div>
                     <div>
                       <h4 className="font-black text-sm text-white flex items-center gap-1.5">
                         Wave Mobile
-                        <span className="inline-block text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 uppercase">Populaire</span>
+                        <span className="inline-block text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 uppercase">Populaire</span>
                       </h4>
                       <p className="text-[10px] text-zinc-500 font-bold mt-0.5">Orange, Tigo, Expresso (Côte d&apos;Ivoire, Sénégal...)</p>
                     </div>
@@ -400,11 +400,11 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex items-center gap-4 p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden active:scale-98 group",
                       paymentMethod === "PAYPAL" 
-                        ? "bg-blue-500/10 border-blue-400 shadow-md shadow-blue-500/5" 
+                        ? "bg-orange-500/10 border-orange-400 shadow-md shadow-orange-500/5" 
                         : "bg-zinc-950 border-zinc-800/80 hover:border-zinc-700"
                     )}
                   >
-                    <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
+                    <div className="h-10 w-10 rounded-xl bg-orange-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
                       🅿️
                     </div>
                     <div>
@@ -420,11 +420,11 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex items-center gap-4 p-5 rounded-2xl border text-left transition-all duration-300 relative overflow-hidden active:scale-98 sm:col-span-2 group",
                       paymentMethod === "CASH_ON_DELIVERY" 
-                        ? "bg-blue-500/10 border-blue-400 shadow-md shadow-blue-500/5" 
+                        ? "bg-orange-500/10 border-orange-400 shadow-md shadow-orange-500/5" 
                         : "bg-zinc-950 border-zinc-800/80 hover:border-zinc-700"
                     )}
                   >
-                    <div className="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
+                    <div className="h-10 w-10 rounded-xl bg-orange-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-inner">
                       🚚
                     </div>
                     <div>
@@ -458,10 +458,10 @@ export default function CheckoutPage() {
 
           {/* RIGHT COLUMN: Order Summary Card */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-6 sm:p-8 space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-blue-500/5 blur-3xl rounded-full pointer-events-none" />
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-orange-500/5 blur-3xl rounded-full pointer-events-none" />
             
             <h3 className="text-xs font-black uppercase tracking-widest text-zinc-500 flex items-center gap-1.5">
-              <ShoppingBag className="w-3.5 h-3.5 text-blue-400" /> Résumé de votre Panier
+              <ShoppingBag className="w-3.5 h-3.5 text-orange-400" /> Résumé de votre Panier
             </h3>
 
             {/* Items List */}

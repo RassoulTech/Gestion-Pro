@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -24,7 +24,7 @@ const ETAT_META: Record<
   { label: string; icon: typeof Clock; color: string }
 > = {
   EN_ATTENTE: { label: "En attente", icon: Clock, color: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-  VALIDEE: { label: "Validée", icon: CheckCircle2, color: "bg-sky-500/10 text-sky-400 border-sky-500/20" },
+  VALIDEE: { label: "Validée", icon: CheckCircle2, color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
   LIVREE: { label: "Livrée", icon: Truck, color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
   ANNULEE: { label: "Annulée", icon: XCircle, color: "bg-rose-500/10 text-rose-400 border-rose-500/20" },
 };
@@ -54,7 +54,7 @@ export default async function MesCommandesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white py-12 lg:py-20 relative overflow-hidden">
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 space-y-10">
         {/* Header */}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -49,8 +49,8 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
     <div className="space-y-6">
       {/* Premium Filter & Search Control Panel */}
       <div className="relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-blue-600/5 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-sky-600/5 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Search Input */}
@@ -61,7 +61,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
               placeholder="Rechercher par marchand, offre ou ID..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -82,7 +82,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
               onClick={() => setStatusFilter("TOUT")}
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "TOUT"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
               }`}
             >
@@ -122,8 +122,8 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
             className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[350px]"
           >
             <div className="relative mb-6">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 opacity-20 blur-xl animate-pulse" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-20 blur-xl animate-pulse" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
                 <CreditCard className="h-8 w-8 animate-bounce" />
               </div>
             </div>
@@ -151,7 +151,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 font-semibold shadow-sm border border-blue-100/50 dark:border-blue-900/30">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400 font-semibold shadow-sm border border-orange-100/50 dark:border-orange-900/30">
                         <CreditCard className="h-5 w-5" />
                       </div>
                       <div>
@@ -167,7 +167,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
                   <div className="mt-4 space-y-2 border-t border-zinc-100 pt-3 dark:border-zinc-900 text-xs">
                     <div className="flex justify-between items-center">
                       <span className="text-zinc-400 flex items-center gap-1 font-semibold"><Sparkles className="h-3 w-3" /> Offre</span>
-                      <span className="inline-flex items-center rounded-lg bg-blue-50 dark:bg-blue-950/30 px-2.5 py-1 text-xs font-black text-blue-700 dark:text-blue-400">
+                      <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400">
                         {a.plan.nom}
                       </span>
                     </div>
@@ -218,13 +218,13 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
                     {filteredAbonnements.map((a) => (
                       <TableRow
                         key={a.id}
-                        className="border-b border-zinc-100 hover:bg-blue-500/5 dark:border-zinc-900/60 dark:hover:bg-blue-500/5 transition-all duration-200"
+                        className="border-b border-zinc-100 hover:bg-orange-500/5 dark:border-zinc-900/60 dark:hover:bg-orange-500/5 transition-all duration-200"
                       >
                         <TableCell className="py-4 font-extrabold text-zinc-950 dark:text-zinc-50 pl-6">
                           {a.vendeur.prenom} {a.vendeur.nom}
                         </TableCell>
                         <TableCell className="py-4">
-                          <span className="inline-flex items-center rounded-lg bg-blue-50 dark:bg-blue-950/30 px-2.5 py-1 text-xs font-black text-blue-700 dark:text-blue-400">
+                          <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400">
                             {a.plan.nom}
                           </span>
                         </TableCell>

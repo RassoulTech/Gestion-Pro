@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -92,22 +92,22 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-blue-950/30 dark:from-blue-950/20 dark:to-zinc-950/75"
+          className="relative overflow-hidden rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-orange-950/30 dark:from-orange-950/20 dark:to-zinc-950/75"
         >
-          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-blue-600/10 blur-3xl" />
+          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-orange-600/10 blur-3xl" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-widest text-blue-700 dark:text-blue-300">
+            <span className="text-xs font-black uppercase tracking-widest text-orange-700 dark:text-orange-300">
               Chiffre d&apos;Affaires Cumulé
             </span>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-600 text-white shadow-lg shadow-blue-600/30 dark:from-blue-500 dark:to-sky-500">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-600 to-orange-600 text-white shadow-lg shadow-orange-600/30 dark:from-orange-500 dark:to-orange-500">
               <Wallet className="h-6 w-6" />
             </div>
           </div>
           <div className="mt-8">
-            <h2 className="text-4xl font-black tracking-tight text-blue-950 dark:text-blue-50">
+            <h2 className="text-4xl font-black tracking-tight text-orange-950 dark:text-orange-50">
               {formatCurrency(total)}
             </h2>
-            <p className="mt-2 text-xs font-bold text-blue-600/80 dark:text-blue-400">
+            <p className="mt-2 text-xs font-bold text-orange-600/80 dark:text-orange-400">
               Volume total des paiements validés depuis le lancement de la plateforme.
             </p>
           </div>
@@ -142,8 +142,8 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
       </div>
 
       <div className="relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-blue-600/5 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-sky-600/5 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative flex-1">
@@ -153,7 +153,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               placeholder="Rechercher par marchand, offre, méthode, réf..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -173,7 +173,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               onClick={() => setStatusFilter("TOUT")}
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "TOUT"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
               }`}
             >
@@ -206,7 +206,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
       {/* Transactions Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-black tracking-tight text-zinc-900 dark:text-zinc-50 flex items-center gap-2 pl-1">
-          <Landmark className="h-5 w-5 text-blue-500" /> Flux de Paiements Récents
+          <Landmark className="h-5 w-5 text-orange-500" /> Flux de Paiements Récents
         </h3>
 
         <AnimatePresence mode="wait">
@@ -219,7 +219,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[300px]"
             >
               <div className="relative mb-5">
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 opacity-15 blur-xl animate-pulse" />
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-15 blur-xl animate-pulse" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-500 shadow-md">
                   <CreditCard className="h-6 w-6" />
                 </div>
@@ -301,13 +301,13 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
                       {filteredPaiements.map((p) => (
                         <TableRow
                           key={p.id}
-                          className="border-b border-zinc-100 hover:bg-blue-500/5 dark:border-zinc-900/60 dark:hover:bg-blue-500/5 transition-all duration-200"
+                          className="border-b border-zinc-100 hover:bg-orange-500/5 dark:border-zinc-900/60 dark:hover:bg-orange-500/5 transition-all duration-200"
                         >
                           <TableCell className="py-4 font-extrabold text-zinc-950 dark:text-zinc-50 pl-6">
                             {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                           </TableCell>
                           <TableCell className="py-4">
-                            <span className="inline-flex items-center rounded-lg bg-blue-50 dark:bg-blue-950/30 px-2.5 py-1 text-xs font-black text-blue-700 dark:text-blue-400">
+                            <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400">
                               {p.abonnement.plan.nom}
                             </span>
                           </TableCell>

@@ -49,11 +49,11 @@ export default async function BoutiquePubliquePage({ params }: Props) {
         {/* Boutique Header */}
         <div className="relative p-8 md:p-12 rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl">
           {/* Subtle colored ambient glow */}
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
           
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
             
-            <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 text-blue-500 shadow-md overflow-hidden relative shrink-0">
+            <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 text-orange-500 shadow-md overflow-hidden relative shrink-0">
               {boutique.logo || boutique.vendeur?.photo ? (
                 <Image src={(boutique.logo || boutique.vendeur?.photo)!} alt={boutique.nom} fill className="object-cover" unoptimized />
               ) : (
@@ -65,10 +65,10 @@ export default async function BoutiquePubliquePage({ params }: Props) {
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
                   {boutique.nom}
-                  <CheckCircle2 className="w-5 h-5 text-blue-500 fill-blue-500/10 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-500 fill-orange-500/10 shrink-0" />
                 </h1>
                 
-                <Badge className="rounded-full px-3 py-0.5 bg-blue-500 text-white font-extrabold text-[10px] uppercase tracking-widest border-none">
+                <Badge className="rounded-full px-3 py-0.5 bg-orange-500 text-white font-extrabold text-[10px] uppercase tracking-widest border-none">
                   {boutique.secteurActivite || "Boutique"}
                 </Badge>
               </div>
@@ -82,17 +82,17 @@ export default async function BoutiquePubliquePage({ params }: Props) {
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-bold text-slate-400 dark:text-zinc-500">
                 {boutique.adresse && (
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-blue-500" /> {boutique.adresse}
+                    <MapPin className="h-4 w-4 text-orange-500" /> {boutique.adresse}
                   </span>
                 )}
                 {boutique.telephone && (
                   <span className="flex items-center gap-1.5">
-                    <Phone className="h-4 w-4 text-blue-500" /> {boutique.telephone}
+                    <Phone className="h-4 w-4 text-orange-500" /> {boutique.telephone}
                   </span>
                 )}
                 {boutique.siteWeb && (
                   <span className="flex items-center gap-1.5">
-                    <Globe className="h-4 w-4 text-blue-500" /> {boutique.siteWeb}
+                    <Globe className="h-4 w-4 text-orange-500" /> {boutique.siteWeb}
                   </span>
                 )}
               </div>
@@ -108,7 +108,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
               cat.produits.length > 0 && (
                 <section key={cat.id} className="space-y-6">
                   <div className="flex items-center gap-3">
-                    <span className="h-2 w-2 rounded-full bg-blue-500" />
+                    <span className="h-2 w-2 rounded-full bg-orange-500" />
                     <h2 className="text-sm font-black tracking-wider text-slate-400 dark:text-zinc-500 uppercase">{cat.nom}</h2>
                     <div className="flex-1 h-px bg-slate-100 dark:bg-zinc-800/80" />
                   </div>
@@ -130,7 +130,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
           {uncategorized.length > 0 && (
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <span className="h-2 w-2 rounded-full bg-blue-500" />
+                <span className="h-2 w-2 rounded-full bg-orange-500" />
                 <h2 className="text-sm font-black tracking-wider text-slate-400 dark:text-zinc-500 uppercase">Autres produits</h2>
                 <div className="flex-1 h-px bg-slate-100 dark:bg-zinc-800/80" />
               </div>

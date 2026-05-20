@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Suspense } from "react";
 import {
   Users,
@@ -35,7 +35,7 @@ async function AdminStatsContent() {
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Utilisateurs Plateforme
             </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400">
               <Users className="h-5 w-5" />
             </div>
           </div>
@@ -73,7 +73,7 @@ async function AdminStatsContent() {
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Boutiques Créées
             </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400">
               <Store className="h-5 w-5" />
             </div>
           </div>
@@ -87,21 +87,21 @@ async function AdminStatsContent() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-white/90 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-blue-950/30 dark:from-blue-950/20 dark:to-zinc-950/75">
-          <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-600/10 blur-xl" />
+        <div className="relative overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white/90 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-orange-950/30 dark:from-orange-950/20 dark:to-zinc-950/75">
+          <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-orange-600/10 blur-xl" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-300">
+            <span className="text-xs font-semibold uppercase tracking-wider text-orange-700 dark:text-orange-300">
               Chiffre d&apos;Affaires SaaS
             </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.3)] dark:bg-blue-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.3)] dark:bg-orange-500">
               <Wallet className="h-5 w-5" />
             </div>
           </div>
           <div className="mt-4">
-            <h2 className="text-3xl font-extrabold tracking-tight text-blue-950 dark:text-blue-50">
+            <h2 className="text-3xl font-extrabold tracking-tight text-orange-950 dark:text-orange-50">
               {formatCurrency(stats.revenuTotal)}
             </h2>
-            <p className="mt-1 text-xs text-blue-600/80 dark:text-blue-300/80">
+            <p className="mt-1 text-xs text-orange-600/80 dark:text-orange-300/80">
               Revenu total des abonnements
             </p>
           </div>
@@ -112,8 +112,8 @@ async function AdminStatsContent() {
       <div className="grid gap-6 grid-cols-2 md:grid-cols-3">
         <div className="group rounded-2xl border border-zinc-200/50 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950">
           <div className="flex items-center space-x-2.5">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-900 group-hover:bg-blue-50 dark:group-hover:bg-blue-950/30 transition-colors">
-              <Package className="h-4 w-4 text-zinc-500 group-hover:text-blue-600 transition-colors" />
+            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
+              <Package className="h-4 w-4 text-zinc-500 group-hover:text-orange-600 transition-colors" />
             </div>
             <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Produits Plateforme</span>
           </div>
@@ -125,8 +125,8 @@ async function AdminStatsContent() {
 
         <div className="group rounded-2xl border border-zinc-200/50 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950">
           <div className="flex items-center space-x-2.5">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-900 group-hover:bg-blue-50 dark:group-hover:bg-blue-950/30 transition-colors">
-              <ShoppingCart className="h-4 w-4 text-zinc-500 group-hover:text-blue-600 transition-colors" />
+            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
+              <ShoppingCart className="h-4 w-4 text-zinc-500 group-hover:text-orange-600 transition-colors" />
             </div>
             <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Commandes Globales</span>
           </div>
@@ -186,7 +186,7 @@ async function AdminStatsContent() {
                   className="group flex items-center justify-between p-3.5 rounded-xl border border-zinc-100 bg-zinc-50/30 hover:bg-white hover:border-zinc-200 hover:shadow-sm dark:border-zinc-900 dark:bg-zinc-900/10 dark:hover:bg-zinc-900/40 dark:hover:border-zinc-800 transition-all duration-200"
                 >
                   <div className="flex items-center space-x-3.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 text-white font-bold text-sm shadow-[0_4px_12px_rgba(37,99,235,0.15)]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 text-white font-bold text-sm shadow-[0_4px_12px_rgba(37,99,235,0.15)]">
                       {vendeur.nom.charAt(0).toUpperCase()}{vendeur.prenom.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -245,7 +245,7 @@ async function AdminStatsContent() {
                         {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                       </h4>
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                        Plan <span className="font-semibold text-blue-600 dark:text-blue-400">{p.abonnement.plan.nom}</span> • {p.methode}
+                        Plan <span className="font-semibold text-orange-600 dark:text-orange-400">{p.abonnement.plan.nom}</span> • {p.methode}
                       </p>
                     </div>
                   </div>
@@ -266,8 +266,8 @@ async function AdminStatsContent() {
       <div className="rounded-2xl border border-zinc-200/50 bg-white p-6 shadow-lg shadow-zinc-100/40 dark:border-zinc-800/50 dark:bg-zinc-950 dark:shadow-none">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-center space-x-3">
-            <div className="rounded-xl bg-blue-50 p-2.5 dark:bg-blue-950/30">
-              <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <div className="rounded-xl bg-orange-50 p-2.5 dark:bg-orange-950/30">
+              <Activity className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
               <h3 className="text-base font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -280,7 +280,7 @@ async function AdminStatsContent() {
           </div>
           <Link
             href="/admin/logs"
-            className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-950/50"
+            className="inline-flex items-center gap-1 rounded-lg bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-700 hover:bg-orange-100 dark:bg-orange-950/30 dark:text-orange-300 dark:hover:bg-orange-950/50"
           >
             Consulter les logs <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
           </Link>
@@ -293,7 +293,7 @@ async function AdminStatsContent() {
             stats.logsRecents.map((log) => (
               <div key={log.id} className="flex items-start justify-between py-4 group">
                 <div className="space-y-1">
-                  <p className="text-xs font-semibold text-zinc-950 dark:text-zinc-50 group-hover:text-blue-600 transition-colors">
+                  <p className="text-xs font-semibold text-zinc-950 dark:text-zinc-50 group-hover:text-orange-600 transition-colors">
                     {log.action}
                   </p>
                   <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">
@@ -321,7 +321,7 @@ export default function AdminDashboardPage() {
             <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
               Centre de Contrôle Global
             </h1>
-            <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-pulse" />
+            <Sparkles className="h-5 w-5 text-orange-600 dark:text-orange-400 animate-pulse" />
           </div>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
             Supervisez les performances, les vendeurs inscrits et les flux financiers de GestionPro.

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -52,8 +52,8 @@ function VerifyEmailInner() {
       >
         {!success && !error && (
           <div className="space-y-6">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10 border border-blue-500/20 shadow-inner">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400" />
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-600/10 border border-orange-500/20 shadow-inner">
+              <Loader2 className="h-8 w-8 animate-spin text-orange-600 dark:text-orange-400" />
             </div>
             <div className="space-y-2">
               <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-50">Vérification de votre email...</h1>
@@ -72,7 +72,7 @@ function VerifyEmailInner() {
               <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-300 leading-relaxed">{success}</p>
               <p className="text-xs text-zinc-400 font-semibold italic">Redirection vers la page de connexion...</p>
             </div>
-            <Button asChild variant="brand" className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-blue-600/20 bg-blue-600 text-white hover:bg-blue-700 border-none transition-all active-press mt-2">
+            <Button asChild variant="brand" className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all active-press mt-2">
               <Link href="/login">Se connecter maintenant</Link>
             </Button>
           </div>

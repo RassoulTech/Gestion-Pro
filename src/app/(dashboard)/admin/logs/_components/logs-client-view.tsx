@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,7 +29,7 @@ interface LogsClientViewProps {
 function getActionIcon(action: string) {
   const normalized = action.toLowerCase();
   if (normalized.includes("login") || normalized.includes("connexion")) {
-    return { icon: User, color: "text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-950/30 border-blue-200/50 dark:border-blue-900/30" };
+    return { icon: User, color: "text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/30 border-orange-200/50 dark:border-orange-900/30" };
   }
   if (normalized.includes("create") || normalized.includes("add") || normalized.includes("ajout")) {
     return { icon: Database, color: "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/30 border-emerald-200/50 dark:border-emerald-900/30" };
@@ -40,7 +40,7 @@ function getActionIcon(action: string) {
   if (normalized.includes("update") || normalized.includes("edit") || normalized.includes("modif")) {
     return { icon: Cpu, color: "text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/30 border-amber-200/50 dark:border-amber-900/30" };
   }
-  return { icon: Activity, color: "text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-950/30 border-blue-200/50 dark:border-blue-900/30" };
+  return { icon: Activity, color: "text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/30 border-orange-200/50 dark:border-orange-900/30" };
 }
 
 export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
@@ -88,8 +88,8 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
     <div className="space-y-6">
       {/* Premium Filter Dashboard Bar */}
       <div className="relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-blue-600/5 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-sky-600/5 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Search bar */}
@@ -100,7 +100,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               placeholder="Rechercher par action, marchand, email, IP, agent..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -121,7 +121,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               onClick={() => setActionCategory("TOUT")}
               className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${
                 actionCategory === "TOUT"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
               }`}
             >
@@ -131,7 +131,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               onClick={() => setActionCategory("CONNEXION")}
               className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${
                 actionCategory === "CONNEXION"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
               }`}
             >
@@ -183,7 +183,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[300px]"
             >
               <div className="relative mb-5">
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 opacity-15 blur-xl animate-pulse" />
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-15 blur-xl animate-pulse" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-500 shadow-md">
                   <Activity className="h-6 w-6" />
                 </div>

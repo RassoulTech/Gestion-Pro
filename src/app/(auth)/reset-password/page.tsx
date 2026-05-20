@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -87,7 +87,7 @@ function ResetPasswordInner() {
 
         <Link
           href="/forgot-password"
-          className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-black text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20"
+          className="inline-flex items-center gap-2 rounded-2xl bg-orange-600 px-6 py-3.5 text-sm font-black text-white hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20"
         >
           Demander un nouveau lien
         </Link>
@@ -119,7 +119,7 @@ function ResetPasswordInner() {
 
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-black text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20"
+          className="inline-flex items-center gap-2 rounded-2xl bg-orange-600 px-6 py-3.5 text-sm font-black text-white hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20"
         >
           Se connecter
         </Link>
@@ -157,7 +157,7 @@ function ResetPasswordInner() {
                   <PasswordInput
                     autoComplete="new-password"
                     placeholder="8 caractères minimum"
-                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
+                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
                     {...field}
                   />
                 </FormControl>
@@ -178,7 +178,7 @@ function ResetPasswordInner() {
                   <PasswordInput
                     autoComplete="new-password"
                     placeholder="Retapez le mot de passe"
-                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
+                    className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
                     {...field}
                   />
                 </FormControl>
@@ -191,7 +191,7 @@ function ResetPasswordInner() {
             type="submit"
             variant="brand"
             size="xl"
-            className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-blue-600/20 bg-blue-600 text-white hover:bg-blue-700 border-none transition-all active-press"
+            className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all active-press"
             loading={loading}
           >
             {loading ? "Réinitialisation…" : "Réinitialiser le mot de passe"}
@@ -202,7 +202,7 @@ function ResetPasswordInner() {
       <p className="text-center text-sm font-bold text-zinc-500 dark:text-zinc-400">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline underline-offset-4"
+          className="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline underline-offset-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Retour à la connexion

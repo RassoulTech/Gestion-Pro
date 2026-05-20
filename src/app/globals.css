@@ -16,7 +16,7 @@
   --color-popover: #ffffff;
   --color-popover-foreground: #0f172a;
 
-  --color-primary: #2563eb;
+  --color-primary: #ea580c;
   --color-primary-foreground: #ffffff;
   --color-secondary: #475569;
   --color-secondary-foreground: #ffffff;
@@ -25,7 +25,7 @@
   --color-accent: #f1f5f9;
   --color-accent-foreground: #0f172a;
 
-  --color-brand: #2563eb;
+  --color-brand: #ea580c;
   --color-brand-foreground: #ffffff;
 
   --color-success: #16a34a;
@@ -34,12 +34,12 @@
   --color-warning-foreground: #0f172a;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
-  --color-info: #2563eb;
+  --color-info: #ea580c;
   --color-info-foreground: #ffffff;
 
   --color-border: #e2e8f0;
   --color-input: #e2e8f0;
-  --color-ring: #2563eb;
+  --color-ring: #ea580c;
 
   /* ── Tokens sémantiques métier ────────────────────────────────────────── */
   --color-stock-ok: var(--color-success);
@@ -47,7 +47,7 @@
   --color-stock-out: var(--color-destructive);
 
   --color-cmd-pending: #ca8a04;
-  --color-cmd-validee: #3b82f6;
+  --color-cmd-validee: #f97316;
   --color-cmd-livree: var(--color-success);
   --color-cmd-annulee: var(--color-muted-foreground);
 
@@ -55,8 +55,8 @@
   --color-statut-suspendu: var(--color-destructive);
 
   /* ── Charts ──────────────────────────────────────────────────────────── */
-  --color-chart-1: #1e3a8a;
-  --color-chart-2: #2563eb;
+  --color-chart-1: #7c2d12;
+  --color-chart-2: #ea580c;
   --color-chart-3: #16a34a;
   --color-chart-4: #eab308;
   --color-chart-5: #64748b;
@@ -222,8 +222,8 @@
     --color-popover: #111111;
     --color-popover-foreground: #fafafa;
 
-    --color-primary: #3b82f6;
-    --color-primary-foreground: #ffffff;
+    --color-primary: #fb923c;
+    --color-primary-foreground: #1a0a02;
     --color-secondary: #94a3b8;
     --color-secondary-foreground: #ffffff;
     --color-muted: #1c1c1f;
@@ -231,8 +231,8 @@
     --color-accent: #27272a;
     --color-accent-foreground: #fafafa;
 
-    --color-brand: #3b82f6;
-    --color-brand-foreground: #ffffff;
+    --color-brand: #fb923c;
+    --color-brand-foreground: #1a0a02;
 
     --color-success: #22c55e;
     --color-success-foreground: #052e16;
@@ -240,15 +240,15 @@
     --color-warning-foreground: #0a0a0a;
     --color-destructive: #ef4444;
     --color-destructive-foreground: #fafafa;
-    --color-info: #3b82f6;
-    --color-info-foreground: #fafafa;
+    --color-info: #fb923c;
+    --color-info-foreground: #1a0a02;
 
     --color-border: #27272a;
     --color-input: #27272a;
     --color-ring: #fafafa;
 
-    --color-chart-1: #60a5fa;
-    --color-chart-2: #3b82f6;
+    --color-chart-1: #fdba74;
+    --color-chart-2: #fb923c;
     --color-chart-3: #22c55e;
     --color-chart-4: #facc15;
     --color-chart-5: #94a3b8;
@@ -263,7 +263,7 @@
     --color-sidebar-ring: #a1a1aa;
 
     --color-cmd-pending: #facc15;
-    --color-cmd-validee: #60a5fa;
+    --color-cmd-validee: #fdba74;
   }
 }
 
@@ -428,6 +428,18 @@
     font-weight: 800;
     letter-spacing: -0.04em;
     line-height: 0.9;
+  }
+
+  /* Sonner : forcer la teinte info à l'orange premium pour rester cohérent */
+  [data-sonner-toaster][data-rich-colors="true"] [data-sonner-toast][data-type="info"] {
+    --info-bg: #fff7ed;
+    --info-border: #fdba74;
+    --info-text: #9a3412;
+  }
+  .dark [data-sonner-toaster][data-rich-colors="true"] [data-sonner-toast][data-type="info"] {
+    --info-bg: #431407;
+    --info-border: #c2410c;
+    --info-text: #fed7aa;
   }
 
   /* Container app principal */
