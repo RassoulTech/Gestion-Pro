@@ -81,13 +81,18 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
       statut: "EXPIRE",
     };
   } else {
-    // Check if active subscription has expired manually (safeguard)
+    // Starter is free forever — never expire it, even if an old row still has
+    // an essaiFin set from before the "free-for-life" change.
+    const isStarter = activeSubscription.plan.codePlan === "STARTER";
+
     const isTrialExpired =
+      !isStarter &&
       activeSubscription.statut === "ESSAI" &&
       activeSubscription.essaiFin &&
       new Date() > activeSubscription.essaiFin;
 
     const isPlanExpired =
+      !isStarter &&
       activeSubscription.statut === "ACTIF" &&
       activeSubscription.dateFin &&
       new Date() > activeSubscription.dateFin;

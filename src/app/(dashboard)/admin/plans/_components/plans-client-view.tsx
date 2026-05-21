@@ -142,14 +142,16 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-100/50 dark:border-emerald-900/30">
-                    <Check className="h-3.5 w-3.5" />
+                {plan.dureeEssaiJours > 0 && (
+                  <div className="flex items-center gap-3.5">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-100/50 dark:border-emerald-900/30">
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                      {plan.dureeEssaiJours} jours d&apos;essai gratuit
+                    </span>
                   </div>
-                  <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
-                    {plan.dureeEssaiJours} jours d&apos;essai gratuit
-                  </span>
-                </div>
+                )}
               </div>
             </div>
 

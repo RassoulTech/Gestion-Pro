@@ -51,7 +51,7 @@ async function main() {
       data: {
         nom: "Starter",
         prix: 0,
-        dureeEssaiJours: 90,
+        dureeEssaiJours: 0,
         maxBoutiques: 1,
         maxProduits: 50,
         maxMembres: 1,

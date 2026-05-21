@@ -176,9 +176,10 @@ export const createVendeurProfile = authActionClient
             data: {
               vendeurId: v.id,
               planId: starterPlan.id,
-              statut: "ESSAI",
+              statut: "ACTIF",
               dateDebut: new Date(),
-              essaiFin: new Date(Date.now() + starterPlan.dureeEssaiJours * 24 * 60 * 60 * 1000),
+              essaiFin: null,
+              dateFin: null,
               montant: 0,
             },
           });
