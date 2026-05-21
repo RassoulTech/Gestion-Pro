@@ -295,7 +295,7 @@ export function UpgradeModal({
                 <ShieldCheck className="h-4 w-4 text-brand" /> Satisfaction
               </div>
               <p className="text-[9px] text-zinc-500 font-medium">
-                Notre support client exceptionnel est là pour vous aider 24/7. Une question ? Écrivez-nous à support@gestionpro.app.
+                Notre équipe répond à toutes vos questions sous 24h ouvrées. Écrivez-nous à support@gestionpro.app.
               </p>
             </div>
           </div>

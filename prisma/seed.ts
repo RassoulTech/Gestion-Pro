@@ -103,16 +103,11 @@ async function main() {
         features: [
           "Boutiques illimitées",
           "Produits illimités",
-          "Rôles & permissions avancés",
-          "Multi-utilisateurs",
-          "API & intégrations",
-          "Analytics avancés",
-          "Rapports premium",
-          "SLA & onboarding dédié",
-          "Support 24/7",
-          "Gestion multi-équipes",
-          "Accès admin avancé",
-          "Automatisations avancées"
+          "Membres & équipes illimités",
+          "Toutes les fonctionnalités Pro",
+          "Onboarding personnalisé",
+          "Support prioritaire par email",
+          "Accès direct au fondateur"
         ],
       } as any,
     }),

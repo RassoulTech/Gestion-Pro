@@ -410,7 +410,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
               Besoin d&apos;aide supplémentaire ?
             </h4>
             <p className="text-xs text-muted-foreground font-semibold leading-relaxed">
-              Des questions concernant un paiement ou besoin d&apos;une solution sur mesure ? Notre équipe d&apos;assistance est prête à vous aider 24/7.
+              Des questions concernant un paiement ou besoin d&apos;une solution sur mesure ? Notre équipe vous répond sous 24h ouvrées.
             </p>
             <Button
               asChild
