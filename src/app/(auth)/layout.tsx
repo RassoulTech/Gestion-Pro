@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default async function AuthLayout({
   children,
@@ -34,10 +35,12 @@ export default async function AuthLayout({
           <Link
             href="/"
             className="flex items-center gap-2.5 self-start group"
+            aria-label="Accueil GestionPro"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform">
-              <span className="text-xl font-black">G</span>
-            </div>
+            <BrandLogo
+              size={40}
+              className="shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform rounded-xl"
+            />
             <span className="text-xl font-bold tracking-tight text-foreground">
               GestionPro
             </span>
@@ -86,10 +89,8 @@ export default async function AuthLayout({
         <main className="relative flex flex-col items-center pt-10 p-8 overflow-y-auto">
           {/* Header mobile */}
           <div className="flex items-center justify-between w-full mb-8 lg:hidden">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-lg shadow-brand/20">
-                <span className="text-lg font-black">G</span>
-              </div>
+            <Link href="/" className="flex items-center gap-2.5" aria-label="Accueil GestionPro">
+              <BrandLogo size={36} className="shadow-lg shadow-brand/20 rounded-xl" />
               <span className="text-lg font-bold tracking-tight text-foreground">
                 GestionPro
               </span>

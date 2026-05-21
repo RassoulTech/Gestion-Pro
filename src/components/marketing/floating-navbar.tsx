@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { CartBadge } from "@/components/marketing/cart-badge";
+import { BrandLogo } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
 
 const navLinks: Array<{ href: string; label: string }> = [
@@ -53,11 +54,12 @@ export function FloatingNavbar() {
           <Link
             href="/"
             className="flex shrink-0 items-center gap-2.5 group"
+            aria-label="Accueil GestionPro"
           >
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform">
-              <span className="text-lg font-black">G</span>
-              <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
+            <BrandLogo
+              size={36}
+              className="shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform rounded-xl"
+            />
             <span className="hidden sm:block text-base font-bold tracking-tight text-foreground">
               GestionPro
             </span>

@@ -1,6 +1,7 @@
 ﻿import Link from "next/link";
 import { Github, Mail, Twitter } from "lucide-react";
 import { FloatingNavbar } from "@/components/marketing/floating-navbar";
+import { BrandLogo } from "@/components/brand-logo";
 
 const footerColumns: Array<{
   title: string;
@@ -76,10 +77,11 @@ export default function PublicLayout({
           <div className="grid gap-12 md:grid-cols-12">
             {/* Brand Card Column */}
             <div className="md:col-span-4 space-y-6">
-              <Link href="/" className="flex items-center gap-2.5 group self-start">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-orange-600 to-emerald-500 text-white shadow-lg shadow-orange-600/20 group-hover:rotate-6 transition-all duration-500">
-                  <span className="text-xl font-black">G</span>
-                </div>
+              <Link href="/" className="flex items-center gap-2.5 group self-start" aria-label="Accueil GestionPro">
+                <BrandLogo
+                  size={40}
+                  className="shadow-lg shadow-orange-600/20 group-hover:rotate-6 transition-all duration-500 rounded-xl"
+                />
                 <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
                   GestionPro
                 </span>

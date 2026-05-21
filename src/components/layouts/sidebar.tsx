@@ -23,6 +23,7 @@ import {
   Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -227,22 +228,24 @@ function SidebarContent({
         )}
       >
         {!collapsed && (
-          <div className="flex items-center gap-2 overflow-hidden">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-zinc-900 text-xs font-bold text-white dark:bg-zinc-50 dark:text-zinc-900">
-              GP
-            </div>
-            {boutiqueName && (
+          <Link href="/" className="flex items-center gap-2 overflow-hidden" aria-label="Accueil GestionPro">
+            <BrandLogo size={28} rounded={6} />
+            {boutiqueName ? (
               <span className="truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">
                 {boutiqueName}
               </span>
+            ) : (
+              <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-100">
+                GestionPro
+              </span>
             )}
-          </div>
+          </Link>
         )}
 
         {collapsed && (
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-zinc-900 text-xs font-bold text-white dark:bg-zinc-50 dark:text-zinc-900">
-            GP
-          </div>
+          <Link href="/" aria-label="Accueil GestionPro">
+            <BrandLogo size={28} rounded={6} />
+          </Link>
         )}
 
         {onToggleCollapse && (
