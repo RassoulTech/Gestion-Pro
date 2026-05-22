@@ -23,15 +23,15 @@ export default function AdminBoutiquesPage() {
   return (
     <div className="space-y-8 pb-20">
       {/* Dynamic Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-indigo-950 p-8 sm:p-12 text-white shadow-2xl border border-white/10">
-        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-cyan-500/20 blur-[100px] pointer-events-none" />
-        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-violet-500/20 blur-[100px] pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-orange-950 p-8 sm:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-500/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-amber-500/20 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div className="space-y-4">
             <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
-              Annuaire <span className="text-cyan-400">Boutiques</span>
-              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-cyan-400" />
+              Annuaire <span className="text-orange-400">Boutiques</span>
+              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400" />
             </h1>
             <p className="text-sm text-slate-400 max-w-xl font-bold leading-relaxed">
               Surveillez, activez et gérez les boutiques créées par vos marchands sur la plateforme GestionPro.

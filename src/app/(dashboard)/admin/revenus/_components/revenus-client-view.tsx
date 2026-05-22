@@ -94,12 +94,12 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           whileHover={{ y: -4 }}
           className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-gradient-to-br from-slate-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-white/10 dark:from-slate-900/50 dark:to-slate-950/75"
         >
-          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-indigo-500/10 blur-3xl" />
+          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-orange-500/10 blur-3xl" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Chiffre d&apos;Affaires Cumulé
             </span>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-lg shadow-indigo-500/30 dark:from-indigo-400 dark:to-blue-500">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/30 dark:from-orange-400 dark:to-amber-500">
               <Wallet className="h-6 w-6" />
             </div>
           </div>
@@ -121,12 +121,12 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           whileHover={{ y: -4 }}
           className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-gradient-to-br from-slate-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-white/10 dark:from-slate-900/50 dark:to-slate-950/75"
         >
-          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-cyan-500/10 blur-3xl" />
+          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-orange-500/10 blur-3xl" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Revenus Mensuels
             </span>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 dark:from-cyan-400 dark:to-teal-400">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 text-white shadow-lg shadow-orange-500/30 dark:from-orange-400 dark:to-rose-400">
               <DollarSign className="h-6 w-6" />
             </div>
           </div>
@@ -142,18 +142,18 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
       </div>
 
       <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-cyan-500/10 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-500/10 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-500/10 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-cyan-500" />
+            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-orange-500" />
             <input
               type="text"
               placeholder="Rechercher par marchand, offre, méthode, réf..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -173,7 +173,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               onClick={() => setStatusFilter("TOUT")}
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "TOUT"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
@@ -206,7 +206,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
       {/* Transactions Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-black tracking-tight text-slate-900 dark:text-slate-50 flex items-center gap-2 pl-1">
-          <Landmark className="h-5 w-5 text-indigo-500" /> Flux de Paiements Récents
+          <Landmark className="h-5 w-5 text-orange-500" /> Flux de Paiements Récents
         </h3>
 
         <AnimatePresence mode="wait">
@@ -219,8 +219,8 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-slate-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-slate-800/80 dark:bg-slate-900/15 text-center min-h-[300px]"
             >
               <div className="relative mb-5">
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 opacity-20 blur-xl animate-pulse" />
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 shadow-md">
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-500 opacity-20 blur-xl animate-pulse" />
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-orange-600 shadow-md">
                   <CreditCard className="h-6 w-6" />
                 </div>
               </div>
@@ -242,7 +242,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
                 {filteredPaiements.map((p) => (
                   <div
                     key={p.id}
-                    className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-indigo-500/30 transition-all duration-300"
+                    className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-orange-500/30 transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
                       <div>
@@ -301,13 +301,13 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
                       {filteredPaiements.map((p) => (
                         <TableRow
                           key={p.id}
-                          className="border-b border-slate-100 hover:bg-indigo-500/5 dark:border-slate-800/50 dark:hover:bg-indigo-500/10 transition-all duration-200"
+                          className="border-b border-slate-100 hover:bg-orange-500/5 dark:border-slate-800/50 dark:hover:bg-orange-500/10 transition-all duration-200"
                         >
                           <TableCell className="py-4 font-extrabold text-slate-950 dark:text-slate-50 pl-6">
                             {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                           </TableCell>
                           <TableCell className="py-4">
-                            <span className="inline-flex items-center rounded-lg bg-indigo-50 dark:bg-indigo-950/30 px-2.5 py-1 text-xs font-black text-indigo-700 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30">
+                            <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                               {p.abonnement.plan.nom}
                             </span>
                           </TableCell>

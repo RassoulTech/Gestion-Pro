@@ -27,24 +27,24 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 pb-20">
       {/* Dynamic Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-indigo-950 p-8 sm:p-12 text-white shadow-2xl border border-white/10">
-        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-cyan-500/20 blur-[100px] pointer-events-none" />
-        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-violet-500/20 blur-[100px] pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-orange-950 p-8 sm:p-12 text-white shadow-2xl border border-white/10">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-500/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-amber-500/20 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
               </span>
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">
                 Plateforme Live
               </span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
-              Centre de <span className="text-cyan-400">Contrôle</span>
-              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-cyan-400 animate-pulse" />
+              Centre de <span className="text-orange-400">Contrôle</span>
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400 animate-pulse" />
             </h1>
             <p className="text-sm text-slate-400 max-w-xl font-bold leading-relaxed">
               Supervisez les performances globales, les vendeurs inscrits, et les flux financiers de GestionPro en temps réel.
@@ -70,9 +70,9 @@ async function DashboardContent() {
     <div className="space-y-8">
       {/* Top Aggregation Stats Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-xl shadow-slate-200/30 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none flex flex-col justify-between hover:border-violet-500/30 transition-colors">
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-xl shadow-slate-200/30 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none flex flex-col justify-between hover:border-amber-500/30 transition-colors">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">
               <Users className="h-6 w-6" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -89,9 +89,9 @@ async function DashboardContent() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-xl shadow-slate-200/30 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none flex flex-col justify-between hover:border-cyan-500/30 transition-colors">
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-xl shadow-slate-200/30 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none flex flex-col justify-between hover:border-orange-500/30 transition-colors">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
               <UserCheck className="h-6 w-6" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -108,9 +108,9 @@ async function DashboardContent() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-xl shadow-slate-200/30 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none flex flex-col justify-between hover:border-indigo-500/30 transition-colors">
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-xl shadow-slate-200/30 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none flex flex-col justify-between hover:border-orange-500/30 transition-colors">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
               <Store className="h-6 w-6" />
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -127,7 +127,7 @@ async function DashboardContent() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-fuchsia-200 bg-gradient-to-br from-fuchsia-600 to-indigo-700 p-6 shadow-xl shadow-fuchsia-500/20 text-white flex flex-col justify-between">
+        <div className="relative overflow-hidden rounded-2xl border border-fuchsia-200 bg-gradient-to-br from-fuchsia-600 to-orange-700 p-6 shadow-xl shadow-fuchsia-500/20 text-white flex flex-col justify-between">
           <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
           <div className="flex items-center justify-between mb-4 relative z-10">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm text-white border border-white/20">
@@ -170,14 +170,14 @@ async function DashboardContent() {
           <span className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-50">{stats.totalCommandes}</span>
         </div>
 
-        <div className="col-span-2 md:col-span-1 rounded-2xl border border-cyan-100 bg-cyan-50/50 p-6 shadow-lg shadow-cyan-100/30 dark:border-cyan-900/30 dark:bg-cyan-900/10 backdrop-blur-md">
+        <div className="col-span-2 md:col-span-1 rounded-2xl border border-orange-100 bg-orange-50/50 p-6 shadow-lg shadow-orange-100/30 dark:border-orange-900/30 dark:bg-orange-900/10 backdrop-blur-md">
           <div className="flex items-center space-x-3 mb-3">
-            <div className="rounded-xl bg-cyan-100 p-2.5 dark:bg-cyan-900/50">
-              <TrendingUp className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+            <div className="rounded-xl bg-orange-100 p-2.5 dark:bg-orange-900/50">
+              <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Ventes Globales Boutiques</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 dark:text-orange-400">Ventes Globales Boutiques</span>
           </div>
-          <span className="text-3xl font-black tracking-tight text-cyan-700 dark:text-cyan-300 truncate block">
+          <span className="text-3xl font-black tracking-tight text-orange-700 dark:text-orange-300 truncate block">
             {formatCurrency(stats.totalVentesGlobales)}
           </span>
         </div>
@@ -198,7 +198,7 @@ async function DashboardContent() {
             </div>
             <Link
               href="/admin/vendeurs"
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-600 hover:bg-cyan-500 hover:text-white transition-colors dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-cyan-500 dark:hover:text-white"
+              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-600 hover:bg-orange-500 hover:text-white transition-colors dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-orange-500 dark:hover:text-white"
             >
               Voir tout <ArrowUpRight className="h-4 w-4" />
             </Link>
@@ -214,10 +214,10 @@ async function DashboardContent() {
               stats.vendeursRecents.map((vendeur) => (
                 <div
                   key={vendeur.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-cyan-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-cyan-500/30 transition-all duration-300"
+                  className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-orange-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-orange-500/30 transition-all duration-300"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-600 text-white font-black text-sm shadow-lg shadow-cyan-500/20">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white font-black text-sm shadow-lg shadow-orange-500/20">
                       {vendeur.nom.charAt(0).toUpperCase()}{vendeur.prenom.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -249,7 +249,7 @@ async function DashboardContent() {
             </div>
             <Link
               href="/admin/abonnements"
-              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-600 hover:bg-violet-500 hover:text-white transition-colors dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-violet-500 dark:hover:text-white"
+              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-600 hover:bg-amber-500 hover:text-white transition-colors dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-amber-500 dark:hover:text-white"
             >
               Voir tout <ArrowUpRight className="h-4 w-4" />
             </Link>
@@ -265,7 +265,7 @@ async function DashboardContent() {
               stats.paiementsRecents.map((p) => (
                 <div
                   key={p.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-violet-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-violet-500/30 transition-all duration-300"
+                  className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-amber-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-amber-500/30 transition-all duration-300"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/40 dark:text-fuchsia-400 font-bold shadow-sm shrink-0">
@@ -276,7 +276,7 @@ async function DashboardContent() {
                         {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                       </h4>
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">
-                        <span className="text-cyan-500">{p.abonnement.plan.nom}</span> • {p.methode}
+                        <span className="text-orange-500">{p.abonnement.plan.nom}</span> • {p.methode}
                       </p>
                     </div>
                   </div>
@@ -308,7 +308,7 @@ async function DashboardContent() {
           </div>
           <Link
             href="/admin/logs"
-            className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-600 hover:bg-cyan-500 hover:text-white transition-colors dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-cyan-500 dark:hover:text-white"
+            className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-600 hover:bg-orange-500 hover:text-white transition-colors dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-orange-500 dark:hover:text-white"
           >
             Consulter les logs <ArrowUpRight className="ml-1 h-4 w-4" />
           </Link>
@@ -321,11 +321,11 @@ async function DashboardContent() {
             stats.logsRecents.map((log) => (
               <div key={log.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-3 group hover:bg-white/50 dark:hover:bg-slate-800/30 px-4 rounded-2xl transition-colors -mx-4">
                 <div className="space-y-1.5">
-                  <p className="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-slate-50 group-hover:text-cyan-500 transition-colors">
+                  <p className="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-slate-50 group-hover:text-orange-500 transition-colors">
                     {log.action}
                   </p>
                   <p className="text-[11px] text-slate-500 font-bold">
-                    Par <span className="text-slate-700 dark:text-slate-300">{log.user?.name || log.user?.email || "Système"}</span> • Cible: <span className="text-indigo-500 bg-indigo-500/10 px-1.5 py-0.5 rounded font-mono">{log.subjectType || "N/A"}</span>
+                    Par <span className="text-slate-700 dark:text-slate-300">{log.user?.name || log.user?.email || "Système"}</span> • Cible: <span className="text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded font-mono">{log.subjectType || "N/A"}</span>
                   </p>
                 </div>
                 <span className="text-[10px] text-slate-400 font-bold bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full uppercase">

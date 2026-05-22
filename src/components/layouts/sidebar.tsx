@@ -21,6 +21,7 @@ import {
   Activity,
   FileText,
   Lock,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
@@ -100,7 +101,8 @@ function getBoutiqueNav(boutiqueId: string): NavItem[] {
 function getAdminNav(): NavItem[] {
   return [
     { label: "Dashboard Global", href: "/admin/dashboard", icon: LayoutDashboard },
-    { label: "Utilisateurs / Vendeurs", href: "/admin/vendeurs", icon: Users },
+    { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
+    { label: "Utilisateurs", href: "/admin/utilisateurs", icon: User },
     { label: "Boutiques", href: "/admin/boutiques", icon: Store },
     { label: "Abonnements", href: "/admin/abonnements", icon: CreditCard },
     { label: "Plans", href: "/admin/plans", icon: Tag },

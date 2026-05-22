@@ -49,19 +49,19 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
     <div className="space-y-6">
       {/* Premium Filter & Search Control Panel */}
       <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-cyan-500/10 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-violet-500/10 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-500/10 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-amber-500/10 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-cyan-500" />
+            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-orange-500" />
             <input
               type="text"
               placeholder="Rechercher par marchand, offre ou ID..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -82,7 +82,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
               onClick={() => setStatusFilter("TOUT")}
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "TOUT"
-                  ? "bg-cyan-600 text-white shadow-lg shadow-cyan-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
@@ -122,8 +122,8 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
             className="flex flex-col items-center justify-center p-6 sm:p-12 rounded-3xl border border-dashed border-slate-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-slate-800/80 dark:bg-slate-900/15 text-center min-h-[280px] sm:min-h-[350px]"
           >
             <div className="relative mb-6">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 opacity-20 blur-xl animate-pulse" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 opacity-20 blur-xl animate-pulse" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg">
                 <CreditCard className="h-8 w-8 animate-bounce" />
               </div>
             </div>
@@ -147,11 +147,11 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
               {filteredAbonnements.map((a) => (
                 <div
                   key={a.id}
-                  className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300"
+                  className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-orange-500/30 transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400 font-semibold shadow-sm border border-cyan-100/50 dark:border-cyan-900/30">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 font-semibold shadow-sm border border-orange-100/50 dark:border-orange-900/30">
                         <CreditCard className="h-5 w-5" />
                       </div>
                       <div>
@@ -167,7 +167,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
                   <div className="mt-4 space-y-2 border-t border-slate-100 pt-3 dark:border-slate-800 text-xs">
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500 flex items-center gap-1 font-semibold"><Sparkles className="h-3 w-3" /> Offre</span>
-                      <span className="inline-flex items-center rounded-lg bg-cyan-50 dark:bg-cyan-950/30 px-2.5 py-1 text-xs font-black text-cyan-700 dark:text-cyan-400 border border-cyan-100/50 dark:border-cyan-900/30">
+                      <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                         {a.plan.nom}
                       </span>
                     </div>
@@ -218,13 +218,13 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
                     {filteredAbonnements.map((a) => (
                       <TableRow
                         key={a.id}
-                        className="border-b border-slate-100 hover:bg-cyan-500/5 dark:border-slate-800/50 dark:hover:bg-cyan-500/10 transition-all duration-200"
+                        className="border-b border-slate-100 hover:bg-orange-500/5 dark:border-slate-800/50 dark:hover:bg-orange-500/10 transition-all duration-200"
                       >
                         <TableCell className="py-4 font-extrabold text-slate-950 dark:text-slate-50 pl-6">
                           {a.vendeur.prenom} {a.vendeur.nom}
                         </TableCell>
                         <TableCell className="py-4">
-                          <span className="inline-flex items-center rounded-lg bg-cyan-50 dark:bg-cyan-950/30 px-2.5 py-1 text-xs font-black text-cyan-700 dark:text-cyan-400 border border-cyan-100/50 dark:border-cyan-900/30">
+                          <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                             {a.plan.nom}
                           </span>
                         </TableCell>

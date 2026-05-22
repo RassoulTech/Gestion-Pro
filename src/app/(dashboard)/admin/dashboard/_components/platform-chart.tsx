@@ -40,7 +40,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel, data = [] }: Platfor
     <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-lg shadow-slate-100/50 backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none">
       {/* Decorative gradient glowing orb inside the card */}
       <div className="absolute -right-32 -top-32 -z-10 h-64 w-64 rounded-full bg-fuchsia-500/10 blur-3xl" />
-      <div className="absolute -left-32 -bottom-32 -z-10 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
+      <div className="absolute -left-32 -bottom-32 -z-10 h-64 w-64 rounded-full bg-orange-500/10 blur-3xl" />
 
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -64,7 +64,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel, data = [] }: Platfor
             </span>
           </div>
           <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50/50 px-3 py-1.5 dark:border-slate-800/60 dark:bg-slate-900/50">
-            <span className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_8px_#06b6d4]" />
+            <span className="h-2 w-2 rounded-full bg-orange-500 shadow-[0_0_8px_#06b6d4]" />
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Marchands Actifs
             </span>
@@ -127,10 +127,10 @@ export function PlatformChart({ revenuTotal, revenuMensuel, data = [] }: Platfor
                         </div>
                         <div className="flex items-center justify-between gap-6">
                           <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                            <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                             Vendeurs
                           </span>
-                          <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                          <span className="text-xs font-bold text-orange-600 dark:text-orange-400">
                             {val1} inscrits
                           </span>
                         </div>

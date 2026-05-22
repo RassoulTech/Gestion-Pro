@@ -46,13 +46,13 @@ function getPlanDesign(nomPlan: string) {
     };
   }
   return {
-    gradient: "from-indigo-500/5 via-violet-500/2 to-transparent",
-    accentBorder: "border-indigo-500/20 dark:border-indigo-800/40 shadow-[0_0_15px_rgba(99,102,241,0.05)]",
+    gradient: "from-orange-500/5 via-amber-500/2 to-transparent",
+    accentBorder: "border-orange-500/20 dark:border-orange-800/40 shadow-[0_0_15px_rgba(99,102,241,0.05)]",
     textClass: "text-slate-950 dark:text-slate-50",
-    badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-900/30",
+    badgeColor: "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-900/30",
     icon: Star,
-    iconColor: "text-indigo-500 dark:text-indigo-400",
-    bgGlow: "bg-indigo-500/10",
+    iconColor: "text-orange-500 dark:text-orange-400",
+    bgGlow: "bg-orange-500/10",
     popular: false,
   };
 }
@@ -125,7 +125,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
               {/* Quotas & Features */}
               <div className="space-y-4 mb-8">
                 <div className="flex items-center gap-3.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400 border border-cyan-100/50 dark:border-cyan-900/30">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                     <Check className="h-3.5 w-3.5" />
                   </div>
                   <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
@@ -134,7 +134,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                 </div>
 
                 <div className="flex items-center gap-3.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400 border border-cyan-100/50 dark:border-cyan-900/30">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                     <Check className="h-3.5 w-3.5" />
                   </div>
                   <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
@@ -144,7 +144,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
 
                 {plan.dureeEssaiJours > 0 && (
                   <div className="flex items-center gap-3.5">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400 border border-cyan-100/50 dark:border-cyan-900/30">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                       <Check className="h-3.5 w-3.5" />
                     </div>
                     <span className="text-sm font-bold text-slate-700 dark:text-slate-300">

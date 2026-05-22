@@ -29,18 +29,18 @@ interface LogsClientViewProps {
 function getActionIcon(action: string) {
   const normalized = action.toLowerCase();
   if (normalized.includes("login") || normalized.includes("connexion")) {
-    return { icon: User, color: "text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-950/30 border-indigo-200/50 dark:border-indigo-900/30" };
+    return { icon: User, color: "text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/30 border-orange-200/50 dark:border-orange-900/30" };
   }
   if (normalized.includes("create") || normalized.includes("add") || normalized.includes("ajout")) {
-    return { icon: Database, color: "text-cyan-600 bg-cyan-50 dark:text-cyan-400 dark:bg-cyan-950/30 border-cyan-200/50 dark:border-cyan-900/30" };
+    return { icon: Database, color: "text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/30 border-orange-200/50 dark:border-orange-900/30" };
   }
   if (normalized.includes("delete") || normalized.includes("remove") || normalized.includes("supprim")) {
     return { icon: ShieldAlert, color: "text-rose-600 bg-rose-50 dark:text-rose-400 dark:bg-rose-950/30 border-rose-200/50 dark:border-rose-900/30" };
   }
   if (normalized.includes("update") || normalized.includes("edit") || normalized.includes("modif")) {
-    return { icon: Cpu, color: "text-violet-600 bg-violet-50 dark:text-violet-400 dark:bg-violet-950/30 border-violet-200/50 dark:border-violet-900/30" };
+    return { icon: Cpu, color: "text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/30 border-amber-200/50 dark:border-amber-900/30" };
   }
-  return { icon: Activity, color: "text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-950/30 border-indigo-200/50 dark:border-indigo-900/30" };
+  return { icon: Activity, color: "text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-950/30 border-orange-200/50 dark:border-orange-900/30" };
 }
 
 export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
@@ -88,19 +88,19 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
     <div className="space-y-6">
       {/* Premium Filter Dashboard Bar */}
       <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-cyan-500/10 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-500/10 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-500/10 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Search bar */}
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-cyan-500" />
+            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-orange-500" />
             <input
               type="text"
               placeholder="Rechercher par action, marchand, email, IP, agent..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
             />
             {search && (
               <button
@@ -121,7 +121,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               onClick={() => setActionCategory("TOUT")}
               className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${
                 actionCategory === "TOUT"
-                  ? "bg-cyan-600 text-white shadow-lg shadow-cyan-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
@@ -131,7 +131,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               onClick={() => setActionCategory("CONNEXION")}
               className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${
                 actionCategory === "CONNEXION"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
@@ -141,7 +141,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               onClick={() => setActionCategory("CREATION")}
               className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${
                 actionCategory === "CREATION"
-                  ? "bg-cyan-600 text-white shadow-lg shadow-cyan-600/20"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
@@ -151,7 +151,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               onClick={() => setActionCategory("MODIFICATION")}
               className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${
                 actionCategory === "MODIFICATION"
-                  ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
+                  ? "bg-amber-600 text-white shadow-lg shadow-amber-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
@@ -183,7 +183,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
               className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-slate-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-slate-800/80 dark:bg-slate-900/15 text-center min-h-[300px]"
             >
               <div className="relative mb-5">
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 opacity-20 blur-xl animate-pulse" />
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-500 opacity-20 blur-xl animate-pulse" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 shadow-md">
                   <Activity className="h-6 w-6" />
                 </div>
@@ -215,7 +215,7 @@ export function LogsClientView({ initialLogs, total }: LogsClientViewProps) {
                   {/* Card wrapper */}
                   <div
                     onClick={() => toggleExpand(log.id)}
-                    className="cursor-pointer rounded-3xl border border-slate-200/50 bg-white/70 p-5 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-slate-900/70 transition-all duration-300 hover:shadow-lg hover:bg-white/95 dark:hover:bg-slate-900/95 hover:border-cyan-500/30"
+                    className="cursor-pointer rounded-3xl border border-slate-200/50 bg-white/70 p-5 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-slate-900/70 transition-all duration-300 hover:shadow-lg hover:bg-white/95 dark:hover:bg-slate-900/95 hover:border-orange-500/30"
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="space-y-1">

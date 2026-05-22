@@ -37,13 +37,13 @@ function getSectorColor(sector: string) {
     return "bg-pink-50 text-pink-700 border-pink-100 dark:bg-pink-950/20 dark:text-pink-400 dark:border-pink-900/50";
   }
   if (normalized.includes("tech") || normalized.includes("électronique") || normalized.includes("phone")) {
-    return "bg-indigo-50 text-indigo-700 border-indigo-100 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/50";
+    return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
   }
   if (normalized.includes("aliment") || normalized.includes("restau") || normalized.includes("nourriture")) {
     return "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50";
   }
   if (normalized.includes("beauté") || normalized.includes("cosmé") || normalized.includes("soin")) {
-    return "bg-cyan-50 text-cyan-700 border-cyan-100 dark:bg-cyan-950/20 dark:text-cyan-400 dark:border-cyan-900/50";
+    return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
   }
   if (normalized.includes("santé")) {
     return "bg-red-50 text-red-700 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/50";
@@ -52,7 +52,7 @@ function getSectorColor(sector: string) {
     return "bg-stone-50 text-stone-700 border-stone-100 dark:bg-stone-950/20 dark:text-stone-400 dark:border-stone-900/50";
   }
   if (normalized.includes("librairie")) {
-    return "bg-cyan-50 text-cyan-700 border-cyan-100 dark:bg-cyan-950/20 dark:text-cyan-400 dark:border-cyan-900/50";
+    return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
   }
   return "bg-slate-50 text-slate-700 border-slate-100 dark:bg-slate-900/60 dark:text-slate-300 dark:border-slate-800/80";
 }
@@ -91,20 +91,20 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
     <div className="space-y-6">
       {/* Premium Filter & Search Control Panel */}
       <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-cyan-500/10 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-violet-500/10 blur-2xl" />
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-500/10 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-amber-500/10 blur-2xl" />
 
         <div className="relative flex flex-col gap-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-cyan-500" />
+              <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-orange-500" />
               <input
                 type="text"
                 placeholder="Rechercher une boutique par nom, marchand ou email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
+                className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
               />
               {search && (
                 <button
@@ -166,7 +166,7 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                   onClick={() => setSectorFilter(sect.value)}
                   className={`h-8 px-3 rounded-xl text-xs font-bold transition-all ${
                     sectorFilter === sect.value
-                      ? "bg-cyan-600 text-white shadow-md shadow-cyan-600/20"
+                      ? "bg-orange-600 text-white shadow-md shadow-orange-600/20"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
                   }`}
                 >
@@ -188,8 +188,8 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
             className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-slate-300 bg-white/30 backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/30 text-center min-h-[350px]"
           >
             <div className="relative mb-6">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 opacity-20 blur-xl animate-pulse" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 opacity-20 blur-xl animate-pulse" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg">
                 <Store className="h-8 w-8 animate-bounce" />
               </div>
             </div>
@@ -217,11 +217,11 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                 return (
                   <div
                     key={b.id}
-                    className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-cyan-500/30 transition-all duration-300 animate-in fade-in duration-200"
+                    className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-orange-500/30 transition-all duration-300 animate-in fade-in duration-200"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400 font-semibold shadow-sm border border-cyan-100/50 dark:border-cyan-900/30">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 font-semibold shadow-sm border border-orange-100/50 dark:border-orange-900/30">
                           <Store className="h-5 w-5" />
                         </div>
                         <div>
@@ -292,11 +292,11 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                       return (
                         <TableRow
                           key={b.id}
-                          className="border-b border-slate-100 hover:bg-cyan-500/5 dark:border-slate-800/50 dark:hover:bg-cyan-500/10 transition-all duration-200"
+                          className="border-b border-slate-100 hover:bg-orange-500/5 dark:border-slate-800/50 dark:hover:bg-orange-500/10 transition-all duration-200"
                         >
                           <TableCell className="py-4 font-semibold text-slate-950 dark:text-slate-50 pl-6">
                             <div className="flex items-center space-x-3.5">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400 font-semibold shadow-sm border border-cyan-100/50 dark:border-cyan-900/30">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 font-semibold shadow-sm border border-orange-100/50 dark:border-orange-900/30">
                                 <Store className="h-5 w-5" />
                               </div>
                               <div>
