@@ -9,8 +9,9 @@ import Link from "next/link";
 
 export const metadata: Metadata = { title: "Vendeurs - Admin" };
 
-async function VendeursContent({ searchParams }: { searchParams: { tab?: string } }) {
-  const tab = searchParams?.tab || "vendeurs";
+async function VendeursContent({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const resolvedParams = await searchParams;
+  const tab = resolvedParams?.tab || "vendeurs";
 
   if (tab === "utilisateurs") {
     const { data: users, total } = await getAllUsersWithoutShop();
@@ -28,12 +29,13 @@ async function VendeursContent({ searchParams }: { searchParams: { tab?: string 
   return <VendeursClientTable initialVendeurs={typedVendeurs} total={total} />;
 }
 
-export default function AdminVendeursPage({
+export default async function AdminVendeursPage({
   searchParams,
 }: {
-  searchParams: { tab?: string };
+  searchParams: Promise<{ tab?: string }>;
 }) {
-  const tab = searchParams?.tab || "vendeurs";
+  const resolvedParams = await searchParams;
+  const tab = resolvedParams?.tab || "vendeurs";
 
   return (
     <div className="space-y-8 pb-20">
