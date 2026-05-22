@@ -88,7 +88,11 @@ export default function LoginPage() {
       if (status === "needs_verification") {
         setNeedsVerification(data.email);
         setDevLink(precheck?.data?.devLink ?? null);
-        toast.info("Email non vérifié. Un nouveau lien vient d'être envoyé.");
+        if (precheck?.data?.emailFailed) {
+          toast.warning("Email non vérifié. Le serveur d'email est actuellement indisponible.");
+        } else {
+          toast.info("Email non vérifié. Un nouveau lien vient d'être envoyé.");
+        }
         return;
       }
 
@@ -163,7 +167,11 @@ export default function LoginPage() {
             onClick={async () => {
               const r = await resendVerificationEmail({ email: needsVerification });
               if (r?.data?.success) {
-                toast.success(r.data.success);
+                if (r.data.emailFailed) {
+                  toast.warning(r.data.success);
+                } else {
+                  toast.success(r.data.success);
+                }
                 if (r.data.devLink) setDevLink(r.data.devLink);
               } else if (r?.serverError) toast.error(r.serverError);
             }}

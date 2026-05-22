@@ -49,19 +49,19 @@ export const registerUser = actionClient
     );
 
     if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
-      // In prod, SMTP failed and there's no dev link to fall back on. Tell the
-      // user clearly instead of pretending the email is on its way.
       console.error("[register] verification email failed:", mail.error);
-      throw new Error(
-        "Votre compte est créé, mais l'envoi de l'email de vérification a échoué (passerelle SMTP indisponible). Utilisez « Renvoyer l'email » dans quelques minutes ou contactez le support."
-      );
+      return {
+        success: "Votre compte est créé, mais l'envoi de l'email a échoué.",
+        emailFailed: true,
+      };
     }
 
     return {
       success: mail.sent
-        ? "Email de vérification envoyé !"
+        ? "Compte créé ! Email de vérification envoyé."
         : "Compte créé. Email de vérification disponible via le lien de dev ci-dessous.",
       devLink: mail.devLink,
+      emailFailed: !mail.sent && !mail.devLink,
     };
   });
 
@@ -90,9 +90,18 @@ export const resendVerificationEmail = actionClient
       verificationToken.token
     );
 
+    if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+      console.error("[resend] verification email failed:", mail.error);
+      return {
+        success: "Le serveur d'email est indisponible. Veuillez réessayer plus tard.",
+        emailFailed: true,
+      };
+    }
+
     return {
       success: "Si un compte non vérifié existe avec cet email, un nouveau lien vient d'être envoyé.",
       devLink: mail.devLink,
+      emailFailed: !mail.sent && !mail.devLink,
     };
   });
 
@@ -133,6 +142,7 @@ export const loginPrecheck = actionClient
       return {
         status: "needs_verification" as const,
         devLink: mail.devLink,
+        emailFailed: !mail.sent && !mail.devLink,
       };
     }
 

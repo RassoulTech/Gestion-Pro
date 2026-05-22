@@ -43,6 +43,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
+  const [emailFailed, setEmailFailed] = useState<boolean>(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -76,9 +77,14 @@ export default function RegisterPage() {
       }
 
       if (result?.data?.success) {
-        toast.success(result.data.success);
+        if (result.data.emailFailed) {
+          toast.warning(result.data.success);
+        } else {
+          toast.success(result.data.success);
+        }
         setSentEmail(data.email);
         setDevLink(result.data.devLink ?? null);
+        setEmailFailed(result.data.emailFailed ?? false);
         form.reset();
       }
     } catch {
@@ -102,16 +108,27 @@ export default function RegisterPage() {
 
         <div className="space-y-3">
           <h1 className="text-3xl font-black tracking-tight text-foreground">
-            Vérifiez votre boîte mail
+            {emailFailed ? "Compte créé !" : "Vérifiez votre boîte mail"}
           </h1>
           <p className="text-base font-medium text-muted-foreground leading-relaxed">
-            Nous venons d&apos;envoyer un lien d&apos;activation à{" "}
-            <span className="font-bold text-foreground">{sentEmail}</span>.
-            Cliquez dessus pour activer votre compte et vous connecter.
+            {emailFailed ? (
+              <>
+                Votre compte a bien été créé, mais <span className="font-bold text-destructive">notre serveur d'email est indisponible</span> pour le moment.
+                <br />Vous pourrez demander un nouveau lien de vérification plus tard.
+              </>
+            ) : (
+              <>
+                Nous venons d&apos;envoyer un lien d&apos;activation à{" "}
+                <span className="font-bold text-foreground">{sentEmail}</span>.
+                Cliquez dessus pour activer votre compte et vous connecter.
+              </>
+            )}
           </p>
-          <p className="text-xs font-medium text-muted-foreground/80 italic">
-            Pensez à vérifier vos spams.
-          </p>
+          {!emailFailed && (
+            <p className="text-xs font-medium text-muted-foreground/80 italic">
+              Pensez à vérifier vos spams.
+            </p>
+          )}
         </div>
 
         {devLink && (
@@ -139,7 +156,12 @@ export default function RegisterPage() {
             onClick={async () => {
               const r = await resendVerificationEmail({ email: sentEmail });
               if (r?.data?.success) {
-                toast.success(r.data.success);
+                if (r.data.emailFailed) {
+                  toast.warning(r.data.success);
+                } else {
+                  toast.success(r.data.success);
+                  setEmailFailed(false);
+                }
                 if (r.data.devLink) setDevLink(r.data.devLink);
               } else if (r?.serverError) toast.error(r.serverError);
             }}
