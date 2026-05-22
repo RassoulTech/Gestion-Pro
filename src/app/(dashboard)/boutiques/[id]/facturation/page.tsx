@@ -20,9 +20,8 @@ import {
   checkProduitCreationLimit,
   checkMembreCreationLimit,
 } from "@/lib/quotas";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { QuotaIndicator } from "@/components/dashboard/quota-indicators";
 import Link from "next/link";
 import { ManageStripeButton } from "./_components/manage-stripe-button";
@@ -30,6 +29,16 @@ import { RenewSubscriptionButton } from "./_components/renew-subscription-button
 
 interface FacturationPageProps {
   params: Promise<{ id: string }>;
+}
+
+function PaymentStatusBadge({ status }: { status: string }) {
+  if (status === "CONFIRME") {
+    return <span className="inline-flex px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/20">Confirmé</span>;
+  }
+  if (status === "EN_ATTENTE") {
+    return <span className="inline-flex px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider border border-amber-500/20">En attente</span>;
+  }
+  return <span className="inline-flex px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-wider border border-rose-500/20">Échoué</span>;
 }
 
 export default async function FacturationPage({ params }: FacturationPageProps) {
@@ -96,29 +105,29 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
   const pricingUrl = `/pricing?boutiqueId=${id}`;
 
   return (
-    <div className="space-y-10 pb-10">
-      {/* Header / Hero */}
-      <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] bg-zinc-950 p-6 sm:p-12 text-white shadow-2xl">
-        <div className="absolute right-0 top-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-brand/30 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-slate-500/10 blur-[100px]" />
+    <div className="space-y-8 pb-20">
+      {/* Dynamic Header */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 sm:p-10 text-white shadow-2xl border border-zinc-800">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-brand/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-blue-500/10 blur-[100px] pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-brand" />
-              <span className="text-xs font-bold uppercase tracking-widest text-brand">
-                Gestion de l&apos;Abonnement
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+              <Sparkles className="h-4 w-4 text-brand" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-300">
+                Abonnement & Facturation
               </span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tighter">
-              Facturation & Quotas
+              Gérez votre <span className="text-brand">Forfait</span>
             </h1>
-            <p className="text-sm sm:text-base text-zinc-400 max-w-xl font-bold">
-              Suivez l&apos;utilisation de vos ressources en temps réel et gérez vos moyens de paiement.
+            <p className="text-sm text-zinc-400 max-w-xl font-bold leading-relaxed">
+              Consultez vos factures, surveillez l'utilisation de vos ressources et passez au niveau supérieur pour débloquer plus de fonctionnalités.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-3">
             {renewalNeeded && renewalPlanName && (
               <RenewSubscriptionButton
                 planName={renewalPlanName}
@@ -126,300 +135,231 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                 urgent={renewalUrgent}
               />
             )}
-
             <Button
               asChild
-              size="lg"
-              className="h-14 rounded-2xl px-8 font-black bg-brand hover:bg-brand/90 hover:scale-[1.02] transition-all"
+              className="h-14 sm:h-12 rounded-2xl sm:rounded-xl px-8 font-black bg-brand hover:bg-brand/90 text-white shadow-xl shadow-brand/20 hover:scale-[1.02] transition-all w-full sm:w-auto"
             >
               <Link href={pricingUrl}>
-                <TrendingUp className="mr-2 h-5 w-5" />
+                <TrendingUp className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
                 Mettre à niveau
               </Link>
             </Button>
-
             {vendeur.stripeCustomerId && (
-              <ManageStripeButton hasStripeCustomer={!!vendeur.stripeCustomerId} />
+              <div className="w-full sm:w-auto">
+                <ManageStripeButton hasStripeCustomer={!!vendeur.stripeCustomerId} />
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid gap-8 lg:grid-cols-12">
-        {/* Left column: subscription status & Quotas info */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* Active plan overview */}
-          <Card className="border-none bg-white dark:bg-zinc-900 shadow-xl rounded-[2rem] p-6 sm:p-8 overflow-hidden relative">
-            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-brand/5 blur-3xl" />
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Left Column (2/3): Plan Info & Quotas */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Active Plan Card */}
+          <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none p-6 sm:p-8">
+            <div className="absolute right-0 top-0 h-32 w-32 bg-brand/5 blur-3xl rounded-full" />
             
-            <CardHeader className="p-0 pb-6 border-b border-zinc-100 dark:border-zinc-800">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <CardTitle className="text-2xl font-black tracking-tight">
-                    Forfait Actuel : <span className="text-brand">{quotas.nom}</span>
-                  </CardTitle>
-                  <CardDescription className="text-zinc-500 font-bold mt-1">
-                    {activeAbonnement?.plan
-                      ? `Facturé à ${activeAbonnement.plan.prix.toLocaleString("fr-FR")} FCFA / mois`
-                      : "Starter Gratuit"}
-                  </CardDescription>
-                </div>
-                <Badge
-                  className={`text-xs font-black px-4 py-1.5 rounded-full w-fit uppercase tracking-widest ${
-                    quotas.statut === "ACTIF"
-                      ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                      : quotas.statut === "ESSAI"
-                      ? "bg-amber-500/10 text-amber-500 border border-amber-500/20 animate-pulse"
-                      : "bg-rose-500/10 text-rose-500 border border-rose-500/20"
-                  }`}
-                  variant="outline"
-                >
-                  {quotas.statut === "ACTIF"
-                    ? "Actif"
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
+                  Forfait <span className="text-brand">{quotas.nom}</span>
+                </h2>
+                <p className="text-zinc-500 font-bold mt-1.5 text-sm">
+                  {activeAbonnement?.plan
+                    ? `Facturé à ${activeAbonnement.plan.prix.toLocaleString("fr-FR")} FCFA / mois`
+                    : "Plan Gratuit de démarrage"}
+                </p>
+              </div>
+              <Badge
+                className={`text-xs font-black px-4 py-2 rounded-xl uppercase tracking-widest ${
+                  quotas.statut === "ACTIF"
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                     : quotas.statut === "ESSAI"
-                    ? "Période d'essai"
-                    : "Expiré"}
-                </Badge>
-              </div>
-            </CardHeader>
+                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse"
+                    : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                }`}
+                variant="outline"
+              >
+                {quotas.statut === "ACTIF"
+                  ? "Actif"
+                  : quotas.statut === "ESSAI"
+                  ? "Période d'essai"
+                  : "Expiré"}
+              </Badge>
+            </div>
 
-            <CardContent className="p-0 pt-6 space-y-6">
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-brand/10 text-brand flex items-center justify-center shrink-0">
-                    <Calendar className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h5 className="font-extrabold text-sm">Début de l&apos;abonnement</h5>
-                    <p className="text-xs text-muted-foreground font-semibold mt-0.5">
-                      {activeAbonnement
-                        ? new Date(activeAbonnement.dateDebut).toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })
-                        : "N/A"}
-                    </p>
-                  </div>
+            <div className="grid gap-6 sm:grid-cols-2 pt-6">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800">
+                <div className="h-12 w-12 rounded-xl bg-white dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
+                  <Calendar className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-brand/10 text-brand flex items-center justify-center shrink-0">
-                    <CreditCard className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h5 className="font-extrabold text-sm">Prochaine facturation</h5>
-                    <p className="text-xs text-muted-foreground font-semibold mt-0.5">
-                      {activeAbonnement?.dateFin
-                        ? new Date(activeAbonnement.dateFin).toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })
-                        : activeAbonnement?.essaiFin
-                        ? new Date(activeAbonnement.essaiFin).toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })
-                        : "Jamais (Plan Starter)"}
-                    </p>
-                  </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Date de début</p>
+                  <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">
+                    {activeAbonnement
+                      ? new Date(activeAbonnement.dateDebut).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+                      : "N/A"}
+                  </p>
                 </div>
               </div>
 
-              {/* Bullet features */}
-              <div className="pt-6 border-t border-zinc-100 dark:border-zinc-800">
-                <h4 className="font-black text-xs uppercase tracking-widest text-muted-foreground mb-4">
-                  Inclus dans votre forfait
-                </h4>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {quotas.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-zinc-300">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800">
+                <div className="h-12 w-12 rounded-xl bg-white dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
+                  <CreditCard className="h-5 w-5 text-brand" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-zinc-500">Prochaine facture</p>
+                  <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">
+                    {activeAbonnement?.dateFin
+                      ? new Date(activeAbonnement.dateFin).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+                      : activeAbonnement?.essaiFin
+                      ? new Date(activeAbonnement.essaiFin).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+                      : "Jamais"}
+                  </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Quotas Bento Grid */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
-              <Layers className="h-5 w-5 text-brand" /> Utilisation des Ressources
-            </h2>
-            
-            <div className="grid gap-4 sm:grid-cols-3">
-              <QuotaIndicator
-                label="Boutiques"
-                count={boutiqueLimit.count}
-                max={boutiqueLimit.max}
-              />
-              <QuotaIndicator
-                label="Produits (Boutique actuelle)"
-                count={produitLimit.count}
-                max={produitLimit.max}
-              />
-              <QuotaIndicator
-                label="Membres d'équipe"
-                count={membreLimit.count}
-                max={membreLimit.max}
-              />
+            <div className="pt-6 mt-6 border-t border-zinc-100 dark:border-zinc-800">
+              <p className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-4">Inclus dans votre forfait</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {quotas.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 leading-tight">{feature}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Transactions / Invoices history list */}
-          <Card className="border-none bg-white dark:bg-zinc-900 shadow-xl rounded-[2rem] p-6 sm:p-8">
-            <CardHeader className="p-0 pb-6 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
-                  <History className="h-5 w-5 text-brand" /> Historique des Paiements
-                </CardTitle>
-                <CardDescription className="text-zinc-500 font-bold mt-1">
-                  Accédez à vos dernières factures et transactions.
-                </CardDescription>
-              </div>
-            </CardHeader>
+          {/* Quotas */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
+              <Layers className="h-5 w-5 text-brand" /> Quotas & Utilisation
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <QuotaIndicator label="Boutiques" count={boutiqueLimit.count} max={boutiqueLimit.max} />
+              <QuotaIndicator label="Produits (Actuelle)" count={produitLimit.count} max={produitLimit.max} />
+              <QuotaIndicator label="Membres" count={membreLimit.count} max={membreLimit.max} />
+            </div>
+          </div>
 
-            <CardContent className="p-0">
+          {/* Transactions Mobile view (Cards) vs Desktop view (Table) */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
+              <History className="h-5 w-5 text-brand" /> Historique de Paiement
+            </h2>
+            
+            <div className="rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
               {payments.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="border-b border-zinc-100 dark:border-zinc-800 text-[10px] uppercase font-black tracking-widest text-muted-foreground">
-                        <th className="py-3 pr-4">Référence</th>
-                        <th className="py-3 px-4">Plan / Forfait</th>
-                        <th className="py-3 px-4">Date</th>
-                        <th className="py-3 px-4">Montant</th>
-                        <th className="py-3 px-4">Méthode</th>
-                        <th className="py-3 pl-4 text-right">Statut</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-                      {payments.map((payment) => (
-                        <tr key={payment.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors text-sm font-bold">
-                          <td className="py-4 pr-4 font-extrabold max-w-[120px] truncate text-slate-800 dark:text-zinc-200">
-                            {payment.transactionRef || payment.id.toUpperCase()}
-                          </td>
-                          <td className="py-4 px-4 text-slate-600 dark:text-zinc-300">
-                            {payment.abonnement.plan.nom}
-                          </td>
-                          <td className="py-4 px-4 text-zinc-500 font-semibold">
-                            {new Date(payment.createdAt).toLocaleDateString("fr-FR", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          </td>
-                          <td className="py-4 px-4 font-black text-slate-800 dark:text-zinc-100">
-                            {payment.montant.toLocaleString()} FCFA
-                          </td>
-                          <td className="py-4 px-4">
-                            <span className="inline-flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-md text-[10px] font-black uppercase text-slate-600 dark:text-zinc-400">
-                              {payment.methode === "STRIPE" ? (
-                                <>
-                                  <CreditCard className="h-3 w-3 text-brand" /> Stripe
-                                </>
-                              ) : (
-                                <>
-                                  <Smartphone className="h-3 w-3 text-brand" /> {payment.methode}
-                                </>
-                              )}
-                            </span>
-                          </td>
-                          <td className="py-4 pl-4 text-right">
-                            <Badge
-                              className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
-                                payment.statut === "CONFIRME"
-                                  ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                                  : payment.statut === "EN_ATTENTE"
-                                  ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                                  : "bg-rose-500/10 text-rose-500 border border-rose-500/20"
-                              }`}
-                              variant="outline"
-                            >
-                              {payment.statut === "CONFIRME"
-                                ? "Confirmé"
-                                : payment.statut === "EN_ATTENTE"
-                                ? "En attente"
-                                : "Échoué"}
-                            </Badge>
-                          </td>
+                <>
+                  {/* Desktop Table (hidden on mobile) */}
+                  <div className="hidden sm:block overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-zinc-50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-800 text-[10px] uppercase font-black tracking-widest text-zinc-500">
+                          <th className="py-4 px-6">Référence</th>
+                          <th className="py-4 px-6">Date</th>
+                          <th className="py-4 px-6">Montant</th>
+                          <th className="py-4 px-6">Méthode</th>
+                          <th className="py-4 px-6 text-right">Statut</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                        {payments.map((payment) => (
+                          <tr key={payment.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors text-sm font-bold">
+                            <td className="py-4 px-6 text-zinc-800 dark:text-zinc-200 truncate max-w-[150px]">
+                              {payment.transactionRef || payment.id.toUpperCase()}
+                              <div className="text-[10px] text-zinc-400 mt-1">{payment.abonnement.plan.nom}</div>
+                            </td>
+                            <td className="py-4 px-6 text-zinc-600 dark:text-zinc-400">
+                              {new Date(payment.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                            </td>
+                            <td className="py-4 px-6 font-black text-zinc-900 dark:text-zinc-100">
+                              {payment.montant.toLocaleString()} FCFA
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="inline-flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase text-zinc-600 dark:text-zinc-400">
+                                {payment.methode === "STRIPE" ? <CreditCard className="h-3 w-3 text-brand" /> : <Smartphone className="h-3 w-3 text-brand" />}
+                                {payment.methode}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-right">
+                              <PaymentStatusBadge status={payment.statut} />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards (hidden on desktop) */}
+                  <div className="sm:hidden divide-y divide-zinc-100 dark:divide-zinc-800">
+                    {payments.map((payment) => (
+                      <div key={payment.id} className="p-4 flex flex-col gap-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="text-sm font-black text-zinc-900 dark:text-zinc-100">{payment.montant.toLocaleString()} FCFA</p>
+                            <p className="text-xs font-bold text-zinc-500 mt-0.5">{payment.abonnement.plan.nom}</p>
+                          </div>
+                          <PaymentStatusBadge status={payment.statut} />
+                        </div>
+                        <div className="flex justify-between items-center text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          <span>{new Date(payment.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}</span>
+                          <span className="flex items-center gap-1">
+                            {payment.methode === "STRIPE" ? <CreditCard className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
+                            {payment.methode}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               ) : (
-                <div className="py-12 text-center">
-                  <CreditCard className="mx-auto h-12 w-12 text-muted-foreground/30 mb-4" />
-                  <p className="font-extrabold text-slate-600 dark:text-zinc-400">Aucun paiement enregistré.</p>
-                  <p className="text-xs text-muted-foreground font-semibold mt-1">
-                    Vos factures apparaîtront ici dès que vous aurez effectué votre première transaction.
-                  </p>
+                <div className="py-12 flex flex-col items-center justify-center text-center px-4">
+                  <div className="h-16 w-16 rounded-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center mb-4">
+                    <History className="h-6 w-6 text-zinc-400" />
+                  </div>
+                  <h3 className="font-black text-zinc-900 dark:text-zinc-100 text-lg">Aucun paiement</h3>
+                  <p className="text-sm text-zinc-500 font-semibold mt-1 max-w-sm">Vos factures apparaîtront ici dès que vous aurez effectué votre première transaction.</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
-        {/* Right column: help & FAQ */}
-        <div className="lg:col-span-4 space-y-6">
-          <Card className="border-none bg-zinc-950 text-white shadow-xl rounded-[2rem] p-6 sm:p-8">
-            <CardHeader className="p-0 pb-6 border-b border-white/10">
-              <CardTitle className="text-lg font-black flex items-center gap-2">
-                <HelpCircle className="h-5 w-5 text-brand" /> FAQ - Facturation
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 pt-6 space-y-6">
+        {/* Right Column (1/3): FAQ & Support */}
+        <div className="space-y-6">
+          <div className="rounded-3xl bg-zinc-950 p-6 sm:p-8 text-white shadow-xl">
+            <h3 className="text-lg font-black flex items-center gap-2 mb-6 pb-4 border-b border-white/10">
+              <HelpCircle className="h-5 w-5 text-brand" /> FAQ
+            </h3>
+            <div className="space-y-6">
               <div className="space-y-2">
-                <h5 className="font-extrabold text-sm text-zinc-200">
-                  Comment changer de forfait ?
-                </h5>
-                <p className="text-xs text-zinc-400 font-semibold leading-relaxed">
-                  Cliquez sur le bouton &quot;Mettre à niveau&quot; pour choisir un nouveau plan et effectuer le règlement via Mobile Money (Wave, OM) ou par Carte Bancaire.
-                </p>
+                <h5 className="font-extrabold text-sm text-zinc-100">Comment changer de forfait ?</h5>
+                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Cliquez sur &quot;Mettre à niveau&quot; pour choisir un nouveau plan et effectuer le règlement via Mobile Money (Wave, OM) ou par Carte Bancaire.</p>
               </div>
-
               <div className="space-y-2">
-                <h5 className="font-extrabold text-sm text-zinc-200">
-                  Puis-je annuler à tout moment ?
-                </h5>
-                <p className="text-xs text-zinc-400 font-semibold leading-relaxed">
-                  Oui, absolument. Si vous avez souscrit via Stripe, vous pouvez gérer et résilier votre abonnement directement via le bouton de redirection Stripe Billing portal.
-                </p>
+                <h5 className="font-extrabold text-sm text-zinc-100">Puis-je annuler à tout moment ?</h5>
+                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Oui, absolument. Si vous avez souscrit via Stripe, vous pouvez gérer et résilier votre abonnement directement via le bouton de redirection Stripe Billing portal.</p>
               </div>
-
               <div className="space-y-2">
-                <h5 className="font-extrabold text-sm text-zinc-200">
-                  Que se passe-t-il si je dépasse mes quotas ?
-                </h5>
-                <p className="text-xs text-zinc-400 font-semibold leading-relaxed">
-                  Vos données actuelles restent en sécurité, mais vous ne pourrez plus ajouter de nouveaux produits, boutiques ou collaborateurs avant d&apos;avoir fait de la place ou mis à niveau votre forfait.
-                </p>
+                <h5 className="font-extrabold text-sm text-zinc-100">Que se passe-t-il si je dépasse mes quotas ?</h5>
+                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Vos données restent en sécurité, mais vous ne pourrez plus ajouter de nouveaux éléments (produits, membres) avant d&apos;avoir fait de la place ou mis à niveau votre forfait.</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Quick contact / Support info */}
-          <div className="p-6 rounded-[2rem] bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800 space-y-3">
-            <h4 className="font-black text-xs uppercase tracking-widest text-slate-800 dark:text-zinc-200">
-              Besoin d&apos;aide supplémentaire ?
-            </h4>
-            <p className="text-xs text-muted-foreground font-semibold leading-relaxed">
-              Des questions concernant un paiement ou besoin d&apos;une solution sur mesure ? Notre équipe vous répond sous 24h ouvrées.
+          <div className="p-6 rounded-3xl bg-brand/5 border border-brand/10 space-y-4">
+            <h4 className="font-black text-xs uppercase tracking-widest text-brand">Support Client</h4>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold leading-relaxed">
+              Des questions concernant un paiement ou besoin d'une solution sur mesure ? Notre équipe vous répond sous 24h ouvrées.
             </p>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full h-11 font-black rounded-xl border-2 hover:scale-[1.02] transition-transform text-xs"
-            >
+            <Button asChild variant="outline" className="w-full h-12 font-black rounded-xl border-brand/20 hover:bg-brand hover:text-white transition-all text-xs">
               <a href="mailto:support@gestionpro.app">
-                Contacter le Support
-                <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                Contacter le Support <ExternalLink className="ml-2 h-4 w-4" />
               </a>
             </Button>
           </div>
