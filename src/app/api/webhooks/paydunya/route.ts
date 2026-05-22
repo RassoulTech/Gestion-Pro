@@ -116,11 +116,16 @@ export async function POST(req: Request) {
       } else {
         const payment = await prisma.paiement.findFirst({
           where: { paydunyaToken: token },
+          include: { abonnement: true },
         });
         if (payment?.transactionRef) {
           // handlePaymentWebhook is idempotent — it refuses to downgrade a
           // payment that's already CONFIRME.
           await PaymentService.handlePaymentWebhook(payment.transactionRef, "FAILED");
+          
+          if (payment.abonnement) {
+            clearQuotaCache(payment.abonnement.vendeurId);
+          }
         }
       }
 

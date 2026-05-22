@@ -88,60 +88,7 @@ export const initiatePlanSubscription = vendeurActionClient
     };
   });
 
-/**
- * Simule le succès d'un paiement en appelant directement le webhook/service de traitement de paiement.
- */
-export const simulateSuccessfulPayment = vendeurActionClient
-  .schema(
-    z.object({
-      transactionRef: z.string().min(1),
-    })
-  )
-  .action(async ({ parsedInput, ctx }) => {
-    const { transactionRef } = parsedInput;
-    const { user, vendeurId } = ctx;
 
-    const result = await PaymentService.handlePaymentWebhook(transactionRef, "SUCCESS");
-
-    if (!result.success) {
-      throw new Error(result.message || "Échec de la validation de la simulation.");
-    }
-
-    // Désactiver/Expirer les autres abonnements actifs pour ne garder que le nouveau
-    const payment = await prisma.paiement.findFirst({
-      where: { transactionRef },
-      include: { abonnement: true },
-    });
-
-    if (payment) {
-      const activeAbonnementId = payment.abonnementId;
-      // Mettre à jour les autres abonnements de ce vendeur pour les résilier/annuler
-      await prisma.abonnement.updateMany({
-        where: {
-          vendeurId,
-          id: { not: activeAbonnementId },
-          statut: { in: ["ESSAI", "ACTIF", "EN_ATTENTE"] },
-        },
-        data: {
-          statut: "ANNULE",
-          dateFin: new Date(),
-        },
-      });
-    }
-
-    await logActivity({
-      userId: user.id,
-      action: `SIMULATED_SUCCESSFUL_PAYMENT`,
-      subjectType: "Paiement",
-      subjectId: payment?.id,
-      changes: { transactionRef, status: "SUCCESS" },
-    });
-
-    return {
-      success: true,
-      message: "Simulation de paiement réussie et plan mis à niveau !",
-    };
-  });
 
 /**
  * Récupère la liste de tous les plans actifs de la base de données.

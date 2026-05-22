@@ -76,12 +76,10 @@ export class PaymentService {
           stripeSecret.length > 0 &&
           !stripeSecret.includes("mock");
 
-        // Fallback sandbox local si Stripe n'est pas configuré en réel
         if (!stripeConfigured) {
           return {
-            success: true,
-            paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=STRIPE`,
-            transactionRef: paiement.transactionRef || undefined,
+            success: false,
+            error: "Le paiement par carte bancaire (Stripe) n'est pas configuré sur ce serveur.",
           };
         }
 
@@ -221,20 +219,16 @@ export class PaymentService {
           };
         }
 
-        // Sinon, simulation pour test bac à sable local :
         return {
-          success: true,
-          paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=${method}`,
-          transactionRef: paiement.transactionRef || undefined,
+          success: false,
+          error: "Le paiement par Mobile Money n'est pas activé ou configuré sur ce serveur.",
         };
       }
 
-      // PayPal — no real integration yet, fall through to the sandbox checkout.
       if (method === "PAYPAL") {
         return {
-          success: true,
-          paymentUrl: `/checkout/mock?ref=${paiement.transactionRef}&amount=${amount}&method=PAYPAL`,
-          transactionRef: paiement.transactionRef || undefined,
+          success: false,
+          error: "PayPal n'est pas encore intégré dans cette version.",
         };
       }
 

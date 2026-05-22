@@ -21,44 +21,78 @@ async function VentesFlashContent({ boutiqueId }: { boutiqueId: string }) {
   }
 
   return (
-    <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-zinc-50 dark:bg-zinc-800/50">
-                <TableHead className="font-black uppercase text-[10px] tracking-widest pl-4 sm:pl-6">Code</TableHead>
-                <TableHead className="font-black uppercase text-[10px] tracking-widest hidden sm:table-cell">Date</TableHead>
-                <TableHead className="font-black uppercase text-[10px] tracking-widest hidden md:table-cell">Client</TableHead>
-                <TableHead className="font-black uppercase text-[10px] tracking-widest text-right">Total</TableHead>
-                <TableHead className="font-black uppercase text-[10px] tracking-widest text-right pr-4 sm:pr-6">Art.</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {ventes.map((v) => (
-                <TableRow key={v.id}>
-                  <TableCell className="font-medium pl-4 sm:pl-6">
-                    <div>
-                      <span>{v.code}</span>
-                      <span className="block text-[10px] text-muted-foreground sm:hidden">{formatDateTime(v.date)}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell whitespace-nowrap">{formatDateTime(v.date)}</TableCell>
-                  <TableCell className="hidden md:table-cell">{v.nomClient || "—"}</TableCell>
-                  <TableCell className="text-right font-semibold whitespace-nowrap">{formatCurrency(v.total)}</TableCell>
-                  <TableCell className="text-right pr-4 sm:pr-6">
-                    <div className="flex items-center justify-end gap-1">
-                      <ShoppingBag className="h-4 w-4 text-muted-foreground" />
-                      {v._count.lignes}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      {/* Desktop View */}
+      <div className="hidden sm:block">
+        <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-zinc-50 dark:bg-zinc-800/50">
+                    <TableHead className="font-black uppercase text-[10px] tracking-widest pl-6">Code</TableHead>
+                    <TableHead className="font-black uppercase text-[10px] tracking-widest">Date</TableHead>
+                    <TableHead className="font-black uppercase text-[10px] tracking-widest hidden md:table-cell">Client</TableHead>
+                    <TableHead className="font-black uppercase text-[10px] tracking-widest text-right">Total</TableHead>
+                    <TableHead className="font-black uppercase text-[10px] tracking-widest text-right pr-6">Art.</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {ventes.map((v) => (
+                    <TableRow key={v.id}>
+                      <TableCell className="font-medium pl-6">
+                        {v.code}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">{formatDateTime(v.date)}</TableCell>
+                      <TableCell className="hidden md:table-cell">{v.nomClient || "—"}</TableCell>
+                      <TableCell className="text-right font-semibold whitespace-nowrap text-brand">{formatCurrency(v.total)}</TableCell>
+                      <TableCell className="text-right pr-6">
+                        <div className="flex items-center justify-end gap-1">
+                          <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                          {v._count.lignes}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Mobile Stacked Cards View */}
+      <div className="sm:hidden flex flex-col gap-4">
+        {ventes.map((v) => (
+          <div key={v.id} className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl p-5 shadow-sm relative overflow-hidden">
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand shrink-0">
+                  <Zap className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-zinc-900 dark:text-zinc-100">{v.code}</h3>
+                  <p className="text-[10px] text-zinc-500 font-semibold">{formatDateTime(v.date)}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-black text-brand text-sm">{formatCurrency(v.total)}</p>
+                <div className="flex items-center justify-end gap-1 text-[10px] text-zinc-400 font-semibold mt-1">
+                  <ShoppingBag className="h-3 w-3" />
+                  {v._count.lignes} articles
+                </div>
+              </div>
+            </div>
+            
+            {v.nomClient && (
+              <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                Client : <span className="text-zinc-900 dark:text-zinc-200">{v.nomClient}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 

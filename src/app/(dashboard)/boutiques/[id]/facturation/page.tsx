@@ -26,6 +26,8 @@ import { QuotaIndicator } from "@/components/dashboard/quota-indicators";
 import Link from "next/link";
 import { ManageStripeButton } from "./_components/manage-stripe-button";
 import { RenewSubscriptionButton } from "./_components/renew-subscription-button";
+import { PaymentFeedbackToast } from "./_components/payment-feedback-toast";
+import { Suspense } from "react";
 
 interface FacturationPageProps {
   params: Promise<{ id: string }>;
@@ -106,6 +108,9 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
 
   return (
     <div className="space-y-8 pb-20">
+      <Suspense fallback={null}>
+        <PaymentFeedbackToast />
+      </Suspense>
       {/* Dynamic Header */}
       <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 sm:p-12 text-white shadow-2xl border border-zinc-800">
         <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-brand/20 blur-[100px] pointer-events-none" />
