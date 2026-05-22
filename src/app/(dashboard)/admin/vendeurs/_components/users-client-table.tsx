@@ -124,11 +124,11 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                 <Users className="h-8 w-8 animate-bounce" />
               </div>
             </div>
-            <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
+            <h3 className="text-xl font-black text-slate-800 dark:text-white">
               Aucun utilisateur trouvé
             </h3>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-              Ces utilisateurs n'ont pas encore créé de boutique.
+            <p className="mt-2 text-sm font-medium text-slate-500">
+              Essayez de modifier vos filtres ou d&apos;ajouter un nouvel utilisateur.
             </p>
           </motion.div>
         ) : (

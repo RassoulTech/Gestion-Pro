@@ -114,13 +114,14 @@ export default function RegisterPage() {
             {emailFailed ? (
               <>
                 Votre compte a bien été créé, mais <span className="font-bold text-destructive">notre serveur d'email est indisponible</span> pour le moment.
+                Votre compte a bien été créé, mais <span className="font-bold text-destructive">notre serveur d&apos;email est indisponible</span> pour le moment.
                 <br />Vous pourrez demander un nouveau lien de vérification plus tard.
               </>
             ) : (
               <>
                 Nous venons d&apos;envoyer un lien d&apos;activation à{" "}
                 <span className="font-bold text-foreground">{sentEmail}</span>.
-                Cliquez dessus pour activer votre compte et vous connecter.
+                Gérez votre commerce en toute simplicité. Suivez vos ventes, vos stocks et développez votre activité.
               </>
             )}
           </p>
