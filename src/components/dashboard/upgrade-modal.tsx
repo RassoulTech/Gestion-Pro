@@ -85,16 +85,16 @@ export function UpgradeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl p-0 overflow-hidden border-none bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl">
-        <div className="grid md:grid-cols-12 h-full min-h-[500px]">
+      <DialogContent className="max-w-4xl w-[95vw] sm:w-full p-0 border-none bg-zinc-950 text-white sm:rounded-[2.5rem] rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        <div className="grid md:grid-cols-12 flex-1 overflow-y-auto">
           {/* Main comparative grid or details */}
-          <div className="md:col-span-8 p-8 md:p-10 space-y-6 flex flex-col justify-between">
+          <div className="md:col-span-8 p-5 sm:p-8 md:p-10 space-y-6 flex flex-col justify-between h-max">
             <div>
               <DialogHeader className="text-left space-y-2">
-                <DialogTitle className="text-3xl font-black tracking-tight text-white flex items-center gap-2">
-                  <Sparkles className="h-6 w-6 text-brand animate-pulse" /> {title}
+                <DialogTitle className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-brand animate-pulse" /> {title}
                 </DialogTitle>
-                <DialogDescription className="text-zinc-400 font-bold text-sm">
+                <DialogDescription className="text-zinc-400 font-bold text-xs sm:text-sm">
                   {description}
                 </DialogDescription>
               </DialogHeader>
@@ -106,7 +106,7 @@ export function UpgradeModal({
                 </div>
               ) : step === 1 ? (
                 /* STEP 1: Plan Selector Grid */
-                <div className="grid sm:grid-cols-3 gap-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 sm:mt-8">
                   {plans.map((plan) => {
                     const isPro = plan.nom === "Pro";
                     const isEnterprise = plan.nom === "Enterprise";
@@ -117,12 +117,12 @@ export function UpgradeModal({
                         key={plan.id}
                         onClick={() => setSelectedPlan(plan)}
                         className={cn(
-                          "relative p-5 rounded-2xl cursor-pointer border-2 transition-all flex flex-col justify-between",
+                          "relative p-5 rounded-2xl cursor-pointer border-2 transition-all flex sm:flex-col justify-between gap-4 sm:gap-0",
                           isSelected
                             ? isPro
-                              ? "border-brand bg-white/5 shadow-lg shadow-brand/10 scale-[1.02]"
+                              ? "border-brand bg-white/5 shadow-lg shadow-brand/10 sm:scale-[1.02]"
                               : isEnterprise
-                              ? "border-zinc-400 bg-white/5 shadow-lg shadow-zinc-400/10 scale-[1.02]"
+                              ? "border-zinc-400 bg-white/5 shadow-lg shadow-zinc-400/10 sm:scale-[1.02]"
                               : "border-zinc-500 bg-white/5"
                             : "border-zinc-800 bg-zinc-900/40 hover:border-zinc-700"
                         )}
@@ -138,17 +138,17 @@ export function UpgradeModal({
                           </div>
                         )}
 
-                        <div className="space-y-1">
+                        <div className="space-y-1 w-1/2 sm:w-full">
                           <h4 className="font-extrabold text-sm text-zinc-100">{plan.nom}</h4>
                           <div className="flex items-baseline gap-0.5">
-                            <span className="text-xl font-black text-white">
+                            <span className="text-lg sm:text-xl font-black text-white">
                               {plan.prix === 0 ? "Gratuit" : `${plan.prix.toLocaleString("fr-FR")} F`}
                             </span>
                             {plan.prix > 0 && <span className="text-[10px] text-zinc-500 font-bold">/mois</span>}
                           </div>
                         </div>
 
-                        <ul className="space-y-2 mt-4 flex-1">
+                        <ul className="space-y-2 mt-0 sm:mt-4 flex-1 w-1/2 sm:w-full">
                           {(plan.features as string[]).slice(0, 4).map((feat, index) => (
                             <li key={index} className="flex items-center gap-2 text-[10px] text-zinc-300 font-medium">
                               <Check className="h-3 w-3 text-emerald-500 shrink-0" strokeWidth={3} />
@@ -162,62 +162,62 @@ export function UpgradeModal({
                 </div>
               ) : (
                 /* STEP 2: Checkout Method Selector */
-                <div className="mt-8 space-y-6">
+                <div className="mt-6 sm:mt-8 space-y-6">
                   <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-xs text-zinc-500 font-black uppercase tracking-wider">Plan sélectionné</p>
-                      <p className="text-lg font-black text-white">{selectedPlan?.nom}</p>
+                      <p className="text-[10px] sm:text-xs text-zinc-500 font-black uppercase tracking-wider">Plan sélectionné</p>
+                      <p className="text-base sm:text-lg font-black text-white">{selectedPlan?.nom}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-zinc-500 font-black uppercase tracking-wider">Montant total</p>
-                      <p className="text-2xl font-black text-brand">{selectedPlan ? formatCurrency(selectedPlan.prix) : ""}</p>
+                      <p className="text-[10px] sm:text-xs text-zinc-500 font-black uppercase tracking-wider">Montant total</p>
+                      <p className="text-xl sm:text-2xl font-black text-brand">{selectedPlan ? formatCurrency(selectedPlan.prix) : ""}</p>
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <p className="text-xs font-black uppercase tracking-wider text-zinc-400">Sélectionnez votre moyen de paiement</p>
+                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-zinc-400">Sélectionnez votre moyen de paiement</p>
                     
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4">
                       {/* WAVE */}
                       <div
                         onClick={() => setSelectedMethod("WAVE")}
                         className={cn(
-                          "p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
+                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
                           selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                         )}
                       >
-                        <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", selectedMethod === "WAVE" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
-                          <Smartphone className="h-5 w-5" />
+                        <div className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center", selectedMethod === "WAVE" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
+                          <Smartphone className="h-4 w-4 sm:h-5 sm:w-5" />
                         </div>
-                        <span className="text-xs font-black">Wave</span>
+                        <span className="text-[10px] sm:text-xs font-black">Wave</span>
                       </div>
 
                       {/* ORANGE MONEY */}
                       <div
                         onClick={() => setSelectedMethod("ORANGE_MONEY")}
                         className={cn(
-                          "p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
+                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
                           selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                         )}
                       >
-                        <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", selectedMethod === "ORANGE_MONEY" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
-                          <Smartphone className="h-5 w-5" />
+                        <div className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center", selectedMethod === "ORANGE_MONEY" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
+                          <Smartphone className="h-4 w-4 sm:h-5 sm:w-5" />
                         </div>
-                        <span className="text-xs font-black">Orange Money</span>
+                        <span className="text-[10px] sm:text-xs font-black text-center leading-none">Orange Money</span>
                       </div>
 
                       {/* PAYPAL */}
                       <div
                         onClick={() => setSelectedMethod("PAYPAL")}
                         className={cn(
-                          "p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
+                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
                           selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
                         )}
                       >
-                        <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", selectedMethod === "PAYPAL" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
-                          <CreditCard className="h-5 w-5" />
+                        <div className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center", selectedMethod === "PAYPAL" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
+                          <CreditCard className="h-4 w-4 sm:h-5 sm:w-5" />
                         </div>
-                        <span className="text-xs font-black">PayPal</span>
+                        <span className="text-[10px] sm:text-xs font-black">PayPal</span>
                       </div>
                     </div>
                   </div>
@@ -226,7 +226,7 @@ export function UpgradeModal({
             </div>
 
             {/* Footer action buttons */}
-            <div className="flex items-center justify-between border-t border-zinc-900 pt-6 mt-8">
+            <div className="flex items-center justify-between border-t border-zinc-900 pt-5 mt-6 pb-2">
               {step === 2 ? (
                 <Button
                   variant="ghost"
@@ -237,7 +237,7 @@ export function UpgradeModal({
                   Retour
                 </Button>
               ) : (
-                <div className="text-[10px] text-zinc-500 font-bold max-w-[200px]">
+                <div className="text-[9px] sm:text-[10px] text-zinc-500 font-bold max-w-[150px] sm:max-w-[200px]">
                   Paiement sécurisé et crypté. Annulez à tout moment.
                 </div>
               )}
@@ -246,7 +246,7 @@ export function UpgradeModal({
                 disabled={loading || !selectedPlan}
                 onClick={step === 1 ? () => setStep(2) : handlePaymentInitiation}
                 className={cn(
-                  "h-12 px-6 rounded-xl font-black text-xs sm:text-sm shadow-xl shadow-brand/10 text-white",
+                  "h-12 px-5 sm:px-6 rounded-xl font-black text-xs sm:text-sm shadow-xl shadow-brand/10 text-white shrink-0",
                   selectedPlan?.nom === "Enterprise"
                     ? "bg-zinc-200 hover:bg-zinc-300 text-zinc-950 shadow-zinc-200/15"
                     : "bg-brand hover:bg-brand/90"
@@ -267,7 +267,7 @@ export function UpgradeModal({
             </div>
           </div>
 
-          {/* Right sidebar details */}
+          {/* Right sidebar details - hidden on small screens entirely */}
           <div className="hidden md:flex md:col-span-4 bg-zinc-900 border-l border-zinc-800 p-8 flex-col justify-between">
             <div className="space-y-6">
               <h4 className="text-xs font-black uppercase tracking-widest text-zinc-400">
