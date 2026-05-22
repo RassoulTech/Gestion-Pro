@@ -92,22 +92,22 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden rounded-[2.5rem] border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-orange-950/30 dark:from-orange-950/20 dark:to-zinc-950/75"
+          className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-gradient-to-br from-slate-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-white/10 dark:from-slate-900/50 dark:to-slate-950/75"
         >
-          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-orange-600/10 blur-3xl" />
+          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-indigo-500/10 blur-3xl" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-widest text-orange-700 dark:text-orange-300">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Chiffre d&apos;Affaires Cumulé
             </span>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-600 to-orange-600 text-white shadow-lg shadow-orange-600/30 dark:from-orange-500 dark:to-orange-500">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-lg shadow-indigo-500/30 dark:from-indigo-400 dark:to-blue-500">
               <Wallet className="h-6 w-6" />
             </div>
           </div>
           <div className="mt-8">
-            <h2 className="text-4xl font-black tracking-tight text-orange-950 dark:text-orange-50">
+            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {formatCurrency(total)}
             </h2>
-            <p className="mt-2 text-xs font-bold text-orange-600/80 dark:text-orange-400">
+            <p className="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400">
               Volume total des paiements validés depuis le lancement de la plateforme.
             </p>
           </div>
@@ -119,46 +119,46 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden rounded-[2.5rem] border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-emerald-950/30 dark:from-emerald-950/20 dark:to-zinc-950/75"
+          className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-gradient-to-br from-slate-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-white/10 dark:from-slate-900/50 dark:to-slate-950/75"
         >
-          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-emerald-600/10 blur-3xl" />
+          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-cyan-500/10 blur-3xl" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-300">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Revenus Mensuels
             </span>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-600/30 dark:from-emerald-500 dark:to-teal-500">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/30 dark:from-cyan-400 dark:to-teal-400">
               <DollarSign className="h-6 w-6" />
             </div>
           </div>
           <div className="mt-8">
-            <h2 className="text-4xl font-black tracking-tight text-emerald-950 dark:text-emerald-50">
+            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {formatCurrency(mensuel)}
             </h2>
-            <p className="mt-2 text-xs font-bold text-emerald-600/80 dark:text-emerald-400">
+            <p className="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400">
               Montant cumulé des paiements confirmés pour le mois en cours.
             </p>
           </div>
         </motion.div>
       </div>
 
-      <div className="relative overflow-hidden rounded-[2.5rem] border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60">
-        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
-        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50">
+        <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl" />
+        <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-cyan-500/10 blur-2xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-zinc-400" />
+            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400 transition-colors group-focus-within:text-cyan-500" />
             <input
               type="text"
               placeholder="Rechercher par marchand, offre, méthode, réf..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-zinc-100/50 border border-zinc-200/30 text-sm font-semibold placeholder-zinc-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 dark:bg-zinc-900/50 dark:border-zinc-800/30 dark:text-zinc-50 dark:placeholder-zinc-500 transition-all duration-300"
+              className="w-full h-11 pl-11 pr-10 rounded-2xl bg-slate-100/50 border border-slate-200/30 text-sm font-semibold placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:bg-slate-800/50 dark:border-slate-700/30 dark:text-slate-50 dark:placeholder-slate-500 transition-all duration-300"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-3 h-5 w-5 flex items-center justify-center rounded-full bg-zinc-200 text-zinc-500 hover:bg-zinc-300 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 transition-colors"
+                className="absolute right-3 top-3 h-5 w-5 flex items-center justify-center rounded-full bg-slate-200 text-slate-500 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 transition-colors"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -166,15 +166,15 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 mr-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mr-2">
               <Filter className="h-3.5 w-3.5" /> Statut :
             </span>
             <button
               onClick={() => setStatusFilter("TOUT")}
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "TOUT"
-                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
               Tous
@@ -184,7 +184,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "CONFIRME"
                   ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
               Confirmés
@@ -194,7 +194,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
                 statusFilter === "EN_ATTENTE"
                   ? "bg-amber-500 text-white shadow-lg shadow-amber-500/20"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
               }`}
             >
               En attente
@@ -205,8 +205,8 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
 
       {/* Transactions Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-black tracking-tight text-zinc-900 dark:text-zinc-50 flex items-center gap-2 pl-1">
-          <Landmark className="h-5 w-5 text-orange-500" /> Flux de Paiements Récents
+        <h3 className="text-lg font-black tracking-tight text-slate-900 dark:text-slate-50 flex items-center gap-2 pl-1">
+          <Landmark className="h-5 w-5 text-indigo-500" /> Flux de Paiements Récents
         </h3>
 
         <AnimatePresence mode="wait">
@@ -216,16 +216,16 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[300px]"
+              className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-slate-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-slate-800/80 dark:bg-slate-900/15 text-center min-h-[300px]"
             >
               <div className="relative mb-5">
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-15 blur-xl animate-pulse" />
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-500 shadow-md">
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 opacity-20 blur-xl animate-pulse" />
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 shadow-md">
                   <CreditCard className="h-6 w-6" />
                 </div>
               </div>
-              <h4 className="text-lg font-extrabold text-zinc-900 dark:text-zinc-50">Aucun paiement trouvé</h4>
-              <p className="mt-2 text-sm text-zinc-400 max-w-sm">
+              <h4 className="text-lg font-extrabold text-slate-900 dark:text-slate-50">Aucun paiement trouvé</h4>
+              <p className="mt-2 text-sm text-slate-400 max-w-sm">
                 Aucune transaction correspondante n&apos;a été trouvée pour les critères spécifiés.
               </p>
             </motion.div>
@@ -242,38 +242,38 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
                 {filteredPaiements.map((p) => (
                   <div
                     key={p.id}
-                    className="relative overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70"
+                    className="relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 hover:shadow-lg hover:border-indigo-500/30 transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="block font-extrabold text-zinc-900 dark:text-zinc-50 leading-tight">
+                        <span className="block font-extrabold text-slate-900 dark:text-slate-50 leading-tight">
                           {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                         </span>
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mt-0.5">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">
                           Offre : {p.abonnement.plan.nom}
                         </span>
                       </div>
                       {getStatusBadge(p.statut)}
                     </div>
 
-                    <div className="mt-4 space-y-2 border-t border-zinc-100 pt-3 dark:border-zinc-900 text-xs font-bold">
+                    <div className="mt-4 space-y-2 border-t border-slate-100 pt-3 dark:border-slate-800 text-xs font-bold">
                       <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Réf. transaction</span>
-                        <span className="font-mono text-zinc-700 dark:text-zinc-300">
+                        <span className="text-slate-400">Réf. transaction</span>
+                        <span className="font-mono text-slate-700 dark:text-slate-300">
                           {p.transactionRef ? p.transactionRef.slice(0, 16) : "Non renseignée"}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Méthode</span>
-                        <span className="text-zinc-700 dark:text-zinc-300 uppercase">{p.methode}</span>
+                        <span className="text-slate-400">Méthode</span>
+                        <span className="text-slate-700 dark:text-slate-300 uppercase">{p.methode}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Date</span>
-                        <span className="text-zinc-500 font-semibold">{formatDate(p.createdAt)}</span>
+                        <span className="text-slate-400">Date</span>
+                        <span className="text-slate-500 font-semibold">{formatDate(p.createdAt)}</span>
                       </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-zinc-100 dark:border-zinc-900">
-                        <span className="text-zinc-400 font-bold">Montant payé</span>
-                        <span className="font-extrabold text-zinc-950 dark:text-zinc-50 text-sm">
+                      <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <span className="text-slate-400 font-bold">Montant payé</span>
+                        <span className="font-extrabold text-slate-950 dark:text-slate-50 text-sm">
                           {formatCurrency(p.montant)}
                         </span>
                       </div>
@@ -283,47 +283,47 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               </div>
 
               {/* Desktop View */}
-              <div className="hidden md:block relative overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 shadow-xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-950/70">
+              <div className="hidden md:block relative overflow-hidden rounded-3xl border border-slate-200/60 bg-white/70 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow className="border-b border-zinc-100 bg-zinc-50/50 hover:bg-zinc-50/50 dark:border-zinc-900 dark:bg-zinc-900/40">
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200 pl-6">Marchand</TableHead>
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200">Formule</TableHead>
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200">Méthode</TableHead>
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200">Réf. transaction</TableHead>
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200">Date</TableHead>
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200">Statut</TableHead>
-                        <TableHead className="py-4 font-black text-zinc-800 dark:text-zinc-200 text-right pr-6">Montant</TableHead>
+                      <TableRow className="border-b border-slate-200/50 bg-slate-50/50 hover:bg-slate-50/50 dark:border-slate-800/50 dark:bg-slate-800/40">
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200 pl-6">Marchand</TableHead>
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Formule</TableHead>
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Méthode</TableHead>
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Réf. transaction</TableHead>
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Date</TableHead>
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Statut</TableHead>
+                        <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200 text-right pr-6">Montant</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredPaiements.map((p) => (
                         <TableRow
                           key={p.id}
-                          className="border-b border-zinc-100 hover:bg-orange-500/5 dark:border-zinc-900/60 dark:hover:bg-orange-500/5 transition-all duration-200"
+                          className="border-b border-slate-100 hover:bg-indigo-500/5 dark:border-slate-800/50 dark:hover:bg-indigo-500/10 transition-all duration-200"
                         >
-                          <TableCell className="py-4 font-extrabold text-zinc-950 dark:text-zinc-50 pl-6">
+                          <TableCell className="py-4 font-extrabold text-slate-950 dark:text-slate-50 pl-6">
                             {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                           </TableCell>
                           <TableCell className="py-4">
-                            <span className="inline-flex items-center rounded-lg bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 text-xs font-black text-orange-700 dark:text-orange-400">
+                            <span className="inline-flex items-center rounded-lg bg-indigo-50 dark:bg-indigo-950/30 px-2.5 py-1 text-xs font-black text-indigo-700 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-900/30">
                               {p.abonnement.plan.nom}
                             </span>
                           </TableCell>
-                          <TableCell className="py-4 text-xs font-extrabold text-zinc-600 dark:text-zinc-400 uppercase">
+                          <TableCell className="py-4 text-xs font-extrabold text-slate-600 dark:text-slate-400 uppercase">
                             {p.methode}
                           </TableCell>
-                          <TableCell className="py-4 font-mono text-xs text-zinc-500 dark:text-zinc-400">
-                            {p.transactionRef ?? <span className="text-zinc-400">—</span>}
+                          <TableCell className="py-4 font-mono text-xs text-slate-500 dark:text-slate-400">
+                            {p.transactionRef ?? <span className="text-slate-400">—</span>}
                           </TableCell>
-                          <TableCell className="py-4 text-zinc-500 dark:text-zinc-400 text-xs font-bold">
+                          <TableCell className="py-4 text-slate-500 dark:text-slate-400 text-xs font-bold">
                             {formatDate(p.createdAt)}
                           </TableCell>
                           <TableCell className="py-4">
                             {getStatusBadge(p.statut)}
                           </TableCell>
-                          <TableCell className="py-4 text-right pr-6 font-black text-zinc-950 dark:text-zinc-50 text-sm">
+                          <TableCell className="py-4 text-right pr-6 font-black text-slate-950 dark:text-slate-50 text-sm">
                             {formatCurrency(p.montant)}
                           </TableCell>
                         </TableRow>
@@ -338,7 +338,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
       </div>
 
       <div className="flex items-center justify-between mt-4 px-2">
-        <p className="text-xs text-zinc-400 dark:text-zinc-500 font-extrabold uppercase tracking-wider">
+        <p className="text-xs text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-wider">
           Affichage de {filteredPaiements.length} sur {recentPaiements.length} transaction(s)
         </p>
       </div>
