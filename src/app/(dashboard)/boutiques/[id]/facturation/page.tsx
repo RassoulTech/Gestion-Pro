@@ -128,7 +128,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
               Gérez votre <span className="text-brand">Forfait</span>
             </h1>
             <p className="text-sm text-zinc-400 max-w-xl font-bold leading-relaxed">
-              Consultez vos factures, surveillez l'utilisation de vos ressources et passez au niveau supérieur pour débloquer plus de fonctionnalités.
+              Consultez vos factures, surveillez l&apos;utilisation de vos ressources et passez au niveau supérieur pour débloquer plus de fonctionnalités.
             </p>
           </div>
 
@@ -360,7 +360,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
           <div className="p-6 rounded-3xl sm:rounded-[2.5rem] bg-brand/5 border border-brand/10 space-y-4">
             <h4 className="font-black text-xs uppercase tracking-widest text-brand">Support Client</h4>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold leading-relaxed">
-              Des questions concernant un paiement ou besoin d'une solution sur mesure ? Notre équipe vous répond sous 24h ouvrées.
+              Des questions concernant un paiement ou besoin d&apos;une solution sur mesure ? Notre équipe vous répond sous 24h ouvrées.
             </p>
             <Button asChild variant="outline" className="w-full h-12 font-black rounded-xl border-brand/20 hover:bg-brand hover:text-white transition-all text-xs">
               <a href="mailto:support@gestionpro.app">
