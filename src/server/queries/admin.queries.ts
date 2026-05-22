@@ -89,6 +89,7 @@ export async function getAllVendeurs(params?: {
   const perPage = params?.perPage ?? 20;
 
   const where = {
+    boutiques: { some: {} },
     ...(params?.search && {
       OR: [
         { nom: { contains: params.search, mode: "insensitive" as const } },
@@ -116,6 +117,58 @@ export async function getAllVendeurs(params?: {
       take: perPage,
     }),
     prisma.vendeur.count({ where }),
+  ]);
+
+  return { data, total, page, perPage, totalPages: Math.ceil(total / perPage) };
+}
+
+export async function getAllUsersWithoutShop(params?: {
+  search?: string;
+  page?: number;
+  perPage?: number;
+}) {
+  const page = params?.page ?? 1;
+  const perPage = params?.perPage ?? 20;
+
+  const where = {
+    // Only fetch users who either don't have a Vendeur profile,
+    // OR have a Vendeur profile but 0 boutiques.
+    // Also exclude ADMIN role if we only want regular users/vendeurs.
+    role: { not: "ADMIN" as const },
+    OR: [
+      { vendeur: null },
+      { vendeur: { boutiques: { none: {} } } }
+    ],
+    ...(params?.search && {
+      OR: [
+        { name: { contains: params.search, mode: "insensitive" as const } },
+        { email: { contains: params.search, mode: "insensitive" as const } },
+      ],
+    }),
+  };
+
+  const [data, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        vendeur: {
+          select: {
+            id: true,
+            statut: true,
+            createdAt: true,
+          }
+        }
+      },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    }),
+    prisma.user.count({ where }),
   ]);
 
   return { data, total, page, perPage, totalPages: Math.ceil(total / perPage) };

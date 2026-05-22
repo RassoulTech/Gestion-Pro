@@ -21,18 +21,18 @@ interface PlansClientViewProps {
 
 function getPlanDesign(nomPlan: string) {
   const name = nomPlan.toLowerCase();
-  if (name.includes("pro") || name.includes("premium") || name.includes("gold") || name.includes("avance")) {
-    return {
-      gradient: "from-cyan-500/10 via-indigo-500/5 to-transparent",
-      accentBorder: "border-cyan-500/40 dark:border-cyan-500/60 shadow-[0_0_20px_rgba(6,182,212,0.15)]",
-      textClass: "text-slate-950 dark:text-slate-50",
-      badgeColor: "bg-gradient-to-r from-cyan-500 to-indigo-500 text-white border-none shadow-[0_0_12px_rgba(6,182,212,0.4)]",
-      icon: Flame,
-      iconColor: "text-cyan-500 dark:text-cyan-400",
-      bgGlow: "bg-gradient-to-tr from-cyan-500/20 to-indigo-500/20",
-      popular: true,
-    };
-  }
+    if (name.includes("pro") || name.includes("premium") || name.includes("gold") || name.includes("avance")) {
+      return {
+        gradient: "from-orange-500/10 via-orange-600/5 to-transparent",
+        accentBorder: "border-orange-500/40 dark:border-orange-500/60 shadow-[0_0_20px_rgba(249,115,22,0.15)]",
+        textClass: "text-slate-950 dark:text-slate-50",
+        badgeColor: "bg-gradient-to-r from-orange-500 to-orange-600 text-white border-none shadow-[0_0_12px_rgba(249,115,22,0.4)]",
+        icon: Flame,
+        iconColor: "text-orange-500 dark:text-orange-400",
+        bgGlow: "bg-gradient-to-tr from-orange-500/20 to-orange-600/20",
+        popular: true,
+      };
+    }
   if (name.includes("gratuit") || name.includes("free") || name.includes("essai") || name.includes("basic")) {
     return {
       gradient: "from-slate-500/5 to-transparent",
@@ -79,7 +79,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
             {/* Popular/Featured Banner */}
             {design.popular && (
               <div className="absolute right-0 top-0 h-16 w-16 overflow-hidden">
-                <div className="absolute top-3 right-[-31px] w-24 rotate-45 bg-gradient-to-r from-cyan-500 to-indigo-500 text-[9px] font-black text-center text-white py-1 uppercase tracking-wider shadow-md">
+                <div className="absolute top-3 right-[-31px] w-24 rotate-45 bg-gradient-to-r from-orange-500 to-orange-600 text-[9px] font-black text-center text-white py-1 uppercase tracking-wider shadow-md">
                   Recommandé
                 </div>
               </div>
@@ -113,11 +113,11 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
               </div>
 
               {/* Pricing details */}
-              <div className="mb-6 flex items-baseline">
-                <span className="text-5xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+              <div className="mb-6 flex flex-wrap items-baseline gap-1.5">
+                <span className="text-3xl sm:text-4xl xl:text-5xl font-black tracking-tight text-slate-950 dark:text-slate-50 truncate">
                   {formatCurrency(plan.prix)}
                 </span>
-                <span className="text-sm font-bold text-slate-400 dark:text-slate-500 ml-1.5">/ mois</span>
+                <span className="text-sm font-bold text-slate-400 dark:text-slate-500">/ mois</span>
               </div>
 
               <div className="h-px bg-slate-100 dark:bg-slate-800/60 mb-6" />
