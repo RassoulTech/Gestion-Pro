@@ -23,6 +23,7 @@ import {
   User,
   LogOut,
   Lock,
+  CreditCard,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
@@ -91,6 +92,7 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
     { label: "Stock", href: `${base}/stock`, icon: Store, requires: "PRO" },
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
     { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
+    { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
     { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
     { label: "Mes Boutiques", href: "/boutiques", icon: Store },
   ];
