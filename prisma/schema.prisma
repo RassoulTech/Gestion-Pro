@@ -213,6 +213,7 @@ model Plan {
 }
 
 enum StatutAbonnement {
+  EN_ATTENTE
   ESSAI
   ACTIF
   EXPIRE

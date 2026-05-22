@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { formatCurrency } from "@/lib/utils";
@@ -71,7 +71,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className={`relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/70 p-8 shadow-xl backdrop-blur-xl dark:bg-zinc-950/70 transition-all duration-300 ${design.accentBorder}`}
+            className={`relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border bg-white/70 p-8 shadow-xl backdrop-blur-xl dark:bg-zinc-950/70 transition-all duration-300 ${design.accentBorder}`}
           >
             {/* Background Glow Effect */}
             <div className={`absolute -right-16 -top-16 h-36 w-36 rounded-full ${design.bgGlow} blur-3xl opacity-60`} />

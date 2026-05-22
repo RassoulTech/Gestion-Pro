@@ -32,7 +32,7 @@ export function PremiumGuard({
   }
 
   return (
-    <div className="relative w-full min-h-[500px] rounded-[2.5rem] border border-zinc-150 dark:border-zinc-800 bg-white/40 dark:bg-zinc-950/40 overflow-hidden shadow-2xl flex items-center justify-center p-6 sm:p-12">
+    <div className="relative w-full min-h-[350px] sm:min-h-[500px] rounded-3xl sm:rounded-[2.5rem] border border-zinc-150 dark:border-zinc-800 bg-white/40 dark:bg-zinc-950/40 overflow-hidden shadow-2xl flex items-center justify-center p-4 sm:p-12">
       {/* Blurred background preview of the protected page content */}
       <div className="absolute inset-0 filter blur-xl opacity-10 pointer-events-none select-none overflow-hidden scale-[0.98]">
         {children}
@@ -43,7 +43,7 @@ export function PremiumGuard({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 max-w-xl w-full bg-white dark:bg-zinc-900/90 rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/80 shadow-2xl p-8 sm:p-10 text-center space-y-6 backdrop-blur-xl"
+        className="relative z-10 max-w-xl w-full bg-white dark:bg-zinc-900/90 rounded-2xl sm:rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/80 shadow-2xl p-6 sm:p-10 text-center space-y-4 sm:space-y-6 backdrop-blur-xl"
       >
         <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-brand to-slate-800 flex items-center justify-center text-white shadow-xl shadow-brand/10">
           <Lock className="h-7 w-7" />

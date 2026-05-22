@@ -36,7 +36,7 @@ export const initiatePlanSubscription = vendeurActionClient
       where: {
         vendeurId,
         planId: plan.id,
-        statut: "ESSAI",
+        statut: "EN_ATTENTE",
         paiements: { none: { statut: "CONFIRME" } },
       },
       orderBy: { createdAt: "desc" },
@@ -56,7 +56,7 @@ export const initiatePlanSubscription = vendeurActionClient
             vendeurId,
             planId: plan.id,
             dateDebut: new Date(),
-            statut: "ESSAI",
+            statut: "EN_ATTENTE",
             montant: plan.prix,
             moyenPaiement: method,
           },
@@ -120,7 +120,7 @@ export const simulateSuccessfulPayment = vendeurActionClient
         where: {
           vendeurId,
           id: { not: activeAbonnementId },
-          statut: { in: ["ESSAI", "ACTIF"] },
+          statut: { in: ["ESSAI", "ACTIF", "EN_ATTENTE"] },
         },
         data: {
           statut: "ANNULE",
@@ -190,7 +190,7 @@ export const renewCurrentSubscription = vendeurActionClient
       where: {
         vendeurId,
         planId: plan.id,
-        statut: "ESSAI",
+        statut: "EN_ATTENTE",
         paiements: { none: { statut: "CONFIRME" } },
       },
       orderBy: { createdAt: "desc" },
@@ -210,7 +210,7 @@ export const renewCurrentSubscription = vendeurActionClient
             vendeurId,
             planId: plan.id,
             dateDebut: new Date(),
-            statut: "ESSAI",
+            statut: "EN_ATTENTE",
             montant: plan.prix,
             moyenPaiement: method,
           },

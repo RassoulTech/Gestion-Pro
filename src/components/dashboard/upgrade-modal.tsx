@@ -117,7 +117,7 @@ export function UpgradeModal({
                         key={plan.id}
                         onClick={() => setSelectedPlan(plan)}
                         className={cn(
-                          "relative p-5 rounded-2xl cursor-pointer border-2 transition-all flex sm:flex-col justify-between gap-4 sm:gap-0",
+                          "relative p-5 rounded-2xl cursor-pointer border-2 transition-all flex flex-wrap sm:flex-col justify-between gap-4 sm:gap-0",
                           isSelected
                             ? isPro
                               ? "border-brand bg-white/5 shadow-lg shadow-brand/10 sm:scale-[1.02]"
@@ -156,6 +156,13 @@ export function UpgradeModal({
                             </li>
                           ))}
                         </ul>
+
+                        {/* Mobile explicit select button */}
+                        <div className="mt-4 sm:hidden w-full flex justify-end">
+                          <div className={cn("px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider", isSelected ? "bg-brand text-white" : "bg-white/10 text-zinc-300")}>
+                            {isSelected ? "Sélectionné" : "Choisir"}
+                          </div>
+                        </div>
                       </div>
                     );
                   })}

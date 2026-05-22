@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import {
   Users,
@@ -23,6 +23,43 @@ import Link from "next/link";
 
 export const metadata: Metadata = { title: "Admin Dashboard - Control Center" };
 
+export default function AdminDashboardPage() {
+  return (
+    <div className="space-y-8 pb-20">
+      {/* Dynamic Header */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-8 sm:p-12 text-white shadow-2xl border border-zinc-800">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-600/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-300">
+                Plateforme Live
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
+              Centre de <span className="text-orange-500">Contrôle</span>
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 animate-pulse" />
+            </h1>
+            <p className="text-sm text-zinc-400 max-w-xl font-bold leading-relaxed">
+              Supervisez les performances globales, les vendeurs inscrits, et les flux financiers de GestionPro en temps réel.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <Suspense fallback={<PageSkeleton />}>
+        <AdminStatsContent />
+      </Suspense>
+    </div>
+  );
+}
+
 async function AdminStatsContent() {
   const stats = await getAdminStats();
 
@@ -30,79 +67,79 @@ async function AdminStatsContent() {
     <div className="space-y-8">
       {/* Top Aggregation Stats Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-950/70">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Utilisateurs Plateforme
-            </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400">
-              <Users className="h-5 w-5" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400">
+              <Users className="h-6 w-6" />
             </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+              Utilisateurs
+            </span>
           </div>
-          <div className="mt-4">
-            <h2 className="text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-zinc-50">
+          <div>
+            <h2 className="text-4xl font-black tracking-tight text-zinc-950 dark:text-zinc-50">
               {stats.totalUsers}
             </h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              Total des comptes enregistrés
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 font-bold">
+              Comptes enregistrés
             </p>
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-950/70">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
+              <UserCheck className="h-6 w-6" />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
               Vendeurs Actifs
             </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
-              <UserCheck className="h-5 w-5" />
-            </div>
           </div>
-          <div className="mt-4">
-            <h2 className="text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-zinc-50">
-              {stats.totalVendeursActifs} <span className="text-lg font-normal text-zinc-400">/ {stats.totalVendeurs}</span>
+          <div>
+            <h2 className="text-4xl font-black tracking-tight text-zinc-950 dark:text-zinc-50">
+              {stats.totalVendeursActifs} <span className="text-xl font-bold text-zinc-300">/ {stats.totalVendeurs}</span>
             </h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              Marchands opérationnels actifs
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 font-bold">
+              Marchands opérationnels
             </p>
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-950/70">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Boutiques Créées
-            </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400">
-              <Store className="h-5 w-5" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">
+              <Store className="h-6 w-6" />
             </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+              Boutiques
+            </span>
           </div>
-          <div className="mt-4">
-            <h2 className="text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-zinc-50">
-              {stats.totalBoutiquesActives} <span className="text-lg font-normal text-zinc-400">/ {stats.totalBoutiques}</span>
+          <div>
+            <h2 className="text-4xl font-black tracking-tight text-zinc-950 dark:text-zinc-50">
+              {stats.totalBoutiquesActives} <span className="text-xl font-bold text-zinc-300">/ {stats.totalBoutiques}</span>
             </h2>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              Boutiques actives en ligne
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 font-bold">
+              Boutiques créées
             </p>
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white/90 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-orange-950/30 dark:from-orange-950/20 dark:to-zinc-950/75">
-          <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-orange-600/10 blur-xl" />
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-orange-700 dark:text-orange-300">
-              Chiffre d&apos;Affaires SaaS
-            </span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.3)] dark:bg-orange-500">
-              <Wallet className="h-5 w-5" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-500 to-orange-700 p-6 shadow-xl shadow-orange-500/20 text-white flex flex-col justify-between">
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm text-white">
+              <Wallet className="h-6 w-6" />
             </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-orange-100">
+              CA SaaS
+            </span>
           </div>
-          <div className="mt-4">
-            <h2 className="text-3xl font-extrabold tracking-tight text-orange-950 dark:text-orange-50">
+          <div className="relative z-10">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white truncate">
               {formatCurrency(stats.revenuTotal)}
             </h2>
-            <p className="mt-1 text-xs text-orange-600/80 dark:text-orange-300/80">
-              Revenu total des abonnements
+            <p className="mt-1 text-xs text-orange-100 font-bold">
+              Revenu total abonnements
             </p>
           </div>
         </div>
@@ -110,45 +147,36 @@ async function AdminStatsContent() {
 
       {/* Secondary Stats Grid */}
       <div className="grid gap-6 grid-cols-2 md:grid-cols-3">
-        <div className="group rounded-2xl border border-zinc-200/50 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950">
-          <div className="flex items-center space-x-2.5">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
-              <Package className="h-4 w-4 text-zinc-500 group-hover:text-orange-600 transition-colors" />
+        <div className="rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-lg shadow-zinc-200/30 dark:border-zinc-800/50 dark:bg-zinc-900">
+          <div className="flex items-center space-x-3 mb-3">
+            <div className="rounded-xl bg-zinc-100 p-2.5 dark:bg-zinc-800">
+              <Package className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
             </div>
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Produits Plateforme</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Produits</span>
           </div>
-          <div className="mt-4">
-            <span className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{stats.totalProduits}</span>
-            <p className="text-[10px] text-zinc-400 mt-0.5">Produits enregistrés par les boutiques</p>
-          </div>
+          <span className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">{stats.totalProduits}</span>
         </div>
 
-        <div className="group rounded-2xl border border-zinc-200/50 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950">
-          <div className="flex items-center space-x-2.5">
-            <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
-              <ShoppingCart className="h-4 w-4 text-zinc-500 group-hover:text-orange-600 transition-colors" />
+        <div className="rounded-[2rem] border border-zinc-200/50 bg-white p-6 shadow-lg shadow-zinc-200/30 dark:border-zinc-800/50 dark:bg-zinc-900">
+          <div className="flex items-center space-x-3 mb-3">
+            <div className="rounded-xl bg-zinc-100 p-2.5 dark:bg-zinc-800">
+              <ShoppingCart className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
             </div>
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Commandes Globales</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Commandes</span>
           </div>
-          <div className="mt-4">
-            <span className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{stats.totalCommandes}</span>
-            <p className="text-[10px] text-zinc-400 mt-0.5">Commandes passées au total</p>
-          </div>
+          <span className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">{stats.totalCommandes}</span>
         </div>
 
-        <div className="group col-span-2 md:col-span-1 rounded-2xl border border-zinc-200/50 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950">
-          <div className="flex items-center space-x-2.5">
-            <div className="rounded-lg bg-emerald-50 p-2 dark:bg-emerald-950/30 group-hover:bg-emerald-100/70 transition-colors">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
+        <div className="col-span-2 md:col-span-1 rounded-[2rem] border border-emerald-100 bg-emerald-50/50 p-6 shadow-lg shadow-emerald-100/30 dark:border-emerald-950/30 dark:bg-emerald-950/10">
+          <div className="flex items-center space-x-3 mb-3">
+            <div className="rounded-xl bg-emerald-100 p-2.5 dark:bg-emerald-900/50">
+              <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Volume de Ventes</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Ventes Globales Boutiques</span>
           </div>
-          <div className="mt-4">
-            <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
-              {formatCurrency(stats.totalVentesGlobales)}
-            </span>
-            <p className="text-[10px] text-zinc-400 mt-0.5">Valeur globale des marchandises vendues</p>
-          </div>
+          <span className="text-3xl font-black tracking-tight text-emerald-700 dark:text-emerald-300 truncate block">
+            {formatCurrency(stats.totalVentesGlobales)}
+          </span>
         </div>
       </div>
 
@@ -158,49 +186,49 @@ async function AdminStatsContent() {
       {/* Double Column Log & User Activity Feed */}
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Recent Merchants */}
-        <div className="rounded-2xl border border-zinc-200/50 bg-white p-6 shadow-lg shadow-zinc-100/40 dark:border-zinc-800/50 dark:bg-zinc-950 dark:shadow-none">
-          <div className="mb-6 flex items-center justify-between">
+        <div className="rounded-[2.5rem] border border-zinc-200/50 bg-white p-6 sm:p-8 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none">
+          <div className="mb-8 flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+              <h3 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
                 Nouveaux Vendeurs
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Les derniers marchands inscrits sur la plateforme
-              </p>
             </div>
             <Link
               href="/admin/vendeurs"
-              className="inline-flex items-center gap-1 rounded-lg bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
+              className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 transition-colors dark:bg-zinc-800 dark:text-zinc-300"
             >
-              Voir tout <ArrowUpRight className="h-3.5 w-3.5" />
+              Voir tout <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {stats.vendeursRecents.length === 0 ? (
-              <p className="text-sm text-zinc-500 text-center py-6">Aucun vendeur inscrit.</p>
+              <div className="py-12 flex flex-col items-center justify-center text-center">
+                <Users className="h-8 w-8 text-zinc-300 mb-3" />
+                <p className="text-sm font-bold text-zinc-500">Aucun vendeur inscrit.</p>
+              </div>
             ) : (
               stats.vendeursRecents.map((vendeur) => (
                 <div
                   key={vendeur.id}
-                  className="group flex items-center justify-between p-3.5 rounded-xl border border-zinc-100 bg-zinc-50/30 hover:bg-white hover:border-zinc-200 hover:shadow-sm dark:border-zinc-900 dark:bg-zinc-900/10 dark:hover:bg-zinc-900/40 dark:hover:border-zinc-800 transition-all duration-200"
+                  className="flex items-center justify-between p-4 rounded-2xl border border-zinc-100 bg-zinc-50 hover:bg-white hover:border-zinc-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950/50 dark:hover:bg-zinc-800 transition-all duration-300"
                 >
-                  <div className="flex items-center space-x-3.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 text-white font-bold text-sm shadow-[0_4px_12px_rgba(37,99,235,0.15)]">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white font-black text-sm shadow-lg shadow-orange-500/20">
                       {vendeur.nom.charAt(0).toUpperCase()}{vendeur.prenom.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                      <h4 className="text-sm font-black text-zinc-900 dark:text-zinc-50">
                         {vendeur.prenom} {vendeur.nom}
                       </h4>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 font-mono mt-0.5">{vendeur.email}</p>
+                      <p className="text-xs text-zinc-500 font-bold mt-0.5 truncate max-w-[120px] sm:max-w-xs">{vendeur.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <span className="hidden sm:inline-flex text-[10px] font-semibold text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded-full dark:bg-zinc-800 dark:text-zinc-400">
+                  <div className="flex flex-col items-end gap-2">
+                    <StatusBadge status={vendeur.statut} />
+                    <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">
                       {vendeur._count.boutiques} boutique(s)
                     </span>
-                    <StatusBadge status={vendeur.statut} />
                   </div>
                 </div>
               ))
@@ -209,51 +237,51 @@ async function AdminStatsContent() {
         </div>
 
         {/* Recent Transactions & Payments */}
-        <div className="rounded-2xl border border-zinc-200/50 bg-white p-6 shadow-lg shadow-zinc-100/40 dark:border-zinc-800/50 dark:bg-zinc-950 dark:shadow-none">
-          <div className="mb-6 flex items-center justify-between">
+        <div className="rounded-[2.5rem] border border-zinc-200/50 bg-white p-6 sm:p-8 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none">
+          <div className="mb-8 flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+              <h3 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
                 Derniers Paiements
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Flux des abonnements de la plateforme en temps réel
-              </p>
             </div>
             <Link
               href="/admin/abonnements"
-              className="inline-flex items-center gap-1 rounded-lg bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/80"
+              className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 transition-colors dark:bg-zinc-800 dark:text-zinc-300"
             >
-              Voir tout <ArrowUpRight className="h-3.5 w-3.5" />
+              Voir tout <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {stats.paiementsRecents.length === 0 ? (
-              <p className="text-sm text-zinc-500 text-center py-6">Aucune transaction récente.</p>
+              <div className="py-12 flex flex-col items-center justify-center text-center">
+                <CreditCard className="h-8 w-8 text-zinc-300 mb-3" />
+                <p className="text-sm font-bold text-zinc-500">Aucune transaction récente.</p>
+              </div>
             ) : (
               stats.paiementsRecents.map((p) => (
                 <div
                   key={p.id}
-                  className="group flex items-center justify-between p-3.5 rounded-xl border border-zinc-100 bg-zinc-50/30 hover:bg-white hover:border-zinc-200 hover:shadow-sm dark:border-zinc-900 dark:bg-zinc-900/10 dark:hover:bg-zinc-900/40 dark:hover:border-zinc-800 transition-all duration-200"
+                  className="flex items-center justify-between p-4 rounded-2xl border border-zinc-100 bg-zinc-50 hover:bg-white hover:border-zinc-200 hover:shadow-md dark:border-zinc-800/50 dark:bg-zinc-950/50 dark:hover:bg-zinc-800 transition-all duration-300"
                 >
-                  <div className="flex items-center space-x-3.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 font-semibold shadow-sm">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 font-bold shadow-sm shrink-0">
                       <CreditCard className="h-5 w-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                      <h4 className="text-sm font-black text-zinc-900 dark:text-zinc-50">
                         {p.abonnement.vendeur.prenom} {p.abonnement.vendeur.nom}
                       </h4>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                        Plan <span className="font-semibold text-orange-600 dark:text-orange-400">{p.abonnement.plan.nom}</span> • {p.methode}
+                      <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mt-1">
+                        <span className="text-orange-500">{p.abonnement.plan.nom}</span> • {p.methode}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-zinc-950 dark:text-zinc-50">
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-black text-zinc-950 dark:text-zinc-50">
                       {formatCurrency(p.montant)}
                     </p>
-                    <p className="text-[10px] text-zinc-400 font-medium mt-0.5">{formatDate(p.createdAt)}</p>
+                    <p className="text-[10px] text-zinc-400 font-bold mt-1 uppercase">{formatDate(p.createdAt)}</p>
                   </div>
                 </div>
               ))
@@ -263,44 +291,41 @@ async function AdminStatsContent() {
       </div>
 
       {/* Live System Activity Feed */}
-      <div className="rounded-2xl border border-zinc-200/50 bg-white p-6 shadow-lg shadow-zinc-100/40 dark:border-zinc-800/50 dark:bg-zinc-950 dark:shadow-none">
-        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-          <div className="flex items-center space-x-3">
-            <div className="rounded-xl bg-orange-50 p-2.5 dark:bg-orange-950/30">
-              <Activity className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+      <div className="rounded-[2.5rem] border border-zinc-200/50 bg-white p-6 sm:p-10 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="flex items-center space-x-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+              <Activity className="h-6 w-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-                Journal d&apos;Activité Plateforme
+              <h3 className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                Journal d&apos;Activité
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Traces d&apos;activité en temps réel sur GestionPro
-              </p>
             </div>
           </div>
           <Link
             href="/admin/logs"
-            className="inline-flex items-center gap-1 rounded-lg bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-700 hover:bg-orange-100 dark:bg-orange-950/30 dark:text-orange-300 dark:hover:bg-orange-950/50"
+            className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-4 py-2 text-xs font-black uppercase tracking-wider text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 transition-colors dark:bg-zinc-800 dark:text-zinc-300"
           >
-            Consulter les logs <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
+            Consulter les logs <ArrowUpRight className="ml-1 h-4 w-4" />
           </Link>
         </div>
 
         <div className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
           {stats.logsRecents.length === 0 ? (
-            <p className="text-sm text-zinc-500 text-center py-6">Aucune activité enregistrée.</p>
+            <p className="text-sm text-zinc-500 font-bold text-center py-6">Aucune activité enregistrée.</p>
           ) : (
             stats.logsRecents.map((log) => (
-              <div key={log.id} className="flex items-start justify-between py-4 group">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold text-zinc-950 dark:text-zinc-50 group-hover:text-orange-600 transition-colors">
+              <div key={log.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-3 group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 px-4 rounded-2xl transition-colors -mx-4">
+                <div className="space-y-1.5">
+                  <p className="text-xs font-black uppercase tracking-wider text-zinc-950 dark:text-zinc-50 group-hover:text-orange-500 transition-colors">
                     {log.action}
                   </p>
-                  <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">
-                    Par <span className="font-semibold">{log.user?.name || log.user?.email || "Système"}</span> • Sujet: <span className="font-mono text-zinc-600 dark:text-zinc-300">{log.subjectType || "N/A"}</span>
+                  <p className="text-[11px] text-zinc-500 font-bold">
+                    Par <span className="text-zinc-700 dark:text-zinc-300">{log.user?.name || log.user?.email || "Système"}</span> • Cible: <span className="text-brand bg-brand/10 px-1.5 py-0.5 rounded">{log.subjectType || "N/A"}</span>
                   </p>
                 </div>
-                <span className="text-[10px] text-zinc-400 font-mono font-medium">
+                <span className="text-[10px] text-zinc-400 font-bold bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full uppercase">
                   {formatDate(log.createdAt)}
                 </span>
               </div>
@@ -308,39 +333,6 @@ async function AdminStatsContent() {
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-export default function AdminDashboardPage() {
-  return (
-    <div className="space-y-8 p-6 max-w-7xl mx-auto">
-      <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0 border-b border-zinc-100 pb-6 dark:border-zinc-900">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Centre de Contrôle Global
-            </h1>
-            <Sparkles className="h-5 w-5 text-orange-600 dark:text-orange-400 animate-pulse" />
-          </div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Supervisez les performances, les vendeurs inscrits et les flux financiers de GestionPro.
-          </p>
-        </div>
-        <div className="flex items-center space-x-2 self-start sm:self-center">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-          </span>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full dark:bg-emerald-950/30 dark:text-emerald-400">
-            Plateforme Live
-          </span>
-        </div>
-      </div>
-
-      <Suspense fallback={<PageSkeleton />}>
-        <AdminStatsContent />
-      </Suspense>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +12,7 @@ interface Abonnement {
   dateDebut: Date;
   dateFin: Date | null;
   montant: number;
-  statut: "ACTIF" | "EXPIRATION_PROCHE" | "EXPIRE" | "ANNULE";
+  statut: "EN_ATTENTE" | "ACTIF" | "EXPIRATION_PROCHE" | "EXPIRE" | "ANNULE";
   vendeur: {
     nom: string;
     prenom: string;
@@ -48,7 +48,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
   return (
     <div className="space-y-6">
       {/* Premium Filter & Search Control Panel */}
-      <div className="relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60 animate-in fade-in slide-in-from-top-4 duration-500">
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60 animate-in fade-in slide-in-from-top-4 duration-500">
         <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
         <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
 
@@ -119,7 +119,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="flex flex-col items-center justify-center p-6 sm:p-12 rounded-3xl border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[280px] sm:min-h-[350px]"
+            className="flex flex-col items-center justify-center p-6 sm:p-12 rounded-[2.5rem] border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[280px] sm:min-h-[350px]"
           >
             <div className="relative mb-6">
               <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-20 blur-xl animate-pulse" />
@@ -147,7 +147,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
               {filteredAbonnements.map((a) => (
                 <div
                   key={a.id}
-                  className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70 hover:shadow-lg transition-all duration-300"
+                  className="relative overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70 hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -191,7 +191,7 @@ export function AbonnementsClientTable({ initialAbonnements }: AbonnementsClient
             </div>
 
             {/* Desktop Table View */}
-            <div className="hidden md:block relative overflow-hidden rounded-3xl border border-zinc-200/60 bg-white/70 shadow-xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-950/70">
+            <div className="hidden md:block relative overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 shadow-xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-950/70">
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>

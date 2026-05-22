@@ -11,7 +11,7 @@ export interface PlanQuotas {
   isActive: boolean;
   essaiFin: Date | null;
   dateFin: Date | null;
-  statut: "ESSAI" | "ACTIF" | "EXPIRE" | "ANNULE";
+  statut: "EN_ATTENTE" | "ESSAI" | "ACTIF" | "EXPIRE" | "ANNULE";
 }
 
 const DEFAULT_UNLIMITED_PLAN: PlanQuotas = {

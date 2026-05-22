@@ -178,7 +178,7 @@ export async function POST(req: Request) {
         where: {
           vendeurId,
           id: { not: activeAbonnementId },
-          statut: { in: ["ESSAI", "ACTIF"] },
+          statut: { in: ["ESSAI", "ACTIF", "EN_ATTENTE"] },
         },
         data: {
           statut: "ANNULE",

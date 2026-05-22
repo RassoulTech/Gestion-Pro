@@ -38,24 +38,28 @@ export default async function AdminRevenusPage() {
   }));
 
   return (
-    <div className="space-y-8 p-6 max-w-7xl mx-auto animate-in fade-in duration-500">
-      <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0 border-b border-zinc-100 pb-6 dark:border-zinc-900">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="rounded-xl bg-emerald-50 p-2 dark:bg-emerald-950/30">
-              <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Chiffre d&apos;Affaires SaaS
+    <div className="space-y-8 pb-20">
+      {/* Dynamic Header */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-8 sm:p-12 text-white shadow-2xl border border-zinc-800">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-emerald-500/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-orange-500/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="space-y-4">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
+              Chiffre d&apos;Affaires <span className="text-emerald-500">SaaS</span>
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-emerald-500" />
             </h1>
+            <p className="text-sm text-zinc-400 max-w-xl font-bold leading-relaxed">
+              Consultez les revenus globaux, suivez la croissance mensuelle et tracez les paiements des abonnements GestionPro.
+            </p>
           </div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-            Consultez le chiffre d&apos;affaires global généré par les abonnements GestionPro.
-          </p>
         </div>
       </div>
 
-      <RevenusClientView total={total} mensuel={mensuel} recentPaiements={typedPaiements} />
+      <div className="rounded-[2.5rem] border border-zinc-200/50 bg-white p-2 sm:p-4 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none">
+        <RevenusClientView total={total} mensuel={mensuel} recentPaiements={typedPaiements} />
+      </div>
     </div>
   );
 }

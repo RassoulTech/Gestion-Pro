@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { PlansClientView } from "./_components/plans-client-view";
 import { Sparkles } from "lucide-react";
@@ -9,24 +9,28 @@ export default async function AdminPlansPage() {
   const plans = await prisma.plan.findMany({ orderBy: { prix: "asc" } });
 
   return (
-    <div className="space-y-8 p-6 max-w-7xl mx-auto animate-in fade-in duration-500">
-      <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0 border-b border-zinc-100 pb-6 dark:border-zinc-900">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="rounded-xl bg-orange-50 p-2 dark:bg-orange-950/30">
-              <Sparkles className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Plans &amp; Tarifications
+    <div className="space-y-8 pb-20">
+      {/* Dynamic Header */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-8 sm:p-12 text-white shadow-2xl border border-zinc-800">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-600/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="space-y-4">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
+              Plans &amp; <span className="text-orange-500">Tarifications</span>
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500" />
             </h1>
+            <p className="text-sm text-zinc-400 max-w-xl font-bold leading-relaxed">
+              Consultez les offres d&apos;abonnements actives sur la plateforme et les limites de quotas associées à chaque formule SaaS.
+            </p>
           </div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-            Consultez les offres d&apos;abonnements actives sur la plateforme et les quotas associés à chaque formule.
-          </p>
         </div>
       </div>
 
-      <PlansClientView plans={plans} />
+      <div className="rounded-[2.5rem] border border-zinc-200/50 bg-white p-4 sm:p-8 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none">
+        <PlansClientView plans={plans} />
+      </div>
     </div>
   );
 }

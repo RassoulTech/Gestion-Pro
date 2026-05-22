@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getAllBoutiques } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
@@ -21,25 +21,29 @@ async function BoutiquesContent() {
 
 export default function AdminBoutiquesPage() {
   return (
-    <div className="space-y-8 p-6 max-w-7xl mx-auto animate-in fade-in duration-500">
-      <div className="flex flex-col justify-between space-y-4 sm:flex-row sm:items-center sm:space-y-0 border-b border-zinc-100 pb-6 dark:border-zinc-900">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="rounded-xl bg-orange-50 p-2 dark:bg-orange-950/30">
-              <Store className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
-              Gestion des Boutiques
+    <div className="space-y-8 pb-20">
+      {/* Dynamic Header */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-8 sm:p-12 text-white shadow-2xl border border-zinc-800">
+        <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-600/20 blur-[100px] pointer-events-none" />
+        <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="space-y-4">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
+              Annuaire <span className="text-orange-500">Boutiques</span>
+              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500" />
             </h1>
+            <p className="text-sm text-zinc-400 max-w-xl font-bold leading-relaxed">
+              Surveillez, activez et gérez les boutiques créées par vos marchands sur la plateforme GestionPro.
+            </p>
           </div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-            Surveillez, activez et gérez les boutiques créées par vos marchands sur GestionPro.
-          </p>
         </div>
       </div>
 
       <Suspense fallback={<TableSkeleton />}>
-        <BoutiquesContent />
+        <div className="rounded-[2.5rem] border border-zinc-200/50 bg-white p-2 sm:p-4 shadow-xl shadow-zinc-200/40 dark:border-zinc-800/50 dark:bg-zinc-900 dark:shadow-none">
+          <BoutiquesContent />
+        </div>
       </Suspense>
     </div>
   );

@@ -308,6 +308,13 @@ export class PaymentService {
       data: { statut: "ECHOUE" },
     });
 
+    if (paiement.abonnementId) {
+      await prisma.abonnement.update({
+        where: { id: paiement.abonnementId },
+        data: { statut: "ANNULE" },
+      });
+    }
+
     return { success: false, message: "Le paiement a échoué." };
   }
 }

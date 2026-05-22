@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -92,7 +92,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-orange-950/30 dark:from-orange-950/20 dark:to-zinc-950/75"
+          className="relative overflow-hidden rounded-[2.5rem] border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-orange-950/30 dark:from-orange-950/20 dark:to-zinc-950/75"
         >
           <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-orange-600/10 blur-3xl" />
           <div className="flex items-center justify-between">
@@ -119,7 +119,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-emerald-950/30 dark:from-emerald-950/20 dark:to-zinc-950/75"
+          className="relative overflow-hidden rounded-[2.5rem] border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-white/90 p-8 shadow-xl backdrop-blur-md dark:border-emerald-950/30 dark:from-emerald-950/20 dark:to-zinc-950/75"
         >
           <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-emerald-600/10 blur-3xl" />
           <div className="flex items-center justify-between">
@@ -141,7 +141,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
         </motion.div>
       </div>
 
-      <div className="relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60">
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-zinc-200/50 bg-white/60 p-6 shadow-xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/60">
         <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
         <div className="absolute -right-12 -bottom-12 h-32 w-32 rounded-full bg-orange-600/5 blur-2xl" />
 
@@ -216,7 +216,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="flex flex-col items-center justify-center p-12 rounded-3xl border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[300px]"
+              className="flex flex-col items-center justify-center p-12 rounded-[2.5rem] border border-dashed border-zinc-200 bg-white/30 backdrop-blur-sm dark:border-dashed dark:border-zinc-800/80 dark:bg-zinc-950/15 text-center min-h-[300px]"
             >
               <div className="relative mb-5">
                 <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 opacity-15 blur-xl animate-pulse" />
@@ -242,7 +242,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
                 {filteredPaiements.map((p) => (
                   <div
                     key={p.id}
-                    className="relative overflow-hidden rounded-2xl border border-zinc-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70"
+                    className="relative overflow-hidden rounded-[2rem] border border-zinc-200/50 bg-white/70 p-5 shadow-md backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70"
                   >
                     <div className="flex items-start justify-between">
                       <div>
@@ -283,7 +283,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
               </div>
 
               {/* Desktop View */}
-              <div className="hidden md:block relative overflow-hidden rounded-3xl border border-zinc-200/60 bg-white/70 shadow-xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-950/70">
+              <div className="hidden md:block relative overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 shadow-xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-950/70">
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>

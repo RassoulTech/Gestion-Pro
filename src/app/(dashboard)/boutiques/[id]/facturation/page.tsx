@@ -107,7 +107,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
   return (
     <div className="space-y-8 pb-20">
       {/* Dynamic Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 sm:p-10 text-white shadow-2xl border border-zinc-800">
+      <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 sm:p-12 text-white shadow-2xl border border-zinc-800">
         <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-brand/20 blur-[100px] pointer-events-none" />
         <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-blue-500/10 blur-[100px] pointer-events-none" />
 
@@ -137,7 +137,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
             )}
             <Button
               asChild
-              className="h-14 sm:h-12 rounded-2xl sm:rounded-xl px-8 font-black bg-brand hover:bg-brand/90 text-white shadow-xl shadow-brand/20 hover:scale-[1.02] transition-all w-full sm:w-auto"
+              className="h-14 sm:h-12 rounded-2xl sm:rounded-xl px-8 font-black bg-brand hover:bg-brand/90 text-white shadow-xl shadow-brand/20 hover:scale-[1.02] transition-all w-full sm:w-auto flex items-center justify-center"
             >
               <Link href={pricingUrl}>
                 <TrendingUp className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
@@ -157,7 +157,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
         {/* Left Column (2/3): Plan Info & Quotas */}
         <div className="lg:col-span-2 space-y-8">
           {/* Active Plan Card */}
-          <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none p-6 sm:p-8">
+          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none p-6 sm:p-10">
             <div className="absolute right-0 top-0 h-32 w-32 bg-brand/5 blur-3xl rounded-full" />
             
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-6">
@@ -252,7 +252,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
               <History className="h-5 w-5 text-brand" /> Historique de Paiement
             </h2>
             
-            <div className="rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+            <div className="rounded-3xl sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
               {payments.length > 0 ? (
                 <>
                   {/* Desktop Table (hidden on mobile) */}
@@ -332,7 +332,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
 
         {/* Right Column (1/3): FAQ & Support */}
         <div className="space-y-6">
-          <div className="rounded-3xl bg-zinc-950 p-6 sm:p-8 text-white shadow-xl">
+          <div className="rounded-3xl sm:rounded-[2.5rem] bg-zinc-950 p-6 sm:p-10 text-white shadow-xl">
             <h3 className="text-lg font-black flex items-center gap-2 mb-6 pb-4 border-b border-white/10">
               <HelpCircle className="h-5 w-5 text-brand" /> FAQ
             </h3>
@@ -352,7 +352,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-brand/5 border border-brand/10 space-y-4">
+          <div className="p-6 rounded-3xl sm:rounded-[2.5rem] bg-brand/5 border border-brand/10 space-y-4">
             <h4 className="font-black text-xs uppercase tracking-widest text-brand">Support Client</h4>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold leading-relaxed">
               Des questions concernant un paiement ou besoin d'une solution sur mesure ? Notre équipe vous répond sous 24h ouvrées.
