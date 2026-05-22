@@ -13,7 +13,7 @@ import {
   TrendingUp,
   Sparkles,
 } from "lucide-react";
-import { getAdminStats } from "@/server/queries/admin.queries";
+import { getAdminStats, getPlatformGrowthStats } from "@/server/queries/admin.queries";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { KpiCard } from "@/components/kpi-card";
 import { PageSkeleton } from "@/components/loading";
@@ -54,14 +54,17 @@ export default function AdminDashboardPage() {
       </div>
 
       <Suspense fallback={<PageSkeleton />}>
-        <AdminStatsContent />
+        <DashboardContent />
       </Suspense>
     </div>
   );
 }
 
-async function AdminStatsContent() {
-  const stats = await getAdminStats();
+async function DashboardContent() {
+  const [stats, growthData] = await Promise.all([
+    getAdminStats(),
+    getPlatformGrowthStats()
+  ]);
 
   return (
     <div className="space-y-8">
@@ -181,7 +184,7 @@ async function AdminStatsContent() {
       </div>
 
       {/* Visual Analytics Chart */}
-      <PlatformChart revenuTotal={stats.revenuTotal} revenuMensuel={stats.revenuMensuel} />
+      <PlatformChart revenuTotal={stats.revenuTotal} revenuMensuel={stats.revenuMensuel} data={growthData} />
 
       {/* Double Column Log & User Activity Feed */}
       <div className="grid gap-8 lg:grid-cols-2">

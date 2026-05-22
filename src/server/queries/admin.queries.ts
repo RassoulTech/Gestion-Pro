@@ -1,6 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { subMonths, startOfMonth, format, endOfMonth } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export async function getAdminStats() {
   const [
@@ -229,4 +231,46 @@ export async function getActivityLogs(params?: {
   ]);
 
   return { data, total, page, perPage, totalPages: Math.ceil(total / perPage) };
+}
+
+export async function getPlatformGrowthStats() {
+  const result = [];
+  
+  // Last 5 months including current
+  for (let i = 4; i >= 0; i--) {
+    const date = subMonths(new Date(), i);
+    const start = startOfMonth(date);
+    const end = endOfMonth(date);
+    
+    const [inscriptions, revenus] = await Promise.all([
+      prisma.vendeur.count({
+        where: {
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        }
+      }),
+      prisma.paiement.aggregate({
+        where: {
+          statut: "CONFIRME",
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        },
+        _sum: {
+          montant: true
+        }
+      })
+    ]);
+    
+    result.push({
+      name: format(start, "MMM", { locale: fr }),
+      Revenus: revenus._sum.montant || 0,
+      Inscriptions: inscriptions
+    });
+  }
+  
+  return result;
 }

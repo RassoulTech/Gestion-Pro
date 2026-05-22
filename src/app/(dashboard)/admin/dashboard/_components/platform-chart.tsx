@@ -15,17 +15,26 @@ import { TrendingUp, Users } from "lucide-react";
 interface PlatformChartProps {
   revenuTotal: number;
   revenuMensuel: number;
+  data: { name: string; Revenus: number; Inscriptions: number }[];
 }
 
-export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps) {
-  // Static dataset mapping platform growth beautifully
-  const data = [
-    { name: "Jan", Revenus: Math.max(0, revenuTotal * 0.45), Inscriptions: 4 },
-    { name: "Fév", Revenus: Math.max(0, revenuTotal * 0.55), Inscriptions: 8 },
-    { name: "Mar", Revenus: Math.max(0, revenuTotal * 0.65), Inscriptions: 15 },
-    { name: "Avr", Revenus: Math.max(0, revenuTotal * 0.8), Inscriptions: 22 },
-    { name: "Mai", Revenus: Math.max(0, revenuTotal), Inscriptions: 32 },
-  ];
+export function PlatformChart({ revenuTotal, revenuMensuel, data = [] }: PlatformChartProps) {
+  // Calculate percentage growth for inscriptions (this month vs last month)
+  let growth = 0;
+  if (data && data.length >= 2) {
+    const currentMonthData = data[data.length - 1];
+    const lastMonthData = data[data.length - 2];
+    
+    if (currentMonthData && lastMonthData) {
+      const currentMonth = currentMonthData.Inscriptions;
+      const lastMonth = lastMonthData.Inscriptions;
+      if (lastMonth > 0) {
+        growth = Math.round(((currentMonth - lastMonth) / lastMonth) * 100);
+      } else if (currentMonth > 0) {
+        growth = 100;
+      }
+    }
+  }
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-6 shadow-lg shadow-slate-100/50 backdrop-blur-xl transition-all duration-300 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none">
@@ -40,7 +49,7 @@ export function PlatformChart({ revenuTotal, revenuMensuel }: PlatformChartProps
               Activité & Croissance
             </h3>
             <span className="inline-flex items-center gap-1 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 px-2 py-0.5 text-[10px] font-black text-fuchsia-600 dark:text-fuchsia-400">
-              <TrendingUp className="h-3 w-3" /> +24% ce mois
+              <TrendingUp className="h-3 w-3" /> {growth >= 0 ? `+${growth}` : growth}% ce mois
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
