@@ -194,7 +194,7 @@ export const sendContactNotificationEmail = async (
   const to =
     process.env.CONTACT_TO_EMAIL || "dionemhd1@gmail.com";
 
-  if (!resend) {
+  if (!isMailConfigured()) {
     console.warn("[mail] Resend not configured. Contact notification skipped.");
     console.log("Payload reçu :", payload);
     return { sent: false };
@@ -249,7 +249,7 @@ export const sendContactNotificationEmail = async (
 export const sendContactAutoReplyEmail = async (
   payload: ContactPayload
 ): Promise<MailResult> => {
-  if (!resend) {
+  if (!isMailConfigured()) {
     return { sent: false };
   }
 
@@ -300,7 +300,7 @@ const renewLink = (boutiqueId?: string | null) =>
 export const sendSubscriptionRenewalReminderEmail = async (
   ctx: SubscriptionEmailContext
 ): Promise<MailResult> => {
-  if (!resend) {
+  if (!isMailConfigured()) {
     console.warn("[mail] Resend not configured. Renewal reminder skipped.");
     console.log("Rappel renouvellement (DEV) :", ctx);
     return { sent: false };
@@ -349,7 +349,7 @@ export const sendSubscriptionRenewalReminderEmail = async (
 export const sendSubscriptionExpiredEmail = async (
   ctx: SubscriptionEmailContext
 ): Promise<MailResult> => {
-  if (!resend) {
+  if (!isMailConfigured()) {
     console.warn("[mail] Resend not configured. Subscription expired email skipped.");
     console.log("Expiration abonnement (DEV) :", ctx);
     return { sent: false };
@@ -391,7 +391,7 @@ export const sendPasswordResetEmail = async (
 ): Promise<MailResult> => {
   const resetLink = `${domain}/reset-password?token=${token}`;
 
-  if (!resend) {
+  if (!isMailConfigured()) {
     console.warn("[mail] Resend not configured. Password reset email skipped.");
     console.log(`Lien de reset (DEV) : ${resetLink}`);
     return { sent: false, devLink: isDevExposeLink ? resetLink : undefined };
