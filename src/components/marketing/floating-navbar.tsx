@@ -66,7 +66,7 @@ export function FloatingNavbar() {
           </Link>
 
           {/* Nav Links Desktop */}
-          <div className="hidden flex-1 items-center justify-center md:flex">
+          <div className="hidden flex-1 items-center justify-center lg:flex">
             <ul className="flex items-center gap-1 rounded-full bg-foreground/5 p-1 backdrop-blur-md">
               {navLinks.map((l) => (
                 <li key={l.href}>
@@ -83,7 +83,7 @@ export function FloatingNavbar() {
           </div>
 
           {/* Actions Desktop */}
-          <div className="hidden shrink-0 items-center gap-2 md:flex">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <ThemeToggle className="h-9 w-9 rounded-xl" />
             <CartBadge className="h-9 w-9 rounded-xl" />
             {isLoggedIn ? (
@@ -121,7 +121,7 @@ export function FloatingNavbar() {
           </div>
 
           {/* Mobile UI */}
-          <div className="ml-auto flex items-center gap-2 md:hidden">
+          <div className="ml-auto flex items-center gap-2 lg:hidden">
             <CartBadge />
             <ThemeToggle className="h-9 w-9 rounded-xl" />
             <button
@@ -143,13 +143,13 @@ export function FloatingNavbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-40 bg-background/80 backdrop-blur-md md:hidden"
+              className="fixed inset-0 z-40 bg-background/80 backdrop-blur-md lg:hidden"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="fixed inset-x-4 top-20 z-50 overflow-hidden rounded-3xl border border-white/10 bg-card p-6 shadow-2xl md:hidden"
+              className="fixed inset-x-4 top-20 z-50 overflow-hidden rounded-3xl border border-white/10 bg-card p-6 shadow-2xl lg:hidden"
             >
               <ul className="space-y-2">
                 {navLinks.map((l) => (
