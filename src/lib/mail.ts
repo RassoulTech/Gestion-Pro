@@ -1,72 +1,52 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-// Resend transactional email — replaces Gmail SMTP which kept revoking
-// its App Passwords (incompatible with multi-IP serverless deploys).
-//
-// AUTH_RESEND_KEY: API key from https://resend.com/api-keys
-// AUTH_EMAIL_FROM: optional verified sender. Without it we fall back to
-//   onboarding@resend.dev, which Resend only allows to deliver to the
-//   account owner's address — fine for testing, requires a verified
-//   domain for real production.
-const resendKey = process.env.AUTH_RESEND_KEY;
-const resend = resendKey ? new Resend(resendKey) : null;
-const emailFrom = process.env.AUTH_EMAIL_FROM || "GestionPro <onboarding@resend.dev>";
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.SMTP_EMAIL,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
 
-if (!resend && process.env.NODE_ENV === "production") {
-  console.error(
-    "[mail] AUTH_RESEND_KEY missing in production — outbound emails (contact, verification, password reset) will be skipped."
-  );
-} else if (resend && emailFrom.includes("onboarding@resend.dev") && process.env.NODE_ENV === "production") {
-  console.warn(
-    "[mail] AUTH_EMAIL_FROM is the Resend default sender. In production this will only deliver to the Resend account owner. Verify a domain at https://resend.com/domains and set AUTH_EMAIL_FROM."
-  );
-}
-
-const isDevExposeLink = !resend && process.env.NODE_ENV !== "production";
+const emailFrom = process.env.SMTP_EMAIL ? `GestionPro <${process.env.SMTP_EMAIL}>` : "GestionPro <no-reply@gestionpro.com>";
 
 export type MailResult = { sent: boolean; devLink?: string; error?: string };
 
 /**
  * Indique si le pipeline d'envoi d'email est opérationnel.
- * Les actions serveur peuvent l'utiliser pour signaler à l'utilisateur que
- * l'email a été enregistré mais n'a pas pu partir.
  */
 export function isMailConfigured(): boolean {
-  return resend !== null;
+  return !!process.env.SMTP_EMAIL && !!process.env.SMTP_PASSWORD;
 }
 
+const isDevExposeLink = !isMailConfigured() && process.env.NODE_ENV !== "production";
+
 /**
- * Wrapper unifié autour de Resend qui normalise le format `{ sent, error }`
- * attendu par toutes les fonctions de ce module. Un seul point d'envoi
- * = un seul endroit où ajouter retry/observabilité plus tard.
+ * Wrapper unifié autour de Nodemailer qui normalise le format `{ sent, error }`
  */
-async function sendViaResend(opts: {
+async function sendViaNodemailer(opts: {
   to: string | string[];
   subject: string;
   html: string;
   replyTo?: string;
 }): Promise<MailResult> {
-  if (!resend) {
-    return { sent: false, error: "AUTH_RESEND_KEY not set" };
+  if (!isMailConfigured()) {
+    return { sent: false, error: "SMTP credentials not set" };
   }
   try {
-    const { error } = await resend.emails.send({
+    await transporter.sendMail({
       from: emailFrom,
       to: opts.to,
       subject: opts.subject,
       html: opts.html,
       ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
     });
-    if (error) {
-      console.error("[mail] resend error:", error.message);
-      return { sent: false, error: error.message };
-    }
     return { sent: true };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("[mail] resend exception:", msg);
+    console.error("[mail] nodemailer exception:", msg);
     return { sent: false, error: msg };
   }
 }
@@ -157,9 +137,9 @@ export const sendVerificationEmail = async (
 ): Promise<MailResult> => {
   const confirmLink = `${domain}/verify-email?token=${token}`;
 
-  if (!resend) {
-    console.warn("[mail] Resend not configured. Verification email skipped.");
-    console.log(`Lien de vérification (DEV) : ${confirmLink}`);
+  if (!isMailConfigured()) {
+    console.warn("[mail] Nodemailer not configured. Email skipped.");
+    console.log(`Lien généré (DEV) : ${confirmLink}`);
     return { sent: false, devLink: isDevExposeLink ? confirmLink : undefined };
   }
 
@@ -185,7 +165,7 @@ export const sendVerificationEmail = async (
     </div>
   `;
 
-  return sendViaResend({
+  return sendViaNodemailer({
     to: email,
     subject: "Vérifiez votre adresse email — GestionPro",
     html: getEmailWrapper("Vérifiez votre adresse email", htmlContent),
@@ -258,7 +238,7 @@ export const sendContactNotificationEmail = async (
     </div>
   `;
 
-  return sendViaResend({
+  return sendViaNodemailer({
     to,
     replyTo: payload.email,
     subject: `[Contact Landing] ${payload.sujet} — ${payload.nom}`,
@@ -296,7 +276,7 @@ export const sendContactAutoReplyEmail = async (
     </p>
   `;
 
-  return sendViaResend({
+  return sendViaNodemailer({
     to: payload.email,
     subject: "Nous avons bien reçu votre message — GestionPro",
     html: getEmailWrapper("Accusé de réception", htmlContent),
@@ -359,7 +339,7 @@ export const sendSubscriptionRenewalReminderEmail = async (
     </div>
   `;
 
-  return sendViaResend({
+  return sendViaNodemailer({
     to: ctx.email,
     subject: `Votre abonnement ${ctx.planName} expire le ${formattedDate} — GestionPro`,
     html: getEmailWrapper("Rappel de renouvellement", htmlContent),
@@ -398,7 +378,7 @@ export const sendSubscriptionExpiredEmail = async (
     </p>
   `;
 
-  return sendViaResend({
+  return sendViaNodemailer({
     to: ctx.email,
     subject: `Abonnement ${ctx.planName} expiré — réactivez votre compte GestionPro`,
     html: getEmailWrapper("Abonnement expiré", htmlContent),
@@ -440,7 +420,7 @@ export const sendPasswordResetEmail = async (
     </div>
   `;
 
-  return sendViaResend({
+  return sendViaNodemailer({
     to: email,
     subject: "Réinitialisez votre mot de passe — GestionPro",
     html: getEmailWrapper("Réinitialisation de mot de passe", htmlContent),
