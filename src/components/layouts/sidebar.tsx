@@ -238,7 +238,7 @@ function SidebarContent({
               </span>
             ) : (
               <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-100">
-                GestionPro
+                Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span>
               </span>
             )}
           </Link>

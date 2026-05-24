@@ -61,7 +61,7 @@ export function FloatingNavbar() {
               className="shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform rounded-xl"
             />
             <span className="hidden sm:block text-base font-bold tracking-tight text-foreground">
-              GestionPro
+              Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span>
             </span>
           </Link>
 

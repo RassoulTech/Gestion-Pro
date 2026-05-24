@@ -146,7 +146,7 @@ export function Header({
 }: HeaderProps) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin") ?? false;
-  const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : "GestionPro";
+  const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : <span className="tracking-tight">Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span></span>;
 
   return (
     <header
