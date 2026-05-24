@@ -206,11 +206,11 @@ export default function PosInterface({
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:h-[calc(100vh-80px)] md:overflow-hidden gap-4 -mx-4 -mt-4 px-4 pt-4 pb-20 md:pb-4">
+    <div className="flex flex-col md:flex-row gap-4 -mx-4 -mt-4 px-4 pt-4 pb-24 items-start">
       {/* ─── ZONE GAUCHE : PRODUITS ───────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-2xl border border-zinc-100 dark:border-zinc-800 md:overflow-hidden shadow-sm">
+      <div className="flex-1 flex flex-col min-w-0 w-full bg-zinc-50/50 dark:bg-zinc-900/20 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
         {/* Header filtres */}
-        <div className="p-4 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 space-y-3 z-10">
+        <div className="p-4 bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800 space-y-3 z-10 sticky top-0 rounded-t-2xl">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -243,7 +243,7 @@ export default function PosInterface({
         </div>
 
         {/* Grille Produits */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="p-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {filteredProduits.map((p) => (
               <div
@@ -279,7 +279,7 @@ export default function PosInterface({
       </div>
 
       {/* ─── ZONE DROITE : PANIER ──────────────────────────────────── */}
-      <div className="w-full md:w-[400px] flex flex-col bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden shrink-0">
+      <div className="w-full md:w-[400px] flex flex-col bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl shrink-0 sticky top-4 z-20">
         <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50">
           <h2 className="font-black text-lg flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-brand" /> Ticket
@@ -287,9 +287,9 @@ export default function PosInterface({
           <Badge variant="secondary">{cart.length} articles</Badge>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="overflow-y-auto p-4 space-y-3 max-h-[40vh] md:max-h-[calc(100vh-360px)]">
           {cart.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-zinc-400">
+            <div className="flex flex-col items-center justify-center text-zinc-400 py-10">
               <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
               <p>Panier vide</p>
             </div>
