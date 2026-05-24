@@ -75,6 +75,7 @@ function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavIte
 function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
   if (isAdmin) {
     return [
+      { label: "Utilisateurs", href: "/admin/utilisateurs", icon: User },
       { label: "Abonnements", href: "/admin/abonnements", icon: Wallet },
       { label: "Plans", href: "/admin/plans", icon: Tag },
       { label: "Revenus", href: "/admin/revenus", icon: BarChart3 },
