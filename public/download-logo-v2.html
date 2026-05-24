@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Télécharger le Logo GestionPro V2</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    button { background: #ea580c; color: white; border: none; padding: 16px 32px; font-size: 18px; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2); }
+    button:hover { background: #c2410c; transform: scale(1.05); }
+    canvas { display: none; }
+    .preview { width: 800px; height: 200px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <h1>Nouvelle version (Orange Premium Garanti 🍊)</h1>
+  <p>J'ai retiré le dégradé complexe pour forcer la couleur orange pure afin qu'il n'y ait aucun bug d'affichage.</p>
+  
+  <div class="preview" id="svg-container">
+    <svg id="mySvg" width="1600" height="400" viewBox="0 0 1600 400" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%; background: #ffffff;">
+      <!-- Fond entièrement blanc -->
+      <rect width="1600" height="400" fill="#ffffff" />
+      
+      <!-- Groupe centré -->
+      <g transform="translate(800, 200)">
+        
+        <!-- Le grand G dans le bloc orange PUR -->
+        <g transform="translate(-300, -75)">
+          <rect width="150" height="150" rx="30" ry="30" fill="#ea580c" />
+          <text x="75" y="110" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="100" fill="#ffffff" letter-spacing="-2">G</text>
+        </g>
+
+        <!-- Le texte GestionPro -->
+        <text x="-100" y="40" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="130" fill="#0f172a" letter-spacing="-4">
+          Gestion<tspan fill="#ea580c">Pro</tspan>
+        </text>
+      </g>
+    </svg>
+  </div>
+
+  <button onclick="downloadPNG()">Télécharger la Nouvelle Image</button>
+
+  <canvas id="canvas" width="1600" height="400"></canvas>
+
+  <script>
+    function downloadPNG() {
+      const svg = document.getElementById('mySvg');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const data = new XMLSerializer().serializeToString(svg);
+      const DOMURL = window.URL || window.webkitURL || window;
+      
+      const img = new Image();
+      const svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+      const url = DOMURL.createObjectURL(svgBlob);
+      
+      img.onload = function () {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, 1600, 400);
+        DOMURL.revokeObjectURL(url);
+        
+        const imgURI = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        const evt = new MouseEvent('click', { view: window, bubbles: false, cancelable: true });
+        const a = document.createElement('a');
+        a.setAttribute('download', 'En-Tete-GestionPro-V2.png');
+        a.setAttribute('href', imgURI);
+        a.setAttribute('target', '_blank');
+        a.dispatchEvent(evt);
+      };
+      img.src = url;
+    }
+  </script>
+</body>
+</html>

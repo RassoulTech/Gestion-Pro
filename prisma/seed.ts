@@ -295,29 +295,7 @@ async function main() {
     prisma.client.create({ data: { boutiqueId: boutique2.id, nom: "Dieng", prenom: "Rama", telephone: "+221 77 222 0000" } }),
   ]);
 
-  // ─── ABONNEMENTS ────────────────────────────
-  await prisma.abonnement.create({
-    data: {
-      vendeurId: vendeur1.id,
-      planId: planPro.id,
-      dateDebut: new Date("2025-04-01"),
-      dateFin: new Date("2025-07-01"),
-      statut: "ACTIF",
-      montant: 9900,
-      moyenPaiement: "Wave",
-    },
-  });
-
-  await prisma.abonnement.create({
-    data: {
-      vendeurId: vendeur2.id,
-      planId: planGratuit.id,
-      dateDebut: new Date("2025-05-01"),
-      essaiFin: new Date("2025-05-15"),
-      statut: "ESSAI",
-      montant: 0,
-    },
-  });
+  // Les abonnements de test ont été retirés pour garder le dashboard Admin propre avec 0 FCFA de revenus test.
 
   console.log("✅ Seed completed!");
   console.log("   Admin: admin@gestionpro.com / Admin123!");
