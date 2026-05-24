@@ -13,23 +13,14 @@ export function BrandLogo({
   size = 36,
   rounded = 12,
   className,
-  variant = "brand",
 }: {
   size?: number;
   /** Border radius in px. */
   rounded?: number;
   className?: string;
-  /**
-   * "brand"  → orange premium gradient (default, marketing + dashboard).
-   * "neutral" → dark slate background, white G (sidebar collapsed state).
-   */
-  variant?: "brand" | "neutral";
 }) {
-  const gradientId = `brand-grad-${variant}`;
-  const colors =
-    variant === "brand"
-      ? { from: "#EA580C", to: "#7C2D12" }
-      : { from: "#18181B", to: "#0A0A0A" };
+  const gradientId = `brand-grad`;
+  const colors = { from: "#EA580C", to: "#7C2D12" };
 
   return (
     <svg

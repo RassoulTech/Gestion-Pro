@@ -66,9 +66,9 @@ const getEmailWrapper = (title: string, content: string, footerNote?: string) =>
         <tr>
           <td align="center">
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06); border: 1px solid #f1f5f9;">
-              <!-- Beautiful Brand Blue Gradient Header Bar -->
+              <!-- Beautiful Brand Orange Gradient Header Bar -->
               <tr>
-                <td style="background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%); height: 8px;"></td>
+                <td style="background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%); height: 8px;"></td>
               </tr>
               
               <!-- Brand Identity Section -->
@@ -77,10 +77,10 @@ const getEmailWrapper = (title: string, content: string, footerNote?: string) =>
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td align="center">
-                        <div style="display: flex; align-items: center; justify-content: center; height: 52px; width: 52px; background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%); border-radius: 16px; margin-bottom: 16px; box-shadow: 0 8px 16px -4px rgba(234, 88, 12, 0.25);">
+                        <div style="display: flex; align-items: center; justify-content: center; height: 52px; width: 52px; background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%); border-radius: 16px; margin-bottom: 16px; box-shadow: 0 8px 16px -4px rgba(234, 88, 12, 0.25);">
                           <span style="font-family: sans-serif; font-size: 26px; font-weight: 900; color: #ffffff; line-height: 52px; text-align: center; display: block; width: 52px;">G</span>
                         </div>
-                        <span style="display: block; font-size: 20px; font-weight: 900; tracking-spacing: -0.025em; color: #0f172a; margin-top: 10px;">GestionPro</span>
+                        <span style="display: block; font-size: 20px; font-weight: 900; tracking-spacing: -0.025em; color: #0f172a; margin-top: 10px;">Gestion<span style="color: #ea580c;">Pro</span></span>
                       </td>
                     </tr>
                   </table>

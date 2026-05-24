@@ -1,7 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-const BRAND_COLOR: [number, number, number] = [255, 107, 53]; // #ff6b35
+const BRAND_COLOR: [number, number, number] = [234, 88, 12]; // #ea580c
 const DARK_COLOR: [number, number, number] = [24, 24, 27]; // zinc-900
 const MUTED_COLOR: [number, number, number] = [113, 113, 122]; // zinc-500
 
