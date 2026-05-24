@@ -13,6 +13,7 @@ import {
   X,
   CreditCard,
   CheckCircle2,
+  Package,
 } from "lucide-react";
 
 import { createCommandeClient } from "@/server/actions/commande.actions";
