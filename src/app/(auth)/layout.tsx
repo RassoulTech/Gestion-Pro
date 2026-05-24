@@ -42,7 +42,7 @@ export default async function AuthLayout({
               className="shadow-lg shadow-brand/20 group-hover:rotate-6 transition-transform rounded-xl"
             />
             <span className="text-xl font-bold tracking-tight text-foreground">
-              GestionPro
+              Gestion<span className="text-brand">Pro</span>
             </span>
           </Link>
 
@@ -92,7 +92,7 @@ export default async function AuthLayout({
             <Link href="/" className="flex items-center gap-2.5" aria-label="Accueil GestionPro">
               <BrandLogo size={36} className="shadow-lg shadow-brand/20 rounded-xl" />
               <span className="text-lg font-bold tracking-tight text-foreground">
-                GestionPro
+                Gestion<span className="text-brand">Pro</span>
               </span>
             </Link>
           </div>
