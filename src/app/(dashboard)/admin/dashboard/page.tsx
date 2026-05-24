@@ -27,7 +27,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 pb-20">
       {/* Dynamic Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-orange-950 p-8 sm:p-12 text-white shadow-2xl border border-white/10">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-orange-950 p-6 sm:p-8 md:p-12 text-white shadow-2xl border border-white/10">
         <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-500/20 blur-[100px] pointer-events-none" />
         <div className="absolute left-[-10%] bottom-[-20%] h-64 w-64 rounded-full bg-amber-500/20 blur-[100px] pointer-events-none" />
 
@@ -42,7 +42,7 @@ export default function AdminDashboardPage() {
                 Plateforme Live
               </span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter flex items-center gap-3">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter flex items-center flex-wrap gap-3">
               Centre de <span className="text-orange-400">Contrôle</span>
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-orange-400 animate-pulse" />
             </h1>
@@ -80,7 +80,7 @@ async function DashboardContent() {
             </span>
           </div>
           <div>
-            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {stats.totalUsers}
             </h2>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-bold">
@@ -99,7 +99,7 @@ async function DashboardContent() {
             </span>
           </div>
           <div>
-            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {stats.totalVendeursActifs} <span className="text-xl font-bold text-slate-300 dark:text-slate-600">/ {stats.totalVendeurs}</span>
             </h2>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-bold">
@@ -118,7 +118,7 @@ async function DashboardContent() {
             </span>
           </div>
           <div>
-            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {stats.totalBoutiquesActives} <span className="text-xl font-bold text-slate-300 dark:text-slate-600">/ {stats.totalBoutiques}</span>
             </h2>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-bold">
@@ -149,7 +149,7 @@ async function DashboardContent() {
       </div>
 
       {/* Secondary Stats Grid */}
-      <div className="grid gap-6 grid-cols-2 md:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-6 shadow-lg shadow-slate-200/30 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/30">
           <div className="flex items-center space-x-3 mb-3">
             <div className="rounded-xl bg-slate-100 p-2.5 dark:bg-slate-800">

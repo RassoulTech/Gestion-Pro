@@ -104,7 +104,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
             </div>
           </div>
           <div className="mt-8">
-            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {formatCurrency(total)}
             </h2>
             <p className="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -131,7 +131,7 @@ export function RevenusClientView({ total, mensuel, recentPaiements }: RevenusCl
             </div>
           </div>
           <div className="mt-8">
-            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
               {formatCurrency(mensuel)}
             </h2>
             <p className="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400">
