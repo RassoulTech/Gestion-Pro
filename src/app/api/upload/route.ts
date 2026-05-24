@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { mkdir } from "fs/promises";
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -31,6 +32,7 @@ export async function POST(req: NextRequest) {
   const fileName = `${randomUUID()}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
   const uploadDir = path.join(process.cwd(), "public", "uploads");
+  await mkdir(uploadDir, { recursive: true });
   await writeFile(path.join(uploadDir, fileName), bytes);
 
   return NextResponse.json({ url: `/uploads/${fileName}` });

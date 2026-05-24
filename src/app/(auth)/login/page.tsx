@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GoogleButton } from "@/components/auth/google-button";
 import { PasswordInput } from "@/components/auth/password-input";
+import { BrandLogo } from "@/components/brand-logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -123,7 +124,8 @@ export default function LoginPage() {
       transition={{ duration: 0.6, ease: EASE }}
       className="space-y-10"
     >
-      <div className="space-y-3">
+      <div className="space-y-3 flex flex-col items-center text-center">
+        <BrandLogo size={64} className="mb-4 shadow-xl shadow-brand/20 rounded-2xl" />
         <h1 className="text-4xl font-black tracking-tight text-foreground">
           Bon retour.
         </h1>

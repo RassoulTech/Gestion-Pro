@@ -206,9 +206,9 @@ export default function PosInterface({
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden gap-4 -mx-4 -mt-4 px-4 pt-4">
+    <div className="flex flex-col md:flex-row md:h-[calc(100vh-80px)] md:overflow-hidden gap-4 -mx-4 -mt-4 px-4 pt-4 pb-20 md:pb-4">
       {/* ─── ZONE GAUCHE : PRODUITS ───────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-2xl border border-zinc-100 dark:border-zinc-800 overflow-hidden shadow-sm">
+      <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-2xl border border-zinc-100 dark:border-zinc-800 md:overflow-hidden shadow-sm">
         {/* Header filtres */}
         <div className="p-4 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 space-y-3 z-10">
           <div className="relative">
