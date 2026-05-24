@@ -32,7 +32,7 @@ export default async function AdminRevenusPage() {
   const total = totalRevenu._sum.montant ?? 0;
   const mensuel = revenuMois._sum.montant ?? 0;
 
-  const typedPaiements = recentPaiements.map((p) => ({
+  const typedPaiements = recentPaiements.map((p: any) => ({
     ...p,
     statut: p.statut as "EN_ATTENTE" | "CONFIRME" | "ECHOUE" | "REMBOURSE",
   }));

@@ -11,7 +11,7 @@ async function BoutiquesContent() {
   const { data: boutiques, total } = await getAllBoutiques();
 
   // Cast statut to meet expected type exactly
-  const typedBoutiques = boutiques.map((b) => ({
+  const typedBoutiques = boutiques.map((b: any) => ({
     ...b,
     statut: b.statut as "ACTIF" | "SUSPENDU",
   }));

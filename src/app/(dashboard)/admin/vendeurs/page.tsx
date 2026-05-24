@@ -13,7 +13,7 @@ async function VendeursContent() {
   const { data: vendeurs, total } = await getAllVendeurs();
 
   // Cast statut to meet expected type exactly
-  const typedVendeurs = vendeurs.map((v) => ({
+  const typedVendeurs = vendeurs.map((v: any) => ({
     ...v,
     statut: v.statut as "ACTIF" | "SUSPENDU",
   }));

@@ -16,7 +16,7 @@ export default async function AdminAbonnementsPage() {
   });
 
   // Cast statut to meet expected type exactly
-  const typedAbonnements = abonnements.map((a) => ({
+  const typedAbonnements = abonnements.map((a: any) => ({
     ...a,
     statut: a.statut as "EN_ATTENTE" | "ACTIF" | "EXPIRATION_PROCHE" | "EXPIRE" | "ANNULE",
   }));

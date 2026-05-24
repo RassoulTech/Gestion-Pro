@@ -211,7 +211,7 @@ async function DashboardContent() {
                 <p className="text-sm font-bold text-slate-500">Aucun vendeur inscrit.</p>
               </div>
             ) : (
-              stats.vendeursRecents.map((vendeur) => (
+              stats.vendeursRecents.map((vendeur: any) => (
                 <div
                   key={vendeur.id}
                   className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-orange-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-orange-500/30 transition-all duration-300"
@@ -262,7 +262,7 @@ async function DashboardContent() {
                 <p className="text-sm font-bold text-slate-500">Aucune transaction récente.</p>
               </div>
             ) : (
-              stats.paiementsRecents.map((p) => (
+              stats.paiementsRecents.map((p: any) => (
                 <div
                   key={p.id}
                   className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-amber-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-amber-500/30 transition-all duration-300"
@@ -318,7 +318,7 @@ async function DashboardContent() {
           {stats.logsRecents.length === 0 ? (
             <p className="text-sm text-slate-500 font-bold text-center py-6">Aucune activité enregistrée.</p>
           ) : (
-            stats.logsRecents.map((log) => (
+            stats.logsRecents.map((log: any) => (
               <div key={log.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-3 group hover:bg-white/50 dark:hover:bg-slate-800/30 px-4 rounded-2xl transition-colors -mx-4">
                 <div className="space-y-1.5">
                   <p className="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-slate-50 group-hover:text-orange-500 transition-colors">
