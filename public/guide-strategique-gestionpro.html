@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Stratégique GestionPro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #ffffff;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #ea580c;
+            margin-bottom: 40px;
+        }
+
+        .logo-box {
+            background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%);
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.4);
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 40px;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+        }
+
+        h1 {
+            color: #0f172a;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+
+        h2 {
+            color: #ea580c;
+            font-size: 24px;
+            margin-top: 40px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #0f172a;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .note-box {
+            background: #fff7ed;
+            border-left: 4px solid #ea580c;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+
+        .important-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #0f172a;
+        }
+
+        .badge {
+            background: #ea580c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .print-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #ea580c;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .print-btn:hover {
+            background: #c2410c;
+            transform: translateY(-2px);
+        }
+
+        @media print {
+            .print-btn {
+                display: none !important;
+            }
+            body {
+                padding: 0;
+            }
+            .note-box {
+                border: 1px solid #ea580c;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">📥 Télécharger / Enregistrer en PDF</button>
+
+    <div class="header">
+        <div class="logo-box">
+            <span class="logo-text">G</span>
+        </div>
+        <h1>Guide Stratégique & Opérationnel</h1>
+        <p style="color: #64748b; font-size: 18px; margin: 0;">Gestion commerciale multi-boutiques pour l'Afrique</p>
+    </div>
+
+    <div class="note-box">
+        <strong>📍 Feuille de route du Fondateur :</strong> Ce document détaille la logique commerciale derrière les limites de chaque forfait et explique votre rôle opérationnel exact lorsqu'un client souscrit au plan premium Enterprise.
+    </div>
+
+    <h2>1. La Logique des Forfaits (Limites)</h2>
+    <p>La stratégie de prix de GestionPro est conçue pour accompagner la croissance du client : du petit vendeur indépendant à la chaîne de boutiques.</p>
+
+    <h3>🟢 Starter (Gratuit)</h3>
+    <p><em>Pour permettre à n'importe qui de tester l'outil sans risque.</em></p>
+    <ul>
+        <li><strong>1 boutique maximum</strong> : L'utilisateur ne peut créer qu'un seul point de vente.</li>
+        <li><strong>50 produits maximum</strong> : Juste assez pour un petit inventaire. Empêche un supermarché d'utiliser l'application gratuitement.</li>
+        <li><strong>1 Membre</strong> : Le propriétaire gère seul son compte (pas d'employés).</li>
+        <li><strong>Fonctionnalités basiques</strong> : POS simple, stock basique (sans historique), pas d'accès aux ventes flash ni à la marketplace.</li>
+    </ul>
+
+    <h3>🟠 Pro <span class="badge">9 900 F CFA / mois</span></h3>
+    <p><em>Pour les petits commerces en croissance qui ont besoin de vrais outils de gestion.</em></p>
+    <ul>
+        <li><strong>Maximum 3 boutiques</strong> : Permet de gérer une boutique principale et deux petites succursales.</li>
+        <li><strong>Jusqu'à 500 produits</strong> : Idéal pour une boutique de vêtements, d'électronique ou une quincaillerie moyenne.</li>
+        <li><strong>Jusqu'à 5 Membres</strong> : Permet d'inviter quelques caissiers ou gérants pour déléguer le travail.</li>
+        <li><strong>Fonctionnalités avancées</strong> : POS Avancé, Ventes flash, Stock avancé avec historique complet, Rapports financiers, Export PDF/Excel, et Visibilité Marketplace.</li>
+    </ul>
+
+    <h3>🔴 Enterprise <span class="badge" style="background:#0f172a;">19 900 F CFA / mois</span></h3>
+    <p><em>Le forfait "No-Limit" et Service VIP pour les franchises, grossistes et gros acteurs.</em></p>
+    <ul>
+        <li><strong>Boutiques Illimitées</strong></li>
+        <li><strong>Produits Illimités</strong></li>
+        <li><strong>Membres & Équipes Illimités</strong></li>
+        <li><strong>Toutes les options Pro incluses</strong></li>
+        <li><strong>🌟 La VRAIE valeur ajoutée : Le Service VIP Humain</strong> (Voir ci-dessous)</li>
+    </ul>
+
+    <div style="page-break-before: always;"></div>
+
+    <h2>2. Le Scénario Opérationnel "Enterprise VIP"</h2>
+    <p>Lorsqu'un client paie 19 900 F CFA par mois, il n'achète pas seulement de la technologie "illimitée", il achète <strong>votre temps, votre expertise et sa tranquillité d'esprit</strong>.</p>
+
+    <div class="important-box">
+        <strong>⚡ Le déclencheur :</strong> Le client clique sur le bouton "Contacter le fondateur (VIP)" dans son tableau de bord, ce qui ouvre une discussion WhatsApp directe avec vous.
+    </div>
+
+    <h3>Étape 1 : Rassurer et Accueillir (Relationnel)</h3>
+    <p>Les chefs d'entreprise détestent parler à des robots. 
+    <br>👉 <strong>Votre action</strong> : Répondez rapidement. Par exemple : <em>"Bonjour, merci pour votre confiance en GestionPro. Je suis Rassoul, le fondateur, et je vais personnellement m'occuper de votre compte."</em></p>
+
+    <h3>Étape 2 : L'Onboarding Personnalisé (Travail Manuel)</h3>
+    <p>Les gros clients ont des centaines de produits sur Excel ou dans d'anciens logiciels. Ils n'ont pas le temps de les retaper.
+    <br>👉 <strong>Votre action</strong> : Demandez-leur leur fichier Excel. Utilisez ensuite vos accès Super-Admin pour importer leur catalogue. Quand le client se connecte, sa boutique est déjà prête à l'emploi. Effet "Waouh" garanti.</p>
+
+    <h3>Étape 3 : Assistance à la Configuration (Support Dédié)</h3>
+    <p>Le client peut avoir du mal à comprendre comment inviter ses 30 employés.
+    <br>👉 <strong>Votre action</strong> : Connectez-vous à votre Centre de Contrôle Admin, vérifiez son compte à distance, et guidez-le pas à pas. 
+    <br>⚠️ <strong>Règle d'or</strong> : Si ce client signale un bug, vous arrêtez vos autres tâches et résolvez son problème en priorité absolue.</p>
+
+    <h3>Étape 4 : La Collecte d'Idées (Évolution du Logiciel)</h3>
+    <p>Les clients Enterprise trouveront les limites de votre application avant tout le monde.
+    <br>👉 <strong>Votre action</strong> : Écoutez-les activement (Ex: <em>"On a besoin de scanner des codes-barres avec le téléphone"</em>). S'ils demandent une fonctionnalité, d'autres en auront besoin. Prenez note de ces besoins pour planifier les futures mises à jour de GestionPro.</p>
+
+    <div class="note-box" style="margin-top: 40px; background: #0f172a; color: white; border-color: #ea580c;">
+        <strong>💡 Posture du Dirigeant :</strong> Avec un client Enterprise, vous n'êtes plus juste "le créateur d'une application". Vous devenez <strong>son Consultant Technologique Personnel</strong>. C'est cette proximité qui le fera rester abonné pendant des années.
+    </div>
+
+</body>
+</html>

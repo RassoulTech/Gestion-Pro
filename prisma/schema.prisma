@@ -148,6 +148,7 @@ model Boutique {
   secteurActivite  SecteurActivite @map("secteur_activite")
   logo             String?
   banner           String?
+  ticketMessage    String?         @map("ticket_message") @db.Text
   statut           StatutBoutique  @default(ACTIF)
   createdAt        DateTime        @default(now()) @map("created_at")
   updatedAt        DateTime        @updatedAt @map("updated_at")
@@ -363,6 +364,9 @@ model CommandeClient {
   code           String
   date           DateTime        @default(now())
   total          Float           @default(0)
+  remise         Float           @default(0)
+  montantRecu    Float?          @map("montant_recu")
+  monnaieRendue  Float?          @map("monnaie_rendue")
   etat           EtatCommande    @default(EN_ATTENTE)
   statutPaiement StatutPaiement  @default(EN_ATTENTE) @map("statut_paiement")
   modePaiement   String?         @map("mode_paiement")

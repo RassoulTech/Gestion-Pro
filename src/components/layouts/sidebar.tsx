@@ -22,6 +22,7 @@ import {
   FileText,
   Lock,
   User,
+  Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
@@ -82,6 +83,7 @@ function getBoutiqueNav(boutiqueId: string): NavItem[] {
     { label: "Catégories", href: `${base}/categories`, icon: Tag },
     { label: "Clients", href: `${base}/clients`, icon: Users },
     { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
+    { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
     { label: "Commandes", href: `${base}/commandes`, icon: ShoppingCart },
     {
       label: "Achats Fournisseur",

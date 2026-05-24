@@ -9,6 +9,9 @@ const ligneCommandeSchema = z.object({
 export const createCommandeClientSchema = z.object({
   clientId: z.string().optional(),
   notes: z.string().max(500).optional(),
+  remise: z.number().min(0).optional(),
+  montantRecu: z.number().min(0).optional(),
+  monnaieRendue: z.number().min(0).optional(),
   lignes: z.array(ligneCommandeSchema).min(1, "Au moins un produit requis"),
 });
 

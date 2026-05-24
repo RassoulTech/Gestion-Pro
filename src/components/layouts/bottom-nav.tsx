@@ -24,6 +24,7 @@ import {
   LogOut,
   Lock,
   CreditCard,
+  Calculator,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
@@ -68,7 +69,7 @@ function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavIte
     { label: "Accueil", href: base, icon: LayoutDashboard },
     { label: "Produits", href: `${base}/produits`, icon: Package },
     { label: "Ventes", href: `${base}/commandes`, icon: ShoppingCart },
-    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
+    { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
   ];
 }
 
@@ -89,6 +90,7 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
     { label: "Clients", href: `${base}/clients`, icon: Users },
     { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
     { label: "Achats Fournisseur", href: `${base}/commandes-fournisseur`, icon: Truck },
+    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
     { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
     { label: "Stock", href: `${base}/stock`, icon: Store, requires: "PRO" },
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },

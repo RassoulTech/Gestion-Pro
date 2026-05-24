@@ -31,6 +31,9 @@ export const createCommandeClient = vendeurActionClient
           userId: ctx.user.id,
           code,
           total: 0,
+          remise: data.remise || 0,
+          montantRecu: data.montantRecu,
+          monnaieRendue: data.monnaieRendue,
           notes: data.notes,
         },
       });
@@ -73,9 +76,11 @@ export const createCommandeClient = vendeurActionClient
         });
       }
 
+      const finalTotal = Math.max(0, total - (data.remise || 0));
+
       return tx.commandeClient.update({
         where: { id: commande.id },
-        data: { total },
+        data: { total: finalTotal },
       });
     });
 
