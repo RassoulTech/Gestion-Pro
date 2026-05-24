@@ -14,10 +14,13 @@ import {
   Calendar,
   Layers,
   History,
+  PhoneCall,
+  Crown,
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +44,9 @@ export default async function BoutiqueDashboardPage({
   const startOfWeek = new Date(now);
   startOfWeek.setDate(now.getDate() - now.getDay() + 1);
   startOfWeek.setHours(0, 0, 0, 0);
+
+  const quotas = await getBoutiqueOwnerQuotas(id);
+  const isEnterprise = quotas.codePlan === "ENTERPRISE";
 
   const [
     boutique,
@@ -212,6 +218,25 @@ export default async function BoutiqueDashboardPage({
                 Produit
               </Link>
             </Button>
+            
+            {isEnterprise && (
+              <Button
+                asChild
+                size="lg"
+                className="col-span-2 h-12 sm:h-16 rounded-xl sm:rounded-2xl px-4 sm:px-8 font-black bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 shadow-2xl shadow-amber-500/40 text-white text-xs sm:text-sm border border-amber-400/30"
+              >
+                <a
+                  href={`https://wa.me/221770000000?text=${encodeURIComponent(
+                    `Bonjour Rassoul, je suis le gérant de la boutique ${boutique.nom}. J'ai besoin d'une assistance prioritaire concernant mon compte Enterprise.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Crown className="mr-2 h-4 w-4 sm:h-6 sm:w-6" />
+                  Contacter le fondateur (VIP)
+                </a>
+              </Button>
+            )}
           </div>
         </div>
       </div>
