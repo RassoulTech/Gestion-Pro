@@ -38,6 +38,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
         const bstr = evt.target?.result;
         const wb = XLSX.read(bstr, { type: "binary" });
         const wsname = wb.SheetNames[0];
+        if (!wsname) throw new Error("Format invalide");
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
         setPreview(data.slice(0, 3)); // show first 3 for preview
@@ -60,6 +61,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
           const bstr = evt.target?.result;
           const wb = XLSX.read(bstr, { type: "binary" });
           const wsname = wb.SheetNames[0];
+          if (!wsname) throw new Error("Fichier vide");
           const ws = wb.Sheets[wsname];
           const data = XLSX.utils.sheet_to_json(ws);
 

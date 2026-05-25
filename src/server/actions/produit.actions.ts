@@ -30,10 +30,10 @@ export async function importProductsExcel(boutiqueId: string, products: any[]) {
     const validProducts = products.map((p) => ({
       boutiqueId,
       nom: String(p.nom).substring(0, 100),
-      code: p.code ? String(p.code) : null,
-      description: p.description ? String(p.description) : null,
+      code: p.code ? String(p.code) : "",
+      description: p.description ? String(p.description) : "",
       prixUnitaire: Number(p.prixUnitaire) || 0,
-      prixAchat: p.prixAchat ? Number(p.prixAchat) : null,
+      prixAchat: p.prixAchat ? Number(p.prixAchat) : 0,
       quantite: Number(p.quantite) || 0,
       seuilAlerte: Number(p.seuilAlerte) || 5,
     }));

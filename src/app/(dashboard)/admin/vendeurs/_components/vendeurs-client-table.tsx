@@ -258,6 +258,7 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
                           <TableCell className="py-4 text-slate-500 dark:text-slate-400 text-xs font-bold">
                             {formatDate(v.createdAt)}
                           </TableCell>
+                          <TableCell className="py-4 text-right pr-6">
                             <div className="flex justify-end gap-2">
                               <ImpersonateButton userId={v.userId} />
                               <ToggleStatusButton id={v.id} currentStatut={v.statut} type="vendeur" />
