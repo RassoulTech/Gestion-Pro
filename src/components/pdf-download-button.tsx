@@ -11,9 +11,10 @@ import { generateRapportPDF } from "@/lib/generate-pdf";
 interface PDFDownloadButtonProps {
   boutiqueId: string;
   boutiqueName: string;
+  period?: number;
 }
 
-export function PDFDownloadButton({ boutiqueId, boutiqueName }: PDFDownloadButtonProps) {
+export function PDFDownloadButton({ boutiqueId, boutiqueName, period = 30 }: PDFDownloadButtonProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleDownload() {
@@ -21,7 +22,7 @@ export function PDFDownloadButton({ boutiqueId, boutiqueName }: PDFDownloadButto
     try {
       const [stats, ventesParJour, topProduits] = await Promise.all([
         getBoutiqueStats(boutiqueId),
-        getVentesParJour(boutiqueId, 30),
+        getVentesParJour(boutiqueId, period),
         getTopProduits(boutiqueId, 10),
       ]);
 

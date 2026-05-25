@@ -15,10 +15,10 @@ import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
 export const metadata: Metadata = { title: "Rapports" };
 
-async function RapportsContent({ boutiqueId }: { boutiqueId: string }) {
+async function RapportsContent({ boutiqueId, period = 30 }: { boutiqueId: string, period?: number }) {
   const [stats, ventesJour, topProduits] = await Promise.all([
     getBoutiqueStats(boutiqueId),
-    getVentesParJour(boutiqueId, 30),
+    getVentesParJour(boutiqueId, period),
     getTopProduits(boutiqueId, 10),
   ]);
 
@@ -81,8 +81,10 @@ async function RapportsContent({ boutiqueId }: { boutiqueId: string }) {
   );
 }
 
-export default async function RapportsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function RapportsPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ period?: string }> }) {
   const { id } = await params;
+  const sParams = await searchParams;
+  const period = sParams.period ? parseInt(sParams.period, 10) : 30;
 
   const [boutique, quotas] = await Promise.all([
     prisma.boutique.findUnique({ where: { id }, select: { nom: true } }),
@@ -106,11 +108,26 @@ export default async function RapportsPage({ params }: { params: Promise<{ id: s
         featureName="Rapports Détaillés & Analytics"
         featureDescription="Obtenez des graphiques interactifs avancés sur l'évolution de vos ventes et de vos stocks."
       >
-        <div className="flex justify-end">
-          <PDFDownloadButton boutiqueId={id} boutiqueName={boutiqueName} />
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+          <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
+            {[7, 30, 90, 365].map((d) => (
+              <a
+                key={d}
+                href={`?period=${d}`}
+                className={`px-4 py-2 text-sm font-bold rounded-lg transition-all whitespace-nowrap ${
+                  period === d
+                    ? "bg-white dark:bg-zinc-700 shadow-sm text-brand"
+                    : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                }`}
+              >
+                {d === 365 ? "1 An" : `${d} jours`}
+              </a>
+            ))}
+          </div>
+          <PDFDownloadButton boutiqueId={id} boutiqueName={boutiqueName} period={period} />
         </div>
         <Suspense fallback={<PageSkeleton />}>
-          <RapportsContent boutiqueId={id} />
+          <RapportsContent boutiqueId={id} period={period} />
         </Suspense>
       </PremiumGuard>
     </div>
