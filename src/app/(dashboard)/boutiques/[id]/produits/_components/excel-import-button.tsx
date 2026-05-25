@@ -40,6 +40,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
         const wsname = wb.SheetNames[0];
         if (!wsname) throw new Error("Format invalide");
         const ws = wb.Sheets[wsname];
+        if (!ws) throw new Error("Onglet introuvable");
         const data = XLSX.utils.sheet_to_json(ws);
         setPreview(data.slice(0, 3)); // show first 3 for preview
       } catch (err) {
@@ -63,6 +64,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
           const wsname = wb.SheetNames[0];
           if (!wsname) throw new Error("Fichier vide");
           const ws = wb.Sheets[wsname];
+          if (!ws) throw new Error("Onglet introuvable");
           const data = XLSX.utils.sheet_to_json(ws);
 
           if (!data || data.length === 0) {

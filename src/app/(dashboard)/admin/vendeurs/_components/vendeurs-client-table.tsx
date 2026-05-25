@@ -5,13 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Mail, Calendar, Store, UserCheck, Ban, X, Filter, Users } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getGradient } from "@/lib/utils";
 import { StatusBadge } from "@/components/status-badge";
 import { ToggleStatusButton } from "../../_components/toggle-status-button";
 import { ImpersonateButton } from "./impersonate-button";
 
 interface Vendeur {
   id: string;
+  userId: string;
   nom: string;
   prenom: string;
   email: string;

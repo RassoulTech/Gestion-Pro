@@ -109,6 +109,7 @@ export async function getAllVendeurs(params?: {
       where,
       select: {
         id: true,
+        userId: true,
         nom: true,
         prenom: true,
         email: true,
