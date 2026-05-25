@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import { ProduitActions } from "./_components/produit-actions";
 import { ProduitFilters } from "./_components/produit-filters";
+import { ExcelImportButton } from "./_components/excel-import-button";
 
 interface ProduitsPageProps {
   params: Promise<{ id: string }>;
@@ -39,6 +40,8 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
   
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  const isAdmin = session.user.role === "ADMIN" || session.user.isImpersonating;
 
   const boutique = await prisma.boutique.findUnique({
     where: { id },
@@ -113,6 +116,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
               Mouvements
             </Link>
           </Button>
+          {isAdmin && <ExcelImportButton boutiqueId={id} />}
           <Button asChild variant="premium" className="flex-1 sm:flex-initial h-12 rounded-xl font-extrabold shadow-lg shadow-orange-500/10 text-xs sm:text-sm">
             <Link href={`/boutiques/${id}/produits/new`}>
               <Plus className="mr-2 h-4.5 w-4.5" />

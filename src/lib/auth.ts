@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/schemas/auth.schema";
 import type { UserRole } from "@prisma/client";
 import { authRatelimit } from "@/lib/ratelimit";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { authConfig } from "@/lib/auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -80,8 +80,47 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
         if (dbUser) {
           baseToken.role = dbUser.role;
+          if (params.user) {
+            baseToken.originalRole = dbUser.role; // keep track of true role
+          }
         }
       }
+
+      // Handle impersonation
+      const impersonateUserId = (await cookies()).get("impersonate_user_id")?.value;
+      
+      if (impersonateUserId && baseToken.originalRole === "ADMIN") {
+        const targetUser = await prisma.user.findUnique({
+          where: { id: impersonateUserId },
+          include: { vendeur: { select: { id: true } } },
+        });
+
+        if (targetUser) {
+          baseToken.id = targetUser.id;
+          baseToken.name = targetUser.name;
+          baseToken.email = targetUser.email;
+          baseToken.picture = targetUser.image;
+          baseToken.role = targetUser.role;
+          baseToken.vendeurId = targetUser.vendeur?.id ?? null;
+          baseToken.isImpersonating = true;
+        }
+      } else if (baseToken.isImpersonating) {
+        // Stop impersonating (cookie removed)
+        const trueUser = await prisma.user.findUnique({
+          where: { id: baseToken.originalUserId },
+          include: { vendeur: { select: { id: true } } },
+        });
+        if (trueUser) {
+          baseToken.id = trueUser.id;
+          baseToken.name = trueUser.name;
+          baseToken.email = trueUser.email;
+          baseToken.picture = trueUser.image;
+          baseToken.role = trueUser.role;
+          baseToken.vendeurId = trueUser.vendeur?.id ?? null;
+          baseToken.isImpersonating = false;
+        }
+      }
+
       return baseToken;
     },
   },

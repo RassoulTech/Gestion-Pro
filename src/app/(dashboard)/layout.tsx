@@ -47,6 +47,8 @@ function DashboardSkeleton() {
 // Keep the actual client logic in a thin wrapper.
 import { DashboardShell } from "@/components/layouts/dashboard-shell";
 
+import { ImpersonationBanner } from "@/components/impersonation-banner";
+
 // ─── Layout ──────────────────────────────────────────────────
 
 export default async function DashboardLayout({
@@ -60,18 +62,21 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const { name, email, image, role } = session.user;
+  const { name, email, image, role, isImpersonating } = session.user;
 
   return (
     <Suspense fallback={<DashboardSkeleton />}>
-      <DashboardShell
-        userName={name}
-        userEmail={email}
-        userImage={image}
-        userRole={role}
-      >
-        {children}
-      </DashboardShell>
+      {isImpersonating && <ImpersonationBanner userName={name} />}
+      <div className={isImpersonating ? "pt-[40px]" : ""}>
+        <DashboardShell
+          userName={name}
+          userEmail={email}
+          userImage={image}
+          userRole={role}
+        >
+          {children}
+        </DashboardShell>
+      </div>
     </Suspense>
   );
 }

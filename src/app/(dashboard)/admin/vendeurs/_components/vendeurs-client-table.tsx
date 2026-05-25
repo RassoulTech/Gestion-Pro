@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Mail, Calendar, Store, UserCheck, Ban, X, Filter, Users } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getGradient } from "@/lib/utils";
 import { StatusBadge } from "@/components/status-badge";
 import { ToggleStatusButton } from "../../_components/toggle-status-button";
+import { ImpersonateButton } from "./impersonate-button";
 
 interface Vendeur {
   id: string;
@@ -256,8 +258,10 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
                           <TableCell className="py-4 text-slate-500 dark:text-slate-400 text-xs font-bold">
                             {formatDate(v.createdAt)}
                           </TableCell>
-                          <TableCell className="py-4 text-right pr-6">
-                            <ToggleStatusButton id={v.id} currentStatut={v.statut} type="vendeur" />
+                            <div className="flex justify-end gap-2">
+                              <ImpersonateButton userId={v.userId} />
+                              <ToggleStatusButton id={v.id} currentStatut={v.statut} type="vendeur" />
+                            </div>
                           </TableCell>
                         </TableRow>
                       );

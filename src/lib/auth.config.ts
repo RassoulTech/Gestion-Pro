@@ -11,6 +11,7 @@ declare module "next-auth" {
       image: string | null;
       role: UserRole;
       vendeurId: string | null;
+      isImpersonating?: boolean;
     };
   }
 }
@@ -20,6 +21,9 @@ declare module "@auth/core/jwt" {
     id: string;
     role: UserRole;
     vendeurId: string | null;
+    originalUserId?: string;
+    originalRole?: UserRole;
+    isImpersonating?: boolean;
   }
 }
 
@@ -57,6 +61,8 @@ export const authConfig = {
         token.picture = user.image;
         token.role = (user as { role: UserRole }).role;
         token.vendeurId = (user as { vendeurId: string | null }).vendeurId;
+        token.originalUserId = user.id!;
+        token.originalRole = (user as { role: UserRole }).role;
       }
 
       if (trigger === "update" && session) {
@@ -74,6 +80,7 @@ export const authConfig = {
       session.user.image = (token.picture as string | null) ?? null;
       session.user.role = token.role;
       session.user.vendeurId = token.vendeurId;
+      session.user.isImpersonating = token.isImpersonating;
       return session;
     },
     authorized: ({ auth: session, request: { nextUrl } }) => {

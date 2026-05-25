@@ -10,6 +10,50 @@ import {
   createProduitSchema,
   updateProduitSchema,
 } from "@/schemas/produit.schema";
+import { getCurrentUser } from "@/lib/auth";
+
+export async function importProductsExcel(boutiqueId: string, products: any[]) {
+  const user = await getCurrentUser();
+  if (!user || (!user.isImpersonating && user.role !== "ADMIN")) {
+    return { success: false, error: "Non autorisé" };
+  }
+
+  try {
+    // Vérifier l'accès à la boutique
+    if (user.vendeurId) {
+      await requireBoutiqueAccess(boutiqueId, user.vendeurId);
+    } else if (user.role !== "ADMIN") {
+      return { success: false, error: "Non autorisé" };
+    }
+
+    // Validation basique (sans Zod complet pour aller plus vite sur des gros fichiers)
+    const validProducts = products.map((p) => ({
+      boutiqueId,
+      nom: String(p.nom).substring(0, 100),
+      code: p.code ? String(p.code) : null,
+      description: p.description ? String(p.description) : null,
+      prixUnitaire: Number(p.prixUnitaire) || 0,
+      prixAchat: p.prixAchat ? Number(p.prixAchat) : null,
+      quantite: Number(p.quantite) || 0,
+      seuilAlerte: Number(p.seuilAlerte) || 5,
+    }));
+
+    // On peut utiliser transaction pour créer aussi les mouvements de stock initiaux
+    const result = await prisma.$transaction(async (tx) => {
+      const created = await tx.produit.createMany({
+        data: validProducts,
+      });
+      return created;
+    });
+
+    clearQuotaCache(user.vendeurId || "admin");
+
+    return { success: true, count: result.count };
+  } catch (error: any) {
+    console.error("Import error:", error);
+    return { success: false, error: error.message };
+  }
+}
 
 export const createProduit = vendeurActionClient
   .schema(
