@@ -13,12 +13,13 @@ import {
   TrendingUp,
   Sparkles,
 } from "lucide-react";
-import { getAdminStats, getPlatformGrowthStats } from "@/server/queries/admin.queries";
+import { getAdminStats, getPlatformGrowthStats, getAdvancedAnalytics } from "@/server/queries/admin.queries";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { KpiCard } from "@/components/kpi-card";
 import { PageSkeleton } from "@/components/loading";
 import { StatusBadge } from "@/components/status-badge";
 import { PlatformChart } from "./_components/platform-chart";
+import { AdvancedAnalyticsChart } from "./_components/advanced-analytics-chart";
 import Link from "next/link";
 
 export const metadata: Metadata = { title: "Admin Dashboard - Control Center" };
@@ -61,9 +62,10 @@ export default function AdminDashboardPage() {
 }
 
 async function DashboardContent() {
-  const [stats, growthData] = await Promise.all([
+  const [stats, growthData, advancedData] = await Promise.all([
     getAdminStats(),
-    getPlatformGrowthStats()
+    getPlatformGrowthStats(),
+    getAdvancedAnalytics()
   ]);
 
   return (
@@ -185,6 +187,9 @@ async function DashboardContent() {
 
       {/* Visual Analytics Chart */}
       <PlatformChart revenuTotal={stats.revenuTotal} revenuMensuel={stats.revenuMensuel} data={growthData} />
+
+      {/* Advanced User & Plan Analytics */}
+      <AdvancedAnalyticsChart data={advancedData} />
 
       {/* Double Column Log & User Activity Feed */}
       <div className="grid gap-8 lg:grid-cols-2">

@@ -139,7 +139,7 @@ export function CheckoutClient() {
                 <h2 className="text-xl font-bold border-b border-slate-100 dark:border-zinc-800 pb-2">Paiement</h2>
                 <RadioGroup 
                   defaultValue="CASH_ON_DELIVERY" 
-                  onValueChange={(val) => form.setValue("paymentMethod", val as any)}
+                  onValueChange={(val: string) => form.setValue("paymentMethod", val as any)}
                   className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                 >
                   <Label className="flex items-center justify-between p-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10">

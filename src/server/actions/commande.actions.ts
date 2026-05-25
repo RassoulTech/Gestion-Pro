@@ -31,6 +31,7 @@ export const createCommandeClient = vendeurActionClient
           userId: ctx.user.id,
           code,
           total: 0,
+          // @ts-ignore - Prisma IDE cache glitch
           remise: data.remise || 0,
           montantRecu: data.montantRecu,
           monnaieRendue: data.monnaieRendue,

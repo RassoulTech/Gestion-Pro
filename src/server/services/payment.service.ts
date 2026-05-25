@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { 
+  sendSubscriptionActivatedEmailToClient, 
+  sendSubscriptionAlertToAdmin 
+} from "@/lib/mail";
 
 export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "PAYPAL" | "CASH_ON_DELIVERY" | "STRIPE";
 
@@ -253,7 +257,16 @@ export class PaymentService {
   ) {
     const paiement = await prisma.paiement.findFirst({
       where: { transactionRef },
-      include: { abonnement: true },
+      include: { 
+        abonnement: {
+          include: {
+            plan: true,
+            vendeur: {
+              include: { boutiques: true }
+            }
+          }
+        } 
+      },
     });
 
     if (!paiement) {
@@ -293,6 +306,29 @@ export class PaymentService {
           dateFin: newDateFin,
         },
       });
+
+      // --- SEND EMAILS ---
+      const vendeur = paiement.abonnement.vendeur;
+      const plan = paiement.abonnement.plan;
+      const firstBoutique = vendeur?.boutiques[0];
+
+      if (vendeur && plan && (plan.nom.toLowerCase().includes("pro") || plan.nom.toLowerCase().includes("enterprise"))) {
+        // Envoi au client
+        await sendSubscriptionActivatedEmailToClient(
+          vendeur.email,
+          vendeur.prenom || vendeur.nom || "Cher client",
+          plan.nom,
+          newDateFin
+        );
+        // Envoi à l'Admin
+        await sendSubscriptionAlertToAdmin(
+          firstBoutique?.nom || "Aucune boutique",
+          plan.nom,
+          paiement.montant,
+          `${vendeur.prenom || ""} ${vendeur.nom || ""}`.trim() || "Inconnu",
+          vendeur.email
+        );
+      }
 
       return { success: true, message: "Abonnement activé avec succès." };
     }

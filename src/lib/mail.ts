@@ -426,3 +426,87 @@ export const sendPasswordResetEmail = async (
     html: getEmailWrapper("Réinitialisation de mot de passe", htmlContent),
   });
 };
+
+export const sendSubscriptionActivatedEmailToClient = async (
+  email: string,
+  userNom: string,
+  planName: string,
+  expiresAt: Date
+): Promise<MailResult> => {
+  const formattedDate = expiresAt.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  
+  if (!isMailConfigured()) {
+    console.warn("[mail] Not configured. Sub activated skipped.");
+    return { sent: false };
+  }
+  
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a; text-align: center;">
+      Félicitations, votre abonnement est actif !
+    </h2>
+    <p style="margin: 0 0 24px 0; text-align: center; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
+      Bonjour <strong>${escapeHtml(userNom)}</strong>, votre forfait <strong>${escapeHtml(planName)}</strong> a bien été activé. 
+      Vous avez désormais accès à toutes les fonctionnalités premium associées jusqu'au <strong>${formattedDate}</strong>.
+    </p>
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="${domain}/boutiques" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(234, 88, 12, 0.4);">
+        Accéder à mon tableau de bord
+      </a>
+    </div>
+  `;
+  
+  return sendViaNodemailer({
+    to: email,
+    subject: `Bienvenue dans le forfait ${planName} — GestionPro`,
+    html: getEmailWrapper("Abonnement activé", htmlContent),
+  });
+};
+
+export const sendSubscriptionAlertToAdmin = async (
+  boutiqueNom: string,
+  planName: string,
+  montant: number,
+  userNom: string,
+  userEmail: string
+): Promise<MailResult> => {
+  const adminEmail = process.env.ADMIN_EMAIL || "dionemhd1@gmail.com";
+  
+  if (!isMailConfigured()) {
+    return { sent: false };
+  }
+  
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #10b981; text-align: center;">
+      🎉 Nouvel Abonnement Activé !
+    </h2>
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
+        <strong>Boutique :</strong> ${escapeHtml(boutiqueNom)}
+      </p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
+        <strong>Gérant :</strong> ${escapeHtml(userNom)} (${escapeHtml(userEmail)})
+      </p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
+        <strong>Forfait :</strong> ${escapeHtml(planName)}
+      </p>
+      <p style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 800;">
+        <strong>Montant payé :</strong> ${montant.toLocaleString("fr-FR")} FCFA
+      </p>
+    </div>
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="${domain}/admin/dashboard" style="display: inline-block; padding: 12px 24px; background: #0f172a; color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 14px;">
+        Voir le dashboard admin
+      </a>
+    </div>
+  `;
+  
+  return sendViaNodemailer({
+    to: adminEmail,
+    subject: `🚀 Nouvel abonnement : ${planName} (${montant} FCFA) - ${boutiqueNom}`,
+    html: getEmailWrapper("Nouvel Abonnement", htmlContent),
+  });
+};

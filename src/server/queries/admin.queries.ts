@@ -274,3 +274,78 @@ export async function getPlatformGrowthStats() {
   
   return result;
 }
+
+export async function getAdvancedAnalytics() {
+  const result = [];
+  
+  // Last 5 months including current
+  for (let i = 4; i >= 0; i--) {
+    const date = subMonths(new Date(), i);
+    const start = startOfMonth(date);
+    const end = endOfMonth(date);
+    
+    // Total users created this month
+    const totalUsers = await prisma.user.count({
+      where: {
+        createdAt: { gte: start, lte: end }
+      }
+    });
+
+    // Users who have NO vendeur profile created this month
+    const usersWithoutVendeur = await prisma.user.count({
+      where: {
+        createdAt: { gte: start, lte: end },
+        vendeur: null,
+        role: { not: "ADMIN" }
+      }
+    });
+
+    // Vendeurs created this month with NO boutiques
+    const vendeursWithoutBoutique = await prisma.vendeur.count({
+      where: {
+        createdAt: { gte: start, lte: end },
+        boutiques: { none: {} }
+      }
+    });
+
+    const sansBoutique = usersWithoutVendeur + vendeursWithoutBoutique;
+
+    // Get all abonnements created this month that are active or essai
+    const abonnementsThisMonth = await prisma.abonnement.findMany({
+      where: {
+        createdAt: { gte: start, lte: end },
+        statut: { in: ["ACTIF", "ESSAI"] }
+      },
+      include: {
+        plan: true
+      }
+    });
+
+    let gratuit = 0;
+    let pro = 0;
+    let enterprise = 0;
+
+    abonnementsThisMonth.forEach((ab) => {
+      const planName = ab.plan.nom.toLowerCase();
+      if (planName.includes("pro")) {
+        pro++;
+      } else if (planName.includes("enterprise") || planName.includes("entreprise")) {
+        enterprise++;
+      } else {
+        // "Starter" or "Gratuit"
+        gratuit++;
+      }
+    });
+    
+    result.push({
+      name: format(start, "MMM", { locale: fr }),
+      totalUsers,
+      sansBoutique,
+      gratuit,
+      pro,
+      enterprise
+    });
+  }
+  
+  return result;
+}

@@ -226,7 +226,7 @@ export default async function BoutiqueDashboardPage({
                 className="col-span-2 h-12 sm:h-16 rounded-xl sm:rounded-2xl px-4 sm:px-8 font-black bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 shadow-2xl shadow-amber-500/40 text-white text-xs sm:text-sm border border-amber-400/30"
               >
                 <a
-                  href={`https://wa.me/221770000000?text=${encodeURIComponent(
+                  href={`https://wa.me/221773831364?text=${encodeURIComponent(
                     `Bonjour Rassoul, je suis le gérant de la boutique ${boutique.nom}. J'ai besoin d'une assistance prioritaire concernant mon compte Enterprise.`
                   )}`}
                   target="_blank"

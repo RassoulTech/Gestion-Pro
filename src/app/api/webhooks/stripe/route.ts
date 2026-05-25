@@ -4,6 +4,10 @@ import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { clearQuotaCache } from "@/lib/quotas";
+import { 
+  sendSubscriptionActivatedEmailToClient, 
+  sendSubscriptionAlertToAdmin 
+} from "@/lib/mail";
 
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -126,6 +130,38 @@ export async function POST(req: Request) {
 
       clearQuotaCache(vendeurId);
       console.log(`Stripe subscription activated successfully for vendeur: ${vendeurId}`);
+
+      // --- SEND EMAILS ---
+      const activeAbonnement = await prisma.abonnement.findUnique({
+        where: { id: abonnementId },
+        include: {
+          plan: true,
+          vendeur: { include: { boutiques: true } },
+        },
+      });
+
+      if (activeAbonnement?.vendeur && activeAbonnement?.plan) {
+        const { vendeur, plan, dateFin } = activeAbonnement;
+        if (plan.nom.toLowerCase().includes("pro") || plan.nom.toLowerCase().includes("enterprise")) {
+          const montant = session.amount_total ? session.amount_total / 100 : 0;
+          const firstBoutique = vendeur.boutiques[0];
+
+          await sendSubscriptionActivatedEmailToClient(
+            vendeur.email,
+            vendeur.prenom || vendeur.nom || "Cher client",
+            plan.nom,
+            dateFin || new Date()
+          );
+
+          await sendSubscriptionAlertToAdmin(
+            firstBoutique?.nom || "Aucune boutique",
+            plan.nom,
+            montant,
+            `${vendeur.prenom || ""} ${vendeur.nom || ""}`.trim() || "Inconnu",
+            vendeur.email
+          );
+        }
+      }
     }
 
     if (event.type === "invoice.payment_succeeded") {
