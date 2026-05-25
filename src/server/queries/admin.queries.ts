@@ -3,8 +3,10 @@
 import { prisma } from "@/lib/prisma";
 import { subMonths, startOfMonth, format, endOfMonth } from "date-fns";
 import { fr } from "date-fns/locale";
+import { unstable_noStore as noStore } from "next/cache";
 
 export async function getAdminStats() {
+  noStore();
   const [
     totalUsers,
     totalVendeurs,
@@ -87,6 +89,7 @@ export async function getAllVendeurs(params?: {
   page?: number;
   perPage?: number;
 }) {
+  noStore();
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
@@ -129,6 +132,7 @@ export async function getAllUsersWithoutShop(params?: {
   page?: number;
   perPage?: number;
 }) {
+  noStore();
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
@@ -181,6 +185,7 @@ export async function getAllBoutiques(params?: {
   page?: number;
   perPage?: number;
 }) {
+  noStore();
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
@@ -212,6 +217,7 @@ export async function getActivityLogs(params?: {
   perPage?: number;
   action?: string;
 }) {
+  noStore();
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 50;
 
@@ -234,6 +240,7 @@ export async function getActivityLogs(params?: {
 }
 
 export async function getPlatformGrowthStats() {
+  noStore();
   const result = [];
   
   // Last 5 months including current
@@ -276,6 +283,7 @@ export async function getPlatformGrowthStats() {
 }
 
 export async function getAdvancedAnalytics() {
+  noStore();
   const result = [];
   
   // Last 5 months including current
@@ -284,10 +292,11 @@ export async function getAdvancedAnalytics() {
     const start = startOfMonth(date);
     const end = endOfMonth(date);
     
-    // Total users created this month
+    // Total users created this month (excluding ADMINs)
     const totalUsers = await prisma.user.count({
       where: {
-        createdAt: { gte: start, lte: end }
+        createdAt: { gte: start, lte: end },
+        role: { not: "ADMIN" }
       }
     });
 

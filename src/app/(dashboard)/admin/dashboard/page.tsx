@@ -23,6 +23,7 @@ import { AdvancedAnalyticsChart } from "./_components/advanced-analytics-chart";
 import Link from "next/link";
 
 export const metadata: Metadata = { title: "Admin Dashboard - Control Center" };
+export const dynamic = "force-dynamic";
 
 export default function AdminDashboardPage() {
   return (
