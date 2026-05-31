@@ -52,3 +52,7 @@ prisma/*.db
 # IDE
 .idea/
 .vscode/
+
+# Scratch files
+/scratch
+
