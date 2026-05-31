@@ -232,6 +232,7 @@ export const createMarketplaceCommande = actionClient
           const pdfBase64 = doc.output("datauristring").split(",")[1] || "";
           const pdfBuffer = Buffer.from(pdfBase64, "base64");
 
+          // Touch file to trigger IDE TS cache reload for the new prisma client fields
           // Store invoice number and fake invoice PDF URL inside database
           await prisma.commandeClient.update({
             where: { id: order.id },

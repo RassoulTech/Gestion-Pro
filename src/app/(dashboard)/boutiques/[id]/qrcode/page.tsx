@@ -1,4 +1,5 @@
 import React from "react";
+// Touch file to trigger IDE TS cache reload
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
