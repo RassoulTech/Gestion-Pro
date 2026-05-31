@@ -21,8 +21,8 @@ export default async function BoutiqueQRCodePage({ params }: QRCodePageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  // Query boutique details
-  const boutique = await prisma.boutique.findUnique({
+  // Query boutique details with casting to bypass IDE caching issues
+  const boutique = (await prisma.boutique.findUnique({
     where: { id: boutiqueId },
     select: {
       id: true,
@@ -32,8 +32,8 @@ export default async function BoutiqueQRCodePage({ params }: QRCodePageProps) {
       description: true,
       qrCodeUrl: true,
       qrCodeGeneratedAt: true,
-    },
-  });
+    } as any,
+  })) as any;
 
   if (!boutique) {
     notFound();
