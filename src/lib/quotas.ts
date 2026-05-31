@@ -39,18 +39,13 @@ export function clearQuotaCache(vendeurId: string) {
 }
 
 export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
-  // 1. If billing is disabled, bypass all quotas and return unlimited
-  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
-    return DEFAULT_UNLIMITED_PLAN;
-  }
-
-  // 2. Check memory cache
+  // 1. Check memory cache
   const cached = quotaCache.get(vendeurId);
   if (cached && Date.now() - cached.timestamp < 300000) {
     return cached.data;
   }
 
-  // 3. Query active subscription in Database
+  // 2. Query active subscription in Database
   const activeSubscription = await prisma.abonnement.findFirst({
     where: {
       vendeurId,
@@ -146,6 +141,9 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
 export async function checkBoutiqueCreationLimit(
   vendeurId: string
 ): Promise<{ allowed: boolean; count: number; max: number }> {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return { allowed: true, count: 0, max: 999999 };
+  }
   const quotas = await getVendeurQuotas(vendeurId);
 
   // Count only boutiques where this vendeur is the OWNER
@@ -169,6 +167,9 @@ export async function checkProduitCreationLimit(
   boutiqueId: string,
   vendeurId: string
 ): Promise<{ allowed: boolean; count: number; max: number }> {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return { allowed: true, count: 0, max: 999999 };
+  }
   const quotas = await getVendeurQuotas(vendeurId);
 
   const count = await prisma.produit.count({
@@ -186,6 +187,9 @@ export async function checkMembreCreationLimit(
   boutiqueId: string,
   vendeurId: string
 ): Promise<{ allowed: boolean; count: number; max: number }> {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return { allowed: true, count: 0, max: 999999 };
+  }
   const quotas = await getVendeurQuotas(vendeurId);
 
   const count = await prisma.membreBoutique.count({
@@ -203,6 +207,9 @@ export async function isPremiumFeatureAllowed(
   vendeurId: string,
   featureCode: string
 ): Promise<boolean> {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return true;
+  }
   const quotas = await getVendeurQuotas(vendeurId);
   // Only an actively-paying or trial-active plan unlocks premium features.
   // An EXPIRE/ANNULE plan falls back to starter capabilities.
