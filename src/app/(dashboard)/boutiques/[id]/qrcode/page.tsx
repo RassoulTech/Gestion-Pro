@@ -65,21 +65,21 @@ export default async function BoutiqueQRCodePage({ params }: QRCodePageProps) {
             </CardHeader>
             <CardContent className="px-6 pb-8 text-center">
               <p className="text-sm text-zinc-600 dark:text-zinc-300 font-semibold mb-6 leading-relaxed">
-                Cette fonctionnalité est réservée aux forfaits <span className="text-orange-500 font-bold">Pro</span> et <span className="text-orange-500 font-bold">Enterprise</span>. Elle vous permet d&apos;imprimer des fiches de paiement A4 Wave/Orange Money de haute qualité.
+                Cette fonctionnalité est réservée aux forfaits <span className="text-orange-500 font-bold">Pro</span> et <span className="text-orange-500 font-bold">Enterprise</span>. Elle vous permet d&apos;imprimer des affiches commerciales professionnelles au format A4 pour votre boutique physique.
               </p>
               
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Aperçu et téléchargement haute qualité (PNG, PDF)</span>
+                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Aperçu et téléchargement de l&apos;affiche en haute qualité (PNG, PDF)</span>
                 </div>
                 <div className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Intégration du logo et des fiches style Wave / OM</span>
+                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Intégration du logo et d&apos;un design d&apos;affiche commerciale premium</span>
                 </div>
                 <div className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Partage direct et redirection Marketplace instantanée</span>
+                  <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Redirection instantanée des clients vers votre boutique Marketplace</span>
                 </div>
               </div>
 
