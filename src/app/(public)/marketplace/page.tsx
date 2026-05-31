@@ -1,4 +1,4 @@
-﻿ 
+ 
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -71,6 +71,8 @@ async function BoutiqueGrid({
                         alt={boutique.nom}
                         fill
                         className="object-cover"
+                        sizes="64px"
+                        loading="lazy"
                         unoptimized
                       />
                     ) : (

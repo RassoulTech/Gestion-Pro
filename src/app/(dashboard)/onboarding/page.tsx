@@ -52,6 +52,25 @@ export default function OnboardingPage() {
     },
   });
 
+  // Pre-fill form fields from session dynamically once loaded
+  useEffect(() => {
+    if (session?.user) {
+      const email = session.user.email || "";
+      const fullName = session.user.name || "";
+      const [prenom = "", ...nomParts] = fullName.split(" ");
+      const nom = nomParts.join(" ") || "";
+
+      form.reset({
+        prenom: form.getValues("prenom") || prenom,
+        nom: form.getValues("nom") || nom,
+        email: form.getValues("email") || email,
+        telephone: form.getValues("telephone") || "",
+        dateNaissance: form.getValues("dateNaissance") || "" as any,
+        adresse: form.getValues("adresse") || "",
+      });
+    }
+  }, [session, form]);
+
   async function onSubmit(data: CreateVendeurProfileInput) {
     setLoading(true);
     try {

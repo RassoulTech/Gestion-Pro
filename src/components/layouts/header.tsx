@@ -2,6 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useBoutique } from "@/components/layouts/boutique-provider";
 import { useTheme } from "next-themes";
 import { signOut, useSession } from "next-auth/react";
 import { Sun, Moon, Menu, Store, User, LogOut } from "lucide-react";
@@ -148,13 +150,21 @@ export function Header({
   const isAdmin = pathname?.startsWith("/admin") ?? false;
   const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : <span className="tracking-tight">Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span></span>;
 
+  let boutiqueLogo: string | null = null;
+  try {
+    const ctx = useBoutique();
+    boutiqueLogo = ctx.logo;
+  } catch {
+    // Hors contexte boutique
+  }
+
   return (
     <header
       className={cn(
         "flex h-14 shrink-0 items-center gap-3 border-b border-zinc-100 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950",
       )}
     >
-      <div className="flex flex-1 items-center justify-start gap-2">
+      <div className="flex flex-1 items-center justify-start gap-2 min-w-0">
         {/* Hamburger Menu hidden on mobile as bottom navigation is preferred */}
         {/*
         <Button
@@ -168,9 +178,23 @@ export function Header({
         </Button>
         */}
         
-        <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-200">
-          {boutiqueName || defaultTitle}
-        </span>
+        <div className="flex items-center gap-2.5 min-w-0">
+          {boutiqueLogo && (
+            <div className="h-6 w-6 rounded-md overflow-hidden border border-zinc-200 dark:border-zinc-850 flex items-center justify-center shrink-0 relative bg-zinc-50 dark:bg-zinc-900 shadow-sm">
+              <Image 
+                src={boutiqueLogo} 
+                alt={boutiqueName || "Logo"} 
+                fill 
+                className="object-cover" 
+                sizes="24px"
+                unoptimized 
+              />
+            </div>
+          )}
+          <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-200">
+            {boutiqueName || defaultTitle}
+          </span>
+        </div>
       </div>
 
       {/* Right-side controls */}

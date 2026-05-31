@@ -51,11 +51,32 @@ export default async function BoutiquePubliquePage({ params }: Props) {
           {/* Subtle colored ambient glow */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
           
+          {/* Dynamic Smart Banner: ambient background glow derived entirely from the shop logo */}
+          {(boutique.logo || boutique.vendeur?.photo) && (
+            <div className="absolute inset-0 select-none pointer-events-none overflow-hidden">
+              <Image 
+                src={(boutique.logo || boutique.vendeur?.photo)!} 
+                alt="" 
+                fill 
+                className="object-cover scale-150 blur-3xl opacity-[0.18] dark:opacity-[0.25] transition-opacity duration-700" 
+                sizes="100vw"
+                unoptimized 
+              />
+            </div>
+          )}
+
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
             
             <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 text-orange-500 shadow-md overflow-hidden relative shrink-0">
               {boutique.logo || boutique.vendeur?.photo ? (
-                <Image src={(boutique.logo || boutique.vendeur?.photo)!} alt={boutique.nom} fill className="object-cover" unoptimized />
+                <Image 
+                  src={(boutique.logo || boutique.vendeur?.photo)!} 
+                  alt={boutique.nom} 
+                  fill 
+                  className="object-cover" 
+                  sizes="96px"
+                  unoptimized 
+                />
               ) : (
                 <Store className="h-12 w-12" />
               )}

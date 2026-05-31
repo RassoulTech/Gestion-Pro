@@ -1,4 +1,4 @@
-﻿ 
+ 
 import React from "react";
  
 import {
@@ -194,6 +194,8 @@ export default async function BoutiquesPage() {
                           alt={boutique.nom} 
                           fill 
                           className="object-cover" 
+                          sizes="64px"
+                          loading="lazy"
                           unoptimized 
                         />
                       ) : (

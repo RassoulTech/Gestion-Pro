@@ -16,6 +16,7 @@ import {
   History,
   PhoneCall,
   Crown,
+  Store,
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
@@ -167,30 +168,72 @@ export default async function BoutiqueDashboardPage({
     <div className="space-y-6 sm:space-y-10 pb-6">
       {/* Header Premium & Dynamic Hero */}
       <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] lg:rounded-[3.5rem] bg-zinc-950 p-5 sm:p-10 text-white shadow-2xl lg:p-16">
-        <div className="absolute right-0 top-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-brand/30 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-emerald-500/20 blur-[100px]" />
+        {/* Ambient backup glow */}
+        <div className="absolute right-0 top-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-brand/30 blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-emerald-500/20 blur-[100px] pointer-events-none" />
+
+        {/* Dynamic Smart Banner: ambient background glow derived entirely from the shop logo */}
+        {boutique.logo && (
+          <div className="absolute inset-0 select-none pointer-events-none overflow-hidden">
+            <Image 
+              src={boutique.logo} 
+              alt="" 
+              fill 
+              className="object-cover scale-150 blur-3xl opacity-[0.18] dark:opacity-[0.25] transition-opacity duration-700" 
+              sizes="100vw"
+              unoptimized 
+            />
+          </div>
+        )}
 
         <div className="relative z-10 flex flex-col gap-6 sm:gap-10 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-4 sm:space-y-6">
-            <div className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-400">
-                En ligne
-              </span>
+          <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+            {/* Logo premium container with glassmorphic border */}
+            <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-[1.8rem] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center shrink-0 relative shadow-xl">
+              {boutique.logo ? (
+                <Image 
+                  src={boutique.logo} 
+                  alt={boutique.nom} 
+                  fill 
+                  className="object-cover transition-transform duration-500 hover:scale-105" 
+                  sizes="(max-width: 640px) 80px, 96px"
+                  unoptimized 
+                />
+              ) : (
+                <Store className="h-10 w-10 text-orange-500" />
+              )}
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter lg:text-7xl">
-              {boutique.nom}
-            </h1>
-            <div className="flex flex-wrap gap-3 sm:gap-6 text-zinc-400 font-bold text-sm sm:text-base">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-brand" />
-                <span>
-                  {new Date().toLocaleDateString("fr-FR", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                  })}
+
+            <div className="space-y-2.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider text-emerald-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse inline-block mr-1" />
+                  En ligne
                 </span>
+                <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-md px-2 py-0.5 text-[9px] uppercase tracking-wider font-extrabold shadow-sm">
+                  {boutique.secteurActivite || "Boutique"}
+                </Badge>
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-none">
+                {boutique.nom}
+              </h1>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-zinc-400 font-bold text-xs sm:text-sm">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5 text-brand shrink-0" />
+                  <span>
+                    {new Date().toLocaleDateString("fr-FR", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                    })}
+                  </span>
+                </div>
+                {boutique.adresse && (
+                  <span className="text-zinc-500">•</span>
+                )}
+                {boutique.adresse && (
+                  <span className="truncate max-w-[200px]">{boutique.adresse}</span>
+                )}
               </div>
             </div>
           </div>

@@ -12,6 +12,9 @@ export type BoutiqueContextValue = {
   id: string;
   nom: string;
   slug: string;
+  logo: string | null;
+  secteurActivite: string | null;
+  description: string | null;
   plan: BoutiquePlanInfo;
 };
 

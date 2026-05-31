@@ -172,7 +172,7 @@ export const createVendeurProfile = authActionClient
             email: parsedInput.email,
             telephone: parsedInput.telephone || null,
             dateNaissance: parsedInput.dateNaissance || null,
-            // adresse: parsedInput.adresse || null,
+            adresse: parsedInput.adresse || null,
             photo: parsedInput.photo || null,
           },
         });
