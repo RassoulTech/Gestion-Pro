@@ -14,19 +14,6 @@ export interface PlanQuotas {
   statut: "EN_ATTENTE" | "ESSAI" | "ACTIF" | "EXPIRE" | "ANNULE";
 }
 
-const DEFAULT_UNLIMITED_PLAN: PlanQuotas = {
-  codePlan: "ENTERPRISE",
-  nom: "Enterprise (Billing Disabled)",
-  maxBoutiques: 999999,
-  maxProduits: 999999,
-  maxMembres: 999999,
-  features: ["Boutiques illimitées", "Produits illimités", "Membres illimités"],
-  isActive: true,
-  essaiFin: null,
-  dateFin: null,
-  statut: "ACTIF",
-};
-
 // Simple memory cache for 5 minutes (300,000 ms)
 type CacheEntry = {
   data: PlanQuotas;
