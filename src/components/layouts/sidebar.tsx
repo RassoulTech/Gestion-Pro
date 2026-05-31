@@ -238,56 +238,16 @@ function SidebarContent({
       >
         {!collapsed && (
           <Link href="/" className="flex items-center gap-2 overflow-hidden" aria-label="Accueil GestionPro">
-            {boutiqueId ? (
-              <div className="h-7 w-7 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 flex items-center justify-center shrink-0 relative bg-zinc-50 dark:bg-zinc-900 shadow-sm">
-                {boutiqueLogo ? (
-                  <Image 
-                    src={boutiqueLogo} 
-                    alt={boutiqueName || "Logo"} 
-                    fill 
-                    className="object-cover" 
-                    sizes="28px"
-                    unoptimized 
-                  />
-                ) : (
-                  <Store className="h-4 w-4 text-orange-500" />
-                )}
-              </div>
-            ) : (
-              <BrandLogo size={28} rounded={6} />
-            )}
-            {boutiqueName ? (
-              <span className="truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-                {boutiqueName}
-              </span>
-            ) : (
-              <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-100">
-                Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span>
-              </span>
-            )}
+            <BrandLogo size={28} rounded={6} />
+            <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-100">
+              Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span>
+            </span>
           </Link>
         )}
 
         {collapsed && (
           <Link href="/" aria-label="Accueil GestionPro" className="flex items-center justify-center">
-            {boutiqueId ? (
-              <div className="h-8 w-8 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-850 flex items-center justify-center shrink-0 relative bg-zinc-50 dark:bg-zinc-900 shadow-sm hover:scale-105 transition-transform">
-                {boutiqueLogo ? (
-                  <Image 
-                    src={boutiqueLogo} 
-                    alt={boutiqueName || "Logo"} 
-                    fill 
-                    className="object-cover" 
-                    sizes="32px"
-                    unoptimized 
-                  />
-                ) : (
-                  <Store className="h-4 w-4 text-orange-500" />
-                )}
-              </div>
-            ) : (
-              <BrandLogo size={28} rounded={6} />
-            )}
+            <BrandLogo size={28} rounded={6} />
           </Link>
         )}
 
