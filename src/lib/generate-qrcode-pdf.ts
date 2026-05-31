@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
+import { GESTIONPRO_LOGO_BASE64 } from "./brand-logo-base64";
 
 const BRAND_ORANGE: [number, number, number] = [234, 88, 12]; // #ea580c (Orange)
 const BRAND_DARK: [number, number, number] = [15, 23, 42]; // Slate-900
@@ -167,14 +168,8 @@ export async function generateBoutiqueQRCodePDF(data: QRCodePDFData): Promise<js
   doc.setFontSize(7.5);
   doc.text("Généré par", badgeX - 2, footerY + 0.5, { align: "right" });
 
-  // Draw the "G" square logo
-  doc.setFillColor(234, 88, 12); // Brand orange
-  doc.roundedRect(badgeX, footerY - 4.5, 6, 6, 1.5, 1.5, "F");
-  
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(4.5);
-  doc.text("G", badgeX + 3, footerY - 0.2, { align: "center" });
+  // Draw the exact "G" logo from the app using the PNG base64
+  doc.addImage(GESTIONPRO_LOGO_BASE64, "PNG", badgeX, footerY - 4.5, 6, 6);
 
   // "GestionPro" text next to the "G" logo
   doc.setTextColor(15, 23, 42); // slate-900

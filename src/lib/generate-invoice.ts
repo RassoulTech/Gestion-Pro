@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { GESTIONPRO_LOGO_BASE64 } from "./brand-logo-base64";
 
 const BRAND_COLOR: [number, number, number] = [234, 88, 12]; // #ea580c (Orange brand)
 const DARK_COLOR: [number, number, number] = [15, 23, 42]; // Slate-900
@@ -255,14 +256,8 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   // Right side: GestionPro badge
   const appBadgeX = pageWidth - margin - 35;
   
-  // "G" logo box
-  doc.setFillColor(234, 88, 12); // Brand orange
-  doc.roundedRect(appBadgeX, footerY - 1.2, 5, 5, 1.2, 1.2, "F");
-  
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(3.8);
-  doc.text("G", appBadgeX + 2.5, footerY + 2.4, { align: "center" });
+  // Draw the exact "G" logo from the app using the PNG base64
+  doc.addImage(GESTIONPRO_LOGO_BASE64, "PNG", appBadgeX, footerY - 1.2, 5, 5);
 
   // "GestionPro" text
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]); // slate-900
