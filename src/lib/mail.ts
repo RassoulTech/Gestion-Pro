@@ -510,3 +510,103 @@ export const sendSubscriptionAlertToAdmin = async (
     html: getEmailWrapper("Nouvel Abonnement", htmlContent),
   });
 };
+
+export const sendOrderConfirmationToClient = async (
+  email: string,
+  clientNom: string,
+  codeCommande: string,
+  total: number,
+  pdfBuffer: Buffer
+): Promise<MailResult> => {
+  if (!isMailConfigured()) {
+    console.warn("[mail] Mail not configured. Order confirmation skipped.");
+    return { sent: false };
+  }
+
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a; text-align: center;">
+      Merci pour votre commande !
+    </h2>
+    <p style="margin: 0 0 24px 0; text-align: center; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
+      Bonjour <strong>${escapeHtml(clientNom)}</strong>, votre commande <strong>#${escapeHtml(codeCommande)}</strong> a été validée avec succès.
+      Le montant total est de <strong>${total.toLocaleString("fr-FR")} FCFA</strong>.
+    </p>
+    <p style="margin: 0 0 24px 0; text-align: center; font-size: 14px; color: #64748b; font-weight: 500;">
+      Vous trouverez votre facture professionnelle au format PDF en pièce jointe à cet e-mail.
+    </p>
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="${domain}/mes-commandes" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(234, 88, 12, 0.4);">
+        Suivre ma commande
+      </a>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: emailFrom,
+      to: email,
+      subject: `Confirmation de votre commande #${codeCommande} — GestionPro`,
+      html: getEmailWrapper("Confirmation de commande", htmlContent),
+      attachments: [
+        {
+          filename: `Facture-${codeCommande}.pdf`,
+          content: pdfBuffer,
+        },
+      ],
+    });
+    return { sent: true };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[mail] sendOrderConfirmationToClient exception:", msg);
+    return { sent: false, error: msg };
+  }
+};
+
+export const sendOrderNotificationToVendedor = async (
+  email: string,
+  vendorNom: string,
+  boutiqueNom: string,
+  codeCommande: string,
+  total: number,
+  clientNom: string,
+  clientTel: string
+): Promise<MailResult> => {
+  if (!isMailConfigured()) {
+    console.warn("[mail] Mail not configured. Order notification skipped.");
+    return { sent: false };
+  }
+
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a;">
+      🎉 Nouvelle commande reçue !
+    </h2>
+    <p style="margin: 0 0 24px 0; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
+      Bonjour <strong>${escapeHtml(vendorNom)}</strong>, un client vient de passer une commande sur votre boutique <strong>${escapeHtml(boutiqueNom)}</strong>.
+    </p>
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
+        <strong>Code Commande :</strong> #${escapeHtml(codeCommande)}
+      </p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
+        <strong>Client :</strong> ${escapeHtml(clientNom)}
+      </p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
+        <strong>Téléphone :</strong> ${escapeHtml(clientTel)}
+      </p>
+      <p style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 800;">
+        <strong>Montant Total :</strong> ${total.toLocaleString("fr-FR")} FCFA
+      </p>
+    </div>
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="${domain}/boutiques" style="display: inline-block; padding: 12px 24px; background: #0f172a; color: #ffffff; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 14px;">
+        Gérer la commande
+      </a>
+    </div>
+  `;
+
+  return sendViaNodemailer({
+    to: email,
+    subject: `🔔 Nouvelle commande #${codeCommande} sur ${boutiqueNom} — GestionPro`,
+    html: getEmailWrapper("Nouvelle commande", htmlContent),
+  });
+};

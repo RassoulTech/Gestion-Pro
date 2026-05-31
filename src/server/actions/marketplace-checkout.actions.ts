@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";
 import { auth } from "@/lib/auth";
 import { generateCode } from "@/lib/utils";
+import { generateInvoicePDF } from "@/lib/generate-invoice";
+import { sendOrderConfirmationToClient, sendOrderNotificationToVendedor } from "@/lib/mail";
 
 const checkoutItemSchema = z.object({
   produitId: z.string().min(1),
@@ -13,36 +15,21 @@ const checkoutItemSchema = z.object({
   prixUnitaire: z.number().min(0),
 });
 
-const checkoutSchema = z
-  .object({
-    nomClient: z.string().min(1, "Le nom est obligatoire"),
-    emailClient: z
-      .string()
-      .email("Email invalide")
-      .optional()
-      .or(z.literal("").transform(() => undefined)),
-    telephoneClient: z.string().min(8, "Le numéro de téléphone est obligatoire"),
-    adresseLivraison: z.string().min(3, "L'adresse de livraison est obligatoire"),
-    notes: z.string().optional(),
-    paymentMethod: z.enum([
-      "WAVE",
-      "ORANGE_MONEY",
-      "PAYPAL",
-      "STRIPE",
-      "CASH_ON_DELIVERY",
-    ]),
-    items: z.array(checkoutItemSchema).min(1, "Le panier ne peut pas être vide"),
-    createAccount: z.boolean().optional(),
-    password: z.string().optional(),
-  })
-  .refine(
-    (data) =>
-      !data.createAccount || (data.password && data.password.length >= 8 && data.emailClient),
-    {
-      message: "Pour créer un compte, fournissez un email et un mot de passe d'au moins 8 caractères.",
-      path: ["password"],
-    }
-  );
+const checkoutSchema = z.object({
+  nomClient: z.string().min(1, "Le nom est obligatoire"),
+  emailClient: z.string().email("Email invalide"),
+  telephoneClient: z.string().min(8, "Le numéro de téléphone est obligatoire"),
+  adresseLivraison: z.string().min(3, "L'adresse de livraison est obligatoire"),
+  notes: z.string().optional(),
+  paymentMethod: z.enum([
+    "WAVE",
+    "ORANGE_MONEY",
+    "PAYPAL",
+    "STRIPE",
+    "CASH_ON_DELIVERY",
+  ]),
+  items: z.array(checkoutItemSchema).min(1, "Le panier ne peut pas être vide"),
+});
 
 export const createMarketplaceCommande = actionClient
   .schema(checkoutSchema)
@@ -55,47 +42,13 @@ export const createMarketplaceCommande = actionClient
       notes,
       paymentMethod,
       items,
-      createAccount,
-      password,
     } = parsedInput;
 
-    // 1. Identify buyer and pre-check account creation if requested
+    // 1. Enforce active customer authentication
     const session = await auth();
     const existingUserId: string | null = session?.user?.id ?? null;
-    const wantsAccount = !existingUserId && !!createAccount && !!emailClient && !!password;
-
-    // Three branches when wantsAccount is true :
-    //  a) email libre → on créera un nouveau User
-    //  b) email pris + mot de passe correct → on relie la commande au User existant
-    //     (un invité qui revient après avoir déjà créé son compte sur une commande passée)
-    //  c) email pris + mot de passe différent → erreur explicite (et on garde le checkout
-    //     en mode invité serait surprenant : on demande à l'utilisateur de se connecter)
-    let hashedPasswordForNewUser: string | null = null;
-    let matchedExistingUserId: string | null = null;
-    let willCreateAccount = false;
-
-    if (wantsAccount) {
-      const existingByEmail = await prisma.user.findUnique({
-        where: { email: emailClient! },
-        select: { id: true, password: true },
-      });
-      if (existingByEmail) {
-        if (!existingByEmail.password) {
-          throw new Error(
-            "Cet email est déjà associé à un compte sans mot de passe (connexion Google). Connectez-vous via Google avant de commander."
-          );
-        }
-        const passwordOk = await bcrypt.compare(password!, existingByEmail.password);
-        if (!passwordOk) {
-          throw new Error(
-            "Cet email a déjà un compte. Connectez-vous d'abord, ou utilisez une autre adresse pour cette commande."
-          );
-        }
-        matchedExistingUserId = existingByEmail.id;
-      } else {
-        willCreateAccount = true;
-        hashedPasswordForNewUser = await bcrypt.hash(password!, 12);
-      }
+    if (!existingUserId) {
+      throw new Error("Vous devez obligatoirement être connecté pour passer une commande.");
     }
 
     // 2. Group items by boutique
@@ -111,7 +64,7 @@ export const createMarketplaceCommande = actionClient
         if (product.quantite < item.quantite) {
           throw new Error(`Stock insuffisant pour le produit: ${product.nom}`);
         }
-        return { ...item, boutiqueId: product.boutiqueId };
+        return { ...item, boutiqueId: product.boutiqueId, nom: product.nom };
       })
     );
 
@@ -126,27 +79,12 @@ export const createMarketplaceCommande = actionClient
 
     const createdCommandeIds: string[] = [];
     let totalAmount = 0;
-    let buyerUserId: string | null = existingUserId ?? matchedExistingUserId;
+    const buyerUserId = existingUserId;
 
-    // 3. Persist orders + upsert Client per boutique (user creation is inside
-    // the transaction so a failure cleans up the account too)
+    // 3. Persist orders + upsert Client per boutique
     await prisma.$transaction(async (tx) => {
-      if (willCreateAccount && hashedPasswordForNewUser) {
-        const newUser = await tx.user.create({
-          data: {
-            name: nomClient,
-            email: emailClient!,
-            password: hashedPasswordForNewUser,
-            role: "CLIENT",
-            emailVerified: new Date(),
-          },
-        });
-        buyerUserId = newUser.id;
-      }
-
       for (const [boutiqueId, boutiqueItems] of Object.entries(itemsByBoutique)) {
         // Find existing client deterministically: phone is the strongest identifier
-        // (mobile-money flows). Fall back to email only when there is no phone match.
         let client = await tx.client.findFirst({
           where: { boutiqueId, telephone: telephoneClient },
         });
@@ -196,7 +134,7 @@ export const createMarketplaceCommande = actionClient
           data: {
             boutiqueId,
             clientId: client.id,
-            userId: buyerUserId, // null for true guests, set for logged-in/just-registered buyers
+            userId: buyerUserId,
             code: orderCode,
             total: orderTotal,
             notes: notes || null,
@@ -239,6 +177,100 @@ export const createMarketplaceCommande = actionClient
       }
     });
 
+    // 4. Generate professional invoice PDFs and send confirmation/notification emails
+    for (const orderId of createdCommandeIds) {
+      try {
+        const order = await prisma.commandeClient.findUnique({
+          where: { id: orderId },
+          include: {
+            client: true,
+            boutique: {
+              include: {
+                vendeur: true
+              }
+            },
+            lignes: {
+              include: {
+                produit: true
+              }
+            }
+          }
+        });
+
+        if (order && order.client) {
+          const dateSuffix = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+          const invoiceNumber = `FAC-${dateSuffix}-${order.code.substring(4)}`;
+          
+          const invoiceData = {
+            invoiceNumber,
+            date: new Date(),
+            status: order.etat,
+            boutique: {
+              nom: order.boutique.nom,
+              logo: order.boutique.logo,
+              telephone: order.boutique.telephone,
+              email: order.boutique.email,
+              adresse: order.boutique.adresse,
+            },
+            client: {
+              nom: order.client.nom,
+              prenom: order.client.prenom,
+              telephone: order.client.telephone,
+              email: order.client.email,
+              adresse: order.client.adresse,
+            },
+            lignes: order.lignes.map(line => ({
+              nom: line.produit.nom,
+              quantite: line.quantite,
+              prixUnitaire: line.prixUnitaire,
+            })),
+            total: order.total,
+            remise: order.remise,
+          };
+
+          const doc = generateInvoicePDF(invoiceData);
+          const pdfBase64 = doc.output("datauristring").split(",")[1] || "";
+          const pdfBuffer = Buffer.from(pdfBase64, "base64");
+
+          // Store invoice number and fake invoice PDF URL inside database
+          await prisma.commandeClient.update({
+            where: { id: order.id },
+            data: {
+              invoiceNumber,
+              invoicePdfUrl: `data:application/pdf;base64,${pdfBase64}`,
+            }
+          });
+
+          // Send Email to Client with PDF attachment
+          if (order.client.email) {
+            await sendOrderConfirmationToClient(
+              order.client.email,
+              order.client.nom,
+              order.code,
+              order.total,
+              pdfBuffer
+            );
+          }
+
+          // Send Email to Shop Owner (vendeur)
+          if (order.boutique.vendeur.email) {
+            const vendorName = `${order.boutique.vendeur.prenom} ${order.boutique.vendeur.nom}`;
+            await sendOrderNotificationToVendedor(
+              order.boutique.vendeur.email,
+              vendorName,
+              order.boutique.nom,
+              order.code,
+              order.total,
+              order.client.nom,
+              order.client.telephone || "N/A"
+            );
+          }
+        }
+      } catch (err) {
+        console.error(`[invoice-generation-failed] Failed to generate/send invoice for order ${orderId}:`, err);
+      }
+    }
+
     // 4. Initiate payment processing based on selected method
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -257,7 +289,7 @@ export const createMarketplaceCommande = actionClient
         return {
           success: true,
           paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=STRIPE&ids=${createdCommandeIds.join(",")}`,
-          accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
+          accountCreatedEmail: undefined,
         };
       }
 
@@ -295,7 +327,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: stripeSession.url || undefined,
-        accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
+        accountCreatedEmail: undefined,
       };
     }
 
@@ -341,7 +373,7 @@ export const createMarketplaceCommande = actionClient
           return {
             success: true,
             paymentUrl: checkoutUrl,
-            accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
+            accountCreatedEmail: undefined,
           };
         }
 
@@ -356,7 +388,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=${paymentMethod}&ids=${createdCommandeIds.join(",")}`,
-        accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
+        accountCreatedEmail: undefined,
       };
     }
 
@@ -371,7 +403,7 @@ export const createMarketplaceCommande = actionClient
       return {
         success: true,
         paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=PAYPAL&ids=${createdCommandeIds.join(",")}`,
-        accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
+        accountCreatedEmail: undefined,
       };
     }
 
@@ -379,7 +411,7 @@ export const createMarketplaceCommande = actionClient
     return {
       success: true,
       paymentUrl: `/checkout/success?success=true&method=cod&ids=${createdCommandeIds.join(",")}`,
-      accountCreatedEmail: willCreateAccount || matchedExistingUserId ? emailClient : undefined,
+      accountCreatedEmail: undefined,
     };
   });
 

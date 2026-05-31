@@ -24,6 +24,7 @@ import {
   Lock,
   User,
   Calculator,
+  QrCode,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
@@ -96,6 +97,7 @@ function getBoutiqueNav(boutiqueId: string): NavItem[] {
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
     { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
     { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
+    { label: "QR Code Boutique", href: `${base}/qrcode`, icon: QrCode },
     { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
     { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
   ];

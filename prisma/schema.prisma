@@ -24,6 +24,7 @@ model User {
   password        String?
   image           String?
   role            UserRole  @default(CLIENT)
+  customerAccountStatus String? @default("ACTIVE") @map("customer_account_status")
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
@@ -150,6 +151,8 @@ model Boutique {
   banner           String?
   ticketMessage    String?         @map("ticket_message") @db.Text
   statut           StatutBoutique  @default(ACTIF)
+  qrCodeUrl        String?         @map("qr_code_url")
+  qrCodeGeneratedAt DateTime?      @map("qr_code_generated_at")
   createdAt        DateTime        @default(now()) @map("created_at")
   updatedAt        DateTime        @updatedAt @map("updated_at")
 
@@ -373,6 +376,8 @@ model CommandeClient {
   paymentToken   String?         @map("payment_token")
   metadata       Json?           @map("metadata")
   notes          String?         @db.Text
+  invoiceNumber  String?         @map("invoice_number")
+  invoicePdfUrl  String?         @map("invoice_pdf_url")
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
 
