@@ -147,13 +147,43 @@ export async function generateBoutiqueQRCodePDF(data: QRCodePDFData): Promise<js
   doc.text(linkText, pageWidth / 2, y, { align: "center" });
 
   // ─── Branding Footer ───
-  doc.setFillColor(...primaryColor);
-  doc.rect(margin + 5, pageHeight - margin - 15, pageWidth - margin * 2 - 10, 10, "F");
+  const footerY = pageHeight - margin - 12;
+  
+  // Separator line
+  doc.setDrawColor(226, 232, 240); // slate-200
+  doc.setLineWidth(0.5);
+  doc.line(margin + 5, footerY - 6, pageWidth - margin - 5, footerY - 6);
 
+  // Left text: Official merchant support
+  doc.setTextColor(100, 116, 139); // slate-500
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.text("SUPPORT DE PAIEMENT & COMMANDE DIRECTE", margin + 5, footerY + 1);
+
+  // Right side: "Généré par GestionPro" with dynamic logo
+  const badgeX = pageWidth - margin - 45;
+  doc.setTextColor(148, 163, 184); // slate-400
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.text("Généré par", badgeX - 2, footerY + 0.5, { align: "right" });
+
+  // Draw the "G" square logo
+  doc.setFillColor(234, 88, 12); // Brand orange
+  doc.roundedRect(badgeX, footerY - 4.5, 6, 6, 1.5, 1.5, "F");
+  
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.text("SUPPORT DE PAIEMENT & COMMANDE DIRECTE — SECURISE PAR GESTIONPRO", pageWidth / 2, pageHeight - margin - 8.5, { align: "center" });
+  doc.setFontSize(4.5);
+  doc.text("G", badgeX + 3, footerY - 0.2, { align: "center" });
+
+  // "GestionPro" text next to the "G" logo
+  doc.setTextColor(15, 23, 42); // slate-900
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.text("Gestion", badgeX + 8, footerY + 0.5);
+  
+  doc.setTextColor(234, 88, 12); // brand orange
+  doc.text("Pro", badgeX + 20, footerY + 0.5);
 
   return doc;
 }

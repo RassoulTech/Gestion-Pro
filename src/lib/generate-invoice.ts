@@ -235,21 +235,53 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   doc.text(formatCurrencyCFA(data.total), pageWidth - margin, y, { align: "right" });
 
   // ─── Footer ───
+  const footerY = pageHeight - 20;
+
+  // Separator
+  doc.setDrawColor(...BORDER_COLOR);
+  doc.setLineWidth(0.5);
+  doc.line(margin, footerY - 4, pageWidth - margin, footerY - 4);
+
+  // Left side: thank you note
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text(
-    "Merci pour votre confiance ! Pour toute question concernant cette facture, contactez notre support.",
-    pageWidth / 2,
-    pageHeight - 15,
-    { align: "center" }
+    "Merci pour votre confiance ! Pour toute question, contactez notre support.",
+    margin,
+    footerY + 3
   );
 
+  // Right side: GestionPro badge
+  const appBadgeX = pageWidth - margin - 35;
+  
+  // "G" logo box
+  doc.setFillColor(234, 88, 12); // Brand orange
+  doc.roundedRect(appBadgeX, footerY - 1.2, 5, 5, 1.2, 1.2, "F");
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(3.8);
+  doc.text("G", appBadgeX + 2.5, footerY + 2.4, { align: "center" });
+
+  // "GestionPro" text
+  doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]); // slate-900
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  doc.text("Gestion", appBadgeX + 6.5, footerY + 2.5);
+  
+  doc.setTextColor(BRAND_COLOR[0], BRAND_COLOR[1], BRAND_COLOR[2]); // orange
+  doc.text("Pro", appBadgeX + 16.5, footerY + 2.5);
+
+  // Smaller copyright / security text below
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7);
+  doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text(
-    `GestionPro — Facture # ${data.invoiceNumber} — Sécurisé et Digitalisé`,
-    pageWidth / 2,
-    pageHeight - 10,
-    { align: "center" }
+    "Document électronique sécurisé et certifié",
+    pageWidth - margin,
+    footerY + 7.5,
+    { align: "right" }
   );
 
   return doc;
