@@ -34,11 +34,19 @@ export async function POST(req: NextRequest) {
     // Safe buffer conversion for Node.js environment
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, fileName), buffer);
-
-    return NextResponse.json({ url: `/uploads/${fileName}` });
+    try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      await mkdir(uploadDir, { recursive: true });
+      await writeFile(path.join(uploadDir, fileName), buffer);
+      
+      return NextResponse.json({ url: `/uploads/${fileName}` });
+    } catch (fsError: any) {
+      // Fallback transparent si le système de fichiers est en lecture seule (Vercel serverless / EROFS)
+      console.warn("Système de fichiers en lecture seule (Vercel EROFS). Conversion de l'image en Base64...");
+      const base64 = buffer.toString("base64");
+      const mimeType = file.type || "image/webp";
+      return NextResponse.json({ url: `data:${mimeType};base64,${base64}` });
+    }
   } catch (error: any) {
     console.error("UPLOAD API EXCEPTION:", error);
     return NextResponse.json(
