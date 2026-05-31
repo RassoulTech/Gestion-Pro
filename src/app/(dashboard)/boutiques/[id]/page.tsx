@@ -238,15 +238,15 @@ export default async function BoutiqueDashboardPage({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:flex">
+          <div className="flex flex-wrap gap-3 sm:gap-4 items-center shrink-0 w-full lg:w-auto">
             <Button
               asChild
               size="lg"
               variant="brand"
-              className="h-12 sm:h-16 rounded-xl sm:rounded-2xl px-4 sm:px-8 font-black shadow-2xl shadow-brand/40 hover:scale-105 transition-all text-xs sm:text-sm"
+              className="flex-1 sm:flex-initial h-12 sm:h-14 rounded-xl sm:rounded-2xl px-4 sm:px-6 font-black shadow-xl shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs sm:text-sm whitespace-nowrap"
             >
               <Link href={`/boutiques/${id}/commandes/new`}>
-                <Zap className="mr-1 sm:mr-2 h-4 w-4 sm:h-6 sm:w-6 fill-white" />
+                <Zap className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5 fill-white" />
                 Vente Rapide
               </Link>
             </Button>
@@ -254,10 +254,10 @@ export default async function BoutiqueDashboardPage({
               asChild
               size="lg"
               variant="outline"
-              className="h-12 sm:h-16 rounded-xl sm:rounded-2xl px-4 sm:px-8 font-black border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 text-white border-2 text-xs sm:text-sm"
+              className="flex-1 sm:flex-initial h-12 sm:h-14 rounded-xl sm:rounded-2xl px-4 sm:px-6 font-black border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 text-white border-2 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs sm:text-sm whitespace-nowrap"
             >
               <Link href={`/boutiques/${id}/produits/new`}>
-                <Plus className="mr-1 sm:mr-2 h-4 w-4 sm:h-6 sm:w-6" />
+                <Plus className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Produit
               </Link>
             </Button>
@@ -266,7 +266,7 @@ export default async function BoutiqueDashboardPage({
               <Button
                 asChild
                 size="lg"
-                className="col-span-2 h-12 sm:h-16 rounded-xl sm:rounded-2xl px-4 sm:px-8 font-black bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 shadow-2xl shadow-amber-500/40 text-white text-xs sm:text-sm border border-amber-400/30"
+                className="w-full sm:w-auto h-12 sm:h-14 rounded-xl sm:rounded-2xl px-4 sm:px-6 font-black bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-450 hover:to-amber-650 shadow-2xl shadow-amber-500/20 text-white text-xs sm:text-sm border border-amber-450/30 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
               >
                 <a
                   href={`https://wa.me/221773831364?text=${encodeURIComponent(
@@ -275,7 +275,7 @@ export default async function BoutiqueDashboardPage({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Crown className="mr-2 h-4 w-4 sm:h-6 sm:w-6" />
+                  <Crown className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Contacter le fondateur (VIP)
                 </a>
               </Button>
