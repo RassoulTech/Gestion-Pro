@@ -112,27 +112,38 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
       setCompressing(false);
     }
 
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", fileToUpload, fileName);
-
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.error || "Erreur lors du transfert de l'image");
-        return;
-      }
-
-      onChange(data.url);
-      toast.success("Image optimisée et importée avec succès !");
-    } catch {
-      toast.error("Erreur lors de l'upload de l'image");
-    } finally {
-      setUploading(false);
-      if (inputRef.current) inputRef.current.value = "";
-    }
+     setUploading(true);
+     try {
+       const formData = new FormData();
+       formData.append("file", fileToUpload, fileName);
+ 
+       const res = await fetch("/api/upload", { method: "POST", body: formData });
+       
+       let data: any = {};
+       const contentType = res.headers.get("content-type");
+       if (contentType && contentType.includes("application/json")) {
+         data = await res.json();
+       } else {
+         const text = await res.text();
+         console.error("Erreur de réponse brute du serveur:", text);
+         toast.error(`Erreur serveur (${res.status}) : Réponse invalide.`);
+         return;
+       }
+ 
+       if (!res.ok) {
+         toast.error(data.error || "Erreur lors du transfert de l'image");
+         return;
+       }
+ 
+       onChange(data.url);
+       toast.success("Image optimisée et importée avec succès !");
+     } catch (err: any) {
+       console.error("CLIENT EXCEPTION DURING UPLOAD:", err);
+       toast.error(`Échec du transfert : ${err?.message || "Erreur réseau ou serveur"}`);
+     } finally {
+       setUploading(false);
+       if (inputRef.current) inputRef.current.value = "";
+     }
   }
 
   const isPending = uploading || compressing;
