@@ -76,8 +76,8 @@ export default function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-10 py-10">
       <div className="space-y-2">
-        <h1 className="text-4xl font-black tracking-tight">Mon Profil</h1>
-        <p className="text-muted-foreground font-medium">Gérez vos informations personnelles et votre image de profil.</p>
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Mon Profil</h1>
+        <p className="text-muted-foreground font-medium text-sm sm:text-base">Gerez vos informations personnelles et votre image de profil.</p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-12">
@@ -97,7 +97,7 @@ export default function ProfilePage() {
             </div>
             
             <div className="space-y-1">
-              <h2 className="text-2xl font-black tracking-tight">{name}</h2>
+              <h2 className="text-xl font-black tracking-tight">{name}</h2>
               <p className="text-zinc-400 font-bold text-sm">{session?.user?.email}</p>
             </div>
 
@@ -123,8 +123,8 @@ export default function ProfilePage() {
         {/* Edit Form */}
         <Card className="md:col-span-8 border-none bg-white dark:bg-zinc-900 shadow-xl rounded-[3rem]">
           <CardHeader className="p-8">
-            <CardTitle className="text-2xl font-black">Modifier mes informations</CardTitle>
-            <CardDescription className="font-bold">Mettez à jour votre nom public et votre photo de profil.</CardDescription>
+            <CardTitle className="text-lg font-black">Modifier mes informations</CardTitle>
+            <CardDescription className="font-semibold text-xs">Mettez à jour votre nom public et votre photo de profil.</CardDescription>
           </CardHeader>
           <CardContent className="p-8 pt-0">
             <Form {...form}>

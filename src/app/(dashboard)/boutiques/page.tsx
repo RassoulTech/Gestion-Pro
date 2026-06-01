@@ -96,10 +96,10 @@ export default async function BoutiquesPage() {
                 </Badge>
               )}
             </div>
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-none">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-none">
               Bonjour, {vendeur.prenom} !
             </h1>
-            <p className="text-zinc-400 font-medium max-w-xl text-sm sm:text-base">
+            <p className="text-zinc-400 font-medium max-w-xl text-xs sm:text-sm">
               Gérez vos commerces, suivez vos stocks en temps réel et analysez vos ventes depuis un espace unique.
             </p>
           </div>
@@ -162,7 +162,7 @@ export default async function BoutiquesPage() {
       {/* Main Section - Boutiques Grid */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-slate-800 dark:text-zinc-100 flex items-center gap-2">
             <Store className="w-6 h-6 text-orange-500" />
             Mes boutiques actives
           </h2>

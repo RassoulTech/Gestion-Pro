@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CreditCard, Smartphone, Wallet } from "lucide-react";
+import { ArrowLeft, CreditCard, Smartphone, Wallet, Mail, Phone, MapPin } from "lucide-react";
 import { getCommandeById } from "@/server/queries/commande.queries";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -136,18 +136,34 @@ export default async function CommandeDetailPage({
             </CardHeader>
             <CardContent>
               {commande.client ? (
-                <div className="space-y-1 text-sm">
-                  <p className="font-medium break-words">
+                <div className="space-y-3 text-sm">
+                  <p className="font-semibold text-zinc-800 dark:text-zinc-200 break-words flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-orange-500" />
                     {commande.client.nom} {commande.client.prenom}
                   </p>
                   {commande.client.telephone && (
-                    <p className="text-muted-foreground break-words">{commande.client.telephone}</p>
+                    <a
+                      href={`tel:${commande.client.telephone.replace(/\s+/g, "")}`}
+                      className="flex items-center gap-2.5 text-muted-foreground hover:text-orange-600 transition-colors break-words group"
+                    >
+                      <Phone className="h-4 w-4 text-zinc-400 group-hover:text-orange-600 shrink-0" strokeWidth={1.5} />
+                      <span className="font-medium">{commande.client.telephone}</span>
+                    </a>
                   )}
                   {commande.client.email && (
-                    <p className="text-muted-foreground break-words">{commande.client.email}</p>
+                    <a
+                      href={`mailto:${commande.client.email}`}
+                      className="flex items-center gap-2.5 text-muted-foreground hover:text-orange-600 transition-colors break-words group"
+                    >
+                      <Mail className="h-4 w-4 text-zinc-400 group-hover:text-orange-600 shrink-0" strokeWidth={1.5} />
+                      <span className="font-medium">{commande.client.email}</span>
+                    </a>
                   )}
                   {commande.client.adresse && (
-                    <p className="text-muted-foreground break-words">{commande.client.adresse}</p>
+                    <div className="flex items-start gap-2.5 text-muted-foreground break-words">
+                      <MapPin className="h-4 w-4 text-zinc-400 mt-0.5 shrink-0" strokeWidth={1.5} />
+                      <span className="font-medium">{commande.client.adresse}</span>
+                    </div>
                   )}
                 </div>
               ) : (

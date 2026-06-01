@@ -125,16 +125,16 @@ export default function OnboardingPage() {
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-brand/10 text-brand">
             <Rocket className="h-10 w-10" />
           </div>
-          <h1 className="text-4xl font-black tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
             Presque prêt.
           </h1>
-          <p className="mt-4 text-lg font-medium text-muted-foreground">
+          <p className="mt-3 text-sm sm:text-base font-semibold text-muted-foreground">
             Configurez votre profil vendeur pour commencer à créer vos boutiques.
           </p>
         </div>
 
         <Card className="overflow-hidden border-none bg-card/50 shadow-2xl backdrop-blur-xl">
-          <CardContent className="p-8 md:p-12">
+          <CardContent className="p-6 md:p-8">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
