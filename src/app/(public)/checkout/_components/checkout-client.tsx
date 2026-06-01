@@ -432,16 +432,15 @@ export function CheckoutClient() {
                       {/* Wave official logo representation */}
                       <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded">
                         <rect width="32" height="20" rx="4" fill="#00C2C9" />
-                        {/* Official-style Wave Penguin silhouette representation */}
-                        <circle cx="16" cy="7.5" r="3.5" fill="white" />
-                        <ellipse cx="16" cy="13.5" rx="5" ry="4" fill="white" />
-                        <rect x="12.5" y="7.5" width="7" height="6" fill="white" />
-                        <circle cx="14.2" cy="17.5" r="1" fill="#FFC800" />
-                        <circle cx="17.8" cy="17.5" r="1" fill="#FFC800" />
-                        <polygon points="16,8 19,8.5 16,9" fill="#FFC800" />
-                        <circle cx="14.5" cy="7.5" r="0.7" fill="#00C2C9" />
-                        <circle cx="17.5" cy="7.5" r="0.7" fill="#00C2C9" />
-                        <ellipse cx="16" cy="13" rx="2.5" ry="2" fill="#00C2C9" />
+                        {/* High-fidelity right-facing Wave Penguin mascot */}
+                        <ellipse cx="14" cy="17.5" rx="1.5" ry="0.8" fill="#FFC800" />
+                        <ellipse cx="17.5" cy="17.5" rx="1.5" ry="0.8" fill="#FFC800" />
+                        <circle cx="15.5" cy="7.5" r="3.2" fill="white" />
+                        <ellipse cx="15" cy="13.5" rx="4.8" ry="4" fill="white" />
+                        <rect x="11.8" y="7.5" width="6.4" height="6" fill="white" />
+                        <polygon points="18.2,6.8 21.5,8 18.2,9.2" fill="#FFC800" />
+                        <circle cx="16.8" cy="7.2" r="0.7" fill="#00C2C9" />
+                        <path d="M12.5 11c.8-.5 2 0 2 1.5s-.8 2.5-1.8 2.5-1.8-1.5-1.8-2.5c0-.8.6-1 1.6-1.5z" fill="#00C2C9" />
                       </svg>
                     </Label>
                     <Label className="flex items-center justify-between p-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10">

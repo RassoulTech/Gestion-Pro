@@ -241,16 +241,15 @@ export default function PricingPage() {
                 >
                   <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
                     <rect width="32" height="20" rx="4" fill="#00C2C9" />
-                    {/* Official-style Wave Penguin silhouette representation */}
-                    <circle cx="16" cy="7.5" r="3.5" fill="white" />
-                    <ellipse cx="16" cy="13.5" rx="5" ry="4" fill="white" />
-                    <rect x="12.5" y="7.5" width="7" height="6" fill="white" />
-                    <circle cx="14.2" cy="17.5" r="1" fill="#FFC800" />
-                    <circle cx="17.8" cy="17.5" r="1" fill="#FFC800" />
-                    <polygon points="16,8 19,8.5 16,9" fill="#FFC800" />
-                    <circle cx="14.5" cy="7.5" r="0.7" fill="#00C2C9" />
-                    <circle cx="17.5" cy="7.5" r="0.7" fill="#00C2C9" />
-                    <ellipse cx="16" cy="13" rx="2.5" ry="2" fill="#00C2C9" />
+                    {/* High-fidelity right-facing Wave Penguin mascot */}
+                    <ellipse cx="14" cy="17.5" rx="1.5" ry="0.8" fill="#FFC800" />
+                    <ellipse cx="17.5" cy="17.5" rx="1.5" ry="0.8" fill="#FFC800" />
+                    <circle cx="15.5" cy="7.5" r="3.2" fill="white" />
+                    <ellipse cx="15" cy="13.5" rx="4.8" ry="4" fill="white" />
+                    <rect x="11.8" y="7.5" width="6.4" height="6" fill="white" />
+                    <polygon points="18.2,6.8 21.5,8 18.2,9.2" fill="#FFC800" />
+                    <circle cx="16.8" cy="7.2" r="0.7" fill="#00C2C9" />
+                    <path d="M12.5 11c.8-.5 2 0 2 1.5s-.8 2.5-1.8 2.5-1.8-1.5-1.8-2.5c0-.8.6-1 1.6-1.5z" fill="#00C2C9" />
                   </svg>
                   <span className="text-[10px] font-black">Wave</span>
                 </div>
@@ -287,8 +286,14 @@ export default function PricingPage() {
                   )}
                 >
                   <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
-                    <rect width="32" height="20" rx="4" fill="#003087" />
-                    <text x="16" y="14.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="10" fill="white" fontStyle="italic" letterSpacing="-0.5">PayPal</text>
+                    <rect width="32" height="20" rx="4" fill="#00249C" />
+                    {/* Overlapping PayPal Monogram */}
+                    <svg x="3" y="3" width="10" height="14" viewBox="7.05 3 37.35 45">
+                      <path fill="#003087" d="M38.914 13.35c0 5.574-5.144 12.15-12.927 12.15H18.49l-.368 2.322L16.373 39H7.056l5.605-36h15.095c5.083 0 9.082 2.833 10.555 6.77a9.687 9.687 0 0 1 .603 3.58z" />
+                      <path fill="#0079C1" d="M44.284 23.7A12.894 12.894 0 0 1 31.53 34.5h-5.206L24.157 48H14.89l1.483-9 1.75-11.178.367-2.322h7.497c7.773 0 12.927-6.576 12.927-12.15 3.825 1.974 6.055 5.963 5.37 10.35z" />
+                      <path fill="#00457C" d="M38.914 13.35C37.31 12.511 35.365 12 33.248 12h-12.64L18.49 25.5h7.497c7.773 0 12.927-6.576 12.927-12.15z" />
+                    </svg>
+                    <text x="21" y="12.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="950" fontSize="6.5" fill="white" fontStyle="italic" letterSpacing="-0.3">PayPal</text>
                   </svg>
                   <span className="text-[10px] font-black">PayPal</span>
                 </div>
