@@ -349,7 +349,7 @@ export const createMarketplaceCommande = actionClient
             ref_command: transactionRef,
             command_name: `Achat sur la marketplace GestionPro`,
             currency: "XOF",
-            env: process.env.PAYTECH_ENV || "test",
+            env: process.env.PAYTECH_ENV === "live" || process.env.PAYTECH_ENV === "prod" ? "prod" : "test",
             ipn_url: `${appUrl}/api/paytech/ipn`,
             success_url: `${appUrl}/checkout/success?success=true&method=paytech&ids=${createdCommandeIds.join(",")}`,
             cancel_url: `${appUrl}/panier`,

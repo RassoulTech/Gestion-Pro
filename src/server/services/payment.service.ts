@@ -182,7 +182,7 @@ export class PaymentService {
               ref_command: paiement.transactionRef || `SUB-${Date.now()}`,
               command_name: `Abonnement sur GestionPro`,
               currency: "XOF",
-              env: process.env.PAYTECH_ENV || "test",
+              env: process.env.PAYTECH_ENV === "live" || process.env.PAYTECH_ENV === "prod" ? "prod" : "test",
               ipn_url: `${appUrl}/api/paytech/ipn`,
               success_url: `${appUrl}${facturationPath}?success=true`,
               cancel_url: `${appUrl}${facturationPath}?success=false`,
