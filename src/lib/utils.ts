@@ -1,5 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { 
+  Utensils, Shirt, Smartphone, Sparkles, HeartPulse, Store, Hammer, BookOpen, HelpCircle,
+  type LucideIcon 
+} from "lucide-react";
 
 /**
  * Concatène des classes Tailwind en résolvant les conflits.
@@ -67,30 +71,59 @@ export function generateCode(prefix: string): string {
 }
 
 /**
- * Traduit et formate le secteur d'activité de la boutique avec son émoji.
- * @example getSectorLabel("ALIMENTATION") → "🍔 Restauration & Alimentation"
+ * Traduit et formate le secteur d'activité de la boutique sans émojis.
+ * @example getSectorLabel("ALIMENTATION") → "Restauration & Alimentation"
  */
 export function getSectorLabel(sector: string | null): string {
-  if (!sector) return "📦 Autre activité";
+  if (!sector) return "Autre activité";
   switch (sector.toUpperCase()) {
     case "ALIMENTATION":
-      return "🍔 Restauration & Alimentation";
+      return "Restauration & Alimentation";
     case "HABILLEMENT":
-      return "👕 Mode & Vêtements";
+      return "Mode & Vêtements";
     case "ELECTRONIQUE":
-      return "💻 Technologie & Téléphonie";
+      return "Technologie & Téléphonie";
     case "BEAUTE":
-      return "💄 Beauté & Cosmétique";
+      return "Beauté & Cosmétique";
     case "SANTE":
-      return "🏥 Santé & Bien-être";
+      return "Santé & Bien-être";
     case "SERVICES":
-      return "🏪 Commerce & Services";
+      return "Commerce & Services";
     case "QUINCAILLERIE":
-      return "🏗️ Construction & Quincaillerie";
+      return "Construction & Quincaillerie";
     case "LIBRAIRIE":
-      return "📚 Éducation & Librairie";
+      return "Éducation & Librairie";
     default:
-      return "📦 Autre activité";
+      return "Autre activité";
   }
 }
+
+/**
+ * Associe le secteur d'activité de la boutique à son icône Lucide officielle.
+ * @example getSectorIcon("ALIMENTATION") → Utensils
+ */
+export function getSectorIcon(sector: string | null): LucideIcon {
+  if (!sector) return HelpCircle;
+  switch (sector.toUpperCase()) {
+    case "ALIMENTATION":
+      return Utensils;
+    case "HABILLEMENT":
+      return Shirt;
+    case "ELECTRONIQUE":
+      return Smartphone;
+    case "BEAUTE":
+      return Sparkles;
+    case "SANTE":
+      return HeartPulse;
+    case "SERVICES":
+      return Store;
+    case "QUINCAILLERIE":
+      return Hammer;
+    case "LIBRAIRIE":
+      return BookOpen;
+    default:
+      return HelpCircle;
+  }
+}
+
 

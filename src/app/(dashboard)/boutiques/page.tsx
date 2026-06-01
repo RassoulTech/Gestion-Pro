@@ -25,7 +25,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getSectorLabel } from "@/lib/utils";
+import { getSectorLabel, getSectorIcon } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -220,9 +220,15 @@ export default async function BoutiquesPage() {
                       </h3>
                       <CheckCircle2 className="w-4 h-4 text-orange-500 shrink-0 fill-orange-500/10" />
                     </div>
-                    <p className="text-xs font-extrabold uppercase text-orange-500/70 tracking-widest">
-                      {getSectorLabel(boutique.secteurActivite)}
-                    </p>
+                    {(() => {
+                      const Icon = getSectorIcon(boutique.secteurActivite);
+                      return (
+                        <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase text-orange-500/70 tracking-widest">
+                          <Icon className="h-3.5 w-3.5 text-orange-500/60 shrink-0" />
+                          <span>{getSectorLabel(boutique.secteurActivite)}</span>
+                        </div>
+                      );
+                    })()}
                     <p className="text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
                       {boutique.description || "Découvrez nos produits exceptionnels et notre service premium."}
                     </p>

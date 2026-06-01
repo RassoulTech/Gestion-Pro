@@ -6,7 +6,7 @@ import { getBoutiqueBySlug } from "@/server/queries/boutique.queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "./_components/product-card";
-import { getSectorLabel } from "@/lib/utils";
+import { getSectorLabel, getSectorIcon } from "@/lib/utils";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -90,9 +90,15 @@ export default async function BoutiquePubliquePage({ params }: Props) {
                   <CheckCircle2 className="w-5 h-5 text-orange-500 fill-orange-500/10 shrink-0" />
                 </h1>
                 
-                <Badge className="rounded-full px-3 py-0.5 bg-orange-500 text-white font-extrabold text-[10px] uppercase tracking-widest border-none">
-                  {getSectorLabel(boutique.secteurActivite)}
-                </Badge>
+                {(() => {
+                  const Icon = getSectorIcon(boutique.secteurActivite);
+                  return (
+                    <Badge className="rounded-full px-3 py-1 bg-orange-500 text-white font-extrabold text-[10px] uppercase tracking-widest border-none flex items-center gap-1.5">
+                      <Icon className="h-3 w-3 text-white/95 shrink-0" />
+                      <span>{getSectorLabel(boutique.secteurActivite)}</span>
+                    </Badge>
+                  );
+                })()}
               </div>
 
               {boutique.description && (

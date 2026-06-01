@@ -8,7 +8,7 @@ import { getPublicBoutiques } from "@/server/queries/boutique.queries";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
-import { getSectorLabel } from "@/lib/utils";
+import { getSectorLabel, getSectorIcon } from "@/lib/utils";
 import { MarketplaceFilters } from "./_components/marketplace-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 
@@ -81,9 +81,15 @@ async function BoutiqueGrid({
                     )}
                   </div>
                   
-                  <Badge className="rounded-full px-3 py-0.5 bg-slate-50 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400 font-bold border border-slate-100 dark:border-zinc-800 text-[9px] uppercase tracking-wider">
-                    {getSectorLabel(boutique.secteurActivite)}
-                  </Badge>
+                  {(() => {
+                    const Icon = getSectorIcon(boutique.secteurActivite);
+                    return (
+                      <Badge className="rounded-full px-3 py-1 bg-slate-50 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400 font-bold border border-slate-100 dark:border-zinc-800 text-[9px] uppercase tracking-wider flex items-center gap-1.5">
+                        <Icon className="h-3 w-3 text-slate-400 dark:text-zinc-500 shrink-0" />
+                        <span>{getSectorLabel(boutique.secteurActivite)}</span>
+                      </Badge>
+                    );
+                  })()}
                 </div>
 
                 {/* Card Main Content */}

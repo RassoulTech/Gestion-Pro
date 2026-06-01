@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Store, User, Tag, Layers, Package, Calendar, X, Filter, Sparkles, AlertTriangle } from "lucide-react";
-import { formatDate, getSectorLabel } from "@/lib/utils";
+import { formatDate, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { ToggleStatusButton } from "../../_components/toggle-status-button";
@@ -237,8 +237,12 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-slate-500 flex items-center gap-1 font-semibold"><Tag className="h-3 w-3" /> Secteur</span>
-                        <Badge variant="outline" className={`font-semibold px-2 py-0.5 rounded-lg border text-[10px] ${badgeStyle}`}>
-                          {getSectorLabel(b.secteurActivite)}
+                        <Badge variant="outline" className={`font-semibold px-2 py-0.5 rounded-lg border text-[10px] flex items-center gap-1 ${badgeStyle}`}>
+                          {(() => {
+                            const Icon = getSectorIcon(b.secteurActivite);
+                            return <Icon className="h-3 w-3 shrink-0" />;
+                          })()}
+                          <span>{getSectorLabel(b.secteurActivite)}</span>
                         </Badge>
                       </div>
                       <div className="flex justify-between items-center">
@@ -310,8 +314,12 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                             </div>
                           </TableCell>
                           <TableCell className="py-4">
-                            <Badge variant="outline" className={`font-black px-2.5 py-0.5 rounded-lg border text-[11px] ${badgeStyle}`}>
-                              {getSectorLabel(b.secteurActivite)}
+                            <Badge variant="outline" className={`font-black px-2.5 py-0.5 rounded-lg border text-[11px] flex items-center gap-1 ${badgeStyle}`}>
+                              {(() => {
+                                const Icon = getSectorIcon(b.secteurActivite);
+                                return <Icon className="h-3 w-3 shrink-0" />;
+                              })()}
+                              <span>{getSectorLabel(b.secteurActivite)}</span>
                             </Badge>
                           </TableCell>
                           <TableCell className="py-4">

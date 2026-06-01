@@ -17,15 +17,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageUpload } from "@/components/image-upload";
 
 const SECTEURS = [
-  { value: "ALIMENTATION", label: "🍔 Restauration & Alimentation", icon: Utensils },
-  { value: "HABILLEMENT", label: "👕 Mode & Vêtements", icon: Shirt },
-  { value: "ELECTRONIQUE", label: "💻 Technologie & Téléphonie", icon: Smartphone },
-  { value: "BEAUTE", label: "💄 Beauté & Cosmétique", icon: Sparkles },
-  { value: "SANTE", label: "🏥 Santé & Bien-être", icon: HeartPulse },
-  { value: "SERVICES", label: "🏪 Commerce & Services", icon: Store },
-  { value: "QUINCAILLERIE", label: "🏗️ Construction & Quincaillerie", icon: Hammer },
-  { value: "LIBRAIRIE", label: "📚 Éducation & Librairie", icon: BookOpen },
-  { value: "AUTRE", label: "📦 Autre activité", icon: HelpCircle },
+  { value: "ALIMENTATION", label: "Restauration & Alimentation", icon: Utensils },
+  { value: "HABILLEMENT", label: "Mode & Vêtements", icon: Shirt },
+  { value: "ELECTRONIQUE", label: "Technologie & Téléphonie", icon: Smartphone },
+  { value: "BEAUTE", label: "Beauté & Cosmétique", icon: Sparkles },
+  { value: "SANTE", label: "Santé & Bien-être", icon: HeartPulse },
+  { value: "SERVICES", label: "Commerce & Services", icon: Store },
+  { value: "QUINCAILLERIE", label: "Construction & Quincaillerie", icon: Hammer },
+  { value: "LIBRAIRIE", label: "Éducation & Librairie", icon: BookOpen },
+  { value: "AUTRE", label: "Autre activité", icon: HelpCircle },
 ] as const;
 
 export default function ParametresPage() {

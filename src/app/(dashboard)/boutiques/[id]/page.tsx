@@ -25,7 +25,7 @@ import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn, getSectorLabel } from "@/lib/utils";
+import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 
@@ -210,9 +210,15 @@ export default async function BoutiqueDashboardPage({
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse inline-block mr-1" />
                   En ligne
                 </span>
-                <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-md px-2 py-0.5 text-[9px] uppercase tracking-wider font-extrabold shadow-sm">
-                  {getSectorLabel(boutique.secteurActivite)}
-                </Badge>
+                {(() => {
+                  const Icon = getSectorIcon(boutique.secteurActivite);
+                  return (
+                    <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-md px-2 py-1 text-[9px] uppercase tracking-wider font-extrabold shadow-sm flex items-center gap-1.5">
+                      <Icon className="h-3 w-3 text-brand shrink-0" />
+                      <span>{getSectorLabel(boutique.secteurActivite)}</span>
+                    </Badge>
+                  );
+                })()}
               </div>
               <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-none">
                 {boutique.nom}
