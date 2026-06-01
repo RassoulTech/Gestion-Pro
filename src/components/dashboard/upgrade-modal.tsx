@@ -189,13 +189,14 @@ export function UpgradeModal({
                       <div
                         onClick={() => setSelectedMethod("WAVE")}
                         className={cn(
-                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 bg-zinc-900/50 hover:border-zinc-700",
+                          selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                         )}
                       >
-                        <div className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center", selectedMethod === "WAVE" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
-                          <Smartphone className="h-4 w-4 sm:h-5 sm:w-5" />
-                        </div>
+                        <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-8 w-auto">
+                          <rect width="32" height="20" rx="4" fill="#00C2C9" />
+                          <path d="M6 10C10 6 12 14 16 10C20 6 22 14 26 10" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                         <span className="text-[10px] sm:text-xs font-black">Wave</span>
                       </div>
 
@@ -203,13 +204,14 @@ export function UpgradeModal({
                       <div
                         onClick={() => setSelectedMethod("ORANGE_MONEY")}
                         className={cn(
-                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 bg-zinc-900/50 hover:border-zinc-700",
+                          selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                         )}
                       >
-                        <div className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center", selectedMethod === "ORANGE_MONEY" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
-                          <Smartphone className="h-4 w-4 sm:h-5 sm:w-5" />
-                        </div>
+                        <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-8 w-auto">
+                          <rect width="32" height="20" rx="4" fill="#FF6600" />
+                          <text x="16" y="14.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="11" fill="white" letterSpacing="-0.5">OM</text>
+                        </svg>
                         <span className="text-[10px] sm:text-xs font-black text-center leading-none">Orange Money</span>
                       </div>
 
@@ -217,13 +219,14 @@ export function UpgradeModal({
                       <div
                         onClick={() => setSelectedMethod("PAYPAL")}
                         className={cn(
-                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-2 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 bg-zinc-900/50 hover:border-zinc-700",
+                          selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                         )}
                       >
-                        <div className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center", selectedMethod === "PAYPAL" ? "bg-brand/10 text-brand" : "bg-zinc-800/50 text-zinc-400")}>
-                          <CreditCard className="h-4 w-4 sm:h-5 sm:w-5" />
-                        </div>
+                        <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-8 w-auto">
+                          <rect width="32" height="20" rx="4" fill="#003087" />
+                          <text x="16" y="14.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="10" fill="white" fontStyle="italic" letterSpacing="-0.5">PayPal</text>
+                        </svg>
                         <span className="text-[10px] sm:text-xs font-black">PayPal</span>
                       </div>
                     </div>

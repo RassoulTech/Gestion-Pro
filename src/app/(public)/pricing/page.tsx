@@ -211,11 +211,23 @@ export default function PricingPage() {
                 <div
                   onClick={() => setSelectedMethod("STRIPE")}
                   className={cn(
-                    "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "STRIPE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                    "p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col items-center gap-2 bg-zinc-950/40 hover:border-zinc-700",
+                    selectedMethod === "STRIPE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                   )}
                 >
-                  <CreditCard className={cn("h-5 w-5", selectedMethod === "STRIPE" ? "text-brand" : "text-zinc-450")} />
+                  <div className="flex gap-1 justify-center items-center h-6 shrink-0">
+                    {/* Visa */}
+                    <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded shadow-sm">
+                      <rect width="24" height="15" rx="2" fill="#1A1F71" />
+                      <text x="12" y="11" textAnchor="middle" fontFamily="sans-serif" fontWeight="bold" fontSize="8" fill="#FFF" fontStyle="italic">VISA</text>
+                    </svg>
+                    {/* Mastercard */}
+                    <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded shadow-sm">
+                      <rect width="24" height="15" rx="2" fill="#222" />
+                      <circle cx="10" cy="7.5" r="4.5" fill="#EB001B" />
+                      <circle cx="14" cy="7.5" r="4.5" fill="#F79E1B" opacity="0.85" />
+                    </svg>
+                  </div>
                   <span className="text-[10px] font-black">Stripe / Carte</span>
                 </div>
 
@@ -223,11 +235,14 @@ export default function PricingPage() {
                 <div
                   onClick={() => setSelectedMethod("WAVE")}
                   className={cn(
-                    "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                    "p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col items-center gap-2 bg-zinc-950/40 hover:border-zinc-700",
+                    selectedMethod === "WAVE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                   )}
                 >
-                  <Smartphone className={cn("h-5 w-5", selectedMethod === "WAVE" ? "text-brand" : "text-zinc-450")} />
+                  <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
+                    <rect width="32" height="20" rx="4" fill="#00C2C9" />
+                    <path d="M6 10C10 6 12 14 16 10C20 6 22 14 26 10" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                   <span className="text-[10px] font-black">Wave</span>
                 </div>
 
@@ -235,11 +250,14 @@ export default function PricingPage() {
                 <div
                   onClick={() => setSelectedMethod("ORANGE_MONEY")}
                   className={cn(
-                    "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                    "p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col items-center gap-2 bg-zinc-950/40 hover:border-zinc-700",
+                    selectedMethod === "ORANGE_MONEY" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                   )}
                 >
-                  <Smartphone className={cn("h-5 w-5", selectedMethod === "ORANGE_MONEY" ? "text-brand" : "text-zinc-450")} />
+                  <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
+                    <rect width="32" height="20" rx="4" fill="#FF6600" />
+                    <text x="16" y="14.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="11" fill="white" letterSpacing="-0.5">OM</text>
+                  </svg>
                   <span className="text-[10px] font-black">Orange Money</span>
                 </div>
 
@@ -247,11 +265,14 @@ export default function PricingPage() {
                 <div
                   onClick={() => setSelectedMethod("PAYPAL")}
                   className={cn(
-                    "p-3.5 rounded-xl border-2 cursor-pointer transition flex flex-col items-center gap-1.5 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-450"
+                    "p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col items-center gap-2 bg-zinc-950/40 hover:border-zinc-700",
+                    selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
                   )}
                 >
-                  <CreditCard className={cn("h-5 w-5", selectedMethod === "PAYPAL" ? "text-brand" : "text-zinc-450")} />
+                  <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
+                    <rect width="32" height="20" rx="4" fill="#003087" />
+                    <text x="16" y="14.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="10" fill="white" fontStyle="italic" letterSpacing="-0.5">PayPal</text>
+                  </svg>
                   <span className="text-[10px] font-black">PayPal</span>
                 </div>
               </div>
