@@ -25,7 +25,7 @@ import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, getSectorLabel } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 
@@ -211,7 +211,7 @@ export default async function BoutiqueDashboardPage({
                   En ligne
                 </span>
                 <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-md px-2 py-0.5 text-[9px] uppercase tracking-wider font-extrabold shadow-sm">
-                  {boutique.secteurActivite || "Boutique"}
+                  {getSectorLabel(boutique.secteurActivite)}
                 </Badge>
               </div>
               <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-none">

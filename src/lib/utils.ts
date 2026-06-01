@@ -65,3 +65,32 @@ export function generateCode(prefix: string): string {
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `${prefix}-${timestamp}-${random}`;
 }
+
+/**
+ * Traduit et formate le secteur d'activité de la boutique avec son émoji.
+ * @example getSectorLabel("ALIMENTATION") → "🍔 Restauration & Alimentation"
+ */
+export function getSectorLabel(sector: string | null): string {
+  if (!sector) return "📦 Autre activité";
+  switch (sector.toUpperCase()) {
+    case "ALIMENTATION":
+      return "🍔 Restauration & Alimentation";
+    case "HABILLEMENT":
+      return "👕 Mode & Vêtements";
+    case "ELECTRONIQUE":
+      return "💻 Technologie & Téléphonie";
+    case "BEAUTE":
+      return "💄 Beauté & Cosmétique";
+    case "SANTE":
+      return "🏥 Santé & Bien-être";
+    case "SERVICES":
+      return "🏪 Commerce & Services";
+    case "QUINCAILLERIE":
+      return "🏗️ Construction & Quincaillerie";
+    case "LIBRAIRIE":
+      return "📚 Éducation & Librairie";
+    default:
+      return "📦 Autre activité";
+  }
+}
+

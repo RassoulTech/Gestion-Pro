@@ -6,6 +6,7 @@ import { getBoutiqueBySlug } from "@/server/queries/boutique.queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "./_components/product-card";
+import { getSectorLabel } from "@/lib/utils";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -90,7 +91,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
                 </h1>
                 
                 <Badge className="rounded-full px-3 py-0.5 bg-orange-500 text-white font-extrabold text-[10px] uppercase tracking-widest border-none">
-                  {boutique.secteurActivite || "Boutique"}
+                  {getSectorLabel(boutique.secteurActivite)}
                 </Badge>
               </div>
 

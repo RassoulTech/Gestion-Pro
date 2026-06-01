@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Store, User, Tag, Layers, Package, Calendar, X, Filter, Sparkles, AlertTriangle } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getSectorLabel } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { ToggleStatusButton } from "../../_components/toggle-status-button";
@@ -32,29 +32,25 @@ interface BoutiquesClientTableProps {
 }
 
 function getSectorColor(sector: string) {
-  const normalized = sector.toLowerCase();
-  if (normalized.includes("mode") || normalized.includes("habillement") || normalized.includes("fashion")) {
-    return "bg-pink-50 text-pink-700 border-pink-100 dark:bg-pink-950/20 dark:text-pink-400 dark:border-pink-900/50";
+  const normalized = sector.toUpperCase();
+  switch (normalized) {
+    case "HABILLEMENT":
+      return "bg-pink-50 text-pink-700 border-pink-100 dark:bg-pink-950/20 dark:text-pink-400 dark:border-pink-900/50";
+    case "ELECTRONIQUE":
+      return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
+    case "ALIMENTATION":
+      return "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50";
+    case "BEAUTE":
+      return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
+    case "SANTE":
+      return "bg-red-50 text-red-700 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/50";
+    case "QUINCAILLERIE":
+      return "bg-stone-50 text-stone-700 border-stone-100 dark:bg-stone-950/20 dark:text-stone-400 dark:border-stone-900/50";
+    case "LIBRAIRIE":
+      return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
+    default:
+      return "bg-slate-50 text-slate-700 border-slate-100 dark:bg-slate-900/60 dark:text-slate-300 dark:border-slate-800/80";
   }
-  if (normalized.includes("tech") || normalized.includes("électronique") || normalized.includes("phone")) {
-    return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
-  }
-  if (normalized.includes("aliment") || normalized.includes("restau") || normalized.includes("nourriture")) {
-    return "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50";
-  }
-  if (normalized.includes("beauté") || normalized.includes("cosmé") || normalized.includes("soin")) {
-    return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
-  }
-  if (normalized.includes("santé")) {
-    return "bg-red-50 text-red-700 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/50";
-  }
-  if (normalized.includes("quincaillerie")) {
-    return "bg-stone-50 text-stone-700 border-stone-100 dark:bg-stone-950/20 dark:text-stone-400 dark:border-stone-900/50";
-  }
-  if (normalized.includes("librairie")) {
-    return "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50";
-  }
-  return "bg-slate-50 text-slate-700 border-slate-100 dark:bg-slate-900/60 dark:text-slate-300 dark:border-slate-800/80";
 }
 
 const SECTEURS_LIST = [
@@ -242,7 +238,7 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                       <div className="flex justify-between items-center">
                         <span className="text-slate-500 flex items-center gap-1 font-semibold"><Tag className="h-3 w-3" /> Secteur</span>
                         <Badge variant="outline" className={`font-semibold px-2 py-0.5 rounded-lg border text-[10px] ${badgeStyle}`}>
-                          {b.secteurActivite}
+                          {getSectorLabel(b.secteurActivite)}
                         </Badge>
                       </div>
                       <div className="flex justify-between items-center">
@@ -315,7 +311,7 @@ export function BoutiquesClientTable({ initialBoutiques, total }: BoutiquesClien
                           </TableCell>
                           <TableCell className="py-4">
                             <Badge variant="outline" className={`font-black px-2.5 py-0.5 rounded-lg border text-[11px] ${badgeStyle}`}>
-                              {b.secteurActivite}
+                              {getSectorLabel(b.secteurActivite)}
                             </Badge>
                           </TableCell>
                           <TableCell className="py-4">

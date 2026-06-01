@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Settings, Store, ImageIcon, Globe, MapPin, Save, Mail, Phone, Info } from "lucide-react";
+import { Loader2, Settings, Store, ImageIcon, Globe, MapPin, Save, Mail, Phone, Info, Utensils, Shirt, Smartphone, Sparkles, HeartPulse, Hammer, BookOpen, HelpCircle } from "lucide-react";
 import { updateBoutiqueSchema, type UpdateBoutiqueInput } from "@/schemas/boutique.schema";
 import { updateBoutique } from "@/server/actions/boutique.actions";
 import { getBoutiqueForSettings } from "@/server/queries/boutique.queries";
@@ -17,15 +17,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageUpload } from "@/components/image-upload";
 
 const SECTEURS = [
-  { value: "ALIMENTATION", label: "Alimentation" },
-  { value: "HABILLEMENT", label: "Habillement" },
-  { value: "ELECTRONIQUE", label: "Électronique" },
-  { value: "BEAUTE", label: "Beauté" },
-  { value: "SANTE", label: "Santé" },
-  { value: "SERVICES", label: "Services" },
-  { value: "QUINCAILLERIE", label: "Quincaillerie" },
-  { value: "LIBRAIRIE", label: "Librairie" },
-  { value: "AUTRE", label: "Autre" },
+  { value: "ALIMENTATION", label: "🍔 Restauration & Alimentation", icon: Utensils },
+  { value: "HABILLEMENT", label: "👕 Mode & Vêtements", icon: Shirt },
+  { value: "ELECTRONIQUE", label: "💻 Technologie & Téléphonie", icon: Smartphone },
+  { value: "BEAUTE", label: "💄 Beauté & Cosmétique", icon: Sparkles },
+  { value: "SANTE", label: "🏥 Santé & Bien-être", icon: HeartPulse },
+  { value: "SERVICES", label: "🏪 Commerce & Services", icon: Store },
+  { value: "QUINCAILLERIE", label: "🏗️ Construction & Quincaillerie", icon: Hammer },
+  { value: "LIBRAIRIE", label: "📚 Éducation & Librairie", icon: BookOpen },
+  { value: "AUTRE", label: "📦 Autre activité", icon: HelpCircle },
 ] as const;
 
 export default function ParametresPage() {
@@ -231,13 +231,31 @@ export default function ParametresPage() {
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand">
-                                <SelectValue />
+                                <span className="flex items-center gap-2">
+                                  {field.value && (() => {
+                                    const current = SECTEURS.find(s => s.value === field.value);
+                                    if (current) {
+                                      const Icon = current.icon;
+                                      return <Icon className="h-4 w-4 text-brand shrink-0" />;
+                                    }
+                                    return null;
+                                  })()}
+                                  <SelectValue placeholder="Choisir un secteur" />
+                                </span>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {SECTEURS.map((s) => (
-                                <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                              ))}
+                              {SECTEURS.map((s) => {
+                                const Icon = s.icon;
+                                return (
+                                  <SelectItem key={s.value} value={s.value}>
+                                    <span className="flex items-center gap-2">
+                                      <Icon className="h-4 w-4 text-zinc-400 shrink-0" />
+                                      <span>{s.label}</span>
+                                    </span>
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                           </Select>
                           <FormMessage />
