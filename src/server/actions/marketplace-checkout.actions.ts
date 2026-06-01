@@ -335,50 +335,61 @@ export const createMarketplaceCommande = actionClient
     if (paymentMethod === "WAVE" || paymentMethod === "ORANGE_MONEY") {
       const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
-      const pdMaster = process.env.PAYDUNYA_MASTER_KEY || "";
-      const paydunyaConfigured =
-        process.env.PAYDUNYA_ENABLED === "true" &&
-        pdMaster.length > 0 &&
-        !pdMaster.includes("mock");
+      const paytechConfigured =
+        process.env.PAYTECH_ENABLED === "true" &&
+        process.env.PAYTECH_API_KEY &&
+        process.env.PAYTECH_API_SECRET;
 
-      if (paydunyaConfigured) {
-        const { PayDunyaClient, extractPayDunyaCheckoutUrl } = await import(
-          "@/lib/paydunya"
-        );
+      if (paytechConfigured) {
+        try {
+          const paytechUrl = "https://paytech.sn/api/payment/request-payment";
+          const requestBody = {
+            item_name: `Commande GestionPro - ${createdCommandeIds.length} boutique${createdCommandeIds.length > 1 ? "s" : ""}`,
+            item_price: totalAmount,
+            ref_command: transactionRef,
+            command_name: `Achat sur la marketplace GestionPro`,
+            currency: "XOF",
+            env: process.env.PAYTECH_ENV || "test",
+            ipn_url: `${appUrl}/api/paytech/ipn`,
+            success_url: `${appUrl}/checkout/success?success=true&method=paytech&ids=${createdCommandeIds.join(",")}`,
+            cancel_url: `${appUrl}/panier`,
+            custom_field: JSON.stringify({
+              kind: "marketplace_order",
+              commandeIds: createdCommandeIds.join(",")
+            })
+          };
 
-        const pdResponse = await PayDunyaClient.initiateInvoice({
-          transactionId: transactionRef,
-          amount: totalAmount,
-          description: `Commande GestionPro - ${createdCommandeIds.length} boutique${createdCommandeIds.length > 1 ? "s" : ""}`,
-          cancelUrl: `${appUrl}/panier`,
-          returnUrl: `${appUrl}/checkout/success?success=true&method=paydunya&ids=${createdCommandeIds.join(",")}`,
-          callbackUrl: `${appUrl}/api/webhooks/paydunya`,
-          customerName: nomClient,
-          customerEmail: emailClient,
-          customerPhone: telephoneClient,
-          customData: {
-            kind: "marketplace_order",
-            commandeIds: createdCommandeIds.join(","),
-            transactionRef,
-          },
-        });
-
-        const checkoutUrl = extractPayDunyaCheckoutUrl(pdResponse);
-
-        if (checkoutUrl && pdResponse.token) {
-          await prisma.commandeClient.updateMany({
-            where: { id: { in: createdCommandeIds } },
-            data: { paymentToken: pdResponse.token },
+          const response = await fetch(paytechUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "API_KEY": process.env.PAYTECH_API_KEY || "",
+              "API_SECRET": process.env.PAYTECH_API_SECRET || ""
+            },
+            body: JSON.stringify(requestBody)
           });
 
-          return {
-            success: true,
-            paymentUrl: checkoutUrl,
-            accountCreatedEmail: undefined,
-          };
-        }
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success === 1 || data.success === true) {
+              const redirectUrl = data.redirectUrl || data.redirect_url;
+              if (redirectUrl && data.token) {
+                await prisma.commandeClient.updateMany({
+                  where: { id: { in: createdCommandeIds } },
+                  data: { paymentToken: data.token },
+                });
 
-        console.error("PayDunya marketplace API error :", pdResponse);
+                return {
+                  success: true,
+                  paymentUrl: redirectUrl,
+                  accountCreatedEmail: undefined,
+                };
+              }
+            }
+          }
+        } catch (error) {
+          console.error("PayTech marketplace API error :", error);
+        }
       }
 
       await prisma.commandeClient.updateMany({

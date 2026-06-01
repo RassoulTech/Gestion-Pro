@@ -35,7 +35,7 @@ export function UpgradeModal({
   const router = useRouter();
   const [plans, setPlans] = useState<PlanType[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY" | "PAYPAL">("WAVE");
+  const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY">("WAVE");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
 
@@ -72,7 +72,11 @@ export function UpgradeModal({
 
       if (result?.data?.paymentUrl) {
         toast.success("Redirection vers la passerelle de paiement...");
-        router.push(result.data.paymentUrl);
+        if (result.data.paymentUrl.startsWith("http://") || result.data.paymentUrl.startsWith("https://")) {
+          window.location.href = result.data.paymentUrl;
+        } else {
+          router.push(result.data.paymentUrl);
+        }
       } else {
         toast.error("Impossible de démarrer la session de paiement.");
       }
@@ -184,7 +188,7 @@ export function UpgradeModal({
                   <div className="space-y-3">
                     <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-zinc-400">Sélectionnez votre moyen de paiement</p>
                     
-                    <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4">
                       {/* WAVE */}
                       <div
                         onClick={() => setSelectedMethod("WAVE")}
@@ -229,27 +233,6 @@ export function UpgradeModal({
                           </g>
                         </svg>
                         <span className="text-[10px] sm:text-xs font-black text-center leading-none">Orange Money</span>
-                      </div>
-
-                      {/* PAYPAL */}
-                      <div
-                        onClick={() => setSelectedMethod("PAYPAL")}
-                        className={cn(
-                          "p-3 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 bg-zinc-900/50 hover:border-zinc-700",
-                          selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
-                        )}
-                      >
-                        <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-8 w-auto">
-                          <rect width="32" height="20" rx="4" fill="#00249C" />
-                          {/* Overlapping PayPal Monogram */}
-                          <svg x="3" y="3" width="10" height="14" viewBox="7.05 3 37.35 45">
-                            <path fill="#003087" d="M38.914 13.35c0 5.574-5.144 12.15-12.927 12.15H18.49l-.368 2.322L16.373 39H7.056l5.605-36h15.095c5.083 0 9.082 2.833 10.555 6.77a9.687 9.687 0 0 1 .603 3.58z" />
-                            <path fill="#0079C1" d="M44.284 23.7A12.894 12.894 0 0 1 31.53 34.5h-5.206L24.157 48H14.89l1.483-9 1.75-11.178.367-2.322h7.497c7.773 0 12.927-6.576 12.927-12.15 3.825 1.974 6.055 5.963 5.37 10.35z" />
-                            <path fill="#00457C" d="M38.914 13.35C37.31 12.511 35.365 12 33.248 12h-12.64L18.49 25.5h7.497c7.773 0 12.927-6.576 12.927-12.15z" />
-                          </svg>
-                          <text x="21" y="12.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="950" fontSize="6.5" fill="white" fontStyle="italic" letterSpacing="-0.3">PayPal</text>
-                        </svg>
-                        <span className="text-[10px] sm:text-xs font-black">PayPal</span>
                       </div>
                     </div>
                   </div>

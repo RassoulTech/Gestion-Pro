@@ -166,66 +166,86 @@ export class PaymentService {
         };
       }
 
-      // 1. SI WAVE / ORANGE MONEY (Intégration réelle PayDunya si activé, sinon Mock de test) :
+      // 1. SI WAVE / ORANGE MONEY (Intégration réelle PayTech si activé, sinon Mock de test) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
-        const pdMaster = process.env.PAYDUNYA_MASTER_KEY || "";
-        const paydunyaConfigured =
-          process.env.PAYDUNYA_ENABLED === "true" &&
-          pdMaster.length > 0 &&
-          !pdMaster.includes("mock");
+        const paytechConfigured =
+          process.env.PAYTECH_ENABLED === "true" &&
+          process.env.PAYTECH_API_KEY &&
+          process.env.PAYTECH_API_SECRET;
 
-        if (paydunyaConfigured) {
-          const { PayDunyaClient, extractPayDunyaCheckoutUrl } = await import(
-            "@/lib/paydunya"
-          );
+        if (paytechConfigured) {
+          try {
+            const paytechUrl = "https://paytech.sn/api/payment/request-payment";
+            const requestBody = {
+              item_name: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
+              item_price: amount,
+              ref_command: paiement.transactionRef || `SUB-${Date.now()}`,
+              command_name: `Abonnement sur GestionPro`,
+              currency: "XOF",
+              env: process.env.PAYTECH_ENV || "test",
+              ipn_url: `${appUrl}/api/paytech/ipn`,
+              success_url: `${appUrl}${facturationPath}?success=true`,
+              cancel_url: `${appUrl}${facturationPath}?success=false`,
+              custom_field: JSON.stringify({
+                kind: "subscription",
+                abonnementId: abonnement.id,
+                vendeurId,
+                transactionRef: paiement.transactionRef || undefined,
+              })
+            };
 
-          const pdResponse = await PayDunyaClient.initiateInvoice({
-            transactionId: paiement.transactionRef || `SUB-${Date.now()}`,
-            amount,
-            description: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
-            cancelUrl: `${appUrl}${facturationPath}?success=false`,
-            returnUrl: `${appUrl}${facturationPath}?success=true`,
-            callbackUrl: `${appUrl}/api/webhooks/paydunya`,
-            customData: {
-              kind: "subscription",
-              abonnementId: abonnement.id,
-              vendeurId,
-              transactionRef: paiement.transactionRef ?? undefined,
-            },
-          });
-
-          const checkoutUrl = extractPayDunyaCheckoutUrl(pdResponse);
-
-          if (checkoutUrl && pdResponse.token) {
-            await prisma.abonnement.update({
-              where: { id: abonnementId },
-              data: { paydunyaToken: pdResponse.token },
+            const response = await fetch(paytechUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "API_KEY": process.env.PAYTECH_API_KEY || "",
+                "API_SECRET": process.env.PAYTECH_API_SECRET || ""
+              },
+              body: JSON.stringify(requestBody)
             });
 
-            await prisma.paiement.update({
-              where: { id: paiement.id },
-              data: { paydunyaToken: pdResponse.token },
-            });
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success === 1 || data.success === true) {
+                const redirectUrl = data.redirectUrl || data.redirect_url;
+                if (redirectUrl && data.token) {
+                  await prisma.abonnement.update({
+                    where: { id: abonnementId },
+                    data: { paydunyaToken: data.token },
+                  });
 
+                  await prisma.paiement.update({
+                    where: { id: paiement.id },
+                    data: { paydunyaToken: data.token },
+                  });
+
+                  return {
+                    success: true,
+                    paymentUrl: redirectUrl,
+                    transactionRef: paiement.transactionRef || undefined,
+                  };
+                }
+              }
+            }
+
+            const errorText = await response.text();
+            console.error("PayTech subscription API error :", errorText);
             return {
-              success: true,
-              paymentUrl: checkoutUrl,
-              transactionRef: paiement.transactionRef || undefined,
+              success: false,
+              error: "Impossible d'initier le paiement Mobile Money via PayTech.",
+            };
+          } catch (error: any) {
+            console.error("PayTech subscription integration error :", error);
+            return {
+              success: false,
+              error: error.message || "Erreur lors de l'appel à PayTech.",
             };
           }
-
-          console.error("PayDunya API error :", pdResponse);
-          return {
-            success: false,
-            error:
-              pdResponse.response_text ||
-              "Impossible d'initier le paiement Mobile Money.",
-          };
         }
 
         return {
           success: false,
-          error: "Le paiement par Mobile Money n'est pas activé ou configuré sur ce serveur.",
+          error: "Le paiement par Mobile Money (PayTech) n'est pas activé ou configuré sur ce serveur.",
         };
       }
 

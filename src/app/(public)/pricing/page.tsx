@@ -24,7 +24,7 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<PlanType[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY" | "PAYPAL" | "STRIPE">("STRIPE");
+  const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY">("WAVE");
   const [step, setStep] = useState<1 | 2>(1);
 
   useEffect(() => {
@@ -65,8 +65,12 @@ export default function PricingPage() {
       }
 
       if (result?.data?.paymentUrl) {
-        toast.success("Redirection vers le simulateur de paiement...");
-        router.push(result.data.paymentUrl);
+        toast.success("Redirection vers la passerelle de paiement...");
+        if (result.data.paymentUrl.startsWith("http://") || result.data.paymentUrl.startsWith("https://")) {
+          window.location.href = result.data.paymentUrl;
+        } else {
+          router.push(result.data.paymentUrl);
+        }
       } else {
         toast.error("Une erreur est survenue lors de l'initialisation.");
       }
@@ -207,30 +211,6 @@ export default function PricingPage() {
               <p className="text-xs font-black uppercase tracking-wider text-zinc-500">Moyen de paiement</p>
               
               <div className="grid grid-cols-2 gap-3">
-                {/* STRIPE */}
-                <div
-                  onClick={() => setSelectedMethod("STRIPE")}
-                  className={cn(
-                    "p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col items-center gap-2 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "STRIPE" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
-                  )}
-                >
-                  <div className="flex gap-1 justify-center items-center h-6 shrink-0">
-                    {/* Visa */}
-                    <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded shadow-sm">
-                      <rect width="24" height="15" rx="2" fill="#1A1F71" />
-                      <text x="12" y="11" textAnchor="middle" fontFamily="sans-serif" fontWeight="bold" fontSize="8" fill="#FFF" fontStyle="italic">VISA</text>
-                    </svg>
-                    {/* Mastercard */}
-                    <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded shadow-sm">
-                      <rect width="24" height="15" rx="2" fill="#222" />
-                      <circle cx="10" cy="7.5" r="4.5" fill="#EB001B" />
-                      <circle cx="14" cy="7.5" r="4.5" fill="#F79E1B" opacity="0.85" />
-                    </svg>
-                  </div>
-                  <span className="text-[10px] font-black">Stripe / Carte</span>
-                </div>
-
                 {/* WAVE */}
                 <div
                   onClick={() => setSelectedMethod("WAVE")}
@@ -275,27 +255,6 @@ export default function PricingPage() {
                     </g>
                   </svg>
                   <span className="text-[10px] font-black">Orange Money</span>
-                </div>
-
-                {/* PAYPAL */}
-                <div
-                  onClick={() => setSelectedMethod("PAYPAL")}
-                  className={cn(
-                    "p-4 rounded-2xl border-2 cursor-pointer transition flex flex-col items-center gap-2 bg-zinc-950/40 hover:border-zinc-700",
-                    selectedMethod === "PAYPAL" ? "border-brand bg-brand/5 text-brand" : "border-zinc-800 text-zinc-500"
-                  )}
-                >
-                  <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
-                    <rect width="32" height="20" rx="4" fill="#00249C" />
-                    {/* Overlapping PayPal Monogram */}
-                    <svg x="3" y="3" width="10" height="14" viewBox="7.05 3 37.35 45">
-                      <path fill="#003087" d="M38.914 13.35c0 5.574-5.144 12.15-12.927 12.15H18.49l-.368 2.322L16.373 39H7.056l5.605-36h15.095c5.083 0 9.082 2.833 10.555 6.77a9.687 9.687 0 0 1 .603 3.58z" />
-                      <path fill="#0079C1" d="M44.284 23.7A12.894 12.894 0 0 1 31.53 34.5h-5.206L24.157 48H14.89l1.483-9 1.75-11.178.367-2.322h7.497c7.773 0 12.927-6.576 12.927-12.15 3.825 1.974 6.055 5.963 5.37 10.35z" />
-                      <path fill="#00457C" d="M38.914 13.35C37.31 12.511 35.365 12 33.248 12h-12.64L18.49 25.5h7.497c7.773 0 12.927-6.576 12.927-12.15z" />
-                    </svg>
-                    <text x="21" y="12.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="950" fontSize="6.5" fill="white" fontStyle="italic" letterSpacing="-0.3">PayPal</text>
-                  </svg>
-                  <span className="text-[10px] font-black">PayPal</span>
                 </div>
               </div>
             </div>

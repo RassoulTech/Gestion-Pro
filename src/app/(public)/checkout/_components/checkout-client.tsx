@@ -68,7 +68,11 @@ export function CheckoutClient() {
         clearCart();
         toast.success("Commande validée avec succès !");
         if (data.paymentUrl) {
-          router.push(data.paymentUrl);
+          if (data.paymentUrl.startsWith("http://") || data.paymentUrl.startsWith("https://")) {
+            window.location.href = data.paymentUrl;
+          } else {
+            router.push(data.paymentUrl);
+          }
         } else {
           router.push("/mes-commandes");
         }
@@ -461,26 +465,6 @@ export function CheckoutClient() {
                           <path d="M21 13h-4v-4" fill="none" />
                         </g>
                       </svg>
-                    </Label>
-                    <Label className="flex items-center justify-between p-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10">
-                      <div className="flex items-center gap-3">
-                        <RadioGroupItem value="STRIPE" id="card" />
-                        <span className="font-bold">Carte Bancaire</span>
-                      </div>
-                      {/* Visa + Mastercard double icons */}
-                      <div className="flex gap-1 shrink-0">
-                        {/* Visa */}
-                        <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded shadow-sm">
-                          <rect width="24" height="15" rx="2" fill="#1A1F71" />
-                          <text x="12" y="11" textAnchor="middle" fontFamily="sans-serif" fontWeight="bold" fontSize="8" fill="#FFF" fontStyle="italic">VISA</text>
-                        </svg>
-                        {/* Mastercard */}
-                        <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded shadow-sm">
-                          <rect width="24" height="15" rx="2" fill="#222" />
-                          <circle cx="10" cy="7.5" r="4.5" fill="#EB001B" />
-                          <circle cx="14" cy="7.5" r="4.5" fill="#F79E1B" opacity="0.85" />
-                        </svg>
-                      </div>
                     </Label>
                   </RadioGroup>
                 </div>
