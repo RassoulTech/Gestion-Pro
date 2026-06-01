@@ -204,36 +204,41 @@ export class PaymentService {
               body: JSON.stringify(requestBody)
             });
 
-            if (response.ok) {
-              const data = await response.json();
-              if (data.success === 1 || data.success === true) {
-                const redirectUrl = data.redirectUrl || data.redirect_url;
-                if (redirectUrl && data.token) {
-                  await prisma.abonnement.update({
-                    where: { id: abonnementId },
-                    data: { paydunyaToken: data.token },
-                  });
+             let data: any = null;
+             if (response.ok) {
+               try {
+                 data = await response.json();
+               } catch (parseError) {
+                 console.error("Failed to parse PayTech response JSON :", parseError);
+               }
+             }
 
-                  await prisma.paiement.update({
-                    where: { id: paiement.id },
-                    data: { paydunyaToken: data.token },
-                  });
+             if (data && (data.success === 1 || data.success === true)) {
+               const redirectUrl = data.redirectUrl || data.redirect_url;
+               if (redirectUrl && data.token) {
+                 await prisma.abonnement.update({
+                   where: { id: abonnementId },
+                   data: { paydunyaToken: data.token },
+                 });
 
-                  return {
-                    success: true,
-                    paymentUrl: redirectUrl,
-                    transactionRef: paiement.transactionRef || undefined,
-                  };
-                }
-              }
-            }
+                 await prisma.paiement.update({
+                   where: { id: paiement.id },
+                   data: { paydunyaToken: data.token },
+                 });
 
-            const errorText = await response.text();
-            console.error("PayTech subscription API error :", errorText);
-            return {
-              success: false,
-              error: "Impossible d'initier le paiement Mobile Money via PayTech.",
-            };
+                 return {
+                   success: true,
+                   paymentUrl: redirectUrl,
+                   transactionRef: paiement.transactionRef || undefined,
+                 };
+               }
+             }
+
+             console.error("PayTech subscription API failure response :", data || "No response data");
+             return {
+               success: false,
+               error: data?.message || "Impossible d'initier le paiement Mobile Money via PayTech.",
+             };
           } catch (error: any) {
             console.error("PayTech subscription integration error :", error);
             return {
