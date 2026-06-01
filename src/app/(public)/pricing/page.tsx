@@ -241,7 +241,16 @@ export default function PricingPage() {
                 >
                   <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
                     <rect width="32" height="20" rx="4" fill="#00C2C9" />
-                    <path d="M6 10C10 6 12 14 16 10C20 6 22 14 26 10" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* Official-style Wave Penguin silhouette representation */}
+                    <circle cx="16" cy="7.5" r="3.5" fill="white" />
+                    <ellipse cx="16" cy="13.5" rx="5" ry="4" fill="white" />
+                    <rect x="12.5" y="7.5" width="7" height="6" fill="white" />
+                    <circle cx="14.2" cy="17.5" r="1" fill="#FFC800" />
+                    <circle cx="17.8" cy="17.5" r="1" fill="#FFC800" />
+                    <polygon points="16,8 19,8.5 16,9" fill="#FFC800" />
+                    <circle cx="14.5" cy="7.5" r="0.7" fill="#00C2C9" />
+                    <circle cx="17.5" cy="7.5" r="0.7" fill="#00C2C9" />
+                    <ellipse cx="16" cy="13" rx="2.5" ry="2" fill="#00C2C9" />
                   </svg>
                   <span className="text-[10px] font-black">Wave</span>
                 </div>
@@ -256,7 +265,15 @@ export default function PricingPage() {
                 >
                   <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0 shadow-sm rounded h-6 w-auto">
                     <rect width="32" height="20" rx="4" fill="#FF6600" />
-                    <text x="16" y="14.5" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="11" fill="white" letterSpacing="-0.5">OM</text>
+                    {/* Official-style Orange Money diagonal arrows */}
+                    <g stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="9" y1="13" x2="15" y2="7" />
+                      <path d="M11 7h4v4" fill="none" />
+                    </g>
+                    <g stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="23" y1="7" x2="17" y2="13" />
+                      <path d="M21 13h-4v-4" fill="none" />
+                    </g>
                   </svg>
                   <span className="text-[10px] font-black">Orange Money</span>
                 </div>
