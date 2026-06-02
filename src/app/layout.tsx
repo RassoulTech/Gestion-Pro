@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Inter, Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
 import { auth } from "@/lib/auth";
@@ -10,8 +8,19 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-
   variable: "--font-inter",
+});
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-sans",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -36,7 +45,7 @@ export default async function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} ${inter.variable} font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} font-sans`}
       >
         <Providers session={session}>
           {children}
