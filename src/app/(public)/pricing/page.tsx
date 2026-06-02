@@ -93,10 +93,10 @@ export default function PricingPage() {
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-black uppercase tracking-widest">
             <Sparkles className="h-3 w-3" /> Tarifs Simples & Transparents
           </span>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
             Choisissez le plan idéal
           </h1>
-          <p className="text-zinc-400 max-w-xl mx-auto font-medium text-sm sm:text-base">
+          <p className="text-zinc-400 max-w-xl mx-auto font-medium text-sm">
             Aucun frais caché. Mettez à niveau, rétrogradez ou annulez votre abonnement à tout moment directement depuis votre espace personnel.
           </p>
         </div>

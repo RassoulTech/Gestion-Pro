@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -8,7 +7,8 @@ import { z } from "zod";
  
 import { motion } from "framer-motion";
  
-import { Mail, MessageSquare, Send, User } from "lucide-react";
+import { Mail, Send } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { toast } from "sonner";
 
 import { sendContactMessage } from "@/server/actions/contact.actions";
@@ -78,10 +78,10 @@ export function ContactSection() {
           <span className="inline-flex items-center gap-2 rounded-full bg-orange-500/10 px-4.5 py-1.5 text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-4">
             Une question ?
           </span>
-          <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
             Contactez <span className="text-shimmer">notre équipe.</span>
           </h2>
-          <p className="mt-4 text-base font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <p className="mt-3 text-sm font-medium text-zinc-500 dark:text-zinc-400 leading-relaxed">
             Besoin d&apos;un conseil, d&apos;une démonstration personnalisée ou d&apos;un accompagnement ? Nos experts sont là pour propulser votre commerce.
           </p>
         </div>
@@ -98,11 +98,7 @@ export function ContactSection() {
                 href: "mailto:dionemhd1@gmail.com"
               },
               {
-                icon: (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-emerald-600 dark:text-emerald-400">
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.437 0 9.862-4.41 9.865-9.85.002-2.636-1.02-5.115-2.879-6.979C16.398 1.912 13.926.887 11.3.887 5.86.887 1.439 5.3 1.436 10.74c0 1.562.415 3.09 1.202 4.457l-1.018 3.719 3.824-.997c1.336.727 2.766 1.096 4.203 1.096zM17.65 14.15c-.3-.15-1.785-.88-2.062-.98-.278-.1-.48-.15-.68.15-.2.3-.77.98-.945 1.18-.175.2-.35.225-.65.075-.3-.15-1.27-.47-2.42-1.49-.89-.8-1.5-1.78-1.675-2.08-.175-.3-.02-.46.13-.61.135-.13.3-.35.45-.52.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.68-1.64-.93-2.24-.24-.58-.49-.5-.68-.51h-.58c-.2 0-.525.075-.8 0-.275-.3-1.05-1.025-1.44-1.95-.36-.85-.15-1.52.075-1.7.35-.3.6-.525.9-.9.1-.125.175-.25.25-.425.075-.175.04-.325-.02-.475-.06-.15-.58-1.4-.8-1.92-.215-.52-.46-.45-.63-.45h-.54c-.18 0-.475.067-.723.342-.248.275-.945.925-.945 2.25s.965 2.6 1.1 2.775c.135.175 1.9 2.9 4.6 4.075.64.28 1.14.448 1.53.573.645.205 1.23.175 1.69.107.514-.077 1.785-.73 2.037-1.435.252-.705.252-1.31.176-1.435-.075-.125-.275-.2-.575-.35z" />
-                  </svg>
-                ),
+                icon: <WhatsAppIcon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />,
                 title: "Support WhatsApp",
                 value: "+221 77 383 13 64",
                 desc: "Conseillers disponibles 7j/7",

@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
   Loader2, Save, Store, Mail, Phone, Globe, MapPin, Info, Clock,
-  MessageCircle, Facebook, Instagram, Linkedin, Twitter, ImageIcon,
+  Share2, Facebook, Instagram, Linkedin, Twitter, ImageIcon,
   Utensils, Shirt, Smartphone, Sparkles, HeartPulse, Hammer, BookOpen, HelpCircle,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { updateBoutiqueSchema, type UpdateBoutiqueInput } from "@/schemas/boutique.schema";
 import { updateBoutique } from "@/server/actions/boutique.actions";
 import { Button } from "@/components/ui/button";
@@ -258,7 +259,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
 
         <div className="space-y-4">
           <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-2">
-            <MessageCircle className="h-3 w-3" /> Réseaux & WhatsApp
+            <Share2 className="h-3 w-3" /> Réseaux & WhatsApp
           </h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
@@ -267,7 +268,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <MessageCircle className="h-3.5 w-3.5 text-emerald-500" /> WhatsApp
+                    <WhatsAppIcon className="h-3.5 w-3.5 text-emerald-500" /> WhatsApp
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="+221 77 000 00 00" className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand" {...field} />

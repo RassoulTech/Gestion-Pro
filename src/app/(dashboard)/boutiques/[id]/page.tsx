@@ -341,7 +341,7 @@ export default async function BoutiqueDashboardPage({
                   );
                 })()}
               </div>
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-none">
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 {boutique.nom}
               </h1>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-zinc-400 font-bold text-xs sm:text-sm">

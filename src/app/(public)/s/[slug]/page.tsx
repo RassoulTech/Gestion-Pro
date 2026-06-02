@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Store, MapPin, Phone, Globe, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Store, ArrowLeft, CheckCircle2, Clock } from "lucide-react";
 import { getBoutiqueBySlug } from "@/server/queries/boutique.queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "./_components/product-card";
+import { ContactItem } from "@/components/contact-item";
 import { getSectorLabel, getSectorIcon } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -85,11 +86,11 @@ export default async function BoutiquePubliquePage({ params }: Props) {
 
             <div className="flex-1 space-y-4">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
                   {boutique.nom}
                   <CheckCircle2 className="w-5 h-5 text-orange-500 fill-orange-500/10 shrink-0" />
                 </h1>
-                
+
                 {(() => {
                   const Icon = getSectorIcon(boutique.secteurActivite);
                   return (
@@ -106,24 +107,30 @@ export default async function BoutiquePubliquePage({ params }: Props) {
                   {boutique.description}
                 </p>
               )}
-              
-              <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-bold text-slate-400 dark:text-zinc-500">
-                {boutique.adresse && (
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-orange-500" /> {boutique.adresse}
-                  </span>
-                )}
-                {boutique.telephone && (
-                  <span className="flex items-center gap-1.5">
-                    <Phone className="h-4 w-4 text-orange-500" /> {boutique.telephone}
-                  </span>
-                )}
-                {boutique.siteWeb && (
-                  <span className="flex items-center gap-1.5">
-                    <Globe className="h-4 w-4 text-orange-500" /> {boutique.siteWeb}
-                  </span>
-                )}
+
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
+                {boutique.adresse && <ContactItem kind="address" value={boutique.adresse} />}
+                {boutique.telephone && <ContactItem kind="phone" value={boutique.telephone} />}
+                {boutique.whatsapp && <ContactItem kind="whatsapp" value={boutique.whatsapp} label="WhatsApp" />}
+                {boutique.email && <ContactItem kind="email" value={boutique.email} />}
+                {boutique.siteWeb && <ContactItem kind="website" value={boutique.siteWeb} label="Site web" />}
               </div>
+
+              {(boutique.facebook || boutique.instagram || boutique.linkedin || boutique.twitter) && (
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  {boutique.facebook && <ContactItem kind="facebook" value={boutique.facebook} label="Facebook" />}
+                  {boutique.instagram && <ContactItem kind="instagram" value={boutique.instagram} label="Instagram" />}
+                  {boutique.linkedin && <ContactItem kind="linkedin" value={boutique.linkedin} label="LinkedIn" />}
+                  {boutique.twitter && <ContactItem kind="twitter" value={boutique.twitter} label="X / Twitter" />}
+                </div>
+              )}
+
+              {boutique.horaires && (
+                <div className="flex items-start gap-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 max-w-3xl">
+                  <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0 text-orange-500" />
+                  <span className="whitespace-pre-line leading-relaxed">{boutique.horaires}</span>
+                </div>
+              )}
             </div>
 
           </div>
