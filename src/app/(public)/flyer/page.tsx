@@ -97,7 +97,7 @@ export default function FlyerPage() {
               </span>
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
-              « Gérez mieux, vendez plus »
+              Gérez mieux, vendez plus
             </span>
           </div>
 
