@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
 import { auth } from "@/lib/auth";
@@ -21,6 +21,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-geist-mono",
+});
+
+// Police d'affichage à fort caractère pour les titres (éditoriale, premium).
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-bricolage",
 });
 
 export const metadata: Metadata = {
@@ -45,7 +52,7 @@ export default async function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${inter.variable} font-sans`}
       >
         <Providers session={session}>
           {children}

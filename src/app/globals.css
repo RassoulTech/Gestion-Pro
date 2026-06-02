@@ -81,9 +81,10 @@
   --font-mono:
     var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular,
     Menlo, monospace;
+  /* Titres : police éditoriale à fort caractère (Bricolage Grotesque) */
   --font-display:
-    var(--font-geist-sans), var(--font-inter), ui-sans-serif, system-ui,
-    sans-serif;
+    var(--font-bricolage), var(--font-geist-sans), var(--font-inter),
+    ui-sans-serif, system-ui, sans-serif;
 
   /* ── Échelle typographique (px → rem en base 16) ─────────────────────── */
   --text-xs: 0.75rem; /* 12 */
@@ -292,11 +293,12 @@
   }
 
   h1,
-  h2 {
-    font-weight: 600;
-    letter-spacing: -0.01em;
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
-  h3,
   h4,
   h5,
   h6 {
