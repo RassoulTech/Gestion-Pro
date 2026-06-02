@@ -65,18 +65,31 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
     boutiqueId,
   };
 
-  // Date range filter
+  const andClauses: any[] = [];
+
+  // Date range filter (created OR modified in the period)
   if (dateFilter.startDate || dateFilter.endDate) {
-    whereClause.createdAt = dateFilter.whereClause;
+    andClauses.push({
+      OR: [
+        { createdAt: dateFilter.whereClause },
+        { updatedAt: dateFilter.whereClause },
+      ],
+    });
   }
 
   // Term search filter
   if (q) {
-    whereClause.OR = [
-      { nom: { contains: q, mode: "insensitive" } },
-      { code: { contains: q, mode: "insensitive" } },
-      { description: { contains: q, mode: "insensitive" } },
-    ];
+    andClauses.push({
+      OR: [
+        { nom: { contains: q, mode: "insensitive" } },
+        { code: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (andClauses.length > 0) {
+    whereClause.AND = andClauses;
   }
 
   // Stock status filter

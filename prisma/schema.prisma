@@ -326,6 +326,7 @@ model Produit {
 
   @@unique([boutiqueId, code])
   @@index([boutiqueId, createdAt])
+  @@index([boutiqueId, updatedAt])
   @@index([createdAt])
   @@index([prixUnitaire])
   @@index([quantite])

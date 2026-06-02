@@ -69,7 +69,7 @@ export function UnifiedFilterPanel({
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
 
-  const urlRange = searchParams.get("range") || "all";
+  const urlRange = searchParams.get("range") || "30days";
   const urlFrom = searchParams.get("from") || "";
   const urlTo = searchParams.get("to") || "";
   const urlSearch = searchParams.get("q") || "";
@@ -98,7 +98,7 @@ export function UnifiedFilterPanel({
   // Synchronisation des états de brouillon avec l'URL
   useEffect(() => {
     setDraftSearch(urlSearch);
-    setDraftRange(urlRange || "all");
+    setDraftRange(urlRange || "30days");
     setDraftFrom(urlFrom);
     setDraftTo(urlTo);
     setDraftStatus(urlStatus || "all");
@@ -124,7 +124,7 @@ export function UnifiedFilterPanel({
   const activeCount = React.useMemo(() => {
     let count = 0;
     if (urlSearch) count++;
-    if (urlRange && urlRange !== "all") count++;
+    if (urlRange && urlRange !== "30days") count++;
     if (urlStatus && urlStatus !== "ALL" && urlStatus !== "all") count++;
     if (urlCategory && urlCategory !== "ALL" && urlCategory !== "all") count++;
     if (urlSupplier && urlSupplier !== "all") count++;
@@ -151,7 +151,7 @@ export function UnifiedFilterPanel({
     else params.delete("q");
 
     // Période
-    if (draftRange && draftRange !== "all") {
+    if (draftRange && draftRange !== "30days") {
       params.set("range", draftRange);
       if (draftRange === "custom") {
         if (draftFrom) params.set("from", draftFrom);
@@ -236,7 +236,7 @@ export function UnifiedFilterPanel({
 
   const handleReset = useCallback(() => {
     setDraftSearch("");
-    setDraftRange("all");
+    setDraftRange("30days");
     setDraftFrom("");
     setDraftTo("");
     setDraftStatus("all");

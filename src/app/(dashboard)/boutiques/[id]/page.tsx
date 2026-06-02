@@ -172,14 +172,20 @@ export default async function BoutiqueDashboardPage({
     prisma.depense.count({
       where: { boutiqueId: id, date: dateFilter.whereClause },
     }),
-    // Total stock units (sum of all product quantities, all-time)
+    // Total stock units (sum of product quantities created or modified in the period)
     prisma.produit.aggregate({
-      where: { boutiqueId: id },
+      where: {
+        boutiqueId: id,
+        OR: [
+          { createdAt: dateFilter.whereClause },
+          { updatedAt: dateFilter.whereClause }
+        ]
+      },
       _sum: { quantite: true },
     }),
-    // Count of suppliers (all-time)
+    // Count of suppliers registered in the period
     prisma.fournisseur.count({
-      where: { boutiqueId: id },
+      where: { boutiqueId: id, createdAt: dateFilter.whereClause },
     }),
   ]);
 
@@ -254,7 +260,7 @@ export default async function BoutiqueDashboardPage({
       icon: Boxes,
       color: "text-violet-500",
       bg: "bg-violet-500/10",
-      trend: "Total",
+      trend: range ? "Période" : "Total",
     },
     {
       label: "Dépenses",
@@ -273,7 +279,7 @@ export default async function BoutiqueDashboardPage({
       icon: Truck,
       color: "text-amber-500",
       bg: "bg-amber-500/10",
-      trend: "Total",
+      trend: range ? "Période" : "Total",
     },
     {
       label: "Bénéfice net",
