@@ -91,7 +91,10 @@ export default function FlyerPage() {
           {/* Top Logo and Tagline */}
           <div className="flex items-center justify-between border-b border-zinc-100 pb-6 mb-6">
             <div className="flex items-center gap-3">
-              <BrandLogo size={42} rounded={10} className="shadow-lg shadow-orange-600/10" />
+              {/* Logo G en Orange Premium uni */}
+              <div className="w-[42px] h-[42px] bg-orange-600 text-white font-black text-2xl rounded-xl flex items-center justify-center shadow-lg shadow-orange-600/20 select-none">
+                G
+              </div>
               <span className="text-2xl font-black tracking-tight text-zinc-900">
                 Gestion<span className="text-orange-600">Pro</span>
               </span>
@@ -225,7 +228,9 @@ export default function FlyerPage() {
                   {/* Phone Header */}
                   <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
                     <div className="flex items-center gap-1.5">
-                      <BrandLogo size={18} rounded={4} />
+                      <div className="w-[18px] h-[18px] bg-orange-600 text-white font-black text-[10px] rounded flex items-center justify-center select-none">
+                        G
+                      </div>
                       <span className="text-[9px] font-black tracking-tighter">
                         Gestion<span className="text-orange-600">Pro</span>
                       </span>
@@ -286,7 +291,7 @@ export default function FlyerPage() {
                     href="mailto:dionemhd1@gmail.com" 
                     className="flex items-center justify-center gap-2.5 hover:text-orange-200 transition-colors"
                   >
-                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-white/10 text-white border border-white/20">
                       <Mail className="h-4 w-4" />
                     </span>
                     <span className="tracking-wide text-zinc-100">dionemhd1@gmail.com</span>
