@@ -54,11 +54,13 @@
   --color-statut-actif: var(--color-success);
   --color-statut-suspendu: var(--color-destructive);
 
-  /* ── Charts ──────────────────────────────────────────────────────────── */
-  --color-chart-1: #7c2d12;
-  --color-chart-2: #ea580c;
+  /* ── Charts — palette catégorielle distincte (daltonien-safe) ────────── */
+  /* chart-1 = orange marque (série primaire) ; 2..5 = accents distincts.
+     Référencés via var(--color-chart-N) — JAMAIS hsl(var(--chart-N)). */
+  --color-chart-1: #ea580c;
+  --color-chart-2: #2563eb;
   --color-chart-3: #16a34a;
-  --color-chart-4: #eab308;
+  --color-chart-4: #7c3aed;
   --color-chart-5: #64748b;
 
   /* ── Sidebar ─────────────────────────────────────────────────────────── */
@@ -247,10 +249,10 @@
     --color-input: #27272a;
     --color-ring: #fafafa;
 
-    --color-chart-1: #fdba74;
-    --color-chart-2: #fb923c;
+    --color-chart-1: #fb923c;
+    --color-chart-2: #60a5fa;
     --color-chart-3: #22c55e;
-    --color-chart-4: #facc15;
+    --color-chart-4: #a78bfa;
     --color-chart-5: #94a3b8;
 
     --color-sidebar: #111111;

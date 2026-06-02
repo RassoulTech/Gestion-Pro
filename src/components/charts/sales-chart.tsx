@@ -31,33 +31,33 @@ export function SalesChart({
           <AreaChart data={data}>
             <defs>
               <linearGradient id="colorVentes" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--color-chart-1)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--color-chart-1)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis
               dataKey="date"
               className="text-xs"
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tick={{ fill: "var(--color-muted-foreground)" }}
             />
             <YAxis
               className="text-xs"
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tick={{ fill: "var(--color-muted-foreground)" }}
               tickFormatter={(value: number) => formatCurrency(value)}
             />
             <Tooltip
               formatter={(value: number) => [formatCurrency(value), "Ventes"]}
               contentStyle={{
-                backgroundColor: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--border))",
+                backgroundColor: "var(--color-popover)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "var(--radius)",
               }}
             />
             <Area
               type="monotone"
               dataKey="ventes"
-              stroke="hsl(var(--chart-1))"
+              stroke="var(--color-chart-1)"
               fillOpacity={1}
               fill="url(#colorVentes)"
               strokeWidth={2}

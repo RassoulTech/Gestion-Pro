@@ -35,18 +35,18 @@ export function TopProductsChart({
               type="category"
               width={120}
               className="text-xs"
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tick={{ fill: "var(--color-muted-foreground)" }}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--border))",
+                backgroundColor: "var(--color-popover)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "var(--radius)",
               }}
             />
             <Bar
               dataKey="total"
-              fill="hsl(var(--chart-2))"
+              fill="var(--color-chart-1)"
               radius={[0, 4, 4, 0]}
             />
           </BarChart>

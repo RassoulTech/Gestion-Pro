@@ -33,11 +33,11 @@ export function RevenueChart({
             <XAxis
               dataKey="mois"
               className="text-xs"
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tick={{ fill: "var(--color-muted-foreground)" }}
             />
             <YAxis
               className="text-xs"
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tick={{ fill: "var(--color-muted-foreground)" }}
               tickFormatter={(value: number) => formatCurrency(value)}
             />
             <Tooltip
@@ -46,13 +46,13 @@ export function RevenueChart({
                 name === "revenus" ? "Revenus" : "Dépenses",
               ]}
               contentStyle={{
-                backgroundColor: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--border))",
+                backgroundColor: "var(--color-popover)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "var(--radius)",
               }}
             />
-            <Bar dataKey="revenus" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="depenses" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="revenus" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="depenses" fill="var(--color-chart-5)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
