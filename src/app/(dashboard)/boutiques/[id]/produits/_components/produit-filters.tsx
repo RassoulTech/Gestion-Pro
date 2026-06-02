@@ -18,8 +18,14 @@ export function ProduitFilters() {
 
   const [searchValue, setSearchValue] = useState(currentSearch);
 
-  // Debounce search input
+  // Debounce search input.
+  // Garde : ne pousser que si la valeur saisie diffère réellement du paramètre
+  // d'URL. Sans cette garde, l'effet se déclenchait au montage et à chaque
+  // changement d'URL (date, statut, pagination), repoussant systématiquement
+  // page=1 — ce qui bloquait la pagination (retour permanent à la page 1).
   useEffect(() => {
+    if (searchValue === currentSearch) return;
+
     const delayDebounceFn = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString());
       if (searchValue) {
@@ -27,7 +33,7 @@ export function ProduitFilters() {
       } else {
         params.delete("q");
       }
-      params.set("page", "1"); // Reset pagination
+      params.delete("page"); // Reset pagination on a new search
 
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`);
@@ -35,7 +41,7 @@ export function ProduitFilters() {
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchValue, pathname, router, searchParams]);
+  }, [searchValue, currentSearch, pathname, router, searchParams]);
 
   // Handle status filter change
   const handleStatusChange = (status: string) => {

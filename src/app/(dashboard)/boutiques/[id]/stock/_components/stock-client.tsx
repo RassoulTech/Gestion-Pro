@@ -52,18 +52,46 @@ interface StockClientProps {
   total: number;
   totalEntrees: number;
   totalSorties: number;
+  /** Valeurs `sourceType` réellement présentes en base pour cette boutique. */
+  availableSources: string[];
 }
 
-const SOURCE_OPTIONS = [
-  { value: "ALL", label: "Toutes les sources" },
-  { value: "MANUEL", label: "Manuel" },
-  { value: "COMMANDE_CLIENT", label: "Vente Client" },
-  { value: "COMMANDE_FOURNISSEUR", label: "Réapprovisionnement" },
-  { value: "VENTE_FLASH", label: "Vente Flash" },
-  { value: "AJUSTEMENT", label: "Ajustement de stock" },
-];
+/**
+ * Normalise un `sourceType` brut (toutes conventions historiques + actuelles)
+ * vers un libellé lisible. Tolère les variantes de casse et de nommage
+ * (COMMANDE / CommandeClient / VENTE, etc.).
+ */
+function getSourceLabel(sourceType: string | null): string {
+  if (!sourceType) return "Manuel";
+  switch (sourceType.toUpperCase()) {
+    case "VENTE":
+    case "COMMANDE":
+    case "COMMANDE_CLIENT":
+    case "COMMANDECLIENT":
+      return "Vente client";
+    case "ACHAT":
+    case "COMMANDE_FOURNISSEUR":
+    case "COMMANDEFOURNISSEUR":
+      return "Réapprovisionnement";
+    case "VENTE_FLASH":
+    case "VENTEFLASH":
+      return "Vente flash";
+    case "AJUSTEMENT":
+      return "Ajustement de stock";
+    case "INITIAL":
+      return "Stock initial";
+    case "CREATION":
+      return "Création produit";
+    case "ANNULATIONCOMMANDE":
+      return "Annulation commande";
+    case "REACTIVATIONCOMMANDE":
+      return "Réactivation commande";
+    default:
+      return sourceType;
+  }
+}
 
-export function StockClient({ mouvements, total, totalEntrees, totalSorties }: StockClientProps) {
+export function StockClient({ mouvements, total, totalEntrees, totalSorties, availableSources }: StockClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -95,24 +123,6 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties }: S
     else params.delete("source");
     params.delete("page");
     startTransition(() => router.push(`${pathname}?${params.toString()}`));
-  };
-
-  const getSourceLabel = (sourceType: string | null) => {
-    if (!sourceType) return "Manuel";
-    switch (sourceType.toUpperCase()) {
-      case "VENTE":
-      case "COMMANDE_CLIENT":
-        return "Vente Client";
-      case "ACHAT":
-      case "COMMANDE_FOURNISSEUR":
-        return "Réapprovisionnement";
-      case "VENTE_FLASH":
-        return "Vente Flash";
-      case "AJUSTEMENT":
-        return "Ajustement de stock";
-      default:
-        return sourceType;
-    }
   };
 
   return (
@@ -190,9 +200,9 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties }: S
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl">
                   <SelectItem value="ALL">Toutes les sources</SelectItem>
-                  {SOURCE_OPTIONS.filter(opt => opt.value !== "ALL").map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                  {availableSources.map((src) => (
+                    <SelectItem key={src} value={src}>
+                      {getSourceLabel(src)}
                     </SelectItem>
                   ))}
                 </SelectContent>

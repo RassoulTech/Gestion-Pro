@@ -10,6 +10,8 @@ import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
 import { headers } from "next/headers";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
+import type { ComponentProps } from "react";
 
 export const metadata: Metadata = { title: "Mouvements de stock" };
 
@@ -41,7 +43,23 @@ export default async function StockPage({ params, searchParams }: StockPageProps
   const dateFilter = parseDateFilter(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
 
-  const [mouvementsResult, totalEntreesAgg, totalSortiesAgg] = await Promise.all([
+  // Les cartes "Total Entrées" / "Total Sorties" reflètent la recherche, la
+  // source et la période, mais PAS le filtre de type (sinon l'une des deux
+  // serait toujours à zéro). On construit donc une base de where commune.
+  const aggregateBaseWhere: Prisma.MouvementStockWhereInput = {
+    boutiqueId: id,
+    ...(source && source !== "ALL" && { sourceType: source }),
+    ...(q && {
+      OR: [
+        { produit: { nom: { contains: q, mode: "insensitive" } } },
+        { produit: { code: { contains: q, mode: "insensitive" } } },
+        { sourceType: { contains: q, mode: "insensitive" } },
+      ],
+    }),
+    ...(filterParam && { date: filterParam }),
+  };
+
+  const [mouvementsResult, totalEntreesAgg, totalSortiesAgg, sourceRows] = await Promise.all([
     getMouvementsStock(id, {
       search: q,
       type: type,
@@ -51,47 +69,27 @@ export default async function StockPage({ params, searchParams }: StockPageProps
       dateFilter: filterParam,
     }),
     prisma.mouvementStock.aggregate({
-      where: {
-        boutiqueId: id,
-        type: "ENTREE",
-        ...(type && type !== "ALL" && { type: type as any }),
-        ...(source && source !== "ALL" && { sourceType: source }),
-        ...(q && {
-          OR: [
-            { produit: { nom: { contains: q, mode: "insensitive" } } },
-            { produit: { code: { contains: q, mode: "insensitive" } } },
-            { sourceType: { contains: q, mode: "insensitive" } },
-          ],
-        }),
-        ...(filterParam && { date: filterParam }),
-      },
-      _sum: {
-        quantite: true,
-      },
+      where: { ...aggregateBaseWhere, type: "ENTREE" },
+      _sum: { quantite: true },
     }),
     prisma.mouvementStock.aggregate({
-      where: {
-        boutiqueId: id,
-        type: "SORTIE",
-        ...(type && type !== "ALL" && { type: type as any }),
-        ...(source && source !== "ALL" && { sourceType: source }),
-        ...(q && {
-          OR: [
-            { produit: { nom: { contains: q, mode: "insensitive" } } },
-            { produit: { code: { contains: q, mode: "insensitive" } } },
-            { sourceType: { contains: q, mode: "insensitive" } },
-          ],
-        }),
-        ...(filterParam && { date: filterParam }),
-      },
-      _sum: {
-        quantite: true,
-      },
+      where: { ...aggregateBaseWhere, type: "SORTIE" },
+      _sum: { quantite: true },
+    }),
+    // Valeurs sourceType réellement présentes → options de filtre fiables
+    prisma.mouvementStock.findMany({
+      where: { boutiqueId: id },
+      select: { sourceType: true },
+      distinct: ["sourceType"],
     }),
   ]);
 
   const totalEntrees = totalEntreesAgg._sum.quantite || 0;
   const totalSorties = totalSortiesAgg._sum.quantite || 0;
+  const availableSources = sourceRows
+    .map((r) => r.sourceType)
+    .filter((s): s is string => !!s)
+    .sort((a, b) => a.localeCompare(b));
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
@@ -111,10 +109,11 @@ export default async function StockPage({ params, searchParams }: StockPageProps
         featureDescription="Suivez chaque entrée et sortie de stock, avec un historique complet et des indicateurs avancés. Disponible dès le plan Pro."
       >
         <StockClient
-          mouvements={mouvementsResult.data as any}
+          mouvements={mouvementsResult.data as ComponentProps<typeof StockClient>["mouvements"]}
           total={mouvementsResult.total}
           totalEntrees={totalEntrees}
           totalSorties={totalSorties}
+          availableSources={availableSources}
         />
         <SimplePagination
           totalItems={mouvementsResult.total}
