@@ -1,32 +1,67 @@
-﻿"use client";
+"use client";
 
-import React, { useTransition, useEffect, useState } from "react";
+import React, { useTransition, useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { 
-  Search, 
-  Sparkles, 
-  Utensils, 
-  Shirt, 
-  Laptop, 
-  Briefcase, 
-  Layers, 
-  Store 
+import {
+  Search,
+  Sparkles,
+  Utensils,
+  Shirt,
+  Laptop,
+  Briefcase,
+  Layers,
+  Store,
+  HeartPulse,
+  Hammer,
+  BookOpen,
+  SlidersHorizontal,
+  ArrowDownUp,
+  X,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 const SECTEURS = [
   { label: "Tous", value: "all", icon: Layers },
   { label: "Alimentation", value: "ALIMENTATION", icon: Utensils },
+  { label: "Habillement", value: "HABILLEMENT", icon: Shirt },
+  { label: "Électronique", value: "ELECTRONIQUE", icon: Laptop },
   { label: "Beauté", value: "BEAUTE", icon: Sparkles },
-  { label: "Prêt-à-porter", value: "HABILLEMENT", icon: Shirt },
-  { label: "Technologies", value: "ELECTRONIQUE", icon: Laptop },
+  { label: "Santé", value: "SANTE", icon: HeartPulse },
   { label: "Services", value: "SERVICES", icon: Briefcase },
-  { label: "Autre", value: "AUTRE", icon: Store }
+  { label: "Quincaillerie", value: "QUINCAILLERIE", icon: Hammer },
+  { label: "Librairie", value: "LIBRAIRIE", icon: BookOpen },
+  { label: "Autre", value: "AUTRE", icon: Store },
 ];
 
-export function MarketplaceFilters() {
+const SORTS = [
+  { label: "Plus récents", value: "recent" },
+  { label: "Plus populaires", value: "popular" },
+  { label: "Prix croissant", value: "price_asc" },
+  { label: "Prix décroissant", value: "price_desc" },
+];
+
+interface MarketplaceFiltersProps {
+  categories: string[];
+  boutiques: { slug: string; nom: string }[];
+}
+
+export function MarketplaceFilters({ categories, boutiques }: MarketplaceFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -34,54 +69,160 @@ export function MarketplaceFilters() {
 
   const currentSearch = searchParams.get("search") || "";
   const currentSecteur = searchParams.get("secteur") || "all";
+  const currentCategorie = searchParams.get("categorie") || "all";
+  const currentBoutique = searchParams.get("boutique") || "all";
+  const currentDispo = searchParams.get("dispo") || "all";
+  const currentSort = searchParams.get("sort") || "recent";
 
   const [searchValue, setSearchValue] = useState(currentSearch);
+  const [prixMin, setPrixMin] = useState(searchParams.get("prixMin") || "");
+  const [prixMax, setPrixMax] = useState(searchParams.get("prixMax") || "");
+  const [sheetOpen, setSheetOpen] = useState(false);
 
-  // Debounce search bar
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
+  // Met à jour l'URL (reset page=1 dès qu'un filtre change)
+  const pushParams = useCallback(
+    (mutate: (p: URLSearchParams) => void) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (searchValue) {
-        params.set("search", searchValue);
-      } else {
-        params.delete("search");
-      }
+      mutate(params);
+      params.delete("page");
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`);
       });
-    }, 400);
+    },
+    [searchParams, pathname, router]
+  );
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchValue, pathname, router, searchParams]);
+  const setParam = useCallback(
+    (key: string, value: string, emptyValue = "all") => {
+      pushParams((params) => {
+        if (value && value !== emptyValue) params.set(key, value);
+        else params.delete(key);
+      });
+    },
+    [pushParams]
+  );
 
-  // Handle category / sector click
-  const handleSecteurClick = (secteur: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (secteur && secteur !== "all") {
-      params.set("secteur", secteur);
-    } else {
-      params.delete("secteur");
-    }
-    startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
-    });
+  // Recherche débouncée
+  useEffect(() => {
+    if (searchValue === currentSearch) return;
+    const t = setTimeout(() => setParam("search", searchValue, ""), 400);
+    return () => clearTimeout(t);
+  }, [searchValue, currentSearch, setParam]);
+
+  // Prix débouncé
+  useEffect(() => {
+    const current = searchParams.get("prixMin") || "";
+    if (prixMin === current) return;
+    const t = setTimeout(() => setParam("prixMin", prixMin, ""), 500);
+    return () => clearTimeout(t);
+  }, [prixMin, searchParams, setParam]);
+
+  useEffect(() => {
+    const current = searchParams.get("prixMax") || "";
+    if (prixMax === current) return;
+    const t = setTimeout(() => setParam("prixMax", prixMax, ""), 500);
+    return () => clearTimeout(t);
+  }, [prixMax, searchParams, setParam]);
+
+  const activeFilterCount = [
+    currentCategorie !== "all",
+    currentBoutique !== "all",
+    currentDispo !== "all",
+    !!searchParams.get("prixMin"),
+    !!searchParams.get("prixMax"),
+  ].filter(Boolean).length;
+
+  const resetFilters = () => {
+    setSearchValue("");
+    setPrixMin("");
+    setPrixMax("");
+    startTransition(() => router.push(pathname));
   };
 
+  // Bloc des filtres avancés réutilisé (desktop + sheet mobile)
+  const AdvancedFilters = (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Catégorie produit */}
+      <Select value={currentCategorie} onValueChange={(v) => setParam("categorie", v)}>
+        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+          <SelectValue placeholder="Catégorie" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Toutes les catégories</SelectItem>
+          {categories.map((c) => (
+            <SelectItem key={c} value={c}>
+              {c}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Boutique */}
+      <Select value={currentBoutique} onValueChange={(v) => setParam("boutique", v)}>
+        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+          <SelectValue placeholder="Boutique" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Toutes les boutiques</SelectItem>
+          {boutiques.map((b) => (
+            <SelectItem key={b.slug} value={b.slug}>
+              {b.nom}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Disponibilité */}
+      <Select value={currentDispo} onValueChange={(v) => setParam("dispo", v)}>
+        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+          <SelectValue placeholder="Disponibilité" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Toute disponibilité</SelectItem>
+          <SelectItem value="stock">En stock</SelectItem>
+          <SelectItem value="rupture">Rupture</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* Prix min / max */}
+      <div className="flex items-center gap-2">
+        <Input
+          type="number"
+          inputMode="numeric"
+          min={0}
+          placeholder="Prix min"
+          value={prixMin}
+          onChange={(e) => setPrixMin(e.target.value)}
+          className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+        />
+        <span className="text-slate-400 font-bold">–</span>
+        <Input
+          type="number"
+          inputMode="numeric"
+          min={0}
+          placeholder="Prix max"
+          value={prixMax}
+          onChange={(e) => setPrixMax(e.target.value)}
+          className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+        />
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-10 w-full max-w-5xl mx-auto">
-      
-      {/* Premium Glassmorphism Search Card */}
+    <div className="space-y-6 w-full max-w-6xl mx-auto">
+      {/* Barre de recherche globale */}
       <div className="relative group max-w-2xl mx-auto">
         <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 rounded-[2rem] opacity-20 blur-2xl group-hover:opacity-40 group-focus-within:opacity-40 transition-all duration-700 pointer-events-none" />
-        <div className="relative bg-white/70 dark:bg-zinc-900/70 border border-slate-100 dark:border-zinc-800 p-4 rounded-[2rem] shadow-2xl backdrop-blur-xl transition-all duration-300">
+        <div className="relative bg-white/70 dark:bg-zinc-900/70 border border-slate-100 dark:border-zinc-800 p-3 sm:p-4 rounded-[2rem] shadow-2xl backdrop-blur-xl">
           <div className="relative flex items-center">
-            <Search className="absolute left-5 h-6 w-6 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+            <Search className="absolute left-4 sm:left-5 h-5 w-5 sm:h-6 sm:w-6 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
             <Input
               type="text"
-              placeholder="Rechercher un commerce par nom..."
+              placeholder="Rechercher un produit, une boutique..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="h-16 pl-14 pr-6 rounded-2xl bg-transparent border-none text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 text-lg font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-12 sm:h-16 pl-12 sm:pl-14 pr-6 rounded-2xl bg-transparent border-none text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 text-base sm:text-lg font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             {isPending && (
               <div className="absolute right-5">
@@ -95,18 +236,17 @@ export function MarketplaceFilters() {
         </div>
       </div>
 
-      {/* Interactive Category Pills */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      {/* Pills secteur (scroll horizontal sur mobile) */}
+      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 -mx-4 px-4 sm:flex-wrap sm:justify-center sm:mx-0 sm:px-0 sm:overflow-visible scrollbar-none">
         {SECTEURS.map((secteur) => {
           const Icon = secteur.icon;
           const isActive = currentSecteur === secteur.value;
-
           return (
             <button
               key={secteur.value}
-              onClick={() => handleSecteurClick(secteur.value)}
+              onClick={() => setParam("secteur", secteur.value)}
               className={cn(
-                "h-12 px-5 py-2.5 rounded-2xl text-sm font-extrabold flex items-center gap-2.5 transition-all duration-300 transform active:scale-95",
+                "h-11 px-4 sm:px-5 py-2 rounded-2xl text-sm font-extrabold flex items-center gap-2 transition-all duration-300 transform active:scale-95 shrink-0",
                 isActive
                   ? "bg-brand text-white shadow-xl shadow-brand/20 hover:-translate-y-0.5"
                   : "bg-white/80 dark:bg-zinc-900/80 border border-slate-100 dark:border-zinc-800/80 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:-translate-y-0.5 shadow-sm"
@@ -119,6 +259,77 @@ export function MarketplaceFilters() {
         })}
       </div>
 
+      {/* Barre filtres + tri */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        {/* Tri (toujours visible) */}
+        <div className="flex items-center gap-2 sm:w-auto">
+          <Select value={currentSort} onValueChange={(v) => setParam("sort", v, "recent")}>
+            <SelectTrigger className="h-11 w-full sm:w-52 rounded-2xl font-bold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+              <ArrowDownUp className="h-4 w-4 text-slate-400 mr-1" />
+              <SelectValue placeholder="Trier" />
+            </SelectTrigger>
+            <SelectContent>
+              {SORTS.map((s) => (
+                <SelectItem key={s.value} value={s.value}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Filtres avancés desktop */}
+        <div className="hidden lg:block flex-1">{AdvancedFilters}</div>
+
+        {/* Bouton Filtres (mobile/tablette → Sheet) */}
+        <div className="lg:hidden">
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="outline"
+                className="h-11 w-full rounded-2xl font-bold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 justify-center"
+              >
+                <SlidersHorizontal className="h-4 w-4 mr-2 text-slate-400" />
+                Filtres
+                {activeFilterCount > 0 && (
+                  <span className="ml-2 h-5 min-w-5 px-1.5 rounded-full bg-brand text-white text-[10px] font-black flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="rounded-t-[2rem] max-h-[85vh] overflow-y-auto">
+              <SheetHeader className="text-left">
+                <SheetTitle className="flex items-center gap-2 font-black">
+                  <SlidersHorizontal className="h-5 w-5 text-orange-500" />
+                  Filtrer les produits
+                </SheetTitle>
+              </SheetHeader>
+              <div className="py-6">{AdvancedFilters}</div>
+              <Button
+                variant="ghost"
+                onClick={resetFilters}
+                className="w-full rounded-2xl font-bold text-slate-500"
+              >
+                <X className="h-4 w-4 mr-1" />
+                Réinitialiser les filtres
+              </Button>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* Reset desktop */}
+        {activeFilterCount > 0 && (
+          <Button
+            variant="ghost"
+            onClick={resetFilters}
+            className="hidden lg:flex h-11 rounded-2xl font-bold text-slate-500 shrink-0"
+          >
+            <X className="h-4 w-4 mr-1" />
+            Réinitialiser
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

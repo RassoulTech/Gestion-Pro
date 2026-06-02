@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,7 +20,16 @@ export default async function ProduitPublicPage({ params }: Props) {
   // SECURITY: First resolve slug to boutique, then scope product query by boutiqueId
   const boutique = await prisma.boutique.findFirst({
     where: { slug, statut: "ACTIF" },
-    select: { id: true, nom: true, slug: true, telephone: true },
+    select: {
+      id: true,
+      nom: true,
+      slug: true,
+      telephone: true,
+      whatsapp: true,
+      logo: true,
+      adresse: true,
+      vendeur: { select: { photo: true } },
+    },
   });
 
   if (!boutique) notFound();
@@ -34,17 +42,19 @@ export default async function ProduitPublicPage({ params }: Props) {
   if (!produit) notFound();
 
   const cleanPhone = boutique.telephone ? boutique.telephone.replace(/\s+/g, "") : "";
-  
+  const whatsappNumber = (boutique.whatsapp || boutique.telephone || "").replace(/\s+/g, "");
+  const boutiqueLogo = boutique.logo || boutique.vendeur?.photo || null;
+
   // Standard contact whatsapp message
-  const whatsappUrl = cleanPhone 
-    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+  const whatsappUrl = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         `Bonjour, je suis intéressé par le produit *${produit.nom}* (${formatCurrency(produit.prixUnitaire)}) dans votre boutique *${boutique.nom}*. Est-il disponible ?`
       )}`
     : "#";
 
   // Requirement 3: Floating WhatsApp button with specific text format
-  const whatsappUrlFlottant = cleanPhone
-    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+  const whatsappUrlFlottant = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         `Bonjour, je suis intéressé par ce produit : ${produit.nom}`
       )}`
     : "#";
@@ -167,7 +177,7 @@ export default async function ProduitPublicPage({ params }: Props) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* WhatsApp Action */}
-                    {boutique.telephone && (
+                    {whatsappNumber && (
                       <Button asChild size="lg" className="h-14 rounded-2xl font-black text-sm bg-[#25D366] hover:bg-[#20ba5a] text-white border-none shadow-lg shadow-emerald-500/10 hover:-translate-y-0.5 transition-all">
                         <a href={whatsappUrlFlottant} target="_blank" rel="noopener noreferrer">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="mr-2 h-5 w-5">
@@ -196,6 +206,64 @@ export default async function ProduitPublicPage({ params }: Props) {
               </div>
             </div>
 
+            {/* Boutique vendeuse */}
+            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2rem] p-6 shadow-sm">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4">Boutique vendeuse</h3>
+
+              <div className="flex items-center gap-4">
+                <Link
+                  href={`/s/${slug}`}
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 text-orange-500 overflow-hidden relative shrink-0"
+                >
+                  {boutiqueLogo ? (
+                    <Image src={boutiqueLogo} alt={boutique.nom} fill className="object-cover" sizes="56px" unoptimized />
+                  ) : (
+                    <Store className="h-6 w-6" />
+                  )}
+                </Link>
+
+                <div className="flex-1 min-w-0">
+                  <Link href={`/s/${slug}`} className="block">
+                    <p className="font-extrabold text-slate-800 dark:text-zinc-100 truncate hover:text-orange-500 transition-colors">
+                      {boutique.nom}
+                    </p>
+                  </Link>
+                  {boutique.adresse && (
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 truncate">{boutique.adresse}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Contacts boutique */}
+              {(boutique.telephone || whatsappNumber) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                  {whatsappNumber && (
+                    <Button asChild variant="outline" className="h-11 rounded-2xl font-bold border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10">
+                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        WhatsApp
+                      </a>
+                    </Button>
+                  )}
+                  {boutique.telephone && (
+                    <Button asChild variant="outline" className="h-11 rounded-2xl font-bold border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800">
+                      <a href={`tel:${cleanPhone}`}>
+                        <Phone className="mr-2 h-4 w-4 text-slate-500" />
+                        Appeler
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              <Button asChild className="w-full h-12 mt-3 rounded-2xl font-black text-sm bg-brand text-white border-none shadow-md shadow-brand/10 hover:-translate-y-0.5 transition-all">
+                <Link href={`/s/${slug}`}>
+                  <Store className="mr-2 h-4 w-4" />
+                  Voir tous les produits de cette boutique
+                </Link>
+              </Button>
+            </div>
+
           </div>
 
         </div>
@@ -203,7 +271,7 @@ export default async function ProduitPublicPage({ params }: Props) {
       </div>
 
       {/* Requirement 3: Floating WhatsApp FAB fixed in the bottom right corner */}
-      {boutique.telephone && (
+      {whatsappNumber && (
         <div className="fixed bottom-6 right-6 z-50 animate-pulse hover:animate-none">
           <a
             href={whatsappUrlFlottant}
