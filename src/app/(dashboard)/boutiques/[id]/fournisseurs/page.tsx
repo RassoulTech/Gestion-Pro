@@ -5,6 +5,7 @@ import { FournisseursClient } from "./_components/fournisseurs-client";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
+import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 export const metadata: Metadata = { title: "Fournisseurs" };
 
@@ -45,6 +46,9 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
         <div>
           <h1 className="text-3xl font-black tracking-tight">Fournisseurs</h1>
           <p className="text-muted-foreground font-medium">Gérez vos fournisseurs et vos achats</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <PeriodFilterSelect />
         </div>
       </div>
 

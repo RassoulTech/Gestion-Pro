@@ -32,6 +32,7 @@ import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 import { parseDateFilter } from "@/lib/date-filters";
 import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
+import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 interface BoutiquePageProps {
   params: Promise<{ id: string }>;
@@ -366,6 +367,7 @@ export default async function BoutiqueDashboardPage({
           </div>
 
           <div className="flex flex-wrap gap-3 sm:gap-4 items-center shrink-0 w-full lg:w-auto">
+            <PeriodFilterSelect />
             <Button
               asChild
               size="lg"

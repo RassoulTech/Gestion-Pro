@@ -14,6 +14,7 @@ import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { parseDateFilter } from "@/lib/date-filters";
 import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
+import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 export const metadata: Metadata = { title: "Rapports" };
 
@@ -120,6 +121,9 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Rapports</h1>
           <p className="text-sm text-muted-foreground font-medium">Analysez les performances de votre boutique</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <PeriodFilterSelect />
         </div>
       </div>
 

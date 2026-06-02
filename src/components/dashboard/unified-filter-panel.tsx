@@ -316,48 +316,7 @@ export function UnifiedFilterPanel({
           expanded ? "flex flex-col opacity-100 animate-in slide-in-from-top-3" : "hidden md:grid"
         )}
       >
-        {/* 1. Période */}
-        <div className="space-y-2">
-          <Label className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500">
-            Période
-          </Label>
-          <Select value={draftRange} onValueChange={setDraftRange}>
-            <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
-              <SelectValue placeholder="Choisir une période" />
-            </SelectTrigger>
-            <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
-              {PERIOD_PRESETS.map((p) => (
-                <SelectItem key={p.value} value={p.value} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
-                  {p.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Date Picker Custom si range === "custom" */}
-          {draftRange === "custom" && (
-            <div className="grid grid-cols-2 gap-2 pt-1.5 animate-in slide-in-from-top-1 duration-200">
-              <div className="space-y-1">
-                <Label className="text-[9px] font-bold text-slate-400 dark:text-zinc-500">Début</Label>
-                <Input
-                  type="date"
-                  value={draftFrom}
-                  onChange={(e) => setDraftFrom(e.target.value)}
-                  className="h-9 rounded-xl border-slate-200/60 dark:border-zinc-800/80 bg-slate-50/50 dark:bg-zinc-900/60 font-bold text-xs px-2 focus-visible:ring-orange-500"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-[9px] font-bold text-slate-400 dark:text-zinc-500">Fin</Label>
-                <Input
-                  type="date"
-                  value={draftTo}
-                  onChange={(e) => setDraftTo(e.target.value)}
-                  className="h-9 rounded-xl border-slate-200/60 dark:border-zinc-800/80 bg-slate-50/50 dark:bg-zinc-900/60 font-bold text-xs px-2 focus-visible:ring-orange-500"
-                />
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Les filtres de période sont désormais gérés par le composant PeriodFilterSelect dans l'en-tête de chaque page */}
 
         {/* 2. Statut */}
         {statusOptions && (

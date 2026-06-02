@@ -7,6 +7,7 @@ import { TableSkeleton } from "@/components/loading";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
+import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 export const metadata: Metadata = { title: "Catégories" };
 
@@ -73,6 +74,9 @@ export default async function CategoriesPage({
           <p className="text-xs sm:text-sm text-muted-foreground font-medium">
             Organisez vos produits par catégorie
           </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <PeriodFilterSelect />
         </div>
       </div>
 
