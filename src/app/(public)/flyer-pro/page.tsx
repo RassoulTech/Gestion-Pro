@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Printer,
-  Download,
   ArrowLeft,
   Package,
   Receipt,
@@ -33,7 +32,6 @@ export default function FlyerProPage() {
   )}`;
 
   const [isExportingPdf, setIsExportingPdf] = useState(false);
-  const [isExportingPng, setIsExportingPng] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
 
   useEffect(() => {
@@ -50,44 +48,13 @@ export default function FlyerProPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const exportCanvas = async (type: "pdf" | "png") => {
-    const setLoading = type === "pdf" ? setIsExportingPdf : setIsExportingPng;
-    setLoading(true);
-    try {
-      const html2canvas = (await import("html2canvas-pro")).default;
-      const element = document.getElementById("flyer-canvas");
-      if (!element) return;
-
-      const canvas = await html2canvas(element, {
-        scale: type === "pdf" ? 2.0 : 3.0,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-      });
-
-      if (type === "pdf") {
-        const { jsPDF } = await import("jspdf");
-        const pdf = new jsPDF({
-          orientation: "portrait",
-          unit: "mm",
-          format: "a4",
-        });
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 210, 297);
-        pdf.save("gestionpro_flyer_pro.pdf");
-      } else {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "gestionpro_flyer_pro.png";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    } catch (error) {
-      console.error(`Failed to export ${type}:`, error);
-    } finally {
-      setLoading(false);
-    }
+  // Le flyer est 100 % vectoriel : on l'exporte via l'impression native du
+  // navigateur ("Enregistrer en PDF") → rendu A4 net, sans html2canvas
+  // (cette lib bloquait la compilation du build de production).
+  const handlePrint = () => {
+    setIsExportingPdf(true);
+    window.print();
+    setIsExportingPdf(false);
   };
 
   const benefits = [
@@ -145,27 +112,12 @@ export default function FlyerProPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => window.print()}
-            className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-2xl border border-zinc-700 bg-zinc-800 px-4 text-sm font-bold text-zinc-200 shadow-md transition-all hover:bg-zinc-700 hover:text-white active:scale-95"
+            onClick={handlePrint}
+            disabled={isExportingPdf}
+            className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-2xl bg-orange-600 px-5 text-sm font-bold text-white shadow-md shadow-orange-600/20 transition-all hover:bg-orange-500 active:scale-95 disabled:opacity-50"
           >
             <Printer className="h-4 w-4" />
-            <span>Imprimer</span>
-          </button>
-          <button
-            onClick={() => exportCanvas("pdf")}
-            disabled={isExportingPdf}
-            className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-2xl bg-orange-600 px-4 text-sm font-bold text-white shadow-md shadow-orange-600/20 transition-all hover:bg-orange-500 active:scale-95 disabled:opacity-50"
-          >
-            <Download className="h-4 w-4" />
-            <span>{isExportingPdf ? "Génération PDF..." : "Télécharger PDF"}</span>
-          </button>
-          <button
-            onClick={() => exportCanvas("png")}
-            disabled={isExportingPng}
-            className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-2xl border border-zinc-800 bg-zinc-950 px-4 text-sm font-bold text-zinc-400 shadow-md transition-all hover:bg-zinc-900 hover:text-zinc-200 active:scale-95 disabled:opacity-50"
-          >
-            <Download className="h-4 w-4" />
-            <span>{isExportingPng ? "Génération PNG..." : "Télécharger PNG"}</span>
+            <span>Imprimer / Enregistrer en PDF</span>
           </button>
         </div>
       </div>

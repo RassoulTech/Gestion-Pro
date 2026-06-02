@@ -41,70 +41,19 @@ export default function FlyerPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleDownloadPDF = async () => {
+  // Le flyer est rendu en vecteurs : l'impression native du navigateur
+  // ("Enregistrer en PDF") produit un PDF A4 net, sans html2canvas — cette lib
+  // bloquait la compilation du build de production (hang jusqu'au timeout).
+  const handleDownloadPDF = () => {
     setIsExportingPdf(true);
-    try {
-      const { jsPDF } = await import("jspdf");
-      // html2canvas-pro : fork compatible avec les couleurs oklch de Tailwind v4
-      // (html2canvas classique ne sait pas parser oklch → couleurs cassées à l'export)
-      const html2canvas = (await import("html2canvas-pro")).default;
-
-      const element = document.getElementById("flyer-canvas");
-      if (!element) return;
-
-      const canvas = await html2canvas(element, {
-        scale: 2.0, // Factor of 2 is perfect for a 300 DPI high-quality PDF print rendering (1588px width)
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
-
-      // Fit A4 size: 210mm width x 297mm height exactly
-      pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
-      pdf.save("gestionpro_flyer.pdf");
-    } catch (error) {
-      console.error("Failed to export PDF:", error);
-    } finally {
-      setIsExportingPdf(false);
-    }
+    window.print();
+    setIsExportingPdf(false);
   };
 
-  const handleDownloadPNG = async () => {
+  const handleDownloadPNG = () => {
     setIsExportingPng(true);
-    try {
-      const html2canvas = (await import("html2canvas-pro")).default;
-
-      const element = document.getElementById("flyer-canvas");
-      if (!element) return;
-
-      const canvas = await html2canvas(element, {
-        scale: 3.0, // Ultra-sharp 3x resolution for high-definition PNG sharing (2382px width)
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = imgData;
-      link.download = "gestionpro_flyer.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Failed to export PNG:", error);
-    } finally {
-      setIsExportingPng(false);
-    }
+    window.print();
+    setIsExportingPng(false);
   };
 
   return (
