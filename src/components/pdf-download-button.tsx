@@ -11,24 +11,33 @@ import { generateRapportPDF } from "@/lib/generate-pdf";
 interface PDFDownloadButtonProps {
   boutiqueId: string;
   boutiqueName: string;
-  period?: number;
+  startDate?: string; // ISO string
+  endDate?: string; // ISO string
 }
 
-export function PDFDownloadButton({ boutiqueId, boutiqueName, period = 30 }: PDFDownloadButtonProps) {
+export function PDFDownloadButton({ boutiqueId, boutiqueName, startDate, endDate }: PDFDownloadButtonProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleDownload() {
     setLoading(true);
     try {
+      const start = startDate ? new Date(startDate) : undefined;
+      const end = endDate ? new Date(endDate) : undefined;
+
       const [stats, ventesParJour, topProduits] = await Promise.all([
-        getBoutiqueStats(boutiqueId),
-        getVentesParJour(boutiqueId, period),
-        getTopProduits(boutiqueId, 10),
+        getBoutiqueStats(boutiqueId, start, end),
+        getVentesParJour(boutiqueId, 30, start, end),
+        getTopProduits(boutiqueId, 10, start, end),
       ]);
 
       const doc = generateRapportPDF({
         boutiqueName,
-        stats,
+        stats: {
+          ventesToday: stats.ventesPeriod,
+          totalProduits: stats.totalProduits,
+          totalClients: stats.totalClients,
+          alertesStock: stats.alertesStock,
+        },
         ventesParJour,
         topProduits,
       });

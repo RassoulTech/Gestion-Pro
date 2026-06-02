@@ -1,36 +1,36 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { NouvelleCommandeClient } from "./_components/nouvelle-commande-client";
+import { NouvelAchatClient } from "./_components/nouvel-achat-client";
 
-interface NouvelleCommandePageProps {
+interface NouvelAchatPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function NouvelleCommandePage({ params }: NouvelleCommandePageProps) {
+export default async function NouvelAchatPage({ params }: NouvelAchatPageProps) {
   const { id: boutiqueId } = await params;
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  // Fetch products and clients for this boutique
-  const [produits, clients] = await Promise.all([
+  // Fetch products and suppliers for this boutique
+  const [produits, fournisseurs] = await Promise.all([
     prisma.produit.findMany({
       where: { boutiqueId },
       select: {
         id: true,
         nom: true,
         code: true,
+        prixAchat: true,
         prixUnitaire: true,
         quantite: true,
       },
       orderBy: { nom: "asc" },
     }),
-    prisma.client.findMany({
+    prisma.fournisseur.findMany({
       where: { boutiqueId },
       select: {
         id: true,
         nom: true,
-        prenom: true,
         telephone: true,
       },
       orderBy: { nom: "asc" },
@@ -39,10 +39,10 @@ export default async function NouvelleCommandePage({ params }: NouvelleCommandeP
 
   return (
     <div className="space-y-6">
-      <NouvelleCommandeClient
+      <NouvelAchatClient
         boutiqueId={boutiqueId}
         initialProduits={produits}
-        initialClients={clients}
+        initialFournisseurs={fournisseurs}
       />
     </div>
   );

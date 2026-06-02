@@ -102,6 +102,8 @@ export async function getBoutiqueForSettings(boutiqueId: string) {
     select: {
       id: true,
       nom: true,
+      slug: true,
+      statut: true,
       description: true,
       adresse: true,
       siteWeb: true,
@@ -111,8 +113,76 @@ export async function getBoutiqueForSettings(boutiqueId: string) {
       logo: true,
       latitude: true,
       longitude: true,
+      whatsapp: true,
+      facebook: true,
+      instagram: true,
+      linkedin: true,
+      twitter: true,
+      horaires: true,
     },
   });
+}
+
+export async function getVendeurForSettings(userId: string) {
+  const vendeur = await prisma.vendeur.findUnique({
+    where: { userId },
+    select: {
+      id: true,
+      nom: true,
+      prenom: true,
+      nomAffiche: true,
+      email: true,
+      telephone: true,
+      pays: true,
+      ville: true,
+      adresse: true,
+      bio: true,
+      photo: true,
+      notifications: true,
+      preferences: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          password: true,
+          updatedAt: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+  if (!vendeur) return null;
+  const { user, ...rest } = vendeur;
+  return {
+    ...rest,
+    user: {
+      id: user.id,
+      email: user.email,
+      hasPassword: !!user.password,
+      updatedAt: user.updatedAt,
+      createdAt: user.createdAt,
+    },
+  };
+}
+
+export async function getRecentActivityForUser(userId: string, limit = 8) {
+  return prisma.activityLog.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: {
+      id: true,
+      action: true,
+      subjectType: true,
+      ipAddress: true,
+      userAgent: true,
+      createdAt: true,
+    },
+  });
+}
+
+export async function getCommandeCountForBoutique(boutiqueId: string) {
+  return prisma.commandeClient.count({ where: { boutiqueId } });
 }
 
 export async function getPublicBoutiques(params?: {

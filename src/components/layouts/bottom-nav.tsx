@@ -25,6 +25,11 @@ import {
   Lock,
   CreditCard,
   Calculator,
+  QrCode,
+  Megaphone,
+  Plus,
+  Layers,
+  FileText,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
@@ -38,9 +43,17 @@ type NavItem = {
   href: string;
   icon: React.ElementType;
   requires?: PlanCode;
+  external?: boolean;
 };
 
 type BottomNavItem = NavItem;
+
+type QuickAction = {
+  label: string;
+  href: string;
+  icon: React.ElementType;
+  color: string;
+};
 
 const PLAN_RANK: Record<PlanCode, number> = {
   STARTER: 0,
@@ -59,6 +72,7 @@ function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavIte
       { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
       { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
       { label: "Boutiques", href: "/admin/boutiques", icon: Store },
+      { label: "Plans", href: "/admin/plans", icon: Tag },
     ];
   }
   if (!boutiqueId) {
@@ -66,34 +80,57 @@ function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavIte
   }
   const base = `/boutiques/${boutiqueId}`;
   return [
-    { label: "Accueil", href: base, icon: LayoutDashboard },
+    { label: "Dashboard", href: base, icon: LayoutDashboard },
+    { label: "Commandes", href: `${base}/commandes`, icon: ShoppingCart },
     { label: "Produits", href: `${base}/produits`, icon: Package },
-    { label: "Ventes", href: `${base}/commandes`, icon: ShoppingCart },
-    { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
+    { label: "Stock", href: `${base}/stock`, icon: Layers, requires: "PRO" },
   ];
 }
 
-function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean): NavItem[] {
+function getQuickActions(boutiqueId?: string): QuickAction[] {
+  if (!boutiqueId) return [];
+  const base = `/boutiques/${boutiqueId}`;
+  return [
+    { label: "Nouvelle commande", href: `${base}/commandes/new`, icon: ShoppingCart, color: "bg-brand text-white" },
+    { label: "Ajouter produit", href: `${base}/produits/new`, icon: Package, color: "bg-emerald-500 text-white" },
+    { label: "Ajouter client", href: `${base}/clients/new`, icon: Users, color: "bg-blue-500 text-white" },
+    { label: "Ajouter dépense", href: `${base}/depenses/new`, icon: Wallet, color: "bg-rose-500 text-white" },
+  ];
+}
+
+function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean, boutiqueSlug?: string): NavItem[] {
   if (isAdmin) {
     return [
       { label: "Utilisateurs", href: "/admin/utilisateurs", icon: User },
       { label: "Abonnements", href: "/admin/abonnements", icon: Wallet },
-      { label: "Plans", href: "/admin/plans", icon: Tag },
       { label: "Revenus", href: "/admin/revenus", icon: BarChart3 },
-      { label: "Logs", href: "/admin/logs", icon: Settings },
+      { label: "Logs", href: "/admin/logs", icon: FileText },
     ];
   }
   if (!boutiqueId) return [];
   const base = `/boutiques/${boutiqueId}`;
   return [
-    { label: "Catégories", href: `${base}/categories`, icon: Tag },
+    // Gestion commerciale (rest)
     { label: "Clients", href: `${base}/clients`, icon: Users },
-    { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
-    { label: "Achats Fournisseur", href: `${base}/commandes-fournisseur`, icon: Truck },
-    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
+    { label: "Catégories", href: `${base}/categories`, icon: Tag },
+    { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
     { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
-    { label: "Stock", href: `${base}/stock`, icon: Store, requires: "PRO" },
+    // Fournisseurs
+    { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
+    // Gestion financière
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
+    { label: "Achats Fourn.", href: `${base}/commandes-fournisseur`, icon: Truck },
+    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
+    // Marketing & Visibilité
+    {
+      label: "Ma Boutique",
+      href: boutiqueSlug ? `/s/${boutiqueSlug}` : `${base}/parametres?tab=boutique`,
+      icon: Store,
+      external: !!boutiqueSlug,
+    },
+    { label: "QR Code", href: `${base}/qrcode`, icon: QrCode },
+    { label: "Marketplace", href: "/marketplace", icon: Megaphone, external: true },
+    // Compte
     { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
     { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
     { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
@@ -144,15 +181,20 @@ export function BottomNav() {
   const sheetRef = useRef<HTMLDivElement>(null);
 
   let currentPlan: PlanCode | undefined;
+  let boutiqueSlug: string | undefined;
   try {
     const ctx = useBoutique();
     currentPlan = ctx.plan?.isActive ? ctx.plan.codePlan : "STARTER";
+    boutiqueSlug = ctx.slug;
   } catch {
     // Pas de provider (ex: /boutiques, /admin)
   }
 
   const items = getBottomNavItems(boutiqueId, isAdmin);
-  const moreItems = isAdmin ? getMoreMenuItems(undefined, true) : (boutiqueId ? getMoreMenuItems(boutiqueId) : []);
+  const quickActions = isAdmin ? [] : getQuickActions(boutiqueId);
+  const moreItems = isAdmin
+    ? getMoreMenuItems(undefined, true)
+    : (boutiqueId ? getMoreMenuItems(boutiqueId, false, boutiqueSlug) : []);
 
   // Check if any "more" item is active (but NOT if a main nav item is active)
   const mainHrefs = new Set(items.map((i) => i.href));
@@ -172,6 +214,7 @@ export function BottomNav() {
     !isMainNavActive &&
     moreItems.some(
       (item) =>
+        !item.external &&
         !mainHrefs.has(item.href) &&
         (pathname === item.href || pathname.startsWith(item.href + "/"))
     );
@@ -191,7 +234,6 @@ export function BottomNav() {
         close();
       }
     }
-    // Delay to avoid closing immediately on the same click that opened it
     const timer = setTimeout(() => {
       document.addEventListener("click", handleClick);
     }, 10);
@@ -253,53 +295,98 @@ export function BottomNav() {
             </button>
           </div>
 
-          {/* Menu Grid */}
-          <div className="max-h-[60vh] overflow-y-auto overscroll-contain px-3 pb-2">
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
-              {moreItems.map((item, index) => {
-                const Icon = item.icon;
-                const isActive =
-                  pathname === item.href ||
-                  (item.href.length > (isAdmin ? "/admin/".length : "/boutiques/".length) &&
-                    pathname.startsWith(item.href + "/"));
-                const locked = isLocked(item, currentPlan);
+          {/* Scrollable content */}
+          <div className="max-h-[65vh] overflow-y-auto overscroll-contain px-3 pb-2">
+            {/* Quick actions */}
+            {quickActions.length > 0 && (
+              <div className="mb-3">
+                <p className="px-2 pb-2 text-[10px] font-black uppercase tracking-widest text-white/40">
+                  Actions rapides
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {quickActions.map((qa) => {
+                    const Icon = qa.icon;
+                    return (
+                      <Link
+                        key={qa.href}
+                        href={qa.href}
+                        onClick={close}
+                        className="group flex items-center gap-2 rounded-2xl bg-white/5 px-3 py-3 text-left transition-all hover:bg-white/10 active:scale-95"
+                      >
+                        <span className={cn("flex h-9 w-9 items-center justify-center rounded-xl shrink-0 shadow-lg", qa.color)}>
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[11px] font-black leading-tight text-white truncate">
+                            {qa.label}
+                          </p>
+                          <p className="text-[9px] font-bold text-white/40 flex items-center gap-1">
+                            <Plus className="h-2.5 w-2.5" /> Créer
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={close}
-                    className={cn(
-                      "relative flex flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-3 text-center transition-all duration-200 active:scale-90",
-                      isActive
-                        ? "bg-brand/20 text-brand"
-                        : "text-zinc-400 hover:bg-white/5 hover:text-white"
-                    )}
-                    style={{
-                      animationDelay: `${index * 30}ms`,
-                    }}
-                  >
-                    <span
-                      className={cn(
-                        "flex h-11 w-11 items-center justify-center rounded-xl transition-colors",
-                        isActive ? "bg-brand/20" : "bg-white/5"
-                      )}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <span className="text-[10px] font-bold leading-tight">
-                      {item.label}
-                    </span>
-                    {locked && (
-                      <Lock className="absolute top-1.5 right-1.5 h-3 w-3 text-amber-500" aria-label="Plan supérieur requis" />
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
+            {/* Navigation grid */}
+            {moreItems.length > 0 && (
+              <>
+                <p className="px-2 pt-1 pb-2 text-[10px] font-black uppercase tracking-widest text-white/40">
+                  Toutes les sections
+                </p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
+                  {moreItems.map((item, index) => {
+                    const Icon = item.icon;
+                    const isActive =
+                      !item.external &&
+                      (pathname === item.href ||
+                        (item.href.length > (isAdmin ? "/admin/".length : "/boutiques/".length) &&
+                          pathname.startsWith(item.href + "/")));
+                    const locked = isLocked(item, currentPlan);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        target={item.external ? "_blank" : undefined}
+                        rel={item.external ? "noopener noreferrer" : undefined}
+                        onClick={close}
+                        className={cn(
+                          "relative flex flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-3 text-center transition-all duration-200 active:scale-90",
+                          isActive
+                            ? "bg-brand/20 text-brand"
+                            : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                        )}
+                        style={{
+                          animationDelay: `${index * 30}ms`,
+                        }}
+                      >
+                        <span
+                          className={cn(
+                            "flex h-11 w-11 items-center justify-center rounded-xl transition-colors",
+                            isActive ? "bg-brand/20" : "bg-white/5"
+                          )}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <span className="text-[10px] font-bold leading-tight">
+                          {item.label}
+                        </span>
+                        {locked && (
+                          <Lock className="absolute top-1.5 right-1.5 h-3 w-3 text-amber-500" aria-label="Plan supérieur requis" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </>
+            )}
 
             {/* Profil + Thème + Déconnexion */}
-            <div className="mt-2 border-t border-white/5 pt-2">
+            <div className="mt-3 border-t border-white/5 pt-3">
               <SheetFooter onClose={close} />
             </div>
           </div>
@@ -332,7 +419,7 @@ export function BottomNav() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 text-[10px] font-bold transition-all duration-300 active:scale-90",
+                    "relative flex flex-col items-center justify-center gap-0.5 px-2 sm:px-3 py-1.5 text-[10px] font-bold transition-all duration-300 active:scale-90",
                     isActive
                       ? "text-white"
                       : "text-zinc-500 hover:text-zinc-300"
@@ -349,7 +436,7 @@ export function BottomNav() {
                       )}
                     />
                   </span>
-                  <span className="relative z-10">{item.label}</span>
+                  <span className="relative z-10 truncate max-w-[60px]">{item.label}</span>
                   {isActive && (
                     <span className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-brand" />
                   )}
@@ -365,11 +452,13 @@ export function BottomNav() {
               <button
                 onClick={() => setSheetOpen((o) => !o)}
                 className={cn(
-                  "relative flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 text-[10px] font-bold transition-all duration-300 active:scale-90",
+                  "relative flex flex-col items-center justify-center gap-0.5 px-2 sm:px-3 py-1.5 text-[10px] font-bold transition-all duration-300 active:scale-90",
                   sheetOpen || isMoreActive
                     ? "text-white"
                     : "text-zinc-500 hover:text-zinc-300"
                 )}
+                aria-label="Plus de navigation"
+                aria-expanded={sheetOpen}
               >
                 {(sheetOpen || isMoreActive) && (
                   <span className="absolute inset-0 -top-0.5 rounded-xl bg-brand/20" />

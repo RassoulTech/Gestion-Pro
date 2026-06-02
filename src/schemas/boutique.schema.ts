@@ -21,6 +21,12 @@ export const createBoutiqueSchema = z.object({
   logo: z.string().optional().or(z.literal("")),
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
+  whatsapp: z.string().optional().or(z.literal("")),
+  facebook: z.string().optional().or(z.literal("")),
+  instagram: z.string().optional().or(z.literal("")),
+  linkedin: z.string().optional().or(z.literal("")),
+  twitter: z.string().optional().or(z.literal("")),
+  horaires: z.string().optional().or(z.literal("")),
 });
 
 export const updateBoutiqueSchema = createBoutiqueSchema.partial();

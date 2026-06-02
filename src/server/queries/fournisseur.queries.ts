@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function getBoutiqueFournisseurs(
   boutiqueId: string,
-  params?: { search?: string; page?: number; perPage?: number }
+  params?: { search?: string; page?: number; perPage?: number; dateFilter?: any }
 ) {
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
@@ -13,6 +13,9 @@ export async function getBoutiqueFournisseurs(
     boutiqueId,
     ...(params?.search && {
       nom: { contains: params.search, mode: "insensitive" as const },
+    }),
+    ...(params?.dateFilter && {
+      createdAt: params.dateFilter,
     }),
   };
 
@@ -29,3 +32,4 @@ export async function getBoutiqueFournisseurs(
 
   return { data, total, page, perPage, totalPages: Math.ceil(total / perPage) };
 }
+

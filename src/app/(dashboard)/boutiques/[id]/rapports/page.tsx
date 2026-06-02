@@ -12,14 +12,24 @@ import { PageSkeleton } from "@/components/loading";
 import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
+import { parseDateFilter } from "@/lib/date-filters";
+import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
 
 export const metadata: Metadata = { title: "Rapports" };
 
-async function RapportsContent({ boutiqueId, period = 30 }: { boutiqueId: string, period?: number }) {
+async function RapportsContent({ 
+  boutiqueId, 
+  startDate, 
+  endDate,
+}: { 
+  boutiqueId: string;
+  startDate?: Date;
+  endDate?: Date;
+}) {
   const [stats, ventesJour, topProduits] = await Promise.all([
-    getBoutiqueStats(boutiqueId),
-    getVentesParJour(boutiqueId, period),
-    getTopProduits(boutiqueId, 10),
+    getBoutiqueStats(boutiqueId, startDate, endDate),
+    getVentesParJour(boutiqueId, 30, startDate, endDate),
+    getTopProduits(boutiqueId, 10, startDate, endDate),
   ]);
 
   return (
@@ -34,11 +44,11 @@ async function RapportsContent({ boutiqueId, period = 30 }: { boutiqueId: string
             <CardHeader className="pb-2 p-4 sm:p-6">
               <CardTitle className="text-xs sm:text-sm font-medium text-zinc-400 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
-                Ventes aujourd&apos;hui
+                Ventes sur la période
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-              <p className="text-2xl sm:text-3xl font-black">{formatCurrency(stats.ventesToday)}</p>
+              <p className="text-2xl sm:text-3xl font-black">{formatCurrency(stats.ventesPeriod)}</p>
             </CardContent>
           </Card>
           <Card className="border-none bg-zinc-900 text-white shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem]">
@@ -64,14 +74,14 @@ async function RapportsContent({ boutiqueId, period = 30 }: { boutiqueId: string
             </CardContent>
           </Card>
         </div>
-        <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden animate-in fade-in duration-300">
           <CardContent className="p-3 sm:p-6">
             <SalesChart data={ventesJour} />
           </CardContent>
         </Card>
       </TabsContent>
       <TabsContent value="produits" className="mt-5 sm:mt-8">
-        <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden animate-in fade-in duration-300">
           <CardContent className="p-3 sm:p-6">
             <TopProductsChart data={topProduits} />
           </CardContent>
@@ -81,10 +91,18 @@ async function RapportsContent({ boutiqueId, period = 30 }: { boutiqueId: string
   );
 }
 
-export default async function RapportsPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ period?: string }> }) {
+interface RapportsPageProps {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    range?: string;
+    from?: string;
+    to?: string;
+  }>;
+}
+
+export default async function RapportsPage({ params, searchParams }: RapportsPageProps) {
   const { id } = await params;
-  const sParams = await searchParams;
-  const period = sParams.period ? parseInt(sParams.period, 10) : 30;
+  const { range, from, to } = await searchParams;
 
   const [boutique, quotas] = await Promise.all([
     prisma.boutique.findUnique({ where: { id }, select: { nom: true } }),
@@ -93,6 +111,8 @@ export default async function RapportsPage({ params, searchParams }: { params: P
 
   const boutiqueName = boutique?.nom ?? "Boutique";
   const currentPlanName = quotas.nom;
+
+  const dateFilter = parseDateFilter(range, from, to);
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">
@@ -108,26 +128,23 @@ export default async function RapportsPage({ params, searchParams }: { params: P
         featureName="Rapports Détaillés & Analytics"
         featureDescription="Obtenez des graphiques interactifs avancés sur l'évolution de vos ventes et de vos stocks."
       >
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-          <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
-            {[7, 30, 90, 365].map((d) => (
-              <a
-                key={d}
-                href={`?period=${d}`}
-                className={`px-4 py-2 text-sm font-bold rounded-lg transition-all whitespace-nowrap ${
-                  period === d
-                    ? "bg-white dark:bg-zinc-700 shadow-sm text-brand"
-                    : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
-                }`}
-              >
-                {d === 365 ? "1 An" : `${d} jours`}
-              </a>
-            ))}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <DashboardFilter />
           </div>
-          <PDFDownloadButton boutiqueId={id} boutiqueName={boutiqueName} period={period} />
+          <PDFDownloadButton 
+            boutiqueId={id} 
+            boutiqueName={boutiqueName} 
+            startDate={dateFilter.startDate?.toISOString()} 
+            endDate={dateFilter.endDate?.toISOString()} 
+          />
         </div>
         <Suspense fallback={<PageSkeleton />}>
-          <RapportsContent boutiqueId={id} period={period} />
+          <RapportsContent 
+            boutiqueId={id} 
+            startDate={dateFilter.startDate} 
+            endDate={dateFilter.endDate} 
+          />
         </Suspense>
       </PremiumGuard>
     </div>

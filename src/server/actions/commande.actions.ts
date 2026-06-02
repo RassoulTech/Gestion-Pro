@@ -36,6 +36,9 @@ export const createCommandeClient = vendeurActionClient
           montantRecu: data.montantRecu,
           monnaieRendue: data.monnaieRendue,
           notes: data.notes,
+          date: data.date ? new Date(data.date) : undefined,
+          etat: data.etat || undefined,
+          modePaiement: data.modePaiement || undefined,
         },
       });
 
@@ -284,6 +287,7 @@ export const createCommandeFournisseur = vendeurActionClient
       const code = generateCode("ACH");
       let total = 0;
 
+      const effectiveEtat = data.etat || "LIVREE";
       const commande = await tx.commandeFournisseur.create({
         data: {
           boutiqueId,
@@ -291,6 +295,8 @@ export const createCommandeFournisseur = vendeurActionClient
           code,
           total: 0,
           notes: data.notes,
+          date: data.date ? new Date(data.date) : undefined,
+          etat: effectiveEtat,
         },
       });
 
@@ -304,6 +310,25 @@ export const createCommandeFournisseur = vendeurActionClient
             prixUnitaire: ligne.prixUnitaire,
           },
         });
+
+        // Increment stock and record movement if delivered/validated
+        if (effectiveEtat === "LIVREE" || effectiveEtat === "VALIDEE") {
+          await tx.produit.update({
+            where: { id: ligne.produitId },
+            data: { quantite: { increment: ligne.quantite } },
+          });
+
+          await tx.mouvementStock.create({
+            data: {
+              boutiqueId,
+              produitId: ligne.produitId,
+              type: "ENTREE",
+              quantite: ligne.quantite,
+              sourceType: "CommandeFournisseur",
+              sourceId: commande.id,
+            },
+          });
+        }
       }
 
       return tx.commandeFournisseur.update({

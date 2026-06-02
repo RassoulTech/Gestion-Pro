@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Store,
@@ -19,12 +18,14 @@ import {
   ChevronLeft,
   Tag,
   CreditCard,
-  Activity,
-  FileText,
   Lock,
   User,
   Calculator,
   QrCode,
+  Layers,
+  Megaphone,
+  FileText,
+  Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
@@ -54,6 +55,13 @@ type NavItem = {
   icon: React.ElementType;
   /** Minimum plan required for this nav item. If undefined → accessible to all. */
   requires?: PlanCode;
+  /** Open in new tab (for external/public pages) */
+  external?: boolean;
+};
+
+type NavGroup = {
+  label?: string;
+  items: NavItem[];
 };
 
 const PLAN_RANK: Record<PlanCode, number> = {
@@ -77,48 +85,95 @@ type SidebarProps = {
 
 // ─── Nav helpers ─────────────────────────────────────────────
 
-function getBoutiqueNav(boutiqueId: string): NavItem[] {
+function getBoutiqueNavGroups(boutiqueId: string, boutiqueSlug?: string): NavGroup[] {
   const base = `/boutiques/${boutiqueId}`;
   return [
-    { label: "Dashboard", href: base, icon: LayoutDashboard },
-    { label: "Produits", href: `${base}/produits`, icon: Package },
-    { label: "Catégories", href: `${base}/categories`, icon: Tag },
-    { label: "Clients", href: `${base}/clients`, icon: Users },
-    { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
-    { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
-    { label: "Commandes", href: `${base}/commandes`, icon: ShoppingCart },
     {
-      label: "Achats Fournisseur",
-      href: `${base}/commandes-fournisseur`,
-      icon: Truck,
+      items: [
+        { label: "Dashboard", href: base, icon: LayoutDashboard },
+      ],
     },
-    { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
-    { label: "Stock", href: `${base}/stock`, icon: Store, requires: "PRO" },
-    { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
-    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
-    { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
-    { label: "QR Code Boutique", href: `${base}/qrcode`, icon: QrCode },
-    { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
-    { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
+    {
+      label: "Gestion commerciale",
+      items: [
+        { label: "Commandes", href: `${base}/commandes`, icon: ShoppingCart },
+        { label: "Produits", href: `${base}/produits`, icon: Package },
+        { label: "Stock", href: `${base}/stock`, icon: Layers, requires: "PRO" },
+        { label: "Clients", href: `${base}/clients`, icon: Users },
+        { label: "Catégories", href: `${base}/categories`, icon: Tag },
+        { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
+        { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
+      ],
+    },
+    {
+      label: "Gestion financière",
+      items: [
+        { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
+        { label: "Achats Fournisseurs", href: `${base}/commandes-fournisseur`, icon: Truck },
+        { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
+      ],
+    },
+    {
+      label: "Fournisseurs",
+      items: [
+        { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
+      ],
+    },
+    {
+      label: "Marketing & Visibilité",
+      items: [
+        {
+          label: "Ma Boutique",
+          href: boutiqueSlug ? `/s/${boutiqueSlug}` : `${base}/parametres?tab=boutique`,
+          icon: Store,
+          external: !!boutiqueSlug,
+        },
+        { label: "QR Code Boutique", href: `${base}/qrcode`, icon: QrCode },
+        { label: "Marketplace", href: `/marketplace`, icon: Megaphone, external: true },
+      ],
+    },
+    {
+      label: "Compte",
+      items: [
+        { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
+        { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
+        { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
+      ],
+    },
   ];
 }
 
-function getAdminNav(): NavItem[] {
+function getAdminNavGroups(): NavGroup[] {
   return [
-    { label: "Dashboard Global", href: "/admin/dashboard", icon: LayoutDashboard },
-    { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
-    { label: "Utilisateurs", href: "/admin/utilisateurs", icon: User },
-    { label: "Boutiques", href: "/admin/boutiques", icon: Store },
-    { label: "Abonnements", href: "/admin/abonnements", icon: CreditCard },
-    { label: "Plans", href: "/admin/plans", icon: Tag },
-    { label: "Revenus", href: "/admin/revenus", icon: Wallet },
-    { label: "Logs & Activités", href: "/admin/logs", icon: FileText },
+    {
+      items: [
+        { label: "Dashboard Global", href: "/admin/dashboard", icon: LayoutDashboard },
+      ],
+    },
+    {
+      label: "Utilisateurs",
+      items: [
+        { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
+        { label: "Utilisateurs", href: "/admin/utilisateurs", icon: User },
+        { label: "Boutiques", href: "/admin/boutiques", icon: Store },
+      ],
+    },
+    {
+      label: "Facturation",
+      items: [
+        { label: "Abonnements", href: "/admin/abonnements", icon: CreditCard },
+        { label: "Plans", href: "/admin/plans", icon: Tag },
+        { label: "Revenus", href: "/admin/revenus", icon: Wallet },
+      ],
+    },
+    {
+      label: "Audit",
+      items: [
+        { label: "Logs & Activités", href: "/admin/logs", icon: FileText },
+      ],
+    },
   ];
 }
-
-const globalNav: NavItem[] = [
-  { label: "Mes Boutiques", href: "/boutiques", icon: Store },
-];
 
 // ─── NavLink ─────────────────────────────────────────────────
 
@@ -138,17 +193,22 @@ function NavLink({
   const Icon = item.icon;
 
   // Exact match for base boutique route, starts-with for sub-routes
+  // Skip "active" detection for external links (public pages)
   const isActive =
-    pathname === item.href ||
-    (item.href !== "/boutiques" &&
-      item.href.length > "/boutiques/".length &&
-      pathname.startsWith(item.href) &&
-      pathname !== item.href.replace(/\/[^/]+$/, ""));
+    !item.external &&
+    (pathname === item.href ||
+      (item.href !== "/boutiques" &&
+        item.href.startsWith("/boutiques/") &&
+        item.href.length > "/boutiques/".length &&
+        pathname.startsWith(item.href) &&
+        pathname !== item.href.replace(/\/[^/]+$/, "")));
 
   const linkContent = (
     <Link
       href={item.href}
       onClick={onClick}
+      target={item.external ? "_blank" : undefined}
+      rel={item.external ? "noopener noreferrer" : undefined}
       className={cn(
         "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
         "hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50",
@@ -168,6 +228,9 @@ function NavLink({
       />
       {!collapsed && (
         <span className="truncate leading-none flex-1">{item.label}</span>
+      )}
+      {!collapsed && item.external && (
+        <Globe className="h-3 w-3 shrink-0 text-zinc-400" aria-label="Lien externe" />
       )}
       {!collapsed && locked && (
         <Lock className="h-3 w-3 shrink-0 text-amber-500" aria-label="Plan supérieur requis" />
@@ -194,14 +257,12 @@ function NavLink({
 
 function SidebarContent({
   boutiqueId,
-  boutiqueName,
   collapsed,
   onToggleCollapse,
   onLinkClick,
   role,
 }: {
   boutiqueId?: string;
-  boutiqueName?: string;
   collapsed: boolean;
   onToggleCollapse?: () => void;
   onLinkClick?: () => void;
@@ -209,22 +270,24 @@ function SidebarContent({
 }) {
   const pathname = usePathname();
 
-  // Récupère le plan courant et le logo depuis le BoutiqueProvider, si disponible.
+  // Récupère le plan courant et le slug depuis le BoutiqueProvider, si disponible.
   let currentPlan: PlanCode | undefined;
-  let boutiqueLogo: string | null = null;
+  let boutiqueSlug: string | undefined;
   try {
     const ctx = useBoutique();
     currentPlan = ctx.plan?.isActive ? ctx.plan.codePlan : "STARTER";
-    boutiqueLogo = ctx.logo;
+    boutiqueSlug = ctx.slug;
   } catch {
     // Pas de provider (ex: page /boutiques)
   }
 
-  let navItems = globalNav;
+  let navGroups: NavGroup[] = [
+    { items: [{ label: "Mes Boutiques", href: "/boutiques", icon: Store }] },
+  ];
   if (role === "ADMIN") {
-    navItems = getAdminNav();
+    navGroups = getAdminNavGroups();
   } else if (boutiqueId) {
-    navItems = getBoutiqueNav(boutiqueId);
+    navGroups = getBoutiqueNavGroups(boutiqueId, boutiqueSlug);
   }
 
   return (
@@ -272,19 +335,31 @@ function SidebarContent({
         )}
       </div>
 
-      {/* Nav items */}
+      {/* Nav groups */}
       <ScrollArea className="flex-1 py-3">
-        <nav className="space-y-0.5 px-2">
+        <nav className="space-y-4 px-2">
           <TooltipProvider delayDuration={0}>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.href}
-                item={item}
-                pathname={pathname}
-                collapsed={collapsed}
-                onClick={onLinkClick}
-                locked={isItemLocked(item, currentPlan)}
-              />
+            {navGroups.map((group, gIdx) => (
+              <div key={group.label || `group-${gIdx}`} className="space-y-0.5">
+                {group.label && !collapsed && (
+                  <p className="px-3 pt-1 pb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                    {group.label}
+                  </p>
+                )}
+                {group.label && collapsed && gIdx > 0 && (
+                  <div className="my-2 mx-2 h-px bg-zinc-100 dark:bg-zinc-800" />
+                )}
+                {group.items.map((item) => (
+                  <NavLink
+                    key={item.href}
+                    item={item}
+                    pathname={pathname}
+                    collapsed={collapsed}
+                    onClick={onLinkClick}
+                    locked={isItemLocked(item, currentPlan)}
+                  />
+                ))}
+              </div>
             ))}
           </TooltipProvider>
         </nav>
@@ -311,7 +386,6 @@ function SidebarContent({
 
 export function Sidebar({
   boutiqueId,
-  boutiqueName,
   mobileOpen = false,
   onMobileCloseAction,
   role,
@@ -329,7 +403,6 @@ export function Sidebar({
       >
         <SidebarContent
           boutiqueId={boutiqueId}
-          boutiqueName={boutiqueName}
           collapsed={collapsed}
           onToggleCollapse={() => setCollapsed((c) => !c)}
           role={role}
@@ -338,13 +411,12 @@ export function Sidebar({
 
       {/* Mobile sheet */}
       <Sheet open={mobileOpen} onOpenChange={(open) => !open && onMobileCloseAction?.()}>
-        <SheetContent side="left" className="w-[220px] p-0">
+        <SheetContent side="left" className="w-[260px] p-0">
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation</SheetTitle>
           </SheetHeader>
           <SidebarContent
             boutiqueId={boutiqueId}
-            boutiqueName={boutiqueName}
             collapsed={false}
             onLinkClick={onMobileCloseAction}
             role={role}

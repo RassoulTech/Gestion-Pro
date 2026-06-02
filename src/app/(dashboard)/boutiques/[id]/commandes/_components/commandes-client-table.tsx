@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
   Search,
@@ -101,25 +101,38 @@ function clientLabel(c: CommandeRow["client"]) {
 export function CommandesClientTable({
   boutiqueId,
   commandes,
+  totalItems,
 }: {
   boutiqueId: string;
   commandes: CommandeRow[];
+  totalItems: number;
 }) {
   const router = useRouter();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | Etat>("ALL");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const search = searchParams.get("q") || "";
+  const statusFilter = (searchParams.get("status") || "ALL") as "ALL" | Etat;
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return commandes.filter((cmd) => {
-      if (statusFilter !== "ALL" && cmd.etat !== statusFilter) return false;
-      if (!q) return true;
-      const haystack = `${cmd.code} ${clientLabel(cmd.client)}`.toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [commandes, search, statusFilter]);
+  const filtered = commandes;
+
+  const handleSearch = (val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (val) params.set("q", val);
+    else params.delete("q");
+    params.delete("page");
+    startTransition(() => router.push(`${pathname}?${params.toString()}`));
+  };
+
+  const handleStatusFilterChange = (val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (val && val !== "ALL") params.set("status", val);
+    else params.delete("status");
+    params.delete("page");
+    startTransition(() => router.push(`${pathname}?${params.toString()}`));
+  };
 
   async function handleStatusChange(commande: CommandeRow, nextEtat: Etat) {
     if (nextEtat === commande.etat) return;
@@ -151,12 +164,12 @@ export function CommandesClientTable({
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             placeholder="Rechercher par code ou client..."
-            className="pl-10 h-11 sm:h-12 rounded-xl bg-card border-none shadow-sm"
+            className="pl-10 h-11 sm:h-12 rounded-xl bg-card border-none shadow-sm font-bold text-xs sm:text-sm"
           />
         </div>
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+        <Select value={statusFilter} onValueChange={(v) => handleStatusFilterChange(v)}>
           <SelectTrigger className="h-11 sm:h-12 w-full sm:w-56 rounded-xl bg-card border-none shadow-sm font-bold text-sm">
             <SelectValue placeholder="Filtrer par statut" />
           </SelectTrigger>
@@ -174,13 +187,16 @@ export function CommandesClientTable({
       {(search || statusFilter !== "ALL") && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span className="font-bold">
-            {filtered.length} commande{filtered.length > 1 ? "s" : ""} sur {commandes.length}
+            {totalItems} commande{totalItems > 1 ? "s" : ""} trouvée{totalItems > 1 ? "s" : ""}
           </span>
           <button
             type="button"
             onClick={() => {
-              setSearch("");
-              setStatusFilter("ALL");
+              const params = new URLSearchParams(searchParams.toString());
+              params.delete("q");
+              params.delete("status");
+              params.delete("page");
+              router.push(`${pathname}?${params.toString()}`);
             }}
             className="font-bold text-brand hover:underline"
           >

@@ -6,18 +6,40 @@ import type { TypeMouvement } from "@prisma/client";
 export async function getMouvementsStock(
   boutiqueId: string,
   params?: {
-    type?: TypeMouvement;
+    type?: string;
     page?: number;
     perPage?: number;
+    search?: string;
+    dateFilter?: any;
+    source?: string;
   }
 ) {
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
-  const where = {
+  const where: any = {
     boutiqueId,
-    ...(params?.type && { type: params.type }),
   };
+
+  if (params?.type && params.type !== "ALL") {
+    where.type = params.type;
+  }
+
+  if (params?.source && params.source !== "ALL") {
+    where.sourceType = params.source;
+  }
+
+  if (params?.search) {
+    where.OR = [
+      { produit: { nom: { contains: params.search, mode: "insensitive" } } },
+      { produit: { code: { contains: params.search, mode: "insensitive" } } },
+      { sourceType: { contains: params.search, mode: "insensitive" } },
+    ];
+  }
+
+  if (params?.dateFilter) {
+    where.date = params.dateFilter;
+  }
 
   const [data, total] = await Promise.all([
     prisma.mouvementStock.findMany({

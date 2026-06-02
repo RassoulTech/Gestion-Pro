@@ -14,9 +14,11 @@ import {
   Calendar,
   Layers,
   History,
-  PhoneCall,
   Crown,
   Store,
+  TrendingUp,
+  Truck,
+  Boxes,
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
@@ -28,17 +30,28 @@ import { Badge } from "@/components/ui/badge";
 import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
+import { parseDateFilter } from "@/lib/date-filters";
+import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
 
 interface BoutiquePageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    range?: string;
+    from?: string;
+    to?: string;
+  }>;
 }
 
 export default async function BoutiqueDashboardPage({
   params,
+  searchParams,
 }: BoutiquePageProps) {
   const { id } = await params;
+  const { range, from, to } = await searchParams;
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  const dateFilter = parseDateFilter(range, from, to);
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -51,42 +64,55 @@ export default async function BoutiqueDashboardPage({
 
   const [
     boutique,
+    // Month sales (active only)
     ventesMoisAgg,
+    // Month expenses
     depensesMoisAgg,
+    // Month purchases
+    achatsMoisAgg,
+    // Week sales (active only)
     ventesSemaineAgg,
+    // Week expenses
     depensesSemaineAgg,
+    // Week purchases
+    achatsSemaineAgg,
+    // Filtered sales (active only)
     ventesTotal,
+    // Filtered expenses
     depensesTotal,
+    // Filtered purchases
+    achatsTotal,
+    // Count of items in this period
+    produitsCount,
+    clientsCount,
+    commandesCount,
+    depensesCount,
+    stockAgg,
+    fournisseursCount,
   ] = await Promise.all([
     prisma.boutique.findUnique({
       where: { id },
       include: {
-        _count: {
-          select: {
-            produits: true,
-            commandesClient: true,
-            depenses: true,
-            clients: true,
-          },
-        },
         produits: {
           where: { quantite: { lte: 5 } },
           take: 5,
         },
         commandesClient: {
+          where: { date: dateFilter.whereClause },
           take: 6,
           orderBy: { createdAt: "desc" },
           include: { client: true, lignes: true },
         },
         depenses: {
+          where: { date: dateFilter.whereClause },
           take: 3,
           orderBy: { date: "desc" },
         },
       },
     }),
-    // Month sales
+    // Month sales (active only)
     prisma.commandeClient.aggregate({
-      where: { boutiqueId: id, createdAt: { gte: startOfMonth } },
+      where: { boutiqueId: id, date: { gte: startOfMonth }, etat: { not: "ANNULEE" } },
       _sum: { total: true },
     }),
     // Month expenses
@@ -94,9 +120,14 @@ export default async function BoutiqueDashboardPage({
       where: { boutiqueId: id, date: { gte: startOfMonth } },
       _sum: { montant: true },
     }),
-    // Week sales
+    // Month purchases
+    prisma.commandeFournisseur.aggregate({
+      where: { boutiqueId: id, date: { gte: startOfMonth }, etat: { not: "ANNULEE" } },
+      _sum: { total: true },
+    }),
+    // Week sales (active only)
     prisma.commandeClient.aggregate({
-      where: { boutiqueId: id, createdAt: { gte: startOfWeek } },
+      where: { boutiqueId: id, date: { gte: startOfWeek }, etat: { not: "ANNULEE" } },
       _sum: { total: true },
     }),
     // Week expenses
@@ -104,15 +135,50 @@ export default async function BoutiqueDashboardPage({
       where: { boutiqueId: id, date: { gte: startOfWeek } },
       _sum: { montant: true },
     }),
-    // All-time sales
-    prisma.commandeClient.aggregate({
-      where: { boutiqueId: id },
+    // Week purchases
+    prisma.commandeFournisseur.aggregate({
+      where: { boutiqueId: id, date: { gte: startOfWeek }, etat: { not: "ANNULEE" } },
       _sum: { total: true },
     }),
-    // All-time expenses
+    // Filtered sales (active only)
+    prisma.commandeClient.aggregate({
+      where: { boutiqueId: id, date: dateFilter.whereClause, etat: { not: "ANNULEE" } },
+      _sum: { total: true },
+    }),
+    // Filtered expenses
     prisma.depense.aggregate({
-      where: { boutiqueId: id },
+      where: { boutiqueId: id, date: dateFilter.whereClause },
       _sum: { montant: true },
+    }),
+    // Filtered purchases
+    prisma.commandeFournisseur.aggregate({
+      where: { boutiqueId: id, date: dateFilter.whereClause, etat: { not: "ANNULEE" } },
+      _sum: { total: true },
+    }),
+    // Count of products registered in the period
+    prisma.produit.count({
+      where: { boutiqueId: id, createdAt: dateFilter.whereClause },
+    }),
+    // Count of clients registered in the period
+    prisma.client.count({
+      where: { boutiqueId: id, createdAt: dateFilter.whereClause },
+    }),
+    // Count of active orders in the period
+    prisma.commandeClient.count({
+      where: { boutiqueId: id, date: dateFilter.whereClause, etat: { not: "ANNULEE" } },
+    }),
+    // Count of expenses in the period
+    prisma.depense.count({
+      where: { boutiqueId: id, date: dateFilter.whereClause },
+    }),
+    // Total stock units (sum of all product quantities, all-time)
+    prisma.produit.aggregate({
+      where: { boutiqueId: id },
+      _sum: { quantite: true },
+    }),
+    // Count of suppliers (all-time)
+    prisma.fournisseur.count({
+      where: { boutiqueId: id },
     }),
   ]);
 
@@ -120,46 +186,101 @@ export default async function BoutiqueDashboardPage({
 
   const financeData = {
     ventesTotal: ventesTotal._sum.total ?? 0,
-    ventesMois: ventesMoisAgg._sum.total ?? 0,
-    ventesSemaine: ventesSemaineAgg._sum.total ?? 0,
+    ventesMois: range ? (ventesTotal._sum.total ?? 0) : (ventesMoisAgg._sum.total ?? 0),
+    ventesSemaine: range ? (ventesTotal._sum.total ?? 0) : (ventesSemaineAgg._sum.total ?? 0),
     depensesTotal: depensesTotal._sum.montant ?? 0,
-    depensesMois: depensesMoisAgg._sum.montant ?? 0,
-    depensesSemaine: depensesSemaineAgg._sum.montant ?? 0,
+    depensesMois: range ? (depensesTotal._sum.montant ?? 0) : (depensesMoisAgg._sum.montant ?? 0),
+    depensesSemaine: range ? (depensesTotal._sum.montant ?? 0) : (depensesSemaineAgg._sum.montant ?? 0),
+    achatsTotal: achatsTotal._sum.total ?? 0,
+    achatsMois: range ? (achatsTotal._sum.total ?? 0) : (achatsMoisAgg._sum.total ?? 0),
+    achatsSemaine: range ? (achatsTotal._sum.total ?? 0) : (achatsSemaineAgg._sum.total ?? 0),
   };
 
-  const allTimeBenefice = financeData.ventesTotal - financeData.depensesTotal;
+  const allTimeCharges = financeData.depensesTotal + financeData.achatsTotal;
+  const allTimeBenefice = financeData.ventesTotal - allTimeCharges;
+  const stockTotal = stockAgg._sum.quantite ?? 0;
+
+  function formatCurrency(v: number): string {
+    if (Math.abs(v) >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
+    if (Math.abs(v) >= 1_000) return `${(v / 1_000).toFixed(1)}k`;
+    return v.toLocaleString("fr-FR");
+  }
 
   const stats = [
+    // Line 1
+    {
+      label: "Chiffre d'affaires",
+      value: formatCurrency(financeData.ventesTotal),
+      suffix: "FCFA",
+      icon: TrendingUp,
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
+      trend: range ? "Période" : "Total",
+    },
+    {
+      label: "Commandes",
+      value: commandesCount.toLocaleString("fr-FR"),
+      suffix: undefined as string | undefined,
+      icon: ShoppingCart,
+      color: "text-brand",
+      bg: "bg-brand/10",
+      trend: range ? "Période" : "Total",
+    },
+    // Line 2
     {
       label: "Produits",
-      value: boutique._count.produits,
+      value: produitsCount.toLocaleString("fr-FR"),
+      suffix: undefined as string | undefined,
       icon: Package,
       color: "text-orange-500",
       bg: "bg-orange-500/10",
-      trend: "Stock",
-    },
-    {
-      label: "Ventes",
-      value: boutique._count.commandesClient,
-      icon: ShoppingCart,
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
-      trend: "Total",
+      trend: range ? "Période" : "Total",
     },
     {
       label: "Clients",
-      value: boutique._count.clients,
+      value: clientsCount.toLocaleString("fr-FR"),
+      suffix: undefined as string | undefined,
       icon: Users,
-      color: "text-orange-500",
-      bg: "bg-orange-500/10",
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+      trend: range ? "Période" : "Total",
+    },
+    // Line 3
+    {
+      label: "Stock",
+      value: stockTotal.toLocaleString("fr-FR"),
+      suffix: "unités",
+      icon: Boxes,
+      color: "text-violet-500",
+      bg: "bg-violet-500/10",
       trend: "Total",
     },
     {
       label: "Dépenses",
-      value: boutique._count.depenses,
+      value: depensesCount.toLocaleString("fr-FR"),
+      suffix: undefined as string | undefined,
       icon: Wallet,
       color: "text-rose-500",
       bg: "bg-rose-500/10",
+      trend: range ? "Période" : "Total",
+    },
+    // Line 4
+    {
+      label: "Fournisseurs",
+      value: fournisseursCount.toLocaleString("fr-FR"),
+      suffix: undefined as string | undefined,
+      icon: Truck,
+      color: "text-amber-500",
+      bg: "bg-amber-500/10",
+      trend: "Total",
+    },
+    {
+      label: "Bénéfice net",
+      value: formatCurrency(allTimeBenefice),
+      suffix: "FCFA",
+      icon: Layers,
+      color: allTimeBenefice >= 0 ? "text-emerald-500" : "text-rose-500",
+      bg: allTimeBenefice >= 0 ? "bg-emerald-500/10" : "bg-rose-500/10",
       trend: "Total",
     },
   ];
@@ -245,6 +366,7 @@ export default async function BoutiqueDashboardPage({
           </div>
 
           <div className="flex flex-wrap gap-3 sm:gap-4 items-center shrink-0 w-full lg:w-auto">
+            <DashboardFilter />
             <Button
               asChild
               size="lg"
@@ -290,31 +412,38 @@ export default async function BoutiqueDashboardPage({
         </div>
       </div>
 
-      {/* Main Stats Bento Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+      {/* Main Stats Bento Grid — 8 KPIs strictly in 4 rows × 2 cols, all viewports */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="relative group p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden"
+            className="relative group p-4 sm:p-6 lg:p-7 rounded-[1.25rem] sm:rounded-[1.75rem] bg-white dark:bg-zinc-900 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden"
           >
             <div
               className={`absolute top-0 right-0 -mr-4 -mt-4 h-24 w-24 rounded-full ${stat.bg} blur-2xl opacity-50 group-hover:opacity-100 transition-opacity`}
             />
             <div className="relative z-10">
               <div
-                className={`mb-3 sm:mb-6 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 w-fit ${stat.bg} ${stat.color} ring-1 ring-inset ring-white/10 shadow-inner`}
+                className={`mb-3 sm:mb-5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 w-fit ${stat.bg} ${stat.color} ring-1 ring-inset ring-white/10 shadow-inner`}
               >
-                <stat.icon className="h-5 w-5 sm:h-7 sm:w-7" />
+                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
               <div className="space-y-1">
-                <div className="text-2xl sm:text-4xl font-black tracking-tighter leading-none">
-                  {stat.value}
+                <div className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="text-xl sm:text-3xl font-black tracking-tighter leading-none">
+                    {stat.value}
+                  </span>
+                  {stat.suffix && (
+                    <span className="text-[10px] sm:text-xs font-black text-muted-foreground uppercase tracking-wider">
+                      {stat.suffix}
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1 sm:mt-2 gap-1">
-                  <p className="text-xs sm:text-sm font-bold text-muted-foreground">
+                  <p className="text-xs sm:text-sm font-bold text-muted-foreground truncate">
                     {stat.label}
                   </p>
-                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md w-fit">
+                  <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md w-fit">
                     {stat.trend}
                   </span>
                 </div>
@@ -516,8 +645,8 @@ export default async function BoutiqueDashboardPage({
                 <span className="font-black text-sm sm:text-base">{financeData.ventesTotal.toLocaleString()} FCFA</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-white/70 font-bold text-xs sm:text-sm">Total dépenses</span>
-                <span className="font-black text-sm sm:text-base">{financeData.depensesTotal.toLocaleString()} FCFA</span>
+                <span className="text-white/70 font-bold text-xs sm:text-sm">Total charges</span>
+                <span className="font-black text-sm sm:text-base">{allTimeCharges.toLocaleString()} FCFA</span>
               </div>
               <div className="h-px bg-white/20 my-2" />
               <div className="flex items-center justify-between">

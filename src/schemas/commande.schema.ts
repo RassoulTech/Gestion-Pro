@@ -13,6 +13,9 @@ export const createCommandeClientSchema = z.object({
   montantRecu: z.number().min(0).optional(),
   monnaieRendue: z.number().min(0).optional(),
   lignes: z.array(ligneCommandeSchema).min(1, "Au moins un produit requis"),
+  date: z.string().optional(),
+  etat: z.enum(["EN_ATTENTE", "VALIDEE", "LIVREE", "ANNULEE"]).optional(),
+  modePaiement: z.string().optional(),
 });
 
 export const updateEtatCommandeSchema = z.object({
@@ -23,6 +26,8 @@ export const createCommandeFournisseurSchema = z.object({
   fournisseurId: z.string().min(1, "Fournisseur requis"),
   notes: z.string().max(500).optional(),
   lignes: z.array(ligneCommandeSchema).min(1, "Au moins un produit requis"),
+  date: z.string().optional(),
+  etat: z.enum(["EN_ATTENTE", "VALIDEE", "LIVREE", "ANNULEE"]).optional(),
 });
 
 export const createVenteFlashSchema = z.object({

@@ -1,22 +1,21 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useTransition } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   Search,
   ArrowUpRight,
   ArrowDownLeft,
   Package,
-  ChevronLeft,
-  ChevronRight,
   SlidersHorizontal,
   Calendar,
   Hash,
   Database,
+  Loader2,
 } from "lucide-react";
 import { cn, formatDateTime } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -50,62 +49,53 @@ interface Mouvement {
 
 interface StockClientProps {
   mouvements: Mouvement[];
+  total: number;
+  totalEntrees: number;
+  totalSorties: number;
 }
 
-export function StockClient({ mouvements }: StockClientProps) {
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("ALL");
-  const [sourceFilter, setSourceFilter] = useState<string>("ALL");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+const SOURCE_OPTIONS = [
+  { value: "ALL", label: "Toutes les sources" },
+  { value: "MANUEL", label: "Manuel" },
+  { value: "COMMANDE_CLIENT", label: "Vente Client" },
+  { value: "COMMANDE_FOURNISSEUR", label: "Réapprovisionnement" },
+  { value: "VENTE_FLASH", label: "Vente Flash" },
+  { value: "AJUSTEMENT", label: "Ajustement de stock" },
+];
 
-  // Extract all unique source types for the dropdown filter
-  const uniqueSources = useMemo(() => {
-    const sources = new Set<string>();
-    mouvements.forEach((m) => {
-      if (m.sourceType) sources.add(m.sourceType);
-    });
-    return Array.from(sources);
-  }, [mouvements]);
+export function StockClient({ mouvements, total, totalEntrees, totalSorties }: StockClientProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
-  // Filter movements based on search query, type, and source type
-  const filteredMouvements = useMemo(() => {
-    return mouvements.filter((m) => {
-      const matchSearch =
-        m.produit.nom.toLowerCase().includes(search.toLowerCase()) ||
-        m.produit.code.toLowerCase().includes(search.toLowerCase()) ||
-        (m.sourceType && m.sourceType.toLowerCase().includes(search.toLowerCase()));
+  const search = searchParams.get("q") || "";
+  const typeFilter = searchParams.get("type") || "ALL";
+  const sourceFilter = searchParams.get("source") || "ALL";
 
-      const matchType = typeFilter === "ALL" || m.type === typeFilter;
-      const matchSource = sourceFilter === "ALL" || m.sourceType === sourceFilter;
+  const handleSearch = (term: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (term) params.set("q", term);
+    else params.delete("q");
+    params.delete("page");
+    startTransition(() => router.push(`${pathname}?${params.toString()}`));
+  };
 
-      return matchSearch && matchType && matchSource;
-    });
-  }, [mouvements, search, typeFilter, sourceFilter]);
+  const handleTypeChange = (val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (val && val !== "ALL") params.set("type", val);
+    else params.delete("type");
+    params.delete("page");
+    startTransition(() => router.push(`${pathname}?${params.toString()}`));
+  };
 
-  // Reset page when filters change
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [search, typeFilter, sourceFilter]);
-
-  // Pagination calculation
-  const totalPages = Math.ceil(filteredMouvements.length / itemsPerPage) || 1;
-  const paginatedMouvements = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredMouvements.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredMouvements, currentPage]);
-
-  const totalEntrees = useMemo(() => {
-    return filteredMouvements
-      .filter((m) => m.type === "ENTREE")
-      .reduce((sum, m) => sum + m.quantite, 0);
-  }, [filteredMouvements]);
-
-  const totalSorties = useMemo(() => {
-    return filteredMouvements
-      .filter((m) => m.type === "SORTIE")
-      .reduce((sum, m) => sum + m.quantite, 0);
-  }, [filteredMouvements]);
+  const handleSourceChange = (val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (val && val !== "ALL") params.set("source", val);
+    else params.delete("source");
+    params.delete("page");
+    startTransition(() => router.push(`${pathname}?${params.toString()}`));
+  };
 
   const getSourceLabel = (sourceType: string | null) => {
     if (!sourceType) return "Manuel";
@@ -155,7 +145,7 @@ export function StockClient({ mouvements }: StockClientProps) {
           </div>
           <div>
             <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Mouvements Filtrés</p>
-            <p className="text-2xl font-black">{filteredMouvements.length} / {mouvements.length}</p>
+            <p className="text-2xl font-black">{total}</p>
           </div>
         </Card>
       </div>
@@ -169,15 +159,18 @@ export function StockClient({ mouvements }: StockClientProps) {
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Rechercher par produit, SKU ou source..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                defaultValue={search}
+                onChange={(e) => handleSearch(e.target.value)}
                 className="pl-12 h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border-none font-bold focus:ring-2 focus:ring-brand w-full"
               />
+              {isPending && (
+                <Loader2 className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-muted-foreground" />
+              )}
             </div>
 
             {/* Select Type */}
             <div className="w-full lg:w-48">
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <Select value={typeFilter} onValueChange={handleTypeChange}>
                 <SelectTrigger className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border-none font-bold focus:ring-2 focus:ring-brand">
                   <SelectValue placeholder="Type de mouvement" />
                 </SelectTrigger>
@@ -191,15 +184,15 @@ export function StockClient({ mouvements }: StockClientProps) {
 
             {/* Select Source */}
             <div className="w-full lg:w-56">
-              <Select value={sourceFilter} onValueChange={setSourceFilter}>
+              <Select value={sourceFilter} onValueChange={handleSourceChange}>
                 <SelectTrigger className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border-none font-bold focus:ring-2 focus:ring-brand">
                   <SelectValue placeholder="Source de mouvement" />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl">
                   <SelectItem value="ALL">Toutes les sources</SelectItem>
-                  {uniqueSources.map((source) => (
-                    <SelectItem key={source} value={source}>
-                      {getSourceLabel(source)}
+                  {SOURCE_OPTIONS.filter(opt => opt.value !== "ALL").map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -208,6 +201,7 @@ export function StockClient({ mouvements }: StockClientProps) {
           </div>
         </CardContent>
       </Card>
+
       {/* Desktop Stock Movements Table */}
       <div className="hidden sm:block">
         <Card className="border-none shadow-xl rounded-[2rem] bg-white dark:bg-zinc-900 overflow-hidden">
@@ -225,7 +219,7 @@ export function StockClient({ mouvements }: StockClientProps) {
                 </TableHeader>
                 <TableBody>
                   <AnimatePresence mode="popLayout">
-                    {paginatedMouvements.map((m, index) => {
+                    {mouvements.map((m, index) => {
                       const isEntree = m.type === "ENTREE";
                       return (
                         <motion.tr
@@ -293,7 +287,7 @@ export function StockClient({ mouvements }: StockClientProps) {
                     })}
                   </AnimatePresence>
 
-                  {filteredMouvements.length === 0 && (
+                  {mouvements.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={5} className="h-48 text-center">
                         <div className="flex flex-col items-center justify-center gap-3">
@@ -314,8 +308,8 @@ export function StockClient({ mouvements }: StockClientProps) {
 
       {/* Mobile Stacked Cards View */}
       <div className="sm:hidden flex flex-col gap-4">
-        {paginatedMouvements.length > 0 ? (
-          paginatedMouvements.map((m) => {
+        {mouvements.length > 0 ? (
+          mouvements.map((m) => {
             const isEntree = m.type === "ENTREE";
 
             return (
@@ -377,56 +371,6 @@ export function StockClient({ mouvements }: StockClientProps) {
           </div>
         )}
       </div>
-
-          {/* Premium Pagination controls */}
-          {totalPages > 1 && (
-            <div className="p-6 border-t border-zinc-100 dark:border-zinc-800 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-zinc-50/50 dark:bg-zinc-800/10">
-              <p className="text-sm font-bold text-muted-foreground text-center sm:text-left">
-                Affichage de <span className="font-extrabold text-zinc-950 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</span> à{" "}
-                <span className="font-extrabold text-zinc-950 dark:text-white">
-                  {Math.min(currentPage * itemsPerPage, filteredMouvements.length)}
-                </span>{" "}
-                sur <span className="font-extrabold text-zinc-950 dark:text-white">{filteredMouvements.length}</span> mouvements
-              </p>
-
-              <div className="flex items-center justify-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="h-10 w-10 rounded-xl font-bold border-zinc-200 dark:border-zinc-700 disabled:opacity-50"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    onClick={() => setCurrentPage(page)}
-                    className={`h-10 w-10 rounded-xl font-extrabold border-zinc-200 dark:border-zinc-700 ${
-                      currentPage === page
-                        ? "bg-brand hover:bg-brand/90 text-white border-transparent"
-                        : "hover:bg-zinc-100/50"
-                    }`}
-                  >
-                    {page}
-                  </Button>
-                ))}
-
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="h-10 w-10 rounded-xl font-bold border-zinc-200 dark:border-zinc-700 disabled:opacity-50"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-          )}
     </div>
   );
 }

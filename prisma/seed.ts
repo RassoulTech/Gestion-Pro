@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { PLAN_LIST, getStripePriceIds } from "../src/lib/plan-limits";
 
 const prisma = new PrismaClient();
 
@@ -45,73 +46,26 @@ async function main() {
     } as any,
   });
 
-  // ─── PLANS ──────────────────────────────────
-  const [planGratuit, planPro, _planEntreprise] = await Promise.all([
-    prisma.plan.create({
-      data: {
-        nom: "Starter",
-        prix: 0,
-        dureeEssaiJours: 0,
-        maxBoutiques: 1,
-        maxProduits: 50,
-        maxMembres: 1,
-        codePlan: "STARTER",
-        features: [
-          "1 boutique maximum",
-          "50 produits maximum",
-          "POS simple",
-          "Stock basique",
-          "Support email"
-        ],
-      } as any,
-    }),
-    prisma.plan.create({
-      data: {
-        nom: "Pro",
-        prix: 9900,
-        dureeEssaiJours: 90,
-        maxBoutiques: 3,
-        maxProduits: 500,
-        maxMembres: 5,
-        codePlan: "PRO",
-        stripePriceIdMonthly: process.env.STRIPE_PRICE_PRO_MONTHLY || "price_pro_monthly_mock",
-        stripePriceIdAnnual: process.env.STRIPE_PRICE_PRO_ANNUAL || "price_pro_annual_mock",
-        features: [
-          "Maximum 3 boutiques",
-          "Jusqu'à 500 produits",
-          "POS avancé",
-          "Ventes flash",
-          "Stock avancé",
-          "Rapports détaillés",
-          "Marketplace public",
-          "Export PDF/Excel",
-          "Support prioritaire"
-        ],
-      } as any,
-    }),
-    prisma.plan.create({
-      data: {
-        nom: "Enterprise",
-        prix: 19900,
-        dureeEssaiJours: 30,
-        maxBoutiques: 999999, // illimitées
-        maxProduits: 999999, // illimités
-        maxMembres: 999999, // illimités
-        codePlan: "ENTERPRISE",
-        stripePriceIdMonthly: process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "price_enterprise_monthly_mock",
-        stripePriceIdAnnual: process.env.STRIPE_PRICE_ENTERPRISE_ANNUAL || "price_enterprise_annual_mock",
-        features: [
-          "Boutiques illimitées",
-          "Produits illimités",
-          "Membres & équipes illimités",
-          "Toutes les fonctionnalités Pro",
-          "Onboarding personnalisé",
-          "Support prioritaire par email",
-          "Accès direct au fondateur"
-        ],
-      } as any,
-    }),
-  ]);
+  // ─── PLANS (single source of truth: src/lib/plan-limits.ts) ──
+  await Promise.all(
+    PLAN_LIST.map((def) => {
+      const stripeIds = getStripePriceIds(def.code);
+      return prisma.plan.create({
+        data: {
+          nom: def.nom,
+          prix: def.prix,
+          dureeEssaiJours: def.dureeEssaiJours,
+          maxBoutiques: def.maxBoutiques,
+          maxProduits: def.maxProduits,
+          maxMembres: def.maxMembres,
+          codePlan: def.code,
+          stripePriceIdMonthly: stripeIds.monthly,
+          stripePriceIdAnnual: stripeIds.annual,
+          features: def.features,
+        } as any,
+      });
+    })
+  );
 
   // ─── VENDEUR 1 ──────────────────────────────
   const userV1 = await prisma.user.create({

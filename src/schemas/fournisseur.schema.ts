@@ -5,6 +5,8 @@ export const createFournisseurSchema = z.object({
   telephone: z.string().max(20).regex(/^[0-9+\s()-]*$/, "Numero invalide").optional().or(z.literal("")),
   email: z.string().email("Email invalide").optional().or(z.literal("")),
   adresse: z.string().max(300).optional(),
+  categorie: z.string().max(100).optional(),
+  notes: z.string().max(200).optional(),
 });
 
 export const updateFournisseurSchema = createFournisseurSchema.partial();

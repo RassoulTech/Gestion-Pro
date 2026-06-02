@@ -104,6 +104,12 @@ model Vendeur {
   photo            String?
   statut           StatutVendeur  @default(ACTIF)
   stripeCustomerId String?        @map("stripe_customer_id")
+  nomAffiche       String?        @map("nom_affiche")
+  pays             String?
+  ville            String?
+  bio              String?        @db.Text
+  notifications    Json?          @default("{\"commandes\":true,\"ventes\":true,\"clients\":true,\"paiements\":true,\"rapports\":true,\"emails\":true}")
+  preferences      Json?          @default("{\"langue\":\"fr\",\"timezone\":\"UTC\",\"dateFormat\":\"DD/MM/YYYY\",\"currencyFormat\":\"FCFA\"}")
   createdAt        DateTime       @default(now()) @map("created_at")
   updatedAt        DateTime       @updatedAt @map("updated_at")
 
@@ -153,6 +159,12 @@ model Boutique {
   statut           StatutBoutique  @default(ACTIF)
   qrCodeUrl        String?         @map("qr_code_url")
   qrCodeGeneratedAt DateTime?      @map("qr_code_generated_at")
+  whatsapp         String?
+  facebook         String?
+  instagram        String?
+  linkedin         String?
+  twitter          String?
+  horaires         String?         @db.Text
   createdAt        DateTime        @default(now()) @map("created_at")
   updatedAt        DateTime        @updatedAt @map("updated_at")
 
@@ -285,6 +297,7 @@ model Categorie {
   produits   Produit[]
 
   @@unique([boutiqueId, nom])
+  @@index([boutiqueId, createdAt])
   @@map("categories")
 }
 
@@ -312,6 +325,7 @@ model Produit {
   mouvementsStock          MouvementStock[]
 
   @@unique([boutiqueId, code])
+  @@index([boutiqueId, createdAt])
   @@map("produits")
 }
 
@@ -331,6 +345,7 @@ model Client {
   boutique   Boutique  @relation(fields: [boutiqueId], references: [id], onDelete: Cascade)
   commandes  CommandeClient[]
 
+  @@index([boutiqueId, createdAt])
   @@map("clients")
 }
 
@@ -347,6 +362,7 @@ model Fournisseur {
   boutique   Boutique  @relation(fields: [boutiqueId], references: [id], onDelete: Cascade)
   commandes  CommandeFournisseur[]
 
+  @@index([boutiqueId, createdAt])
   @@map("fournisseurs")
 }
 
@@ -386,6 +402,7 @@ model CommandeClient {
   lignes     LigneCommandeClient[]
 
   @@unique([boutiqueId, code])
+  @@index([boutiqueId, date])
   @@map("commandes_client")
 }
 
@@ -419,6 +436,7 @@ model CommandeFournisseur {
   lignes         LigneCommandeFournisseur[]
 
   @@unique([boutiqueId, code])
+  @@index([boutiqueId, date])
   @@map("commandes_fournisseur")
 }
 

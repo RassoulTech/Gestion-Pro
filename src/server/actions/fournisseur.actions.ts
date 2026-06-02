@@ -11,12 +11,14 @@ const createFournisseurSchema = z.object({
   telephone: z.string().optional(),
   email: z.string().email("Email invalide").optional().or(z.literal("")),
   adresse: z.string().optional(),
+  categorie: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 export const createFournisseur = vendeurActionClient
   .schema(createFournisseurSchema)
   .action(async ({ parsedInput, ctx }) => {
-    const { boutiqueId, nom, telephone, email, adresse } = parsedInput;
+    const { boutiqueId, nom, telephone, email, adresse, categorie, notes } = parsedInput;
     const { vendeurId } = ctx;
 
     const membership = await prisma.membreBoutique.findUnique({
@@ -24,13 +26,21 @@ export const createFournisseur = vendeurActionClient
     });
     if (!membership) throw new Error("BOUTIQUE_ACCESS_DENIED");
 
+    const consolidatedAdresse = [
+      adresse,
+      categorie ? `Catégorie: ${categorie}` : "",
+      notes ? `Notes: ${notes}` : "",
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
     const fournisseur = await prisma.fournisseur.create({
       data: {
         boutiqueId,
         nom,
         telephone: telephone || null,
         email: email || null,
-        adresse: adresse || null,
+        adresse: consolidatedAdresse || null,
       },
     });
 
@@ -45,12 +55,14 @@ const updateFournisseurSchema = z.object({
   telephone: z.string().optional(),
   email: z.string().email("Email invalide").optional().or(z.literal("")),
   adresse: z.string().optional(),
+  categorie: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 export const updateFournisseur = vendeurActionClient
   .schema(updateFournisseurSchema)
   .action(async ({ parsedInput, ctx }) => {
-    const { boutiqueId, fournisseurId, nom, telephone, email, adresse } = parsedInput;
+    const { boutiqueId, fournisseurId, nom, telephone, email, adresse, categorie, notes } = parsedInput;
     const { vendeurId } = ctx;
 
     const membership = await prisma.membreBoutique.findUnique({
@@ -58,13 +70,21 @@ export const updateFournisseur = vendeurActionClient
     });
     if (!membership) throw new Error("BOUTIQUE_ACCESS_DENIED");
 
+    const consolidatedAdresse = [
+      adresse,
+      categorie ? `Catégorie: ${categorie}` : "",
+      notes ? `Notes: ${notes}` : "",
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
     const fournisseur = await prisma.fournisseur.update({
       where: { id: fournisseurId, boutiqueId },
       data: {
         nom,
         telephone: telephone || null,
         email: email || null,
-        adresse: adresse || null,
+        adresse: consolidatedAdresse || null,
       },
     });
 

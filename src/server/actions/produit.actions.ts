@@ -5,7 +5,8 @@ import { vendeurActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { requireBoutiqueAccess } from "@/lib/permissions";
-import { checkProduitCreationLimit, clearQuotaCache } from "@/lib/quotas";
+import { checkProduitCreationLimit, clearQuotaCache, getVendeurQuotas } from "@/lib/quotas";
+import { getLimitReachedMessage, PLAN_DEFINITIONS } from "@/lib/plan-limits";
 import {
   createProduitSchema,
   updateProduitSchema,
@@ -69,9 +70,10 @@ export const createProduit = vendeurActionClient
     await requireBoutiqueAccess(boutiqueId, vendeurId);
 
     // Centralized quota verification
-    const { allowed, count, max } = await checkProduitCreationLimit(boutiqueId, vendeurId);
+    const { allowed } = await checkProduitCreationLimit(boutiqueId, vendeurId);
     if (!allowed) {
-      throw new Error(`Votre plan actuel est limité à ${max} produits pour cette boutique. Vous en possédez actuellement ${count}. Veuillez mettre à niveau votre forfait.`);
+      const quotas = await getVendeurQuotas(vendeurId);
+      throw new Error(getLimitReachedMessage(quotas.codePlan as "STARTER" | "PRO" | "ENTERPRISE"));
     }
 
     const produit = await prisma.$transaction(async (tx) => {
@@ -226,7 +228,7 @@ export const checkProductLimitAction = vendeurActionClient
       orderBy: { createdAt: "desc" },
     });
 
-    const maxProduits = currentAbonnement?.plan.maxProduits ?? 50;
+    const maxProduits = currentAbonnement?.plan.maxProduits ?? PLAN_DEFINITIONS.STARTER.maxProduits;
 
     const productCount = await prisma.produit.count({
       where: { boutiqueId },

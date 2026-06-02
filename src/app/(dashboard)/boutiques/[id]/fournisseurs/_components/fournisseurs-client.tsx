@@ -18,6 +18,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 
+import { SearchInput } from "@/components/ui/search-input";
+
 interface Fournisseur {
   id: string; nom: string; telephone: string | null; email: string | null; adresse: string | null;
   _count: { commandes: number };
@@ -27,24 +29,42 @@ export function FournisseursClient({ fournisseurs, boutiqueId }: { fournisseurs:
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [editingFournisseur, setEditingFournisseur] = useState<Fournisseur | null>(null);
-  const [search, setSearch] = useState("");
 
   const form = useForm<CreateFournisseurInput>({
     resolver: zodResolver(createFournisseurSchema),
-    defaultValues: { nom: "", telephone: "", email: "", adresse: "" },
+    defaultValues: { nom: "", telephone: "", email: "", adresse: "", categorie: "", notes: "" },
   });
 
-  const filtered = fournisseurs.filter((f) => f.nom.toLowerCase().includes(search.toLowerCase()));
+  const filtered = fournisseurs;
 
   function openCreate() {
     setEditingFournisseur(null);
-    form.reset({ nom: "", telephone: "", email: "", adresse: "" });
+    form.reset({ nom: "", telephone: "", email: "", adresse: "", categorie: "", notes: "" });
     setOpen(true);
   }
 
   function openEdit(f: Fournisseur) {
     setEditingFournisseur(f);
-    form.reset({ nom: f.nom, telephone: f.telephone || "", email: f.email || "", adresse: f.adresse || "" });
+    const parts = f.adresse ? f.adresse.split(" | ") : [];
+    let baseAdresse = parts[0] || "";
+    let cat = "";
+    let nts = "";
+    parts.forEach((p) => {
+      if (p.startsWith("Catégorie: ")) cat = p.replace("Catégorie: ", "");
+      if (p.startsWith("Notes: ")) nts = p.replace("Notes: ", "");
+    });
+    if (baseAdresse.startsWith("Catégorie: ") || baseAdresse.startsWith("Notes: ")) {
+      baseAdresse = "";
+    }
+
+    form.reset({
+      nom: f.nom,
+      telephone: f.telephone || "",
+      email: f.email || "",
+      adresse: baseAdresse,
+      categorie: cat,
+      notes: nts,
+    });
     setOpen(true);
   }
 
@@ -70,15 +90,7 @@ export function FournisseursClient({ fournisseurs, boutiqueId }: { fournisseurs:
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-full sm:max-w-sm">
-          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Rechercher un fournisseur..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-11 h-12 rounded-xl bg-foreground/5 border-none font-bold"
-          />
-        </div>
+        <SearchInput placeholder="Rechercher un fournisseur..." />
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="brand" className="w-full sm:w-auto rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20" onClick={openCreate}>
@@ -117,6 +129,20 @@ export function FournisseursClient({ fournisseurs, boutiqueId }: { fournisseurs:
                     <FormMessage />
                   </FormItem>
                 )} />
+                <FormField control={form.control} name="categorie" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Catégorie</FormLabel>
+                    <FormControl><Input placeholder="Ex: Grossiste, Importateur" className="h-12 rounded-xl bg-foreground/5 border-none px-4 font-bold" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="notes" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Notes</FormLabel>
+                    <FormControl><Input placeholder="Ex: Livraison sous 24h, conditions de paiement" className="h-12 rounded-xl bg-foreground/5 border-none px-4 font-bold" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
                 <Button type="submit" variant="brand" className="w-full h-12 rounded-xl font-black">
                   {editingFournisseur ? "Enregistrer" : "Créer"}
                 </Button>
@@ -126,8 +152,8 @@ export function FournisseursClient({ fournisseurs, boutiqueId }: { fournisseurs:
         </Sheet>
       </div>
 
-      {filtered.length === 0 && !search ? (
-        <EmptyState icon={Truck} title="Aucun fournisseur" description="Ajoutez vos premiers fournisseurs." />
+      {filtered.length === 0 ? (
+        <EmptyState icon={Truck} title="Aucun fournisseur" description="Aucun fournisseur trouvé. Ajustez vos filtres ou ajoutez-en un nouveau." />
       ) : (
         <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
           <CardContent className="p-0">

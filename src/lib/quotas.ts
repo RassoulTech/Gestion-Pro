@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { env } from "@/env.mjs";
+import { PLAN_DEFINITIONS } from "@/lib/plan-limits";
 
 export interface PlanQuotas {
   codePlan: string;
@@ -50,13 +51,14 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
       where: { codePlan: "STARTER" },
     });
 
+    const starterDef = PLAN_DEFINITIONS.STARTER;
     result = {
       codePlan: "STARTER",
-      nom: starterPlan?.nom || "Starter",
-      maxBoutiques: starterPlan?.maxBoutiques ?? 1,
-      maxProduits: starterPlan?.maxProduits ?? 50,
-      maxMembres: starterPlan?.maxMembres ?? 1,
-      features: (starterPlan?.features as string[]) || ["1 boutique max", "50 produits max"],
+      nom: starterPlan?.nom || starterDef.nom,
+      maxBoutiques: starterPlan?.maxBoutiques ?? starterDef.maxBoutiques,
+      maxProduits: starterPlan?.maxProduits ?? starterDef.maxProduits,
+      maxMembres: starterPlan?.maxMembres ?? starterDef.maxMembres,
+      features: (starterPlan?.features as string[]) || starterDef.features,
       isActive: false, // No active paying subscription
       essaiFin: null,
       dateFin: null,
@@ -91,13 +93,14 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
         where: { codePlan: "STARTER" },
       });
 
+      const starterDef = PLAN_DEFINITIONS.STARTER;
       result = {
         codePlan: "STARTER",
-        nom: starterPlan?.nom || "Starter",
-        maxBoutiques: starterPlan?.maxBoutiques ?? 1,
-        maxProduits: starterPlan?.maxProduits ?? 50,
-        maxMembres: starterPlan?.maxMembres ?? 1,
-        features: (starterPlan?.features as string[]) || ["1 boutique max", "50 produits max"],
+        nom: starterPlan?.nom || starterDef.nom,
+        maxBoutiques: starterPlan?.maxBoutiques ?? starterDef.maxBoutiques,
+        maxProduits: starterPlan?.maxProduits ?? starterDef.maxProduits,
+        maxMembres: starterPlan?.maxMembres ?? starterDef.maxMembres,
+        features: (starterPlan?.features as string[]) || starterDef.features,
         isActive: false,
         essaiFin: null,
         dateFin: null,
@@ -234,13 +237,14 @@ export async function getBoutiqueOwnerQuotas(
     select: { vendeurId: true },
   });
   if (!owner) {
+    const starterDef = PLAN_DEFINITIONS.STARTER;
     return {
       codePlan: "STARTER",
-      nom: "Starter",
-      maxBoutiques: 1,
-      maxProduits: 50,
-      maxMembres: 1,
-      features: [],
+      nom: starterDef.nom,
+      maxBoutiques: starterDef.maxBoutiques,
+      maxProduits: starterDef.maxProduits,
+      maxMembres: starterDef.maxMembres,
+      features: starterDef.features,
       isActive: false,
       essaiFin: null,
       dateFin: null,

@@ -1,12 +1,14 @@
 "use server";
 
 import { z } from "zod";
+import bcrypt from "bcryptjs";
 import { vendeurActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { requireBoutiqueOwner } from "@/lib/permissions";
 import { generateCode, slugify } from "@/lib/utils";
-import { checkBoutiqueCreationLimit, checkMembreCreationLimit, clearQuotaCache } from "@/lib/quotas";
+import { checkBoutiqueCreationLimit, checkMembreCreationLimit, clearQuotaCache, getVendeurQuotas } from "@/lib/quotas";
+import { getLimitReachedMessage } from "@/lib/plan-limits";
 import {
   createBoutiqueSchema,
   updateBoutiqueSchema,
@@ -18,9 +20,10 @@ export const createBoutique = vendeurActionClient
     const { vendeurId, user } = ctx;
 
     // Centralized quota verification
-    const { allowed, count, max } = await checkBoutiqueCreationLimit(vendeurId);
+    const { allowed } = await checkBoutiqueCreationLimit(vendeurId);
     if (!allowed) {
-      throw new Error(`Votre plan actuel est limité à ${max} boutique(s). Vous en possédez actuellement ${count}. Veuillez mettre à niveau votre forfait.`);
+      const quotas = await getVendeurQuotas(vendeurId);
+      throw new Error(getLimitReachedMessage(quotas.codePlan as "STARTER" | "PRO" | "ENTERPRISE"));
     }
 
     const baseSlug = slugify(parsedInput.nom);
@@ -102,6 +105,12 @@ export const updateBoutique = vendeurActionClient
         logo: data.logo || null,
         latitude: data.latitude || null,
         longitude: data.longitude || null,
+        whatsapp: data.whatsapp || null,
+        facebook: data.facebook || null,
+        instagram: data.instagram || null,
+        linkedin: data.linkedin || null,
+        twitter: data.twitter || null,
+        horaires: data.horaires || null,
       },
     });
 
@@ -140,6 +149,119 @@ export const deleteBoutique = vendeurActionClient
     return { success: true };
   });
 
+export const reactivateBoutique = vendeurActionClient
+  .schema(z.object({ boutiqueId: z.string().min(1) }))
+  .action(async ({ parsedInput, ctx }) => {
+    const { boutiqueId } = parsedInput;
+    const { vendeurId, user } = ctx;
+
+    await requireBoutiqueOwner(boutiqueId, vendeurId);
+
+    await prisma.boutique.update({
+      where: { id: boutiqueId },
+      data: { statut: "ACTIF" },
+    });
+
+    await logActivity({
+      userId: user.id,
+      action: "BOUTIQUE_REACTIVATED",
+      subjectType: "Boutique",
+      subjectId: boutiqueId,
+    });
+
+    return { success: true };
+  });
+
+export const deleteBoutiquePermanent = vendeurActionClient
+  .schema(
+    z.object({
+      boutiqueId: z.string().min(1),
+      password: z.string().min(1, "Le mot de passe est requis"),
+      confirmation: z.string().min(1, "La confirmation est requise"),
+    })
+  )
+  .action(async ({ parsedInput, ctx }) => {
+    const { boutiqueId, password, confirmation } = parsedInput;
+    const { vendeurId, user } = ctx;
+
+    if (confirmation !== "SUPPRIMER") {
+      throw new Error("La confirmation doit être exactement \"SUPPRIMER\"");
+    }
+
+    await requireBoutiqueOwner(boutiqueId, vendeurId);
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { password: true },
+    });
+    if (!dbUser?.password) {
+      throw new Error("Aucun mot de passe défini sur ce compte. Définissez-en un avant de supprimer une boutique.");
+    }
+    const ok = await bcrypt.compare(password, dbUser.password);
+    if (!ok) {
+      throw new Error("Mot de passe incorrect");
+    }
+
+    const boutique = await prisma.boutique.findUnique({
+      where: { id: boutiqueId },
+      select: { nom: true, slug: true },
+    });
+
+    await prisma.boutique.delete({ where: { id: boutiqueId } });
+
+    await logActivity({
+      userId: user.id,
+      action: "BOUTIQUE_PERMANENTLY_DELETED",
+      subjectType: "Boutique",
+      subjectId: boutiqueId,
+      changes: { nom: boutique?.nom, slug: boutique?.slug },
+    });
+
+    clearQuotaCache(vendeurId);
+
+    return { success: true };
+  });
+
+export const deleteVendorAccount = vendeurActionClient
+  .schema(
+    z.object({
+      password: z.string().min(1, "Le mot de passe est requis"),
+      confirmation: z.string().min(1, "La confirmation est requise"),
+    })
+  )
+  .action(async ({ parsedInput, ctx }) => {
+    const { password, confirmation } = parsedInput;
+    const { user } = ctx;
+
+    if (confirmation !== "SUPPRIMER") {
+      throw new Error("La confirmation doit être exactement \"SUPPRIMER\"");
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { password: true, email: true },
+    });
+    if (!dbUser?.password) {
+      throw new Error("Aucun mot de passe défini sur ce compte. Définissez-en un avant de supprimer votre compte.");
+    }
+    const ok = await bcrypt.compare(password, dbUser.password);
+    if (!ok) {
+      throw new Error("Mot de passe incorrect");
+    }
+
+    await logActivity({
+      userId: user.id,
+      action: "USER_ACCOUNT_DELETED",
+      subjectType: "User",
+      subjectId: user.id,
+      changes: { email: dbUser.email },
+    });
+
+    await prisma.user.delete({ where: { id: user.id } });
+
+    return { success: true };
+  });
+
 export const checkBoutiqueLimitAction = vendeurActionClient
   .action(async ({ ctx }) => {
     const { vendeurId } = ctx;
@@ -174,7 +296,7 @@ export const inviteMembre = vendeurActionClient
     await requireBoutiqueOwner(boutiqueId, vendeurId);
 
     // Enforce member limit quota
-    const { allowed, count, max } = await checkMembreCreationLimit(boutiqueId, vendeurId);
+    const { allowed, max } = await checkMembreCreationLimit(boutiqueId, vendeurId);
     if (!allowed) {
       throw new Error(`Votre plan actuel est limité à ${max} membre(s) pour cette boutique. Vous avez déjà atteint cette limite.`);
     }

@@ -12,14 +12,19 @@ interface FinanceData {
   depensesTotal: number;
   depensesMois: number;
   depensesSemaine: number;
+  achatsTotal?: number;
+  achatsMois?: number;
+  achatsSemaine?: number;
 }
 
 export function FinanceSection({ data }: { data: FinanceData }) {
   const [periode, setPeriode] = useState<"mois" | "semaine">("mois");
 
   const totalVentes = periode === "mois" ? data.ventesMois : data.ventesSemaine;
-  const totalDepenses = periode === "mois" ? data.depensesMois : data.depensesSemaine;
-  const benefice = totalVentes - totalDepenses;
+  const totalDepensesSimples = periode === "mois" ? data.depensesMois : data.depensesSemaine;
+  const totalAchats = periode === "mois" ? (data.achatsMois ?? 0) : (data.achatsSemaine ?? 0);
+  const totalCharges = totalDepensesSimples + totalAchats;
+  const benefice = totalVentes - totalCharges;
   const periodeLabel = periode === "semaine" ? "cette semaine" : "ce mois";
   const marge = totalVentes > 0 ? (benefice / totalVentes) * 100 : 0;
 
@@ -83,11 +88,11 @@ export function FinanceSection({ data }: { data: FinanceData }) {
                 </span>
               </div>
               <div className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tighter break-words">
-                {totalDepenses.toLocaleString()}
+                {totalCharges.toLocaleString()}
                 <span className="text-sm sm:text-lg lg:text-2xl opacity-70 ml-1">FCFA</span>
               </div>
-              <p className="mt-2 sm:mt-4 text-[10px] sm:text-xs font-bold opacity-70">
-                Dépenses {periodeLabel}
+              <p className="mt-2 sm:mt-4 text-[10px] sm:text-xs font-bold opacity-75 leading-relaxed">
+                Frais {periodeLabel}: {totalDepensesSimples.toLocaleString()} F | Achats: {totalAchats.toLocaleString()} F
               </p>
             </div>
           </div>
@@ -98,7 +103,7 @@ export function FinanceSection({ data }: { data: FinanceData }) {
                 Bénéfice Net
               </h4>
               <p className="text-xs sm:text-sm font-bold text-muted-foreground">
-                Profit {periodeLabel} après déduction des dépenses.
+                Profit {periodeLabel} après charges et frais d&apos;achat.
               </p>
             </div>
             <div

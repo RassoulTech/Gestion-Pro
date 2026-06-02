@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { redirect, notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Image from "next/image";
-import { 
-  Plus, 
-  History,
+import {
+  Plus,
   Package,
   Layers,
-  TrendingUp,
-  AlertTriangle,
   ArrowRightLeft
 } from "lucide-react";
 import Link from "next/link";
@@ -16,7 +14,6 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -28,64 +25,103 @@ import {
 import { ProduitActions } from "./_components/produit-actions";
 import { ProduitFilters } from "./_components/produit-filters";
 import { ExcelImportButton } from "./_components/excel-import-button";
+import { parseDateFilter } from "@/lib/date-filters";
+import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
+import { SimplePagination } from "@/components/ui/simple-pagination";
 
 interface ProduitsPageProps {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ 
+    q?: string; 
+    status?: string; 
+    range?: string; 
+    from?: string; 
+    to?: string; 
+    page?: string; 
+  }>;
 }
 
 export default async function ProduitsPage({ params, searchParams }: ProduitsPageProps) {
-  const { id } = await params;
-  const { q, status } = await searchParams;
+  const { id: boutiqueId } = await params;
+  const { q, status, range, from, to, page: pageStr } = await searchParams;
   
   const session = await auth();
   if (!session?.user) redirect("/login");
 
   const isAdmin = session.user.role === "ADMIN" || session.user.isImpersonating;
 
-  const boutique = await prisma.boutique.findUnique({
-    where: { id },
-    include: {
-      produits: {
-        include: {
-          categorie: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-  });
+  // Pagination setups based on mobile/desktop headers
+  const userAgent = (await headers()).get("user-agent") || "";
+  const isMobile = /mobile/i.test(userAgent);
+  const limit = isMobile ? 20 : 30;
+  const page = pageStr ? parseInt(pageStr, 10) : 1;
+  const skip = (page - 1) * limit;
 
-  if (!boutique) notFound();
+  const dateFilter = parseDateFilter(range, from, to);
 
-  // In-memory advanced search and status filter matching
-  let filteredProduits = boutique.produits;
-  
-  if (q) {
-    const query = q.toLowerCase().trim();
-    filteredProduits = filteredProduits.filter(p => 
-      p.nom.toLowerCase().includes(query) || 
-      (p.code && p.code.toLowerCase().includes(query)) ||
-      (p.description && p.description.toLowerCase().includes(query))
-    );
+  const whereClause: any = {
+    boutiqueId,
+  };
+
+  // Date range filter
+  if (dateFilter.startDate || dateFilter.endDate) {
+    whereClause.createdAt = dateFilter.whereClause;
   }
 
+  // Term search filter
+  if (q) {
+    whereClause.OR = [
+      { nom: { contains: q, mode: "insensitive" } },
+      { code: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+    ];
+  }
+
+  // Stock status filter
   if (status) {
     if (status === "alert") {
-      filteredProduits = filteredProduits.filter(p => p.quantite <= p.seuilAlerte && p.quantite > 0);
+      whereClause.quantite = { lte: 5, gt: 0 };
     } else if (status === "instock") {
-      filteredProduits = filteredProduits.filter(p => p.quantite > p.seuilAlerte);
+      whereClause.quantite = { gt: 5 };
     } else if (status === "outofstock") {
-      filteredProduits = filteredProduits.filter(p => p.quantite === 0);
+      whereClause.quantite = 0;
     }
   }
 
-  // Dashboard calculations for header KPIs
-  const totalCount = boutique.produits.length;
-  const filteredCount = filteredProduits.length;
-  const lowStockCount = boutique.produits.filter(p => p.quantite <= p.seuilAlerte && p.quantite > 0).length;
-  const outOfStockCount = boutique.produits.filter(p => p.quantite === 0).length;
+  const [
+    boutique,
+    filteredProduits,
+    totalCount,
+    lowStockCount,
+    outOfStockCount,
+    filteredCount,
+  ] = await Promise.all([
+    prisma.boutique.findUnique({
+      where: { id: boutiqueId },
+      select: { nom: true },
+    }),
+    prisma.produit.findMany({
+      where: whereClause,
+      include: {
+        categorie: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: limit,
+    }),
+    // Total count of products
+    prisma.produit.count({ where: { boutiqueId } }),
+    // Low stock count (quantite <= 5 and > 0)
+    prisma.produit.count({ where: { boutiqueId, quantite: { lte: 5, gt: 0 } } }),
+    // Out of stock count (quantite == 0)
+    prisma.produit.count({ where: { boutiqueId, quantite: 0 } }),
+    // Count of filtered products
+    prisma.produit.count({ where: whereClause }),
+  ]);
+
+  if (!boutique) notFound();
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 sm:space-y-12 py-4 sm:py-6 px-4 sm:px-6">
@@ -96,7 +132,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest">
             <Link href="/boutiques" className="hover:text-orange-500 transition-colors">Mes Boutiques</Link>
             <span>/</span>
-            <Link href={`/boutiques/${id}`} className="hover:text-orange-500 transition-colors">{boutique.nom}</Link>
+            <Link href={`/boutiques/${boutiqueId}`} className="hover:text-orange-500 transition-colors">{boutique.nom}</Link>
             <span>/</span>
             <span className="text-slate-600 dark:text-zinc-300">Inventaire</span>
           </div>
@@ -109,16 +145,17 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-stretch md:self-auto sm:justify-end">
+        <div className="flex flex-wrap items-center gap-3 self-stretch md:self-auto sm:justify-end">
+          <DashboardFilter />
           <Button asChild variant="outline" className="flex-1 sm:flex-initial h-12 rounded-xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm">
-            <Link href={`/boutiques/${id}/stock`}>
+            <Link href={`/boutiques/${boutiqueId}/stock`}>
               <ArrowRightLeft className="mr-2 h-4 w-4 text-slate-500" />
               Mouvements
             </Link>
           </Button>
-          {isAdmin && <ExcelImportButton boutiqueId={id} />}
+          {isAdmin && <ExcelImportButton boutiqueId={boutiqueId} />}
           <Button asChild variant="premium" className="flex-1 sm:flex-initial h-12 rounded-xl font-extrabold shadow-lg shadow-orange-500/10 text-xs sm:text-sm">
-            <Link href={`/boutiques/${id}/produits/new`}>
+            <Link href={`/boutiques/${boutiqueId}/produits/new`}>
               <Plus className="mr-2 h-4.5 w-4.5" />
               Nouveau Produit
             </Link>
@@ -229,7 +266,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
                     <TableCell className="text-right pr-8">
                       <ProduitActions
                         produitId={produit.id}
-                        boutiqueId={id}
+                        boutiqueId={boutiqueId}
                         produitNom={produit.nom}
                       />
                     </TableCell>
@@ -292,7 +329,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
 
                 <ProduitActions
                   produitId={produit.id}
-                  boutiqueId={id}
+                  boutiqueId={boutiqueId}
                   produitNom={produit.nom}
                 />
               </div>
@@ -332,6 +369,12 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
           </div>
         )}
       </div>
+
+      <SimplePagination
+        totalItems={filteredCount}
+        itemsPerPage={limit}
+        currentPage={page}
+      />
     </div>
   );
 }

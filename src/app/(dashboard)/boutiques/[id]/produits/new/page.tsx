@@ -168,15 +168,18 @@ export default function NewProductPage({ params }: NewProductPageProps) {
                     Limite de produits atteinte
                   </h3>
                   <p className="text-slate-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed font-medium">
-                    Vous avez atteint la limite de <strong className="text-red-500 font-extrabold">{limitData.maxProduits} produits</strong> du forfait <span className="font-extrabold text-slate-900 dark:text-white uppercase">{limitData.planName}</span>. Passez au forfait Pro pour ajouter plus de produits.
+                    Vous avez atteint la limite de <strong className="text-red-500 font-extrabold">{limitData.maxProduits} produits</strong> du forfait <span className="font-extrabold text-slate-900 dark:text-white uppercase">{limitData.planName}</span>.{" "}
+                    {limitData.planName?.toLowerCase().includes("pro")
+                      ? "Passez au forfait Enterprise pour bénéficier de capacités illimitées."
+                      : "Passez au forfait supérieur pour développer votre catalogue."}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <Button asChild size="lg" className="h-14 rounded-2xl font-black text-sm bg-gradient-to-r from-red-500 to-amber-500 hover:from-red-600 hover:to-amber-600 text-white border-none shadow-lg shadow-red-500/20">
-                  <Link href="/boutiques">
-                    Passer au forfait Pro
+                  <Link href={`/pricing?boutiqueId=${boutiqueId}`}>
+                    Mettre à niveau
                     <ArrowUpRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>

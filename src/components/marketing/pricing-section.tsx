@@ -1,5 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import Link from "next/link";
@@ -8,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Section, SectionHeader } from "./section";
 import { cn } from "@/lib/utils";
 import { formatPrice, type Currency } from "@/lib/format";
- 
-import { motion, AnimatePresence } from "framer-motion";
+import { PLAN_LIST } from "@/lib/plan-limits";
+
+import { motion } from "framer-motion";
 
 type Plan = {
   name: string;
@@ -22,53 +22,20 @@ type Plan = {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const plans: Plan[] = [
-  {
-    name: "Starter",
-    monthlyXOF: 0,
-    description: "Pour démarrer et tester sans engagement.",
-    features: [
-      "1 boutique maximum",
-      "50 produits maximum",
-      "POS simple",
-      "Stock basique",
-      "Support par email",
-    ],
-    cta: { label: "Essayer gratuitement", href: "/register" },
+const plans: Plan[] = PLAN_LIST.map((p) => ({
+  name: p.nom,
+  monthlyXOF: p.prix,
+  description: p.shortDescription,
+  features: p.features,
+  cta: {
+    label:
+      p.code === "STARTER"
+        ? "Essayer gratuitement"
+        : `Choisir ${p.nom}`,
+    href: "/register",
   },
-  {
-    name: "Pro",
-    monthlyXOF: 9900,
-    description: "Pour les commerces en pleine croissance.",
-    features: [
-      "Maximum 3 boutiques",
-      "Jusqu'à 500 produits",
-      "POS avancé",
-      "Ventes flash",
-      "Stock avancé & mouvements",
-      "Rapports détaillés & exports",
-      "Mini-marketplace public",
-      "Support prioritaire",
-    ],
-    cta: { label: "Choisir Pro", href: "/register" },
-    highlight: true,
-  },
-  {
-    name: "Enterprise",
-    monthlyXOF: 19900,
-    description: "Pour les réseaux de boutiques et multi-équipes.",
-    features: [
-      "Boutiques illimitées",
-      "Produits illimités",
-      "Membres & équipes illimités",
-      "Toutes les fonctionnalités Pro",
-      "Onboarding personnalisé",
-      "Support prioritaire par email",
-      "Accès direct au fondateur",
-    ],
-    cta: { label: "Choisir Enterprise", href: "/register" },
-  },
-];
+  highlight: p.code === "PRO",
+}));
 
 const XOF_PER_EUR = 655.957;
 

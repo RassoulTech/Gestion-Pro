@@ -18,6 +18,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import Link from "next/link";
 
+import { SearchInput } from "@/components/ui/search-input";
+
 interface Depense {
   id: string;
   libelle: string;
@@ -26,12 +28,18 @@ interface Depense {
   date: Date;
 }
 
-export function DepensesClient({ depenses, boutiqueId }: { depenses: Depense[]; boutiqueId: string }) {
+export function DepensesClient({ 
+  depenses, 
+  boutiqueId,
+  totalDepenses,
+}: { 
+  depenses: Depense[]; 
+  boutiqueId: string;
+  totalDepenses: number;
+}) {
   const router = useRouter();
   const [editingDepense, setEditingDepense] = useState<Depense | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
-
-  const totalDepenses = depenses.reduce((acc, curr) => acc + curr.montant, 0);
 
   const form = useForm<CreateDepenseInput>({
     resolver: zodResolver(createDepenseSchema),
@@ -94,8 +102,12 @@ export function DepensesClient({ depenses, boutiqueId }: { depenses: Depense[]; 
         </Card>
       </div>
 
+      <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+        <SearchInput placeholder="Rechercher par libelle ou categorie..." />
+      </div>
+
       {/* Table */}
-      <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden animate-in fade-in duration-300">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>

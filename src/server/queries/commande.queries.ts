@@ -78,14 +78,27 @@ export async function getBoutiqueVentesFlash(
 
 export async function getBoutiqueCommandesFournisseur(
   boutiqueId: string,
-  params?: { page?: number; perPage?: number }
+  params?: { search?: string; page?: number; perPage?: number; dateFilter?: any }
 ) {
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
+  const where = {
+    boutiqueId,
+    ...(params?.search && {
+      OR: [
+        { code: { contains: params.search, mode: "insensitive" as const } },
+        { fournisseur: { nom: { contains: params.search, mode: "insensitive" as const } } },
+      ],
+    }),
+    ...(params?.dateFilter && {
+      date: params.dateFilter,
+    }),
+  };
+
   const [data, total] = await Promise.all([
     prisma.commandeFournisseur.findMany({
-      where: { boutiqueId },
+      where,
       include: {
         fournisseur: { select: { nom: true } },
         _count: { select: { lignes: true } },
@@ -94,7 +107,7 @@ export async function getBoutiqueCommandesFournisseur(
       skip: (page - 1) * perPage,
       take: perPage,
     }),
-    prisma.commandeFournisseur.count({ where: { boutiqueId } }),
+    prisma.commandeFournisseur.count({ where }),
   ]);
 
   return { data, total, page, perPage, totalPages: Math.ceil(total / perPage) };
