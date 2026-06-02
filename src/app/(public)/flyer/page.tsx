@@ -53,26 +53,16 @@ export default function FlyerPage() {
             className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm font-bold text-zinc-200 hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
           >
             <Printer className="h-4 w-4" />
-            <span>Imprimer</span>
+            <span>Imprimer le flyer</span>
           </button>
 
-          <a
-            href="/gestionpro_flyer.pdf"
-            download="gestionpro_flyer.pdf"
-            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-sm font-bold text-white transition-all shadow-md active:scale-95 shadow-orange-600/20"
+          <button
+            onClick={() => window.print()}
+            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-sm font-bold text-white transition-all shadow-md active:scale-95 shadow-orange-600/20 cursor-pointer"
           >
             <Download className="h-4 w-4" />
-            <span>Télécharger PDF</span>
-          </a>
-
-          <a
-            href="/gestionpro_flyer.png"
-            download="gestionpro_flyer.png"
-            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-sm font-bold text-zinc-400 hover:text-zinc-200 transition-all shadow-md active:scale-95"
-          >
-            <Download className="h-4 w-4" />
-            <span>Télécharger PNG</span>
-          </a>
+            <span>Télécharger PDF Vectoriel</span>
+          </button>
         </div>
       </div>
 
