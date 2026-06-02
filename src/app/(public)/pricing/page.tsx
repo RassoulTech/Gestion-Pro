@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { Check, Sparkles, Loader2, CreditCard, Smartphone } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { getPlansAction, initiatePlanSubscription } from "@/server/actions/subscription.actions";
 import { toast } from "sonner";
+import { formatPrice, type Currency } from "@/lib/format";
 
 type PlanType = {
   id: string;
@@ -26,6 +27,39 @@ export default function PricingPage() {
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<"WAVE" | "ORANGE_MONEY">("WAVE");
   const [step, setStep] = useState<1 | 2>(1);
+
+  const [currency, setCurrency] = useState<Currency>("XOF");
+  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">("monthly");
+
+  const XOF_PER_EUR = 655.957;
+  const XOF_PER_USD = 600;
+
+  function getPriceInCurrency(priceInXOF: number): number {
+    if (currency === "XOF") return priceInXOF;
+    if (currency === "EUR") return priceInXOF / XOF_PER_EUR;
+    if (currency === "USD") return priceInXOF / XOF_PER_USD;
+    return priceInXOF;
+  }
+
+  function displayPrice(prix: number): { value: string; originalValue?: string; suffix: string } {
+    if (prix === 0) return { value: "Gratuit", suffix: "" };
+
+    const priceVal = getPriceInCurrency(prix);
+
+    if (billingInterval === "yearly") {
+      const discounted = priceVal * 0.8;
+      return {
+        value: formatPrice(discounted, currency),
+        originalValue: formatPrice(priceVal, currency),
+        suffix: "/ mois"
+      };
+    }
+
+    return {
+      value: formatPrice(priceVal, currency),
+      suffix: "/ mois"
+    };
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -101,6 +135,72 @@ export default function PricingPage() {
           </p>
         </div>
 
+        {/* Switchers (visible at step 1) */}
+        {step === 1 && (
+          <div className="flex flex-col items-center gap-4">
+            {/* Currencies Toggle */}
+            <div className="inline-flex p-1 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-xl">
+              {(["XOF", "USD", "EUR"] as const).map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCurrency(c)}
+                  className={cn(
+                    "px-5 py-2 rounded-xl text-xs font-black transition-all duration-300",
+                    currency === c
+                      ? "bg-brand text-white shadow-lg shadow-brand/25"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  )}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            {/* Interval Toggle */}
+            <div className="inline-flex p-1 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-xl items-center">
+              <button
+                type="button"
+                onClick={() => setBillingInterval("monthly")}
+                className={cn(
+                  "px-5 py-2 rounded-xl text-xs font-black transition-all duration-300",
+                  billingInterval === "monthly"
+                    ? "bg-brand text-white shadow-lg shadow-brand/25"
+                    : "text-zinc-400 hover:text-zinc-200"
+                )}
+              >
+                Mensuel
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingInterval("yearly")}
+                className={cn(
+                  "px-5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-1.5",
+                  billingInterval === "yearly"
+                    ? "bg-brand text-white shadow-lg shadow-brand/25"
+                    : "text-zinc-400 hover:text-zinc-200"
+                )}
+              >
+                <span>Annuel</span>
+                <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[9px] font-black border border-emerald-500/20">
+                  -20%
+                </span>
+              </button>
+            </div>
+
+            {/* Annual discount highlights */}
+            {billingInterval === "yearly" && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5"
+              >
+                <span>🎉 Économisez jusqu&apos;à {currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $"} / an !</span>
+              </motion.div>
+            )}
+          </div>
+        )}
+
         {loading && plans.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <Loader2 className="h-10 w-10 text-brand animate-spin" />
@@ -112,6 +212,7 @@ export default function PricingPage() {
             {plans.map((plan) => {
               const isPro = plan.nom === "Pro";
               const isEnterprise = plan.nom === "Enterprise";
+              const { value, originalValue, suffix } = displayPrice(plan.prix);
 
               return (
                 <motion.div
@@ -136,11 +237,25 @@ export default function PricingPage() {
 
                   <div className="space-y-4">
                     <h3 className="text-xl font-extrabold text-zinc-100">{plan.nom}</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-black text-white">
-                        {plan.prix === 0 ? "Gratuit" : `${plan.prix.toLocaleString("fr-FR")} F`}
-                      </span>
-                      {plan.prix > 0 && <span className="text-zinc-500 text-sm font-bold">/mois</span>}
+                    <div className="flex flex-col justify-end min-h-[4.5rem]">
+                      {originalValue && (
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-bold text-zinc-500 line-through tabular-nums">
+                            {originalValue}
+                          </span>
+                          <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[9px] font-black border border-emerald-500/20">
+                            -20%
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-black text-white tabular-nums">
+                          {value}
+                        </span>
+                        {plan.prix > 0 && suffix && (
+                          <span className="text-zinc-500 text-sm font-bold">{suffix}</span>
+                        )}
+                      </div>
                     </div>
                     <p className="text-xs text-zinc-400 font-medium">
                       {isPro
@@ -202,8 +317,19 @@ export default function PricingPage() {
                 <p className="text-sm font-black text-zinc-200">{selectedPlan?.nom}</p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Total mensuel</p>
-                <p className="text-lg font-black text-brand">{selectedPlan ? formatCurrency(selectedPlan.prix) : ""}</p>
+                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">
+                  {billingInterval === "yearly" ? "Total annuel" : "Total mensuel"}
+                </p>
+                <p className="text-lg font-black text-brand">
+                  {selectedPlan ? (() => {
+                    if (selectedPlan.prix === 0) return "Gratuit";
+                    const basePrice = getPriceInCurrency(selectedPlan.prix);
+                    if (billingInterval === "yearly") {
+                      return formatPrice((basePrice * 0.8) * 12, currency);
+                    }
+                    return formatPrice(basePrice, currency);
+                  })() : ""}
+                </p>
               </div>
             </div>
 

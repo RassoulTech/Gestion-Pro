@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import * as React from "react";
 import Link from "next/link";
@@ -41,15 +41,35 @@ const XOF_PER_EUR = 655.957;
 
 export function PricingSection() {
   const [currency, setCurrency] = React.useState<Currency>("XOF");
+  const [billingInterval, setBillingInterval] = React.useState<"monthly" | "yearly">("monthly");
 
-  function displayPrice(plan: Plan): { value: string; suffix: string } {
+  const XOF_PER_EUR = 655.957;
+  const XOF_PER_USD = 600;
+
+  function displayPrice(plan: Plan): { value: string; originalValue?: string; suffix: string } {
     if (plan.monthlyXOF === null) return { value: "Sur devis", suffix: "" };
     if (plan.monthlyXOF === 0) return { value: "Gratuit", suffix: "" };
-    const value =
-      currency === "XOF"
-        ? formatPrice(plan.monthlyXOF, "XOF")
-        : formatPrice(plan.monthlyXOF / XOF_PER_EUR, "EUR");
-    return { value, suffix: "/ mois" };
+
+    let priceVal = plan.monthlyXOF;
+    if (currency === "EUR") {
+      priceVal = plan.monthlyXOF / XOF_PER_EUR;
+    } else if (currency === "USD") {
+      priceVal = plan.monthlyXOF / XOF_PER_USD;
+    }
+
+    if (billingInterval === "yearly") {
+      const discounted = priceVal * 0.8;
+      return {
+        value: formatPrice(discounted, currency),
+        originalValue: formatPrice(priceVal, currency),
+        suffix: "/ mois"
+      };
+    }
+
+    return {
+      value: formatPrice(priceVal, currency),
+      suffix: "/ mois"
+    };
   }
 
   return (
@@ -69,29 +89,73 @@ export function PricingSection() {
         subtitle="Choisissez le plan qui correspond à la taille de votre ambition. Sans engagement."
       />
 
-      {/* Currency Switcher */}
-      <div className="mt-12 flex justify-center">
-        <div className="inline-flex p-1 bg-white/40 dark:bg-zinc-900/50 backdrop-blur-xl rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-md">
-          {(["XOF", "EUR"] as const).map((c) => (
+      {/* Switchers */}
+      <div className="mt-12 flex flex-col items-center gap-4">
+        {/* Currencies Toggle */}
+        <div className="inline-flex p-1 bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-xl">
+          {(["XOF", "USD", "EUR"] as const).map((c) => (
             <button
               key={c}
+              type="button"
               onClick={() => setCurrency(c)}
               className={cn(
-                "px-6 py-2.5 rounded-xl text-sm font-extrabold transition-all relative overflow-hidden active-press",
+                "px-5 py-2 rounded-xl text-xs font-black transition-all duration-300",
                 currency === c
-                  ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 shadow-lg shadow-black/10"
-                  : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                  ? "bg-brand text-white shadow-lg shadow-brand/25"
+                  : "text-zinc-400 hover:text-zinc-200"
               )}
             >
-              {c === "XOF" ? "FCFA" : "Euro"}
+              {c}
             </button>
           ))}
         </div>
+
+        {/* Interval Toggle */}
+        <div className="inline-flex p-1 bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-xl items-center">
+          <button
+            type="button"
+            onClick={() => setBillingInterval("monthly")}
+            className={cn(
+              "px-5 py-2 rounded-xl text-xs font-black transition-all duration-300",
+              billingInterval === "monthly"
+                ? "bg-brand text-white shadow-lg shadow-brand/25"
+                : "text-zinc-400 hover:text-zinc-200"
+            )}
+          >
+            Mensuel
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingInterval("yearly")}
+            className={cn(
+              "px-5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-1.5",
+              billingInterval === "yearly"
+                ? "bg-brand text-white shadow-lg shadow-brand/25"
+                : "text-zinc-400 hover:text-zinc-200"
+            )}
+          >
+            <span>Annuel</span>
+            <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[9px] font-black border border-emerald-500/20">
+              -20%
+            </span>
+          </button>
+        </div>
+
+        {/* Annual discount highlights */}
+        {billingInterval === "yearly" && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5"
+          >
+            <span>🎉 Économisez jusqu&apos;à {currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $"} / an !</span>
+          </motion.div>
+        )}
       </div>
 
       <div className="mt-10 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch z-10 relative">
         {plans.map((plan, i) => {
-          const { value, suffix } = displayPrice(plan);
+          const { value, originalValue, suffix } = displayPrice(plan);
           const isHighlight = !!plan.highlight;
 
           return (
@@ -129,11 +193,25 @@ export function PricingSection() {
                 <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">{plan.description}</p>
               </div>
 
-              <div className="mb-8 flex items-baseline gap-1 relative z-10">
-                <span className="text-4xl font-black tracking-tighter text-zinc-900 dark:text-zinc-50 tabular-nums">
-                  {value}
-                </span>
-                <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">{suffix}</span>
+              <div className="mb-8 flex flex-col justify-end min-h-[4.5rem] relative z-10">
+                {originalValue && (
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-bold text-zinc-500 line-through tabular-nums">
+                      {originalValue}
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[9px] font-black border border-emerald-500/20">
+                      -20%
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-black tracking-tighter text-zinc-900 dark:text-zinc-50 tabular-nums">
+                    {value}
+                  </span>
+                  {suffix && (
+                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">{suffix}</span>
+                  )}
+                </div>
               </div>
 
               <ul className="flex-1 space-y-4 mb-8 relative z-10">
