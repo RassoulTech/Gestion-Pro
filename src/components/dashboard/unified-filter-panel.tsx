@@ -251,21 +251,19 @@ export function UnifiedFilterPanel({
     });
   }, [pathname, router]);
 
-  // Déterminer s'il y a des filtres avancés activables
-  const hasAdvancedFilters =
-    statusOptions || categories || suppliers || clients || typeOptions || sourceOptions || true;
-
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2rem] p-5 sm:p-6 shadow-xl backdrop-blur-md space-y-5 w-full select-none transition-all duration-300">
-      {/* En-tête de filtre mobile-first */}
+    <div className="bg-white/80 dark:bg-[#0d0d0d]/90 border border-slate-100 dark:border-zinc-800/80 rounded-[2rem] p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-5 w-full select-none transition-all duration-300">
+      {/* En-tête de filtre premium et mobile-first */}
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800/80 pb-4">
         <div className="flex items-center gap-2.5">
-          <SlidersHorizontal className="w-4.5 h-4.5 text-orange-500" />
+          <div className="p-2 rounded-xl bg-orange-500/10 text-orange-500 dark:bg-orange-500/10">
+            <SlidersHorizontal className="w-4 h-4 text-orange-500" />
+          </div>
           <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-800 dark:text-zinc-200">
-            Filtres
+            Options de filtrage
           </h2>
           {activeCount > 0 && (
-            <span className="h-5 min-w-5 px-1.5 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center animate-in scale-in duration-200">
+            <span className="h-5 min-w-5 px-2 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center animate-in scale-in duration-200">
               {activeCount}
             </span>
           )}
@@ -287,9 +285,9 @@ export function UnifiedFilterPanel({
           <Button
             variant="outline"
             onClick={() => setExpanded(!expanded)}
-            className="h-8 px-3 rounded-xl border-slate-200 dark:border-zinc-800 text-[10px] sm:text-xs font-extrabold flex md:hidden items-center gap-1.5"
+            className="h-8 px-3 rounded-xl border-slate-200 dark:border-zinc-850 text-[10px] sm:text-xs font-extrabold flex md:hidden items-center gap-1.5 transition-all active:scale-95"
           >
-            {expanded ? "Masquer" : "Afficher"}
+            {expanded ? "Masquer les filtres" : "Filtres avancés"}
           </Button>
         </div>
       </div>
@@ -297,15 +295,15 @@ export function UnifiedFilterPanel({
       {/* Barre de Recherche Principale (Toujours visible pour un accès mobile-first rapide) */}
       {enableSearch && (
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-xl blur-lg opacity-40 group-focus-within:opacity-80 transition-all duration-300" />
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-2xl blur-lg opacity-40 group-focus-within:opacity-80 transition-all duration-300" />
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-zinc-500" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-zinc-500" />
             <Input
               type="text"
               placeholder={searchPlaceholder}
               value={draftSearch}
               onChange={(e) => setDraftSearch(e.target.value)}
-              className="pl-9 h-11 rounded-xl bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 font-bold text-xs focus-visible:ring-orange-500 focus-visible:ring-offset-0"
+              className="pl-10 h-12 rounded-2xl bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 font-bold text-xs focus-visible:ring-orange-500 focus-visible:ring-offset-0 placeholder:text-slate-400 dark:placeholder:text-zinc-500 text-slate-800 dark:text-zinc-100"
             />
           </div>
         </div>
@@ -315,7 +313,7 @@ export function UnifiedFilterPanel({
       <div
         className={cn(
           "md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 transition-all duration-300 ease-in-out",
-          expanded ? "flex flex-col opacity-100" : "hidden md:grid"
+          expanded ? "flex flex-col opacity-100 animate-in slide-in-from-top-3" : "hidden md:grid"
         )}
       >
         {/* 1. Période */}
@@ -324,12 +322,12 @@ export function UnifiedFilterPanel({
             Période
           </Label>
           <Select value={draftRange} onValueChange={setDraftRange}>
-            <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+            <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
               <SelectValue placeholder="Choisir une période" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
               {PERIOD_PRESETS.map((p) => (
-                <SelectItem key={p.value} value={p.value} className="font-semibold text-xs">
+                <SelectItem key={p.value} value={p.value} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                   {p.label}
                 </SelectItem>
               ))}
@@ -345,7 +343,7 @@ export function UnifiedFilterPanel({
                   type="date"
                   value={draftFrom}
                   onChange={(e) => setDraftFrom(e.target.value)}
-                  className="h-9 rounded-xl border-slate-100 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-850/50 font-bold text-xs px-2 focus-visible:ring-orange-500"
+                  className="h-9 rounded-xl border-slate-200/60 dark:border-zinc-800/80 bg-slate-50/50 dark:bg-zinc-900/60 font-bold text-xs px-2 focus-visible:ring-orange-500"
                 />
               </div>
               <div className="space-y-1">
@@ -354,7 +352,7 @@ export function UnifiedFilterPanel({
                   type="date"
                   value={draftTo}
                   onChange={(e) => setDraftTo(e.target.value)}
-                  className="h-9 rounded-xl border-slate-100 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-850/50 font-bold text-xs px-2 focus-visible:ring-orange-500"
+                  className="h-9 rounded-xl border-slate-200/60 dark:border-zinc-800/80 bg-slate-50/50 dark:bg-zinc-900/60 font-bold text-xs px-2 focus-visible:ring-orange-500"
                 />
               </div>
             </div>
@@ -368,13 +366,13 @@ export function UnifiedFilterPanel({
               {statusLabel}
             </Label>
             <Select value={draftStatus} onValueChange={setDraftStatus}>
-              <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+              <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="font-semibold text-xs">Tous</SelectItem>
+              <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
+                <SelectItem value="all" className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">Tous</SelectItem>
                 {statusOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value} className="font-semibold text-xs">
+                  <SelectItem key={opt.value} value={opt.value} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -390,13 +388,13 @@ export function UnifiedFilterPanel({
               {categoryLabel}
             </Label>
             <Select value={draftCategory} onValueChange={setDraftCategory}>
-              <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+              <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
                 <SelectValue placeholder="Toutes les catégories" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="font-semibold text-xs">Toutes les catégories</SelectItem>
+              <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
+                <SelectItem value="all" className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">Toutes les catégories</SelectItem>
                 {categories.map((c) => (
-                  <SelectItem key={c.id} value={c.id} className="font-semibold text-xs">
+                  <SelectItem key={c.id} value={c.id} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                     {c.nom}
                   </SelectItem>
                 ))}
@@ -412,13 +410,13 @@ export function UnifiedFilterPanel({
               {supplierLabel}
             </Label>
             <Select value={draftSupplier} onValueChange={setDraftSupplier}>
-              <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+              <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
                 <SelectValue placeholder="Tous les fournisseurs" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="font-semibold text-xs">Tous les fournisseurs</SelectItem>
+              <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
+                <SelectItem value="all" className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">Tous les fournisseurs</SelectItem>
                 {suppliers.map((s) => (
-                  <SelectItem key={s.id} value={s.id} className="font-semibold text-xs">
+                  <SelectItem key={s.id} value={s.id} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                     {s.nom}
                   </SelectItem>
                 ))}
@@ -434,15 +432,15 @@ export function UnifiedFilterPanel({
               {clientLabel}
             </Label>
             <Select value={draftClient} onValueChange={setDraftClient}>
-              <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+              <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
                 <SelectValue placeholder="Tous les clients" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="font-semibold text-xs">Tous les clients</SelectItem>
+              <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
+                <SelectItem value="all" className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">Tous les clients</SelectItem>
                 {clients.map((c) => {
                   const fullName = `${c.prenom || ""} ${c.nom}`.trim() || "Client sans nom";
                   return (
-                    <SelectItem key={c.id} value={c.id} className="font-semibold text-xs">
+                    <SelectItem key={c.id} value={c.id} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                       {fullName}
                     </SelectItem>
                   );
@@ -459,12 +457,12 @@ export function UnifiedFilterPanel({
               Type de mouvement
             </Label>
             <Select value={draftType} onValueChange={setDraftType}>
-              <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+              <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
                 <SelectValue placeholder="Tous les types" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
                 {typeOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value} className="font-semibold text-xs">
+                  <SelectItem key={opt.value} value={opt.value} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -480,13 +478,13 @@ export function UnifiedFilterPanel({
               Source de mouvement
             </Label>
             <Select value={draftSource} onValueChange={setDraftSource}>
-              <SelectTrigger className="h-11 rounded-xl font-bold bg-slate-50/50 dark:bg-zinc-850/50 border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 focus:ring-orange-500">
+              <SelectTrigger className="h-11 rounded-2xl font-bold bg-slate-50/50 dark:bg-zinc-900/60 border-slate-200/60 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50 focus:ring-orange-500 transition-all">
                 <SelectValue placeholder="Toutes les sources" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL" className="font-semibold text-xs">Toutes les sources</SelectItem>
+              <SelectContent className="rounded-2xl border-slate-200/60 dark:border-zinc-800/80 bg-white dark:bg-[#121212]">
+                <SelectItem value="ALL" className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">Toutes les sources</SelectItem>
                 {sourceOptions.map((s) => (
-                  <SelectItem key={s} value={s} className="font-semibold text-xs">
+                  <SelectItem key={s} value={s} className="font-semibold text-xs rounded-xl focus:bg-orange-500/10 focus:text-orange-500">
                     {s}
                   </SelectItem>
                 ))}
@@ -500,7 +498,7 @@ export function UnifiedFilterPanel({
       <div
         className={cn(
           "flex justify-end pt-4 border-t border-slate-100 dark:border-zinc-800/80 transition-all duration-300",
-          expanded ? "flex" : "hidden md:flex"
+          expanded ? "flex animate-in slide-in-from-bottom-2" : "hidden md:flex"
         )}
       >
         <Button
