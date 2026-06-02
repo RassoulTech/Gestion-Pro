@@ -74,7 +74,22 @@
       "Bash(npm uninstall *)",
       "Bash(ping -n 2 github.com)",
       "Bash(Select-Object -First 5)",
-      "Bash(Select-Object -First 30)"
+      "Bash(Select-Object -First 30)",
+      "Bash(echo \"---EXIT $?---\")",
+      "Bash(npx next *)",
+      "Bash(npx tsx *)",
+      "mcp__claude_ai_Vercel__list_teams",
+      "mcp__claude_ai_Vercel__list_projects",
+      "mcp__claude_ai_Vercel__list_deployments",
+      "Bash(xargs wc -l)",
+      "Bash(xargs grep -l \"SelectContent\\\\|DropdownMenuContent\\\\|PopoverContent\")",
+      "Bash(npx eslint *)",
+      "Bash(echo \"started pid $!\")",
+      "Bash(taskkill //F //IM node.exe //FI \"WINDOWTITLE eq *\")",
+      "Bash(xargs -r kill)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 3 http://localhost:3000/marketplace)",
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($conns\\) { $conns | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } ; \"killed\" } else { \"no listener\" })",
+      "Bash(xargs grep -lE \"useRouter|useSearchParams|searchParams\")"
     ]
   }
 }

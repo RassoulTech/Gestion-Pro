@@ -19,6 +19,9 @@ import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { BrandLogo } from "@/components/brand-logo";
 
 export default function FlyerPage() {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://gestion-pro.vercel.app";
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(appUrl)}`;
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center py-8 px-4 sm:px-6 relative overflow-hidden">
       {/* Background Decorative Blobs */}
@@ -292,8 +295,12 @@ export default function FlyerPage() {
 
                 {/* QR Code Placeholder with real scan intent */}
                 <div className="flex items-center justify-center gap-3 bg-white/5 rounded-2xl p-3 border border-white/5">
-                  <div className="bg-white p-1 rounded-xl shadow-inner shrink-0">
-                    <QrCode className="h-10 w-10 text-zinc-950" strokeWidth={2} />
+                  <div className="bg-white p-1 rounded-xl shadow-inner shrink-0 w-12 h-12 flex items-center justify-center">
+                    <img 
+                      src={qrCodeUrl} 
+                      alt="QR Code" 
+                      className="h-10 w-10 object-contain" 
+                    />
                   </div>
                   <div className="text-left">
                     <p className="text-[10px] font-black uppercase tracking-wider text-orange-200 leading-none mb-1">
