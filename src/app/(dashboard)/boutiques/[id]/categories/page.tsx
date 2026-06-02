@@ -76,14 +76,13 @@ export default async function CategoriesPage({
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher une catégorie..."
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher une catégorie..."
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6">
+      {/* Contenu principal */}
+      <div className="space-y-6">
           {/* Categories Grid List */}
           <CategoriesClient categories={categories} boutiqueId={boutiqueId} />
 
@@ -93,7 +92,6 @@ export default async function CategoriesPage({
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );

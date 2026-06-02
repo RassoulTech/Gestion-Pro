@@ -128,14 +128,13 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
         featureName="Rapports Détaillés & Analytics"
         featureDescription="Obtenez des graphiques interactifs avancés sur l'évolution de vos ventes et de vos stocks."
       >
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Panel de Filtres */}
-          <UnifiedFilterPanel
-            enableSearch={false}
-          />
+        {/* Panel de Filtres (Pleine largeur dans le corps) */}
+        <UnifiedFilterPanel
+          enableSearch={false}
+        />
 
-          {/* Contenu principal */}
-          <div className="flex-1 w-full space-y-6">
+        {/* Contenu principal */}
+        <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-center justify-end gap-4 mb-6">
               <PDFDownloadButton 
                 boutiqueId={id} 
@@ -151,7 +150,6 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
                 endDate={dateFilter.endDate} 
               />
             </Suspense>
-          </div>
         </div>
       </PremiumGuard>
     </div>

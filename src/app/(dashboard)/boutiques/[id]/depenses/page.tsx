@@ -103,16 +103,15 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher par libellé..."
-          categories={categoriesList}
-          categoryLabel="Catégorie de dépense"
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher par libellé..."
+        categories={categoriesList}
+        categoryLabel="Catégorie de dépense"
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6">
+      {/* Contenu principal */}
+      <div className="space-y-6">
           <DepensesClient depenses={depenses} boutiqueId={boutiqueId} totalDepenses={totalDepenses} />
 
           <SimplePagination
@@ -120,7 +119,6 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );

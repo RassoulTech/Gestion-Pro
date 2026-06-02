@@ -48,14 +48,13 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher un fournisseur..."
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher un fournisseur..."
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6">
+      {/* Contenu principal */}
+      <div className="space-y-6">
           <FournisseursClient fournisseurs={fournisseurs.data} boutiqueId={id} total={fournisseurs.total} />
           
           <SimplePagination
@@ -63,7 +62,6 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );

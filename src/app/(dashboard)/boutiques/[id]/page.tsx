@@ -411,14 +411,13 @@ export default async function BoutiqueDashboardPage({
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          enableSearch={false}
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        enableSearch={false}
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6 sm:space-y-10">
+      {/* Contenu principal */}
+      <div className="space-y-6 sm:space-y-10">
 
       {/* Main Stats Bento Grid — 8 KPIs strictly in 4 rows × 2 cols, all viewports */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
@@ -666,7 +665,6 @@ export default async function BoutiqueDashboardPage({
             </div>
           </Card>
         </div>
-      </div>
       </div>
       </div>
     </div>

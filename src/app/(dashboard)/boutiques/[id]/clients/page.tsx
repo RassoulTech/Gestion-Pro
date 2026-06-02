@@ -97,14 +97,13 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher un client..."
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher un client..."
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6">
+      {/* Contenu principal */}
+      <div className="space-y-6">
           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
             <CardHeader className="p-8 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="text-sm text-slate-800 dark:text-zinc-200 font-extrabold">
@@ -217,7 +216,6 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );

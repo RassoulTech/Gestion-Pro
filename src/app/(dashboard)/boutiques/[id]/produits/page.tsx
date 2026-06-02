@@ -176,23 +176,22 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres (Sidebar à gauche sur Desktop, Sheet à droite sur Mobile) */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher par nom, code barre..."
-          categories={categories}
-          categoryLabel="Catégorie de produit"
-          statusOptions={[
-            { value: "all", label: "Tous les produits" },
-            { value: "alert", label: "Stock critique" },
-            { value: "instock", label: "En stock" },
-            { value: "outofstock", label: "Rupture" },
-          ]}
-          statusLabel="Statut du stock"
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher par nom, code barre..."
+        categories={categories}
+        categoryLabel="Catégorie de produit"
+        statusOptions={[
+          { value: "all", label: "Tous les produits" },
+          { value: "alert", label: "Stock critique" },
+          { value: "instock", label: "En stock" },
+          { value: "outofstock", label: "Rupture" },
+        ]}
+        statusLabel="Statut du stock"
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-8">
+      {/* Contenu principal */}
+      <div className="space-y-8">
           {/* Modern Dashboard KPI Cards row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
@@ -402,7 +401,6 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );

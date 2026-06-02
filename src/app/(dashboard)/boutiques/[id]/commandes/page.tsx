@@ -115,22 +115,21 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher par code ou client..."
-          statusOptions={[
-            { value: "ALL", label: "Tous les statuts" },
-            { value: "EN_ATTENTE", label: "En attente" },
-            { value: "VALIDEE", label: "Validée" },
-            { value: "LIVREE", label: "Livrée" },
-            { value: "ANNULEE", label: "Annulée" },
-          ]}
-          statusLabel="Statut de commande"
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher par code ou client..."
+        statusOptions={[
+          { value: "ALL", label: "Tous les statuts" },
+          { value: "EN_ATTENTE", label: "En attente" },
+          { value: "VALIDEE", label: "Validée" },
+          { value: "LIVREE", label: "Livrée" },
+          { value: "ANNULEE", label: "Annulée" },
+        ]}
+        statusLabel="Statut de commande"
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6">
+      {/* Contenu principal */}
+      <div className="space-y-6">
           <CommandesClientTable boutiqueId={id} commandes={rows} totalItems={totalCount} />
 
           <SimplePagination
@@ -138,7 +137,6 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );

@@ -72,16 +72,15 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Panel de Filtres */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher par code..."
-          suppliers={suppliers}
-          supplierLabel="Fournisseur de l'achat"
-        />
+      {/* Panel de Filtres (Pleine largeur dans le corps) */}
+      <UnifiedFilterPanel
+        searchPlaceholder="Rechercher par code..."
+        suppliers={suppliers}
+        supplierLabel="Fournisseur de l'achat"
+      />
 
-        {/* Contenu principal */}
-        <div className="flex-1 w-full space-y-6">
+      {/* Contenu principal */}
+      <div className="space-y-6">
           {q && (
             <div className="text-xs text-muted-foreground font-bold mb-4">
               {total} achat{total > 1 ? "s" : ""} trouvé{total > 1 ? "s" : ""} pour &quot;{q}&quot;
@@ -135,7 +134,6 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
             itemsPerPage={limit}
             currentPage={page}
           />
-        </div>
       </div>
     </div>
   );
