@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
 import { auth } from "@/lib/auth";
@@ -33,7 +35,9 @@ export default async function RootLayout({
 
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans`}>
+      <body
+        className={`${GeistSans.variable} ${GeistMono.variable} ${inter.variable} font-sans`}
+      >
         <Providers session={session}>
           {children}
           <Toaster richColors position="top-right" />
