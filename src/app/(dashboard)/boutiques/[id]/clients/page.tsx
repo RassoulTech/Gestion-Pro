@@ -19,9 +19,8 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ClientActions } from "./_components/client-actions";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
-import { SearchInput } from "@/components/ui/search-input";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 interface ClientsPageProps {
   params: Promise<{ id: string }>;
@@ -89,7 +88,6 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
           <p className="text-muted-foreground font-medium">Gérez votre base de clients et leur historique.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <DashboardFilter />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${boutiqueId}/clients/new`}>
               <Plus className="mr-2 h-5 w-5" />
@@ -99,116 +97,128 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
         </div>
       </div>
 
-      <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
-        <CardHeader className="p-8 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <SearchInput placeholder="Rechercher un client..." />
-          {q && (
-            <div className="text-xs text-muted-foreground font-bold">
-              {totalCount} client{totalCount > 1 ? "s" : ""} trouvé{totalCount > 1 ? "s" : ""} pour &quot;{q}&quot;
-            </div>
-          )}
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-zinc-50 dark:bg-zinc-800/50">
-                <TableRow className="border-none">
-                  <TableHead className="px-8 py-5 font-black uppercase text-[10px] tracking-widest">Client</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest">Contact</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest">Adresse</TableHead>
-                  <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-right px-8">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {clients.length > 0 ? (
-                  clients.map((client) => (
-                    <TableRow key={client.id} className="border-zinc-50 dark:border-zinc-800 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 transition-colors group">
-                      <TableCell className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-2xl bg-brand/10 flex items-center justify-center text-brand font-black text-lg">
-                            {(client.prenom?.[0] || "") + (client.nom?.[0] || "")}
-                          </div>
-                          <div>
-                            <p className="font-black text-base">{client.prenom} {client.nom}</p>
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Client Fidèle</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-6">
-                        <div className="space-y-1">
-                          {client.telephone && (
-                            <div className="flex items-center gap-2 text-sm font-bold">
-                              <Phone className="h-3 w-3 text-emerald-500" />
-                              {client.telephone}
-                            </div>
-                          )}
-                          {client.email && (
-                            <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
-                              <Mail className="h-3 w-3 text-brand" />
-                              {client.email}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-6">
-                        {client.adresse ? (
-                          <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
-                            <MapPin className="h-3 w-3 text-amber-500" />
-                            {client.adresse}
-                          </div>
-                        ) : (
-                          <span className="text-zinc-300 dark:text-zinc-700 italic text-sm">Non spécifiée</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="px-8 py-6 text-right">
-                        <ClientActions
-                          clientId={client.id}
-                          boutiqueId={boutiqueId}
-                          clientNom={`${client.prenom || ""} ${client.nom}`}
-                          clientData={{
-                            nom: client.nom,
-                            prenom: client.prenom,
-                            telephone: client.telephone,
-                            email: client.email,
-                            adresse: client.adresse,
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-64 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-4">
-                        <div className="h-20 w-20 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
-                          <Users className="h-10 w-10 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <p className="text-xl font-black">Aucun client trouvé</p>
-                          <p className="text-muted-foreground font-medium">
-                            {q || range ? "Ajustez vos filtres pour afficher des résultats." : "Commencez par ajouter votre premier client."}
-                          </p>
-                        </div>
-                        {!q && !range && (
-                          <Button asChild variant="brand" className="rounded-xl h-12 px-8 font-black">
-                            <Link href={`/boutiques/${boutiqueId}/clients/new`}>Ajouter un client</Link>
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres */}
+        <UnifiedFilterPanel
+          searchPlaceholder="Rechercher un client..."
+        />
 
-      <SimplePagination
-        totalItems={totalCount}
-        itemsPerPage={limit}
-        currentPage={page}
-      />
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-6">
+          <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
+            <CardHeader className="p-8 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="text-sm text-slate-800 dark:text-zinc-200 font-extrabold">
+                {q ? `Résultats de recherche pour "${q}"` : "Liste des clients"}
+              </div>
+              {q && (
+                <div className="text-xs text-muted-foreground font-bold">
+                  {totalCount} client{totalCount > 1 ? "s" : ""} trouvé{totalCount > 1 ? "s" : ""} pour &quot;{q}&quot;
+                </div>
+              )}
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-zinc-50 dark:bg-zinc-800/50">
+                    <TableRow className="border-none">
+                      <TableHead className="px-8 py-5 font-black uppercase text-[10px] tracking-widest">Client</TableHead>
+                      <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest">Contact</TableHead>
+                      <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest">Adresse</TableHead>
+                      <TableHead className="py-5 font-black uppercase text-[10px] tracking-widest text-right px-8">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {clients.length > 0 ? (
+                      clients.map((client) => (
+                        <TableRow key={client.id} className="border-zinc-50 dark:border-zinc-800 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 transition-colors group">
+                          <TableCell className="px-8 py-6">
+                            <div className="flex items-center gap-4">
+                              <div className="h-12 w-12 rounded-2xl bg-brand/10 flex items-center justify-center text-brand font-black text-lg">
+                                {(client.prenom?.[0] || "") + (client.nom?.[0] || "")}
+                              </div>
+                              <div>
+                                <p className="font-black text-base">{client.prenom} {client.nom}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Client Fidèle</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-6">
+                            <div className="space-y-1">
+                              {client.telephone && (
+                                <div className="flex items-center gap-2 text-sm font-bold">
+                                  <Phone className="h-3 w-3 text-emerald-500" />
+                                  {client.telephone}
+                                </div>
+                              )}
+                              {client.email && (
+                                <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+                                  <Mail className="h-3 w-3 text-brand" />
+                                  {client.email}
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-6">
+                            {client.adresse ? (
+                              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+                                <MapPin className="h-3 w-3 text-amber-500" />
+                                {client.adresse}
+                              </div>
+                            ) : (
+                              <span className="text-zinc-300 dark:text-zinc-700 italic text-sm">Non spécifiée</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="px-8 py-6 text-right">
+                            <ClientActions
+                              clientId={client.id}
+                              boutiqueId={boutiqueId}
+                              clientNom={`${client.prenom || ""} ${client.nom}`}
+                              clientData={{
+                                nom: client.nom,
+                                prenom: client.prenom,
+                                telephone: client.telephone,
+                                email: client.email,
+                                adresse: client.adresse,
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} className="h-64 text-center">
+                          <div className="flex flex-col items-center justify-center space-y-4">
+                            <div className="h-20 w-20 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
+                              <Users className="h-10 w-10 text-muted-foreground" />
+                            </div>
+                            <div>
+                              <p className="text-xl font-black">Aucun client trouvé</p>
+                              <p className="text-muted-foreground font-medium">
+                                {q || range ? "Ajustez vos filtres pour afficher des résultats." : "Commencez par ajouter votre premier client."}
+                              </p>
+                            </div>
+                            {!q && !range && (
+                              <Button asChild variant="brand" className="rounded-xl h-12 px-8 font-black">
+                                <Link href={`/boutiques/${boutiqueId}/clients/new`}>Ajouter un client</Link>
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+
+          <SimplePagination
+            totalItems={totalCount}
+            itemsPerPage={limit}
+            currentPage={page}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { getMouvementsStock } from "@/server/queries/stock.queries";
 import { StockClient } from "./_components/stock-client";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
@@ -6,9 +7,8 @@ import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { getBoutiqueProduits } from "@/server/queries/produit.queries";
 import { AjustementStockModal } from "./_components/ajustement-modal";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
-import { headers } from "next/headers";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import type { ComponentProps } from "react";
@@ -99,27 +99,43 @@ export default async function StockPage({ params, searchParams }: StockPageProps
           <p className="text-sm text-muted-foreground font-medium">Historique complet des entrées et sorties de marchandises</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <DashboardFilter />
           <AjustementStockModal boutiqueId={id} produits={produits} />
         </div>
       </div>
+      
       <PremiumGuard
         currentPlanName={quotas.nom}
         featureName="Stock avancé & Historique des mouvements"
         featureDescription="Suivez chaque entrée et sortie de stock, avec un historique complet et des indicateurs avancés. Disponible dès le plan Pro."
       >
-        <StockClient
-          mouvements={mouvementsResult.data as ComponentProps<typeof StockClient>["mouvements"]}
-          total={mouvementsResult.total}
-          totalEntrees={totalEntrees}
-          totalSorties={totalSorties}
-          availableSources={availableSources}
-        />
-        <SimplePagination
-          totalItems={mouvementsResult.total}
-          itemsPerPage={limit}
-          currentPage={page}
-        />
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Panel de Filtres */}
+          <UnifiedFilterPanel
+            searchPlaceholder="Rechercher par produit..."
+            typeOptions={[
+              { value: "ALL", label: "Tous les types" },
+              { value: "ENTREE", label: "Entrées" },
+              { value: "SORTIE", label: "Sorties" },
+            ]}
+            sourceOptions={availableSources}
+          />
+
+          {/* Contenu principal */}
+          <div className="flex-1 w-full space-y-6">
+            <StockClient
+              mouvements={mouvementsResult.data as ComponentProps<typeof StockClient>["mouvements"]}
+              total={mouvementsResult.total}
+              totalEntrees={totalEntrees}
+              totalSorties={totalSorties}
+              availableSources={availableSources}
+            />
+            <SimplePagination
+              totalItems={mouvementsResult.total}
+              itemsPerPage={limit}
+              currentPage={page}
+            />
+          </div>
+        </div>
       </PremiumGuard>
     </div>
   );

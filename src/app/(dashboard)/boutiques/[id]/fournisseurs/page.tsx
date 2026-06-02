@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { getBoutiqueFournisseurs } from "@/server/queries/fournisseur.queries";
 import { FournisseursClient } from "./_components/fournisseurs-client";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
-import { headers } from "next/headers";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 export const metadata: Metadata = { title: "Fournisseurs" };
 
@@ -46,16 +46,25 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
           <h1 className="text-3xl font-black tracking-tight">Fournisseurs</h1>
           <p className="text-muted-foreground font-medium">Gérez vos fournisseurs et vos achats</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <DashboardFilter />
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres */}
+        <UnifiedFilterPanel
+          searchPlaceholder="Rechercher un fournisseur..."
+        />
+
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-6">
+          <FournisseursClient fournisseurs={fournisseurs.data} boutiqueId={id} total={fournisseurs.total} />
+          
+          <SimplePagination
+            totalItems={fournisseurs.total}
+            itemsPerPage={limit}
+            currentPage={page}
+          />
         </div>
       </div>
-      <FournisseursClient fournisseurs={fournisseurs.data} boutiqueId={id} total={fournisseurs.total} />
-      <SimplePagination
-        totalItems={fournisseurs.total}
-        itemsPerPage={limit}
-        currentPage={page}
-      />
     </div>
   );
 }

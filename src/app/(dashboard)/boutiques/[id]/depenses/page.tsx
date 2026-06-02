@@ -8,8 +8,8 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { DepensesClient } from "./_components/depenses-client";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 interface DepensesPageProps {
   params: Promise<{ id: string }>;
@@ -19,12 +19,13 @@ interface DepensesPageProps {
     from?: string;
     to?: string;
     page?: string;
+    category?: string;
   }>;
 }
 
 export default async function DepensesPage({ params, searchParams }: DepensesPageProps) {
   const { id: boutiqueId } = await params;
-  const { q, range, from, to, page: pageStr } = await searchParams;
+  const { q, range, from, to, page: pageStr, category } = await searchParams;
   const session = await auth();
   if (!session?.user) redirect("/login");
 
@@ -44,6 +45,10 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
     whereClause.date = dateFilter.whereClause;
   }
 
+  if (category && category !== "all" && category !== "ALL") {
+    whereClause.categorie = category;
+  }
+
   if (q) {
     whereClause.OR = [
       { libelle: { contains: q, mode: "insensitive" } },
@@ -51,7 +56,7 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
     ];
   }
 
-  const [depenses, totalCount, totalAmountResult] = await Promise.all([
+  const [depenses, totalCount, totalAmountResult, distinctCategories] = await Promise.all([
     prisma.depense.findMany({
       where: whereClause,
       orderBy: { date: "desc" },
@@ -67,9 +72,19 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
         montant: true,
       },
     }),
+    prisma.depense.findMany({
+      where: { boutiqueId },
+      select: { categorie: true },
+      distinct: ["categorie"],
+    }),
   ]);
 
   const totalDepenses = totalAmountResult._sum.montant || 0;
+
+  const categoriesList = distinctCategories
+    .map((c) => c.categorie)
+    .filter((c): c is string => !!c)
+    .map((c) => ({ id: c, nom: c }));
 
   return (
     <div className="space-y-8 pb-10">
@@ -79,7 +94,6 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
           <p className="text-muted-foreground font-medium">Suivez vos couts operationnels et charges fixes.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <DashboardFilter />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${boutiqueId}/depenses/new`}>
               <Plus className="mr-2 h-5 w-5" />
@@ -89,13 +103,25 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
         </div>
       </div>
 
-      <DepensesClient depenses={depenses} boutiqueId={boutiqueId} totalDepenses={totalDepenses} />
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres */}
+        <UnifiedFilterPanel
+          searchPlaceholder="Rechercher par libellé..."
+          categories={categoriesList}
+          categoryLabel="Catégorie de dépense"
+        />
 
-      <SimplePagination
-        totalItems={totalCount}
-        itemsPerPage={limit}
-        currentPage={page}
-      />
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-6">
+          <DepensesClient depenses={depenses} boutiqueId={boutiqueId} totalDepenses={totalDepenses} />
+
+          <SimplePagination
+            totalItems={totalCount}
+            itemsPerPage={limit}
+            currentPage={page}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 interface BoutiquePageProps {
   params: Promise<{ id: string }>;
@@ -366,7 +366,6 @@ export default async function BoutiqueDashboardPage({
           </div>
 
           <div className="flex flex-wrap gap-3 sm:gap-4 items-center shrink-0 w-full lg:w-auto">
-            <DashboardFilter />
             <Button
               asChild
               size="lg"
@@ -411,6 +410,15 @@ export default async function BoutiqueDashboardPage({
           </div>
         </div>
       </div>
+
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres */}
+        <UnifiedFilterPanel
+          enableSearch={false}
+        />
+
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-6 sm:space-y-10">
 
       {/* Main Stats Bento Grid — 8 KPIs strictly in 4 rows × 2 cols, all viewports */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
@@ -658,6 +666,8 @@ export default async function BoutiqueDashboardPage({
             </div>
           </Card>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );

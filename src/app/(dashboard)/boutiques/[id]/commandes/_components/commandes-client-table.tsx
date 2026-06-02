@@ -158,30 +158,7 @@ export function CommandesClientTable({
 
   return (
     <div className="space-y-5 sm:space-y-6">
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Rechercher par code ou client..."
-            className="pl-10 h-11 sm:h-12 rounded-xl bg-card border-none shadow-sm font-bold text-xs sm:text-sm"
-          />
-        </div>
-        <Select value={statusFilter} onValueChange={(v) => handleStatusFilterChange(v)}>
-          <SelectTrigger className="h-11 sm:h-12 w-full sm:w-56 rounded-xl bg-card border-none shadow-sm font-bold text-sm">
-            <SelectValue placeholder="Filtrer par statut" />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUS_FILTERS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value} className="font-bold">
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+
 
       {/* Active filter summary */}
       {(search || statusFilter !== "ALL") && (

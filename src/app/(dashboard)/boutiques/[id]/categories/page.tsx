@@ -5,9 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { CategoriesClient } from "./_components/categories-client";
 import { TableSkeleton } from "@/components/loading";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
-import { SearchInput } from "@/components/ui/search-input";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 export const metadata: Metadata = { title: "Catégories" };
 
@@ -77,21 +76,25 @@ export default async function CategoriesPage({
         </div>
       </div>
 
-      {/* Reusable Filters row */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-slate-100 dark:border-zinc-800/80 shadow-sm">
-        <SearchInput placeholder="Rechercher une catégorie..." />
-        <DashboardFilter />
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres */}
+        <UnifiedFilterPanel
+          searchPlaceholder="Rechercher une catégorie..."
+        />
+
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-6">
+          {/* Categories Grid List */}
+          <CategoriesClient categories={categories} boutiqueId={boutiqueId} />
+
+          {/* Pagination controls */}
+          <SimplePagination
+            totalItems={filteredCount}
+            itemsPerPage={limit}
+            currentPage={page}
+          />
+        </div>
       </div>
-
-      {/* Categories Grid List */}
-      <CategoriesClient categories={categories} boutiqueId={boutiqueId} />
-
-      {/* Pagination controls */}
-      <SimplePagination
-        totalItems={filteredCount}
-        itemsPerPage={limit}
-        currentPage={page}
-      />
     </div>
   );
 }

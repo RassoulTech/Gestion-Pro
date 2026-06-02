@@ -13,7 +13,7 @@ import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 export const metadata: Metadata = { title: "Rapports" };
 
@@ -128,24 +128,31 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
         featureName="Rapports Détaillés & Analytics"
         featureDescription="Obtenez des graphiques interactifs avancés sur l'évolution de vos ventes et de vos stocks."
       >
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <DashboardFilter />
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Panel de Filtres */}
+          <UnifiedFilterPanel
+            enableSearch={false}
+          />
+
+          {/* Contenu principal */}
+          <div className="flex-1 w-full space-y-6">
+            <div className="flex flex-col sm:flex-row items-center justify-end gap-4 mb-6">
+              <PDFDownloadButton 
+                boutiqueId={id} 
+                boutiqueName={boutiqueName} 
+                startDate={dateFilter.startDate?.toISOString()} 
+                endDate={dateFilter.endDate?.toISOString()} 
+              />
+            </div>
+            <Suspense fallback={<PageSkeleton />}>
+              <RapportsContent 
+                boutiqueId={id} 
+                startDate={dateFilter.startDate} 
+                endDate={dateFilter.endDate} 
+              />
+            </Suspense>
           </div>
-          <PDFDownloadButton 
-            boutiqueId={id} 
-            boutiqueName={boutiqueName} 
-            startDate={dateFilter.startDate?.toISOString()} 
-            endDate={dateFilter.endDate?.toISOString()} 
-          />
         </div>
-        <Suspense fallback={<PageSkeleton />}>
-          <RapportsContent 
-            boutiqueId={id} 
-            startDate={dateFilter.startDate} 
-            endDate={dateFilter.endDate} 
-          />
-        </Suspense>
       </PremiumGuard>
     </div>
   );

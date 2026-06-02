@@ -89,8 +89,7 @@ export function FournisseursClient({ fournisseurs, boutiqueId }: { fournisseurs:
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SearchInput placeholder="Rechercher un fournisseur..." />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="brand" className="w-full sm:w-auto rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20" onClick={openCreate}>

@@ -102,9 +102,7 @@ export function DepensesClient({
         </Card>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-        <SearchInput placeholder="Rechercher par libelle ou categorie..." />
-      </div>
+
 
       {/* Table */}
       <Card className="border-none shadow-xl rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden animate-in fade-in duration-300">

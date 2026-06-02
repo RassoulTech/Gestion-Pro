@@ -78,13 +78,14 @@ export async function getBoutiqueVentesFlash(
 
 export async function getBoutiqueCommandesFournisseur(
   boutiqueId: string,
-  params?: { search?: string; page?: number; perPage?: number; dateFilter?: any }
+  params?: { search?: string; page?: number; perPage?: number; dateFilter?: any; supplierId?: string }
 ) {
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
-  const where = {
+  const where: any = {
     boutiqueId,
+    ...(params?.supplierId && { fournisseurId: params.supplierId }),
     ...(params?.search && {
       OR: [
         { code: { contains: params.search, mode: "insensitive" as const } },

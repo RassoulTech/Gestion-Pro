@@ -11,8 +11,8 @@ import {
   type CommandeRow,
 } from "./_components/commandes-client-table";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 interface CommandesPageProps {
   params: Promise<{ id: string }>;
@@ -106,7 +106,6 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
           <p className="text-sm text-muted-foreground">Gérez vos ventes et livraisons</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <DashboardFilter />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl font-bold shadow-lg shadow-brand/20 h-11">
             <Link href={`/boutiques/${id}/commandes/new`}>
               <Plus className="mr-2 h-4 w-4" />
@@ -116,13 +115,31 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
         </div>
       </div>
 
-      <CommandesClientTable boutiqueId={id} commandes={rows} totalItems={totalCount} />
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres */}
+        <UnifiedFilterPanel
+          searchPlaceholder="Rechercher par code ou client..."
+          statusOptions={[
+            { value: "ALL", label: "Tous les statuts" },
+            { value: "EN_ATTENTE", label: "En attente" },
+            { value: "VALIDEE", label: "Validée" },
+            { value: "LIVREE", label: "Livrée" },
+            { value: "ANNULEE", label: "Annulée" },
+          ]}
+          statusLabel="Statut de commande"
+        />
 
-      <SimplePagination
-        totalItems={totalCount}
-        itemsPerPage={limit}
-        currentPage={page}
-      />
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-6">
+          <CommandesClientTable boutiqueId={id} commandes={rows} totalItems={totalCount} />
+
+          <SimplePagination
+            totalItems={totalCount}
+            itemsPerPage={limit}
+            currentPage={page}
+          />
+        </div>
+      </div>
     </div>
   );
 }

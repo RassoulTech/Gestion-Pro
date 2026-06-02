@@ -160,57 +160,7 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties, ava
         </Card>
       </div>
 
-      {/* Advanced Filters Card */}
-      <Card className="border-none shadow-lg bg-white dark:bg-zinc-900 rounded-[2rem] overflow-hidden">
-        <CardContent className="p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Rechercher par produit, SKU ou source..."
-                defaultValue={search}
-                onChange={(e) => handleSearch(e.target.value)}
-                className="pl-12 h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border-none font-bold focus:ring-2 focus:ring-brand w-full"
-              />
-              {isPending && (
-                <Loader2 className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-muted-foreground" />
-              )}
-            </div>
 
-            {/* Select Type */}
-            <div className="w-full lg:w-48">
-              <Select value={typeFilter} onValueChange={handleTypeChange}>
-                <SelectTrigger className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border-none font-bold focus:ring-2 focus:ring-brand">
-                  <SelectValue placeholder="Type de mouvement" />
-                </SelectTrigger>
-                <SelectContent className="rounded-2xl">
-                  <SelectItem value="ALL">Tous les types</SelectItem>
-                  <SelectItem value="ENTREE">Entrées</SelectItem>
-                  <SelectItem value="SORTIE">Sorties</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Select Source */}
-            <div className="w-full lg:w-56">
-              <Select value={sourceFilter} onValueChange={handleSourceChange}>
-                <SelectTrigger className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border-none font-bold focus:ring-2 focus:ring-brand">
-                  <SelectValue placeholder="Source de mouvement" />
-                </SelectTrigger>
-                <SelectContent className="rounded-2xl">
-                  <SelectItem value="ALL">Toutes les sources</SelectItem>
-                  {availableSources.map((src) => (
-                    <SelectItem key={src} value={src}>
-                      {getSourceLabel(src)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Desktop Stock Movements Table */}
       <div className="hidden sm:block">

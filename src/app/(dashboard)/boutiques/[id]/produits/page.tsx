@@ -23,11 +23,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProduitActions } from "./_components/produit-actions";
-import { ProduitFilters } from "./_components/produit-filters";
 import { ExcelImportButton } from "./_components/excel-import-button";
 import { parseDateFilter } from "@/lib/date-filters";
-import { DashboardFilter } from "@/components/dashboard/dashboard-filter";
 import { SimplePagination } from "@/components/ui/simple-pagination";
+import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 
 interface ProduitsPageProps {
   params: Promise<{ id: string }>;
@@ -38,12 +37,14 @@ interface ProduitsPageProps {
     from?: string; 
     to?: string; 
     page?: string; 
+    category?: string;
+    categoryId?: string;
   }>;
 }
 
 export default async function ProduitsPage({ params, searchParams }: ProduitsPageProps) {
   const { id: boutiqueId } = await params;
-  const { q, status, range, from, to, page: pageStr } = await searchParams;
+  const { q, status, range, from, to, page: pageStr, category, categoryId } = await searchParams;
   
   const session = await auth();
   if (!session?.user) redirect("/login");
@@ -88,6 +89,12 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
     }
   }
 
+  // Category filter
+  const targetCategory = category || categoryId;
+  if (targetCategory && targetCategory !== "all" && targetCategory !== "ALL") {
+    whereClause.categorieId = targetCategory;
+  }
+
   const [
     boutique,
     filteredProduits,
@@ -95,6 +102,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
     lowStockCount,
     outOfStockCount,
     filteredCount,
+    categories,
   ] = await Promise.all([
     prisma.boutique.findUnique({
       where: { id: boutiqueId },
@@ -119,6 +127,12 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
     prisma.produit.count({ where: { boutiqueId, quantite: 0 } }),
     // Count of filtered products
     prisma.produit.count({ where: whereClause }),
+    // Categories list for filter panel
+    prisma.categorie.findMany({
+      where: { boutiqueId },
+      select: { id: true, nom: true },
+      orderBy: { nom: "asc" },
+    }),
   ]);
 
   if (!boutique) notFound();
@@ -146,7 +160,6 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         </div>
 
         <div className="flex flex-wrap items-center gap-3 self-stretch md:self-auto sm:justify-end">
-          <DashboardFilter />
           <Button asChild variant="outline" className="flex-1 sm:flex-initial h-12 rounded-xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm">
             <Link href={`/boutiques/${boutiqueId}/stock`}>
               <ArrowRightLeft className="mr-2 h-4 w-4 text-slate-500" />
@@ -163,28 +176,42 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         </div>
       </div>
 
-      {/* Modern Dashboard KPI Cards row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total produits</span>
-          <p className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-zinc-100">{totalCount}</p>
-        </div>
-        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Résultats trouvés</span>
-          <p className="text-2xl sm:text-3xl font-black text-orange-500">{filteredCount}</p>
-        </div>
-        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-rose-500">Niveaux critiques</span>
-          <p className="text-2xl sm:text-3xl font-black text-rose-500">{lowStockCount}</p>
-        </div>
-        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Ruptures de stock</span>
-          <p className="text-2xl sm:text-3xl font-black text-slate-700 dark:text-zinc-300">{outOfStockCount}</p>
-        </div>
-      </div>
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Panel de Filtres (Sidebar à gauche sur Desktop, Sheet à droite sur Mobile) */}
+        <UnifiedFilterPanel
+          searchPlaceholder="Rechercher par nom, code barre..."
+          categories={categories}
+          categoryLabel="Catégorie de produit"
+          statusOptions={[
+            { value: "all", label: "Tous les produits" },
+            { value: "alert", label: "Stock critique" },
+            { value: "instock", label: "En stock" },
+            { value: "outofstock", label: "Rupture" },
+          ]}
+          statusLabel="Statut du stock"
+        />
 
-      {/* Dynamic Filters Component */}
-      <ProduitFilters />
+        {/* Contenu principal */}
+        <div className="flex-1 w-full space-y-8">
+          {/* Modern Dashboard KPI Cards row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total produits</span>
+              <p className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-zinc-100">{totalCount}</p>
+            </div>
+            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Résultats trouvés</span>
+              <p className="text-2xl sm:text-3xl font-black text-orange-500">{filteredCount}</p>
+            </div>
+            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-rose-500">Niveaux critiques</span>
+              <p className="text-2xl sm:text-3xl font-black text-rose-500">{lowStockCount}</p>
+            </div>
+            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-2xl p-5 space-y-1 shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Ruptures de stock</span>
+              <p className="text-2xl sm:text-3xl font-black text-slate-700 dark:text-zinc-300">{outOfStockCount}</p>
+            </div>
+          </div>
 
       {/* Desktop Table View (Hidden on mobile) */}
       <div className="hidden md:block bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2rem] shadow-xl overflow-hidden">
@@ -370,11 +397,13 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         )}
       </div>
 
-      <SimplePagination
-        totalItems={filteredCount}
-        itemsPerPage={limit}
-        currentPage={page}
-      />
+          <SimplePagination
+            totalItems={filteredCount}
+            itemsPerPage={limit}
+            currentPage={page}
+          />
+        </div>
+      </div>
     </div>
   );
 }

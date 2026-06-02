@@ -12,11 +12,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
 import { MarketplaceFilters } from "./_components/marketplace-filters";
 import { MarketplaceProductCard } from "./_components/marketplace-product-card";
-import { SimplePagination } from "@/components/ui/simple-pagination";
+import { MarketplacePagination } from "@/components/ui/marketplace-pagination";
 
 export const metadata: Metadata = { title: "Marketplace — GestionPro" };
-
-const PER_PAGE = 20;
 
 function ProductGridSkeleton() {
   return (
@@ -44,6 +42,7 @@ async function ProductGrid({
   dispo,
   sort,
   page,
+  perPage,
 }: {
   search?: string;
   secteur?: string;
@@ -54,6 +53,7 @@ async function ProductGrid({
   dispo?: string;
   sort?: string;
   page: number;
+  perPage: number;
 }) {
   const { data, total, page: currentPage } = await getMarketplaceProducts({
     search,
@@ -65,7 +65,7 @@ async function ProductGrid({
     dispo: dispo === "stock" || dispo === "rupture" ? (dispo as MarketplaceDispo) : undefined,
     sort: (sort as MarketplaceSort) || "recent",
     page,
-    perPage: PER_PAGE,
+    perPage,
   });
 
   if (data.length === 0) {
@@ -88,7 +88,7 @@ async function ProductGrid({
         ))}
       </div>
 
-      <SimplePagination totalItems={total} itemsPerPage={PER_PAGE} currentPage={currentPage} />
+      <MarketplacePagination totalItems={total} itemsPerPage={perPage} currentPage={currentPage} />
     </div>
   );
 }
@@ -100,6 +100,11 @@ export default async function MarketplacePage({
 }) {
   const params = await searchParams;
   const page = params.page ? Math.max(1, parseInt(params.page, 10) || 1) : 1;
+  
+  let perPage = 20;
+  if (params.perPage === "40") perPage = 40;
+  if (params.perPage === "60") perPage = 60;
+
   const { categories, boutiques } = await getMarketplaceFilterOptions();
 
   // Clé qui force le re-render du Suspense quand un filtre change
@@ -142,6 +147,7 @@ export default async function MarketplacePage({
             dispo={params.dispo}
             sort={params.sort}
             page={page}
+            perPage={perPage}
           />
         </Suspense>
       </div>
