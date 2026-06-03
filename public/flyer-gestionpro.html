@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GestionPro — Flyer commercial</title>
+
+  <!-- Police de la marque : Plus Jakarta Sans (fallback système si hors-ligne) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       Palette OFFICIELLE GestionPro (codes HEX exacts)
+       ============================================================ */
+    :root {
+      --orange:        #ea580c; /* couleur principale (marque) */
+      --orange-dark:   #7c2d12; /* dégradé bouton/CTA (même teinte) */
+      --orange-soft:   #fff7ed; /* fond orange très clair */
+      --orange-100:    #ffedd5; /* bordures douces */
+      --ink:           #0f172a; /* texte principal (slate-900) */
+      --slate:         #475569; /* secondaire (slate-600) */
+      --muted:         #64748b; /* texte atténué (slate-500) */
+      --line:          #e2e8f0; /* bordures (slate-200) */
+      --bg:            #f8fafc; /* fond clair (slate-50) */
+      --white:         #ffffff;
+      /* Logos tiers (couleurs officielles obligatoires pour rester fidèles) */
+      --wa:            #25D366; /* WhatsApp */
+      --wave:          #1DC3FF; /* Wave */
+      --om:            #FF7900; /* Orange */
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--line);                 /* gris écran autour de la feuille */
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Barre d'aide (écran uniquement, masquée à l'impression) */
+    .toolbar {
+      max-width: 210mm;
+      margin: 18px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--slate);
+    }
+    .toolbar button {
+      cursor: pointer;
+      border: none;
+      background: var(--orange);
+      color: #fff;
+      font-weight: 800;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(234,88,12,.25);
+    }
+    .toolbar .tip { background:#fff; padding:8px 14px; border-radius:10px; border:1px solid var(--line); }
+
+    /* ============================================================
+       Feuille A4
+       ============================================================ */
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 18px auto 40px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(15,23,42,.18);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Bande d'accent orange en haut */
+    .accent-top { height: 8px; background: var(--orange); flex-shrink: 0; }
+
+    .body { flex: 1; padding: 14mm 14mm 8mm; display: flex; flex-direction: column; }
+
+    /* ---------- En-tête ---------- */
+    .head { display: flex; align-items: center; justify-content: space-between;
+            padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand .name { font-size: 26px; font-weight: 900; letter-spacing: -.02em; }
+    .brand .name span { color: var(--orange); }
+    .audience { font-size: 11px; font-weight: 900; letter-spacing: .18em;
+                text-transform: uppercase; color: #94a3b8; }
+
+    /* ---------- Accroche ---------- */
+    .hero { margin-top: 22px; }
+    .eyebrow { display:inline-block; background: var(--orange-soft); color: var(--orange);
+               border: 1px solid var(--orange-100); border-radius: 999px;
+               padding: 5px 14px; font-size: 11px; font-weight: 900;
+               letter-spacing: .14em; text-transform: uppercase; }
+    .hero h1 { margin: 14px 0 8px; font-size: 42px; line-height: 1.04;
+               font-weight: 900; letter-spacing: -.02em; color: #020617; }
+    .hero h1 .hl { color: var(--orange); }
+    .hero p { margin: 0; max-width: 150mm; color: var(--slate);
+              font-size: 14.5px; line-height: 1.6; font-weight: 500; }
+
+    /* ---------- Fonctionnalités ---------- */
+    .section-label { margin: 26px 0 12px; font-size: 11px; font-weight: 900;
+                     letter-spacing: .18em; text-transform: uppercase; color:#94a3b8; }
+    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .feature { display: flex; align-items: center; gap: 12px;
+               border: 1px solid var(--line); background: #fcfdfe;
+               border-radius: 14px; padding: 11px 13px; }
+    .feature .ico { flex-shrink: 0; width: 38px; height: 38px; border-radius: 11px;
+                    background: var(--orange-soft); border: 1px solid var(--orange-100);
+                    display: flex; align-items: center; justify-content: center; color: var(--orange); }
+    .feature .ico svg { width: 20px; height: 20px; }
+    .feature .t { font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.1; }
+    .feature .d { font-size: 11.5px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+
+    /* ---------- Bénéfices ---------- */
+    .benefits { margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr);
+                gap: 8px 22px; }
+    .benefit { display: flex; align-items: flex-start; gap: 10px;
+               font-size: 13.5px; font-weight: 600; color: #1e293b; line-height: 1.35; }
+    .benefit .chk { flex-shrink: 0; width: 20px; height: 20px; border-radius: 999px;
+                    background: var(--orange); color:#fff; display:flex; align-items:center;
+                    justify-content:center; margin-top: 1px; }
+    .benefit .chk svg { width: 12px; height: 12px; }
+
+    /* ---------- CTA + QR ---------- */
+    .cta { margin-top: 24px; display: flex; align-items: center; gap: 20px;
+           background: var(--orange); color: #fff; border-radius: 20px; padding: 18px 20px; }
+    .qr-box { flex-shrink: 0; width: 120px; height: 120px; background:#fff; border-radius: 14px;
+              padding: 8px; display:flex; align-items:center; justify-content:center; }
+    .qr-ph { width:100%; height:100%; border:2px dashed #cbd5e1; border-radius: 8px;
+             display:flex; flex-direction:column; align-items:center; justify-content:center;
+             text-align:center; color:#94a3b8; font-size:9px; font-weight:800;
+             text-transform:uppercase; letter-spacing:.08em; gap:6px; padding:4px; }
+    .cta .eyebrow2 { font-size: 11px; font-weight: 900; letter-spacing: .16em;
+                     text-transform: uppercase; color: #ffe7d3; }
+    .cta h2 { margin: 4px 0 4px; font-size: 25px; font-weight: 900; line-height: 1.1; }
+    .cta p  { margin: 0; font-size: 13.5px; font-weight: 600; color: #fff5ec; }
+
+    /* ---------- Pied : contact + paiements ---------- */
+    .footer { border-top: 1px solid var(--line); padding: 12px 14mm 14mm;
+              display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-shrink: 0; }
+    .contacts { display: flex; flex-direction: column; gap: 9px; }
+    .contact { display: flex; align-items: center; gap: 10px; }
+    .contact .ci { width: 34px; height: 34px; border-radius: 10px; display:flex;
+                   align-items:center; justify-content:center; flex-shrink:0; }
+    .contact .ci.wa { background: var(--wa); color:#fff; }
+    .contact .ci.neutral { background: var(--bg); border:1px solid var(--line); color: var(--slate); }
+    .contact .ci svg { width: 17px; height: 17px; }
+    .contact .lbl { font-size: 9.5px; font-weight: 800; text-transform: uppercase;
+                    letter-spacing: .1em; color:#94a3b8; line-height:1; }
+    .contact .val { font-size: 14px; font-weight: 800; color: var(--ink); line-height:1.2; }
+
+    .pay { text-align: right; }
+    .pay .label { font-size: 9.5px; font-weight: 900; text-transform: uppercase;
+                  letter-spacing: .14em; color:#94a3b8; margin-bottom: 7px; }
+    .pay .badges { display: flex; gap: 8px; justify-content: flex-end; }
+    .paybadge { color:#fff; font-weight: 900; font-size: 12px; letter-spacing: -.2px;
+                border-radius: 7px; padding: 6px 12px; line-height: 1; }
+    .paybadge.wave { background: var(--wave); }
+    .paybadge.om   { background: var(--om); text-transform: lowercase; }
+    .pay .note { margin-top: 7px; font-size: 10px; font-weight:600; color: var(--muted); }
+
+    /* ============================================================
+       Impression : A4 plein cadre, couleurs conservées
+       ============================================================ */
+    @page { size: A4 portrait; margin: 0; }
+    @media print {
+      body { background: #fff; }
+      .no-print { display: none !important; }
+      .sheet { margin: 0; width: 210mm; height: 297mm; box-shadow: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Barre d'aide : écran seulement -->
+  <div class="toolbar no-print">
+    <span class="tip">Astuce : <strong>Ctrl/Cmd&nbsp;+&nbsp;P</strong> → « Enregistrer en PDF » → Marges <strong>Aucune</strong> → cocher <strong>Graphiques d'arrière-plan</strong>.</span>
+    <button onclick="window.print()">Imprimer / Enregistrer en PDF</button>
+  </div>
+
+  <!-- ======================= FEUILLE A4 ======================= -->
+  <div class="sheet">
+    <div class="accent-top"></div>
+
+    <div class="body">
+
+      <!-- En-tête : logo officiel + cible -->
+      <div class="head">
+        <div class="brand">
+          <!-- Logo officiel GestionPro (SVG vectoriel, dégradé orange de la marque) -->
+          <svg width="44" height="44" viewBox="0 0 64 64" role="img" aria-label="GestionPro">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/>
+              </linearGradient>
+            </defs>
+            <rect width="64" height="64" rx="14" fill="url(#g)"/>
+            <text x="32" y="48" text-anchor="middle" font-family="Arial, sans-serif"
+                  font-weight="900" font-size="44" fill="#fff" letter-spacing="-2">G</text>
+          </svg>
+          <span class="name">Gestion<span>Pro</span></span>
+        </div>
+        <div class="audience">Commerçants · Boutiques · PME</div>
+      </div>
+
+      <!-- Accroche (bénéfice réel, sans exagération) -->
+      <div class="hero">
+        <span class="eyebrow">Solution de gestion commerciale</span>
+        <h1>Gérez votre commerce <span class="hl">simplement</span></h1>
+        <p>
+          La solution moderne et tout-en-un pour piloter votre activité au quotidien —
+          ventes, stock, clients, fournisseurs et facturation — accessible directement
+          depuis votre navigateur, sur mobile comme sur ordinateur.
+        </p>
+      </div>
+
+      <!-- Fonctionnalités RÉELLES (vérifiées dans le code) -->
+      <div class="section-label">Tout ce dont vous avez besoin</div>
+      <div class="features">
+        <!-- Produits -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span>
+          <div><div class="t">Produits</div><div class="d">Catalogue, prix &amp; photos</div></div>
+        </div>
+        <!-- Stock -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></span>
+          <div><div class="t">Stock</div><div class="d">Alertes de rupture</div></div>
+        </div>
+        <!-- Commandes -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M2 3h3l2.2 11.2a1 1 0 0 0 1 .8h8.5a1 1 0 0 0 1-.8L20 7H6"/></svg></span>
+          <div><div class="t">Commandes</div><div class="d">Ventes &amp; suivi</div></div>
+        </div>
+        <!-- Clients -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.4"/><path d="M21 20a5.5 5.5 0 0 0-4-5.3"/></svg></span>
+          <div><div class="t">Clients</div><div class="d">Historique &amp; dettes</div></div>
+        </div>
+        <!-- Fournisseurs -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5h11v9H2z"/><path d="M13 9h4.5L21 12.5v3h-8z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg></span>
+          <div><div class="t">Fournisseurs</div><div class="d">Achats &amp; livraisons</div></div>
+        </div>
+        <!-- Rapports & factures -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><rect x="5" y="11" width="3.2" height="7" rx="1"/><rect x="10.4" y="6" width="3.2" height="12" rx="1"/><rect x="15.8" y="13" width="3.2" height="5" rx="1"/></svg></span>
+          <div><div class="t">Rapports &amp; factures PDF</div><div class="d">Documents professionnels</div></div>
+        </div>
+        <!-- Marketplace -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4z"/><path d="M3 9l1.5-5h15L21 9z"/><path d="M9.5 20v-5.5h5V20"/></svg></span>
+          <div><div class="t">Marketplace</div><div class="d">Vendez aussi en ligne</div></div>
+        </div>
+        <!-- QR Code boutique -->
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z"/><path d="M19 19h2v2h-2z"/><path d="M14 19h2v2h-2z"/><path d="M19 14h2v2h-2z"/></svg></span>
+          <div><div class="t">QR Code boutique</div><div class="d">Vitrine partageable</div></div>
+        </div>
+      </div>
+
+      <!-- Bénéfices concrets (réels, sans chiffres inventés) -->
+      <div class="section-label">Ce que ça vous apporte</div>
+      <div class="benefits">
+        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Suivez vos ventes et bénéfices en temps réel</div>
+        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Maîtrisez votre stock, vos marges et dépenses</div>
+        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Gardez l'historique complet de vos clients</div>
+        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Éditez factures &amp; rapports professionnels</div>
+        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Gérez plusieurs boutiques au même endroit</div>
+        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Partagez votre boutique en ligne via un QR Code</div>
+      </div>
+
+      <!-- Appel à l'action + QR (placeholder à compléter) -->
+      <div class="cta">
+        <div class="qr-box">
+          <!-- [À COMPLÉTER] Remplacer ce bloc par votre image QR -->
+          <div class="qr-ph">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h7v7h-7z"/></svg>
+            QR à insérer
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow2">Découvrez comment digitaliser votre commerce</div>
+          <h2>Demandez votre démonstration privée</h2>
+          <p>Contactez-nous sur WhatsApp pour réserver votre démonstration personnalisée.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pied de page : contact + paiements réels -->
+    <div class="footer">
+      <div class="contacts">
+        <!-- WhatsApp : vrai logo officiel -->
+        <div class="contact">
+          <span class="ci wa"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></span>
+          <span><span class="lbl">WhatsApp</span><br/><span class="val">+221 77 383 13 64</span></span>
+        </div>
+        <!-- Téléphone -->
+        <div class="contact">
+          <span class="ci neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span>
+          <span><span class="lbl">Téléphone</span><br/><span class="val">+221 77 383 13 64</span></span>
+        </div>
+        <!-- Email -->
+        <div class="contact">
+          <span class="ci neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+          <span><span class="lbl">Email</span><br/><span class="val">dionemhd1@gmail.com</span></span>
+        </div>
+      </div>
+
+      <!-- Moyens de paiement RÉELS (Wave + Orange Money via PayTech) -->
+      <div class="pay">
+        <div class="label">Paiement Mobile Money</div>
+        <div class="badges">
+          <span class="paybadge wave">Wave</span>
+          <span class="paybadge om">orange</span>
+        </div>
+        <div class="note">Site web : [À&nbsp;COMPLÉTER]</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
