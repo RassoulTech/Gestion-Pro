@@ -63,3 +63,41 @@ export function GitHubIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+/**
+ * Payment-method badges (Wave, Orange Money) — fixed brand colors, viewBox 32×20.
+ * Single source of truth so every payment screen renders the same mark.
+ * Size with className (e.g. `h-5 w-auto`).
+ */
+
+export function WaveIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 32 20" fill="none" aria-hidden="true" {...props}>
+      <rect width="32" height="20" rx="4" fill="#00C2C9" />
+      <ellipse cx="14" cy="17.5" rx="1.5" ry="0.8" fill="#FFC800" />
+      <ellipse cx="17.5" cy="17.5" rx="1.5" ry="0.8" fill="#FFC800" />
+      <circle cx="15.5" cy="7.5" r="3.2" fill="white" />
+      <ellipse cx="15" cy="13.5" rx="4.8" ry="4" fill="white" />
+      <rect x="11.8" y="7.5" width="6.4" height="6" fill="white" />
+      <polygon points="18.2,6.8 21.5,8 18.2,9.2" fill="#FFC800" />
+      <circle cx="16.8" cy="7.2" r="0.7" fill="#00C2C9" />
+      <path d="M12.5 11c.8-.5 2 0 2 1.5s-.8 2.5-1.8 2.5-1.8-1.5-1.8-2.5c0-.8.6-1 1.6-1.5z" fill="#00C2C9" />
+    </svg>
+  );
+}
+
+export function OrangeMoneyIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 32 20" fill="none" aria-hidden="true" {...props}>
+      <rect width="32" height="20" rx="4" fill="#FF6600" />
+      <g stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="9" y1="13" x2="15" y2="7" />
+        <path d="M11 7h4v4" fill="none" />
+      </g>
+      <g stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="23" y1="7" x2="17" y2="13" />
+        <path d="M21 13h-4v-4" fill="none" />
+      </g>
+    </svg>
+  );
+}
