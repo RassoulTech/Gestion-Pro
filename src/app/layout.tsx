@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
+import {
+  Inter,
+  Geist,
+  Geist_Mono,
+  Bricolage_Grotesque,
+  Plus_Jakarta_Sans,
+} from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
 import { auth } from "@/lib/auth";
@@ -30,6 +36,13 @@ const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
 });
 
+// Police de corps premium & professionnelle (UI, paragraphes) — tout le projet.
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jakarta",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "GestionPro — Gestion commerciale multi-boutiques",
@@ -52,7 +65,7 @@ export default async function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${inter.variable} font-sans`}
+        className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${inter.variable} font-sans`}
       >
         <Providers session={session}>
           {children}

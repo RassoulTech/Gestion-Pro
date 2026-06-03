@@ -75,9 +75,10 @@
 
   /* ── Familles typographiques ─────────────────────────────────────────── */
   /* Cascade : Geist (si installé) → Inter (next/font actuel) → système */
+  /* Corps : police premium & professionnelle (Plus Jakarta Sans) */
   --font-sans:
-    var(--font-geist-sans), var(--font-inter), ui-sans-serif, system-ui,
-    -apple-system, "Segoe UI", Roboto, sans-serif;
+    var(--font-jakarta), var(--font-geist-sans), var(--font-inter),
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono:
     var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular,
     Menlo, monospace;
