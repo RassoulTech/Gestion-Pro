@@ -313,8 +313,8 @@ export default function FlyerPremiumPage() {
               Paiement Mobile Money
             </span>
             <div className="flex items-center gap-3">
-              <WaveIcon className="h-7 w-[45px]" />
-              <OrangeMoneyIcon className="h-7 w-[45px]" />
+              <WaveIcon className="h-9 w-9 rounded-lg" />
+              <OrangeMoneyIcon className="h-9 w-9 rounded-lg" />
             </div>
           </div>
 
