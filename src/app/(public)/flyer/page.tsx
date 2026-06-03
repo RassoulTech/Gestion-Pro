@@ -269,7 +269,7 @@ export default function FlyerPage() {
                       rel="noopener noreferrer" 
                       className="flex items-center gap-2.5 hover:text-orange-600 transition-colors"
                     >
-                      <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
                         <WhatsAppIcon className="h-4 w-4" />
                       </span>
                       <span className="tracking-wide text-zinc-800">+221 77 383 13 64</span>
