@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   Printer,
   Download,
@@ -14,7 +15,10 @@ import {
   Globe,
   Mail,
   Sparkles,
+  Loader2,
 } from "lucide-react";
+import QRCode from "qrcode";
+import { toast } from "sonner";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -29,9 +33,42 @@ import { BrandLogo } from "@/components/brand-logo";
 export default function FlyerProPage() {
   const appUrl =
     process.env.NEXT_PUBLIC_APP_URL || "https://gestion-pro.vercel.app";
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=0&data=${encodeURIComponent(
-    appUrl
-  )}`;
+  const [qrDataUrl, setQrDataUrl] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  // QR généré localement (data URL) — pas de dépendance externe, export PNG fiable.
+  useEffect(() => {
+    let active = true;
+    QRCode.toDataURL(appUrl, { width: 250, margin: 1, color: { dark: "#0f172a", light: "#ffffff" } })
+      .then((url) => { if (active) setQrDataUrl(url); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [appUrl]);
+
+  async function handleDownloadPng() {
+    const node = document.getElementById("flyer-canvas");
+    if (!node) return;
+    setDownloading(true);
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(node, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+        filter: (el) => !(el instanceof HTMLElement && el.classList?.contains("no-print")),
+      });
+      const link = document.createElement("a");
+      link.download = "flyer-pro-gestionpro.png";
+      link.href = dataUrl;
+      link.click();
+      toast.success("Flyer PNG téléchargé !");
+    } catch (e) {
+      console.error("[flyer-pro] PNG export failed:", e);
+      toast.error("Échec du téléchargement PNG.");
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   const benefits = [
     "Suivez vos ventes et bénéfices en temps réel",
@@ -95,11 +132,12 @@ export default function FlyerProPage() {
             <span>Imprimer</span>
           </button>
           <button
-            onClick={() => window.print()}
-            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-sm font-bold text-white transition-all shadow-md active:scale-95 shadow-orange-600/20 cursor-pointer"
+            onClick={handleDownloadPng}
+            disabled={downloading}
+            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-sm font-bold text-white transition-all shadow-md active:scale-95 shadow-orange-600/20 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Download className="h-4 w-4" />
-            <span>Enregistrer en PDF</span>
+            {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            <span>{downloading ? "Génération…" : "Télécharger PNG"}</span>
           </button>
         </div>
       </div>
@@ -309,12 +347,16 @@ export default function FlyerProPage() {
                     </a>
                   </div>
                   <div className="col-span-5 flex justify-center bg-zinc-50 p-2 rounded-2xl border border-zinc-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={qrCodeUrl}
-                      alt="QR code vers la démo GestionPro"
-                      className="w-16 h-16 object-contain"
-                    />
+                    {qrDataUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={qrDataUrl}
+                        alt="QR code vers la démo GestionPro"
+                        className="w-16 h-16 object-contain"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 animate-pulse rounded bg-zinc-100" />
+                    )}
                   </div>
                 </div>
                 <div className="text-center pt-1">

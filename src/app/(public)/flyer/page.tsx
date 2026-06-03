@@ -1,24 +1,64 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  Printer, 
-  Download, 
-  ArrowLeft, 
-  Package, 
-  Receipt, 
-  TrendingUp, 
-  Users, 
-  BarChart3, 
-  Mail
+import {
+  Printer,
+  Download,
+  ArrowLeft,
+  Package,
+  Receipt,
+  TrendingUp,
+  Users,
+  BarChart3,
+  Mail,
+  Loader2
 } from "lucide-react";
+import QRCode from "qrcode";
+import { toast } from "sonner";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { BrandLogo } from "@/components/brand-logo";
 
 export default function FlyerPage() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://gestion-pro.vercel.app";
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(appUrl)}`;
+
+  const [qrDataUrl, setQrDataUrl] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  // QR généré localement (data URL) — pas de dépendance externe, export PNG fiable.
+  useEffect(() => {
+    let active = true;
+    QRCode.toDataURL(appUrl, { width: 250, margin: 1, color: { dark: "#0f172a", light: "#ffffff" } })
+      .then((url) => { if (active) setQrDataUrl(url); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [appUrl]);
+
+  async function handleDownloadPng() {
+    const node = document.getElementById("flyer-canvas");
+    if (!node) return;
+    setDownloading(true);
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(node, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+        // exclut les éléments écran-only (.no-print) du rendu PNG
+        filter: (el) => !(el instanceof HTMLElement && el.classList?.contains("no-print")),
+      });
+      const link = document.createElement("a");
+      link.download = "flyer-gestionpro.png";
+      link.href = dataUrl;
+      link.click();
+      toast.success("Flyer PNG téléchargé !");
+    } catch (e) {
+      console.error("[flyer] PNG export failed:", e);
+      toast.error("Échec du téléchargement PNG.");
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center py-8 px-4 sm:px-6 relative overflow-hidden">
@@ -53,15 +93,16 @@ export default function FlyerPage() {
             className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm font-bold text-zinc-200 hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
           >
             <Printer className="h-4 w-4" />
-            <span>Imprimer le flyer</span>
+            <span>Imprimer / PDF</span>
           </button>
 
           <button
-            onClick={() => window.print()}
-            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-sm font-bold text-white transition-all shadow-md active:scale-95 shadow-orange-600/20 cursor-pointer"
+            onClick={handleDownloadPng}
+            disabled={downloading}
+            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-sm font-bold text-white transition-all shadow-md active:scale-95 shadow-orange-600/20 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Download className="h-4 w-4" />
-            <span>Télécharger PDF Vectoriel</span>
+            {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            <span>{downloading ? "Génération…" : "Télécharger PNG"}</span>
           </button>
         </div>
       </div>
@@ -289,11 +330,15 @@ export default function FlyerPage() {
 
                   {/* Right Side: Only ONE single grand QR Code */}
                   <div className="xs:col-span-5 flex justify-center bg-zinc-50 p-2 rounded-2xl border border-zinc-100">
-                    <img 
-                      src={qrCodeUrl} 
-                      alt="QR Code de test privé" 
-                      className="w-16 h-16 object-contain" 
-                    />
+                    {qrDataUrl ? (
+                      <img
+                        src={qrDataUrl}
+                        alt="QR Code GestionPro"
+                        className="w-16 h-16 object-contain"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 animate-pulse rounded bg-zinc-100" />
+                    )}
                   </div>
                 </div>
 
