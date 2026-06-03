@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { Mail, Send } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 import { sendContactMessage } from "@/server/actions/contact.actions";
 import { Section } from "./section";
@@ -91,14 +92,16 @@ export function ContactSection() {
           <div className="md:col-span-2 space-y-4">
             {[
               {
-                icon: <Mail className="h-6 w-6 text-orange-600 dark:text-orange-400" />,
+                icon: <Mail className="h-6 w-6" />,
+                iconWrap: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
                 title: "Email direct",
                 value: "dionemhd1@gmail.com",
                 desc: "Réponse en moins de 24 heures",
                 href: "mailto:dionemhd1@gmail.com"
               },
               {
-                icon: <WhatsAppIcon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />,
+                icon: <WhatsAppIcon className="h-7 w-7" />,
+                iconWrap: "bg-[#25D366] text-white shadow-sm shadow-[#25D366]/30",
                 title: "Support WhatsApp",
                 value: "+221 77 383 13 64",
                 desc: "Conseillers disponibles 7j/7",
@@ -118,7 +121,12 @@ export function ContactSection() {
                 className="block p-6 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl hover:border-zinc-300 dark:hover:border-zinc-700/80 shadow-md transition-all duration-300"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200/20 dark:border-zinc-700/20 shadow-inner">
+                  <div
+                    className={cn(
+                      "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-black/5 dark:border-white/10 shadow-sm",
+                      card.iconWrap
+                    )}
+                  >
                     {card.icon}
                   </div>
                   <div>
