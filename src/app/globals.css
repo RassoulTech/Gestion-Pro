@@ -280,6 +280,11 @@
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    /* Filet de sécurité global : empêche tout scroll horizontal parasite
+       (orbes décoratifs, éléments larges) sans casser `position: sticky`
+       — `clip` ne crée pas de conteneur de défilement, contrairement à `hidden`.
+       Les tables conservent leur propre `overflow-auto` interne. */
+    overflow-x: clip;
   }
 
   body {
