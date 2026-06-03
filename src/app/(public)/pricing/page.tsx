@@ -195,7 +195,7 @@ export default function PricingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5"
               >
-                <span>🎉 Économisez jusqu&apos;à {currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $"} / an !</span>
+                <span>Économisez jusqu&apos;à {currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $"} / an !</span>
               </motion.div>
             )}
           </div>

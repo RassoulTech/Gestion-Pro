@@ -17,7 +17,9 @@ import {
   Notebook,
   DollarSign,
   Banknote,
-  Wallet
+  Wallet,
+  ShoppingBag,
+  Gift
 } from "lucide-react";
 import Link from "next/link";
 import { WaveIcon } from "@/components/icons/brand-icons";
@@ -367,11 +369,11 @@ export function NouvelleCommandeClient({
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-none shadow-2xl">
                       <SelectItem value="WALK_IN" className="rounded-lg font-bold">
-                        🛍️ Client occasionnel (Anonyme)
+                        <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-zinc-400" /> Client occasionnel (Anonyme)</span>
                       </SelectItem>
                       {clients.map((c) => (
                         <SelectItem key={c.id} value={c.id} className="rounded-lg font-bold">
-                          👤 {c.prenom ? `${c.prenom} ` : ""}{c.nom} {c.telephone ? `(${c.telephone})` : ""}
+                          <span className="flex items-center gap-2"><User className="h-4 w-4 text-zinc-400" /> {c.prenom ? `${c.prenom} ` : ""}{c.nom} {c.telephone ? `(${c.telephone})` : ""}</span>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -401,9 +403,9 @@ export function NouvelleCommandeClient({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-none shadow-2xl">
-                      <SelectItem value="VALIDEE" className="rounded-lg font-bold text-emerald-600 dark:text-emerald-400">🟢 Validée (Payée)</SelectItem>
-                      <SelectItem value="LIVREE" className="rounded-lg font-bold text-blue-600 dark:text-blue-400">🔵 Livrée (Finalisée)</SelectItem>
-                      <SelectItem value="EN_ATTENTE" className="rounded-lg font-bold text-amber-600 dark:text-amber-400">🟡 En Attente</SelectItem>
+                      <SelectItem value="VALIDEE" className="rounded-lg font-bold text-emerald-600 dark:text-emerald-400"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Validée (Payée)</span></SelectItem>
+                      <SelectItem value="LIVREE" className="rounded-lg font-bold text-blue-600 dark:text-blue-400"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-blue-500" /> Livrée (Finalisée)</span></SelectItem>
+                      <SelectItem value="EN_ATTENTE" className="rounded-lg font-bold text-amber-600 dark:text-amber-400"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-amber-500" /> En Attente</span></SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -586,7 +588,7 @@ export function NouvelleCommandeClient({
                   {/* Remise / Reduction */}
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-xs font-bold text-zinc-500 flex items-center gap-1 shrink-0">
-                      🎁 Réduction (FCFA)
+                      <Gift className="h-3.5 w-3.5 text-zinc-400" /> Réduction (FCFA)
                     </span>
                     <Input
                       type="number"

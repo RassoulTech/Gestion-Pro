@@ -247,8 +247,8 @@ export default function FlyerPage() {
 
                   {/* Phone Footer */}
                   <div className="border-t border-zinc-100 pt-2 flex items-center justify-between text-[7px] text-zinc-400 font-bold mt-1.5">
-                    <span>📦 12 Articles</span>
-                    <span>📈 +12.4%</span>
+                    <span className="flex items-center gap-1"><Package className="h-2.5 w-2.5" /> 12 Articles</span>
+                    <span className="flex items-center gap-1"><TrendingUp className="h-2.5 w-2.5" /> +12.4%</span>
                   </div>
                 </div>
               </div>

@@ -21,7 +21,7 @@ export async function LowStockAlerts({
   if (produits.length === 0) {
     return (
       <p className="py-6 text-center text-sm text-muted-foreground">
-        Aucune alerte stock. Tout est OK 👍
+        Aucune alerte stock. Tout est OK.
       </p>
     );
   }

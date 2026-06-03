@@ -349,7 +349,7 @@ export function NouvelAchatClient({
                     <SelectContent className="rounded-xl border-none shadow-2xl">
                       {fournisseurs.map((f) => (
                         <SelectItem key={f.id} value={f.id} className="rounded-lg font-bold">
-                          🚚 {f.nom} {f.telephone ? `(${f.telephone})` : ""}
+                          <span className="flex items-center gap-2"><Truck className="h-4 w-4 text-zinc-400" /> {f.nom} {f.telephone ? `(${f.telephone})` : ""}</span>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -392,9 +392,9 @@ export function NouvelAchatClient({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-none shadow-2xl">
-                      <SelectItem value="LIVREE" className="rounded-lg font-bold text-emerald-600 dark:text-emerald-400">🟢 Livrée (Stock incrémenté)</SelectItem>
-                      <SelectItem value="VALIDEE" className="rounded-lg font-bold text-blue-600 dark:text-blue-400">🔵 Validée (Stock incrémenté)</SelectItem>
-                      <SelectItem value="EN_ATTENTE" className="rounded-lg font-bold text-amber-600 dark:text-amber-400">🟡 En attente de livraison (Pas d&apos;entrée)</SelectItem>
+                      <SelectItem value="LIVREE" className="rounded-lg font-bold text-emerald-600 dark:text-emerald-400"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Livrée (Stock incrémenté)</span></SelectItem>
+                      <SelectItem value="VALIDEE" className="rounded-lg font-bold text-blue-600 dark:text-blue-400"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-blue-500" /> Validée (Stock incrémenté)</span></SelectItem>
+                      <SelectItem value="EN_ATTENTE" className="rounded-lg font-bold text-amber-600 dark:text-amber-400"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-amber-500" /> En attente de livraison (Pas d&apos;entrée)</span></SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
