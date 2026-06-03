@@ -6,145 +6,175 @@
   <title>GestionPro — Flyer commercial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root{
-      --orange:#ea580c; --orange-2:#c2410c; --orange-lt:#f97316;
-      --orange-soft:#fff7ed; --orange-100:#ffedd5; --tint:#fdf1e7;
-      --ink:#1e293b; --muted:#64748b; --light:#94a3b8; --line:#eceff4;
-      --white:#fff; --wa:#25D366; --wave:#1DC3FF; --om:#FF7900;
+      --orange:#ea580c; --orange-2:#c2410c; --orange-lt:#fb923c;
+      --orange-soft:#fff7ed; --orange-100:#ffe7d3; --tint:#fdf2e9;
+      --ink:#101828; --ink-2:#1e293b; --muted:#667085; --light:#98a2b3;
+      --line:#eceef2; --white:#fff;
+      --wa:#25D366; --wave:#1DC3FF; --om:#FF7900;
+      --disp:'Bricolage Grotesque',Georgia,serif;
+      --body:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     }
-    *{box-sizing:border-box;}
-    html,body{margin:0;padding:0;}
-    body{background:#cbd5e1;color:var(--ink);
-      font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#c2cbd6;color:var(--ink);font-family:var(--body);
       -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    h1,h2,h3,.disp{font-family:var(--disp);}
 
     .toolbar{max-width:210mm;margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13px;color:#475569;}
-    .toolbar button{cursor:pointer;border:none;background:var(--orange);color:#fff;font-weight:800;font-family:inherit;font-size:14px;padding:10px 18px;border-radius:12px;box-shadow:0 6px 16px rgba(234,88,12,.25);}
-    .toolbar .tip{background:#fff;padding:8px 14px;border-radius:10px;border:1px solid var(--line);}
+    .toolbar button{cursor:pointer;border:none;background:var(--orange);color:#fff;font-weight:800;font-family:var(--body);font-size:14px;padding:11px 20px;border-radius:12px;box-shadow:0 8px 20px rgba(234,88,12,.3);}
+    .toolbar .tip{background:#fff;padding:9px 14px;border-radius:10px;border:1px solid var(--line);}
 
     .page{width:210mm;height:297mm;background:#fff;position:relative;overflow:hidden;margin:18px auto;
-      box-shadow:0 24px 70px rgba(15,23,42,.20);display:flex;flex-direction:column;}
+      box-shadow:0 30px 80px rgba(16,24,40,.22);display:flex;flex-direction:column;}
     @page{size:A4 portrait;margin:0;}
-    @media print{ body{background:#fff;} .no-print{display:none!important;}
-      .page{margin:0;box-shadow:none;page-break-after:always;} .page:last-child{page-break-after:auto;} }
+    @media print{body{background:#fff;}.no-print{display:none!important;}
+      .page{margin:0;box-shadow:none;page-break-after:always;}.page:last-child{page-break-after:auto;}}
 
-    .name{font-weight:900;letter-spacing:-.02em;} .name .p{color:var(--orange);}
+    .name{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;}.name .p{color:var(--orange);}
     .accent{color:var(--orange);}
 
-    /* ---------- HERO (orange + vague blanche) ---------- */
-    .hero{position:relative;color:#fff;padding:13mm 13mm 26mm;overflow:hidden;
-      background:radial-gradient(120% 120% at 80% 0%, var(--orange-lt) 0%, var(--orange) 48%, var(--orange-2) 100%);}
-    .hero .wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:62px;display:block;}
-    .htop{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:3;}
-    .logo{display:flex;align-items:center;gap:9px;}
-    .logo .lt{font-size:18px;font-weight:900;line-height:1;}
-    .logo .ls{font-size:8.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.8);}
-    .htag{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);
-      border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:999px;}
+    /* ================= HERO ================= */
+    .hero{flex:0 0 auto;position:relative;color:#fff;overflow:hidden;
+      background:radial-gradient(125% 130% at 78% -10%, var(--orange-lt) 0%, var(--orange) 46%, var(--orange-2) 100%);}
+    .hero .tex{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1.1px,transparent 1.2px);background-size:15px 15px;opacity:.6;pointer-events:none;}
+    .hero .ring{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,.14);pointer-events:none;}
+    .hero .inner{position:relative;z-index:3;padding:12mm 13mm 0;}
+    .hero .wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:58px;display:block;z-index:2;}
 
-    .hmain{display:flex;align-items:center;gap:8mm;margin-top:9mm;position:relative;z-index:3;}
+    .htop{display:flex;align-items:center;justify-content:space-between;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo .mk{width:38px;height:38px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;}
+    .logo .mk b{font-family:var(--disp);font-weight:800;color:var(--orange);font-size:24px;line-height:1;}
+    .logo .lt{font-family:var(--disp);font-size:19px;font-weight:800;line-height:1;}
+    .logo .ls{font-size:8px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.78);margin-top:3px;}
+    .htag{font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);padding:6px 13px;border-radius:999px;}
+
+    .hmain{display:flex;align-items:center;gap:6mm;}
     .hcopy{flex:1;}
-    .hcopy h1{margin:0 0 9px;font-size:33px;line-height:1.08;font-weight:900;letter-spacing:-.02em;}
-    .hcopy p{margin:0;font-size:12.5px;line-height:1.6;font-weight:500;color:rgba(255,255,255,.9);max-width:88mm;}
+    .hcopy .eb{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:999px;}
+    .hcopy h1{margin:12px 0 11px;font-size:38px;line-height:1.04;font-weight:800;letter-spacing:-.025em;}
+    .hcopy h1 em{font-style:normal;color:#0b1220;}
+    .hcopy p{font-size:12.5px;line-height:1.65;font-weight:500;color:rgba(255,255,255,.92);max-width:86mm;}
+    .hstats{display:flex;gap:18px;margin-top:14px;}
+    .hstat .n{font-family:var(--disp);font-weight:800;font-size:17px;line-height:1;}
+    .hstat .t{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.04em;margin-top:3px;}
 
-    /* ---------- Phone mockup ---------- */
-    .phone{width:55mm;flex-shrink:0;border-radius:24px;background:#0b1220;border:5px solid #e2e8f0;
-      box-shadow:0 26px 50px rgba(0,0,0,.30);padding:6px;position:relative;}
-    .phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:38px;height:11px;background:#0b1220;border-radius:999px;z-index:3;}
-    .scr{background:#f4f7fb;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;}
-    .scr .sb{display:flex;justify-content:space-between;padding:6px 9px 2px;font-size:6.5px;font-weight:800;color:#94a3b8;}
-    .scr .ah{display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #eef2f7;padding:6px 9px;}
-    .scr .ah .b{display:flex;align-items:center;gap:5px;font-size:8.5px;font-weight:900;color:var(--ink);}
-    .scr .ah .av{width:16px;height:16px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font-size:6.5px;font-weight:900;display:flex;align-items:center;justify-content:center;}
-    .scr .pad{padding:7px;display:flex;flex-direction:column;gap:6px;}
-    .scr .kpi{background:var(--orange);color:#fff;border-radius:12px;padding:9px;}
-    .scr .kpi .l{font-size:6.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;opacity:.85;}
-    .scr .kpi .v{font-size:15px;font-weight:900;margin:2px 0;letter-spacing:-.02em;}
-    .scr .kpi .t{font-size:6.5px;font-weight:800;background:rgba(255,255,255,.2);display:inline-block;padding:2px 6px;border-radius:5px;}
-    .scr .tiles{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
-    .scr .tile{background:#fff;border:1px solid #eef2f7;border-radius:10px;padding:6px;}
-    .scr .tile .l{font-size:6px;font-weight:800;text-transform:uppercase;color:#94a3b8;}
-    .scr .tile .v{font-size:10px;font-weight:900;color:var(--ink);}
-    .scr .chart{background:#fff;border:1px solid #eef2f7;border-radius:10px;padding:7px;}
-    .scr .chart .l{font-size:6px;font-weight:800;color:#94a3b8;}
-    .scr .bars{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:4px;}
-    .scr .bars i{flex:1;background:var(--orange);border-radius:2px 2px 0 0;}
-    .scr .tabs{display:flex;justify-content:space-around;background:#fff;border-top:1px solid #eef2f7;padding:5px 0;}
-    .scr .tabs span{width:11px;height:11px;border-radius:3px;background:#dbe3ec;}
-    .scr .tabs span.on{background:var(--orange);}
-    /* verso phone : liste produits */
-    .scr .row{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #eef2f7;border-radius:9px;padding:5px 6px;}
-    .scr .row .th{width:18px;height:18px;border-radius:5px;background:var(--orange-soft);flex-shrink:0;}
-    .scr .row .nm{font-size:7px;font-weight:800;color:var(--ink);flex:1;}
-    .scr .row .pr{font-size:7px;font-weight:900;color:var(--orange);}
-    .scr .cta-btn{background:var(--orange);color:#fff;text-align:center;font-size:7.5px;font-weight:900;border-radius:8px;padding:6px;}
+    /* ================= Phone mockup ================= */
+    .phone{flex-shrink:0;border-radius:30px;background:#0b1220;padding:5px;position:relative;
+      box-shadow:0 34px 60px rgba(11,18,32,.4), inset 0 0 0 2px rgba(255,255,255,.06);}
+    .phone.lg{width:58mm;} .phone.sm{width:50mm;}
+    .phone .island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:34px;height:10px;background:#000;border-radius:999px;z-index:4;}
+    .scr{background:#f3f5f9;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;}
+    .sb{display:flex;justify-content:space-between;align-items:center;padding:7px 11px 3px;font-size:7px;font-weight:800;color:#475569;}
+    .sb .dots{display:flex;gap:3px;align-items:center;}.sb .dots i{width:3px;height:3px;border-radius:50%;background:#94a3b8;display:block;}
+    .ah{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:8px 11px;border-bottom:1px solid #eef1f6;}
+    .ah .b{display:flex;align-items:center;gap:6px;font-family:var(--disp);font-size:9px;font-weight:800;color:var(--ink);}
+    .ah .b .g{width:15px;height:15px;border-radius:5px;background:var(--orange);color:#fff;font-family:var(--disp);font-weight:800;font-size:9px;display:flex;align-items:center;justify-content:center;}
+    .ah .av{width:18px;height:18px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+    .pad{padding:9px;display:flex;flex-direction:column;gap:7px;}
+    .kpi{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;border-radius:15px;padding:11px;box-shadow:0 10px 18px rgba(234,88,12,.28);}
+    .kpi .l{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.9;}
+    .kpi .v{font-family:var(--disp);font-size:18px;font-weight:800;margin:3px 0;letter-spacing:-.02em;}
+    .kpi .pill{font-size:7px;font-weight:800;background:rgba(255,255,255,.22);display:inline-flex;gap:3px;align-items:center;padding:2px 7px;border-radius:999px;}
+    .tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+    .tile{background:#fff;border:1px solid #eef1f6;border-radius:12px;padding:8px;}
+    .tile .l{font-size:6px;font-weight:800;text-transform:uppercase;color:#98a2b3;letter-spacing:.04em;}
+    .tile .v{font-family:var(--disp);font-size:12px;font-weight:800;color:var(--ink);margin-top:2px;}
+    .card-w{background:#fff;border:1px solid #eef1f6;border-radius:12px;padding:9px;}
+    .card-w .l{font-size:6.5px;font-weight:800;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;display:flex;justify-content:space-between;}
+    .spark{display:flex;align-items:flex-end;gap:3px;height:30px;margin-top:6px;}
+    .spark i{flex:1;background:linear-gradient(180deg,#fb923c,#ea580c);border-radius:3px 3px 0 0;}
+    .salelist{display:flex;flex-direction:column;gap:5px;}
+    .sale{display:flex;align-items:center;gap:6px;}
+    .sale .th{width:18px;height:18px;border-radius:6px;background:var(--orange-soft);flex-shrink:0;}
+    .sale .nm{font-size:7px;font-weight:700;color:var(--ink);flex:1;}
+    .sale .pr{font-family:var(--disp);font-size:7.5px;font-weight:800;color:var(--ink);}
+    .tabs{display:flex;justify-content:space-around;align-items:center;background:#fff;border-top:1px solid #eef1f6;padding:7px 0;}
+    .tabs i{width:13px;height:13px;border-radius:4px;background:#dde3ec;display:block;}
+    .tabs i.on{background:var(--orange);}
+    .srow{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid #eef1f6;border-radius:11px;padding:6px 7px;}
+    .srow .th{width:20px;height:20px;border-radius:6px;background:var(--orange-soft);flex-shrink:0;}
+    .srow .nm{font-size:7.5px;font-weight:700;color:var(--ink);flex:1;}
+    .srow .pr{font-family:var(--disp);font-size:8px;font-weight:800;color:var(--orange);}
+    .addbtn{background:var(--orange);color:#fff;text-align:center;font-size:8px;font-weight:800;border-radius:10px;padding:8px;box-shadow:0 8px 14px rgba(234,88,12,.25);}
 
-    /* ---------- RECTO body ---------- */
-    .rbody{flex:1;display:flex;padding:0 13mm 0;gap:9mm;margin-top:-14mm;position:relative;z-index:4;}
-    .cards-col{width:74mm;flex-shrink:0;display:flex;flex-direction:column;gap:9px;}
-    .fcard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px 13px;display:flex;gap:11px;align-items:center;
-      box-shadow:0 10px 26px rgba(15,23,42,.06);}
-    .fcard .badge{width:38px;height:38px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .fcard .badge svg{width:19px;height:19px;}
-    .fcard .ft{font-size:13px;font-weight:900;color:var(--ink);line-height:1.1;}
-    .fcard .fd{font-size:10.5px;font-weight:500;color:var(--muted);margin-top:2px;line-height:1.3;}
+    /* ================= RECTO body ================= */
+    .rbody{flex:1 1 auto;display:flex;gap:8mm;padding:8mm 13mm 0;min-height:0;}
+    .cards{width:72mm;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-between;}
+    .fcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 12px 30px rgba(16,24,40,.07);}
+    .fcard .bdg{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 16px rgba(234,88,12,.28);}
+    .fcard .bdg svg{width:21px;height:21px;}
+    .fcard .ft{font-family:var(--disp);font-size:14px;font-weight:800;color:var(--ink);line-height:1.1;}
+    .fcard .fd{font-size:10.5px;font-weight:500;color:var(--muted);margin-top:3px;line-height:1.3;}
 
-    .why{flex:1;padding-top:16mm;}
-    .why h2{margin:0 0 10px;font-size:21px;font-weight:900;line-height:1.2;color:var(--ink);}
-    .why p{margin:0 0 10px;font-size:11.5px;line-height:1.65;font-weight:500;color:var(--muted);}
+    .why{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding-top:2mm;}
+    .why .lead h2{font-size:23px;font-weight:800;line-height:1.18;color:var(--ink);margin-bottom:11px;letter-spacing:-.02em;}
+    .why .lead p{font-size:11.5px;line-height:1.7;font-weight:500;color:var(--muted);margin-bottom:10px;}
+    .trust{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:13px;}
+    .trust .ti{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;color:var(--ink-2);}
+    .trust .ti .ck{width:20px;height:20px;border-radius:50%;background:var(--orange-soft);color:var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .trust .ti .ck svg{width:12px;height:12px;}
 
-    .rfoot{padding:8mm 13mm 9mm;margin-top:6mm;border-top:1px solid var(--line);display:flex;align-items:center;gap:14px;}
-    .qrbox{width:74px;height:74px;border:1px solid var(--line);border-radius:12px;padding:5px;flex-shrink:0;background:#fff;}
+    .rfoot{flex:0 0 auto;margin:8mm 13mm 0;border-top:1.5px solid var(--line);padding:7mm 0 8mm;display:flex;align-items:center;gap:16px;}
+    .qrbox{width:80px;height:80px;border:1px solid var(--line);border-radius:14px;padding:6px;flex-shrink:0;background:#fff;box-shadow:0 8px 20px rgba(16,24,40,.07);}
     .qrbox svg{width:100%;height:100%;display:block;}
-    .rfoot .ftxt .h{font-size:14px;font-weight:900;color:var(--ink);}
-    .rfoot .ftxt .h .accent{color:var(--orange);}
-    .rfoot .ftxt .l{font-size:10px;font-weight:600;color:var(--muted);line-height:1.5;margin-top:3px;}
+    .rfoot . qt{}
+    .rfoot .qt .h{font-family:var(--disp);font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
+    .rfoot .qt .s{font-size:10.5px;font-weight:600;color:var(--muted);line-height:1.5;margin-top:4px;}
     .rfoot .brand{margin-left:auto;text-align:right;}
-    .rfoot .brand .name{font-size:15px;color:var(--ink);}
-    .rfoot .brand .s{font-size:9px;font-weight:700;color:var(--light);letter-spacing:.08em;text-transform:uppercase;}
+    .rfoot .brand .name{font-size:16px;}
+    .rfoot .brand .s2{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--light);margin-top:3px;}
 
-    /* ---------- VERSO ---------- */
-    .vmain{display:flex;align-items:center;gap:7mm;margin-top:8mm;position:relative;z-index:3;}
-    .vqr{width:74px;height:74px;border-radius:14px;background:#fff;padding:7px;box-shadow:0 14px 30px rgba(0,0,0,.25);flex-shrink:0;}
+    /* ================= VERSO ================= */
+    .vhero .inner{padding:12mm 13mm 0;}
+    .vmain{display:flex;align-items:center;gap:6mm;}
+    .vleft{display:flex;align-items:center;gap:5mm;flex-shrink:0;}
+    .vqr{width:78px;height:78px;border-radius:16px;background:#fff;padding:7px;box-shadow:0 16px 34px rgba(11,18,32,.28);flex-shrink:0;}
     .vqr svg{width:100%;height:100%;display:block;}
     .vcopy{flex:1;text-align:right;}
-    .vcopy h1{margin:0 0 8px;font-size:27px;font-weight:900;line-height:1.12;letter-spacing:-.02em;}
-    .vcopy p{margin:0;font-size:12px;line-height:1.6;font-weight:500;color:rgba(255,255,255,.9);margin-left:auto;max-width:90mm;}
+    .vcopy .eb{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:999px;}
+    .vcopy h1{margin:11px 0 9px;font-size:28px;font-weight:800;line-height:1.1;letter-spacing:-.02em;}
+    .vcopy p{font-size:12px;line-height:1.6;font-weight:500;color:rgba(255,255,255,.92);margin-left:auto;max-width:92mm;}
 
-    .vbody{flex:1;padding:2mm 13mm 0;display:flex;flex-direction:column;}
-    .vintro{text-align:center;max-width:150mm;margin:0 auto;}
-    .vintro h2{margin:0 0 7px;font-size:19px;font-weight:900;color:var(--ink);}
-    .vintro p{margin:0;font-size:11.5px;line-height:1.6;font-weight:500;color:var(--muted);}
-    .v3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:13px;}
-    .vc{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px 12px;text-align:center;box-shadow:0 10px 26px rgba(15,23,42,.06);}
-    .vc .badge{width:42px;height:42px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 9px;}
-    .vc .badge svg{width:21px;height:21px;}
-    .vc .ft{font-size:13px;font-weight:900;color:var(--ink);}
-    .vc .fd{font-size:10.5px;font-weight:500;color:var(--muted);margin-top:4px;line-height:1.35;}
+    .vbody{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-between;padding:9mm 13mm 0;min-height:0;}
+    .vintro{text-align:center;max-width:155mm;margin:0 auto;}
+    .vintro h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;}
+    .vintro p{font-size:11.5px;line-height:1.65;font-weight:500;color:var(--muted);margin-top:8px;}
+    .v3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+    .vc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 14px;text-align:center;box-shadow:0 12px 30px rgba(16,24,40,.07);}
+    .vc .bdg{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 11px;box-shadow:0 10px 18px rgba(234,88,12,.28);}
+    .vc .bdg svg{width:24px;height:24px;}
+    .vc .ft{font-family:var(--disp);font-size:14px;font-weight:800;color:var(--ink);}
+    .vc .fd{font-size:10.5px;font-weight:500;color:var(--muted);margin-top:5px;line-height:1.4;}
 
-    .about{margin-top:15px;}
-    .about h2{margin:0 0 8px;font-size:19px;font-weight:900;color:var(--ink);}
-    .about p{margin:0 0 8px;font-size:11.5px;line-height:1.65;font-weight:500;color:var(--muted);}
+    .about{display:flex;gap:7mm;align-items:flex-start;}
+    .about .l{flex-shrink:0;width:52mm;}
+    .about h2{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.15;}
+    .about .bar{width:46px;height:4px;border-radius:999px;background:var(--orange);margin-top:10px;}
+    .about .r{flex:1;}
+    .about p{font-size:11.5px;line-height:1.7;font-weight:500;color:var(--muted);margin-bottom:9px;}
 
-    .pay{margin-top:14px;border:1px solid var(--line);background:var(--tint);border-radius:16px;
-      padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
-    .pay .pl{font-size:10.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#475569;}
-    .pay .pp{display:flex;gap:9px;}
-    .paycard{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:7px 11px;font-size:11.5px;font-weight:800;color:var(--ink);}
-    .paycard .pb{height:21px;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0 9px;color:#fff;font-weight:900;font-size:11px;letter-spacing:-.2px;}
-    .paycard .pb.wave{background:var(--wave);} .paycard .pb.om{background:var(--om);text-transform:lowercase;}
+    .pay{border:1px solid var(--line);background:var(--tint);border-radius:18px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+    .pay .pl{font-family:var(--disp);font-size:13px;font-weight:800;letter-spacing:.01em;color:var(--ink);}
+    .pay .pl span{display:block;font-family:var(--body);font-size:9.5px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:2px;}
+    .pp{display:flex;gap:10px;}
+    .paycard{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:12px;font-weight:800;color:var(--ink);box-shadow:0 6px 16px rgba(16,24,40,.06);}
+    .paycard .pb{height:23px;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0 10px;color:#fff;font-weight:900;font-size:12px;letter-spacing:-.2px;}
+    .paycard .pb.wave{background:var(--wave);}.paycard .pb.om{background:var(--om);text-transform:lowercase;}
 
-    .vfoot{margin-top:auto;background:#fff;border-top:1px solid var(--line);padding:7mm 13mm;display:flex;align-items:center;gap:10mm;}
-    .vfoot .brand{display:flex;align-items:center;gap:9px;} .vfoot .brand .name{font-size:15px;color:var(--ink);}
-    .vfoot .cs{display:flex;gap:9mm;margin-left:auto;}
-    .vfoot .ci{display:flex;align-items:center;gap:9px;}
-    .vfoot .ci .cc{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .vfoot .ci .cc.wa{background:var(--wa);color:#fff;} .vfoot .ci .cc.or{background:var(--orange);color:#fff;}
-    .vfoot .ci .cc svg{width:16px;height:16px;}
-    .vfoot .ci .cl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--light);line-height:1;}
-    .vfoot .ci .cv{font-size:11.5px;font-weight:800;color:var(--ink);line-height:1.3;}
+    .vfoot{flex:0 0 auto;background:var(--ink);color:#fff;padding:7mm 13mm;display:flex;align-items:center;gap:9mm;}
+    .vfoot .brand{display:flex;align-items:center;gap:10px;}
+    .vfoot .brand .mk{width:34px;height:34px;border-radius:10px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;color:#fff;font-size:20px;}
+    .vfoot .brand .name{font-size:16px;color:#fff;}.vfoot .brand .name .p{color:var(--orange-lt);}
+    .vcs{display:flex;gap:8mm;margin-left:auto;}
+    .vci{display:flex;align-items:center;gap:9px;}
+    .vci .cc{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .vci .cc.wa{background:var(--wa);}.vci .cc.or{background:var(--orange);}
+    .vci .cc svg{width:17px;height:17px;color:#fff;}
+    .vci .cl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#98a2b3;line-height:1;}
+    .vci .cv{font-size:12px;font-weight:800;color:#fff;line-height:1.35;margin-top:2px;}
   </style>
 </head>
 <body>
@@ -153,119 +183,149 @@
     <button onclick="window.print()">Imprimer / Enregistrer en PDF</button>
   </div>
 
-  <!-- ================= RECTO ================= -->
+  <!-- ===================== RECTO ===================== -->
   <div class="page">
     <div class="hero">
-      <div class="htop">
-        <div class="logo">
-          <svg width="34" height="34" viewBox="0 0 64 64" aria-label="GestionPro"><rect width="64" height="64" rx="14" fill="#fff"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="900" font-size="42" fill="#ea580c">G</text></svg>
-          <div><div class="lt">GestionPro</div><div class="ls">Gestion commerciale</div></div>
+      <div class="tex"></div>
+      <div class="ring" style="width:300px;height:300px;top:-130px;right:-90px;"></div>
+      <div class="ring" style="width:200px;height:200px;top:-60px;right:30px;"></div>
+      <div class="inner">
+        <div class="htop">
+          <div class="logo">
+            <span class="mk"><b>G</b></span>
+            <div><div class="lt">GestionPro</div><div class="ls">Gestion commerciale</div></div>
+          </div>
+          <span class="htag">100 % en ligne</span>
         </div>
-        <span class="htag">Commerçants · Boutiques · PME</span>
-      </div>
 
-      <div class="hmain">
-        <div class="hcopy">
-          <h1>Gérez votre commerce simplement.</h1>
-          <p>L'application web tout-en-un pour piloter vos ventes, votre stock, vos clients et votre facturation — depuis votre téléphone ou votre ordinateur, sans installation.</p>
-        </div>
-        <div class="phone">
-          <div class="notch"></div>
-          <div class="scr">
-            <div class="sb"><span>14:32</span><span>100%</span></div>
-            <div class="ah"><span class="b"><svg width="13" height="13" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#ea580c"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="900" font-size="42" fill="#fff">G</text></svg>Ma Boutique</span><span class="av">MD</span></div>
-            <div class="pad">
-              <div class="kpi"><div class="l">Ventes du jour</div><div class="v">145 000 F</div><span class="t">▲ +12 % vs hier</span></div>
-              <div class="tiles"><div class="tile"><div class="l">Bénéfice</div><div class="v">48 000 F</div></div><div class="tile"><div class="l">Commandes</div><div class="v">23</div></div></div>
-              <div class="chart"><div class="l">7 derniers jours</div><div class="bars"><i style="height:42%"></i><i style="height:58%"></i><i style="height:48%"></i><i style="height:72%"></i><i style="height:63%"></i><i style="height:88%"></i><i style="height:100%"></i></div></div>
+        <div class="hmain" style="margin-top:9mm;">
+          <div class="hcopy">
+            <span class="eb">Solution de gestion commerciale</span>
+            <h1>Gérez votre commerce,<br/><em>simplement.</em></h1>
+            <p>L'application web tout-en-un pour piloter vos ventes, votre stock, vos clients et votre facturation — depuis votre téléphone ou votre ordinateur, sans rien installer.</p>
+            <div class="hstats">
+              <div class="hstat"><div class="n">8 modules</div><div class="t">en une seule app</div></div>
+              <div class="hstat"><div class="n">Mobile &amp; PC</div><div class="t">accès navigateur</div></div>
+              <div class="hstat"><div class="n">Wave · OM</div><div class="t">paiement mobile</div></div>
             </div>
-            <div class="tabs"><span class="on"></span><span></span><span></span><span></span></div>
+          </div>
+
+          <div class="phone lg">
+            <div class="island"></div>
+            <div class="scr">
+              <div class="sb"><span>9:41</span><span class="dots"><i></i><i></i><i></i> 100%</span></div>
+              <div class="ah"><span class="b"><span class="g">G</span>Ma Boutique</span><span class="av">MD</span></div>
+              <div class="pad">
+                <div class="kpi"><div class="l">Ventes du jour</div><div class="v">145 000 F</div><span class="pill">▲ +12 % vs hier</span></div>
+                <div class="tiles"><div class="tile"><div class="l">Bénéfice net</div><div class="v">48 000 F</div></div><div class="tile"><div class="l">Commandes</div><div class="v">23</div></div></div>
+                <div class="card-w"><div class="l"><span>7 derniers jours</span><span>+18 %</span></div><div class="spark"><i style="height:40%"></i><i style="height:55%"></i><i style="height:46%"></i><i style="height:70%"></i><i style="height:60%"></i><i style="height:84%"></i><i style="height:100%"></i></div></div>
+                <div class="card-w"><div class="l" style="margin-bottom:6px;"><span>Dernières ventes</span></div>
+                  <div class="salelist">
+                    <div class="sale"><span class="th"></span><span class="nm">Café Touba ×3</span><span class="pr">4 500 F</span></div>
+                    <div class="sale"><span class="th"></span><span class="nm">Savon de Marseille</span><span class="pr">2 500 F</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+            </div>
           </div>
         </div>
       </div>
-
-      <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#ffffff" d="M0,64 C240,128 480,128 720,80 C960,32 1200,32 1440,72 L1440,120 L0,120 Z"></path></svg>
+      <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#fff" d="M0,58 C260,120 520,120 760,74 C980,32 1220,40 1440,78 L1440,120 L0,120 Z"></path></svg>
     </div>
 
-    <!-- Corps recto : cartes + pourquoi -->
     <div class="rbody">
-      <div class="cards-col">
-        <div class="fcard"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span><div><div class="ft">Produits &amp; catalogue</div><div class="fd">Articles, prix, photos et catégories.</div></div></div>
-        <div class="fcard"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></span><div><div class="ft">Stock &amp; alertes</div><div class="fd">Inventaire à jour, alertes de rupture.</div></div></div>
-        <div class="fcard"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.4"/><path d="M21 20a5.5 5.5 0 0 0-4-5.3"/></svg></span><div><div class="ft">Clients &amp; dettes</div><div class="fd">Historique d'achats et suivi des dettes.</div></div></div>
-        <div class="fcard"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4z"/><path d="M3 9l1.5-5h15L21 9z"/><path d="M9.5 20v-5.5h5V20"/></svg></span><div><div class="ft">Marketplace en ligne</div><div class="fd">Vendez vos articles sur internet.</div></div></div>
+      <div class="cards">
+        <div class="fcard"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span><div><div class="ft">Produits &amp; catalogue</div><div class="fd">Articles, prix, photos et catégories.</div></div></div>
+        <div class="fcard"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></span><div><div class="ft">Stock &amp; alertes</div><div class="fd">Inventaire à jour, alertes de rupture.</div></div></div>
+        <div class="fcard"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.4"/><path d="M21 20a5.5 5.5 0 0 0-4-5.3"/></svg></span><div><div class="ft">Clients &amp; dettes</div><div class="fd">Historique d'achats et suivi des créances.</div></div></div>
+        <div class="fcard"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4z"/><path d="M3 9l1.5-5h15L21 9z"/><path d="M9.5 20v-5.5h5V20"/></svg></span><div><div class="ft">Marketplace en ligne</div><div class="fd">Exposez et vendez vos articles sur internet.</div></div></div>
       </div>
 
       <div class="why">
-        <h2>Pourquoi choisir <span class="accent">GestionPro</span> ?</h2>
-        <p>GestionPro réunit dans une seule application web tout ce dont votre commerce a besoin : produits, stock, ventes, clients et fournisseurs — accessible partout, sans rien installer.</p>
-        <p>Suivez vos performances en temps réel, éditez des factures et rapports professionnels en PDF, et développez vos ventes grâce à la marketplace intégrée.</p>
-        <p>Une prise en main simple, pensée pour les commerçants, les boutiques et les PME.</p>
+        <div class="lead">
+          <h2>Pourquoi choisir <span class="accent">GestionPro</span> ?</h2>
+          <p>GestionPro réunit dans une seule application web tout ce dont votre commerce a besoin : produits, stock, ventes, clients et fournisseurs — accessible partout, sans installation.</p>
+          <p>Suivez vos performances en temps réel, éditez des factures et rapports professionnels en PDF, et développez vos ventes grâce à la marketplace intégrée et au QR code de votre boutique.</p>
+          <p>Une prise en main simple et rapide, pensée pour les commerçants, les boutiques et les PME.</p>
+        </div>
+        <div class="trust">
+          <div class="ti"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Accessible sur mobile et ordinateur</div>
+          <div class="ti"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Aucune installation requise</div>
+          <div class="ti"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Paiement par Wave &amp; Orange Money</div>
+        </div>
       </div>
     </div>
 
-    <!-- Pied recto : QR + démo + marque -->
     <div class="rfoot">
-      <div class="qrbox"><svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h49v49H0z"/><path stroke="#1e293b" d="M0 0.5h7m3 0h2m1 0h1m2 0h2m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m1 0h7M0 1.5h1m5 0h1m4 0h1m1 0h3m4 0h1m4 0h1m1 0h1m1 0h2m5 0h5m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m1 0h2m3 0h1m3 0h6m4 0h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h2m3 0h1m3 0h3m2 0h1m1 0h3m2 0h2m1 0h2m1 0h1m3 0h1m2 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m4 0h5m2 0h1m4 0h2m1 0h1m4 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h6m1 0h2m2 0h1m1 0h2m3 0h3m1 0h3m5 0h1m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h1m1 0h3m6 0h2m3 0h2m3 0h1m1 0h4m1 0h2M0 8.5h1m1 0h5m2 0h5m8 0h8m1 0h1m4 0h4m2 0h5M1 9.5h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m3 0h4m1 0h2m1 0h3m2 0h1M0 10.5h1m5 0h3m1 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m2 0h3m1 0h2m1 0h1m1 0h1m2 0h3m1 0h2m1 0h2M0 11.5h2m1 0h1m3 0h1m1 0h1m1 0h2m3 0h1m2 0h4m1 0h1m1 0h2m3 0h1m1 0h3m1 0h4m2 0h1m2 0h3M2 12.5h1m2 0h2m3 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m6 0h1m1 0h2m5 0h1m1 0h1M1 13.5h2m5 0h5m1 0h2m2 0h3m1 0h4m3 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h4M0 14.5h1m1 0h2m1 0h4m1 0h1m7 0h1m1 0h3m5 0h3m2 0h1m2 0h2m1 0h1m3 0h2m2 0h2M3 15.5h3m1 0h1m1 0h1m1 0h4m1 0h5m1 0h3m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m7 0h1M1 16.5h1m2 0h3m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h2m3 0h1m2 0h5m1 0h2m2 0h3M4 17.5h1m2 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h5m1 0h3m2 0h1m1 0h1m3 0h1m1 0h4m3 0h2M1 18.5h2m3 0h1m5 0h1m3 0h1m1 0h2m2 0h2m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h2m1 0h1M2 19.5h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h5m1 0h1m2 0h2m2 0h2M2 20.5h1m2 0h3m3 0h1m2 0h3m1 0h2m6 0h1m1 0h2m5 0h2m1 0h4m4 0h1m1 0h1M2 21.5h2m4 0h2m1 0h2m3 0h2m3 0h3m1 0h3m1 0h1m4 0h1m2 0h1m3 0h4m1 0h3M2 22.5h1m1 0h5m1 0h5m1 0h3m2 0h6m1 0h6m4 0h1m1 0h6m1 0h2M4 23.5h1m3 0h1m2 0h2m2 0h1m3 0h2m1 0h1m3 0h1m4 0h1m1 0h6m1 0h1m3 0h5M0 24.5h5m1 0h1m1 0h1m6 0h2m4 0h2m1 0h1m1 0h1m3 0h1m4 0h3m2 0h1m1 0h1m1 0h2M0 25.5h5m3 0h3m2 0h2m1 0h4m2 0h1m3 0h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h1m1 0h1M1 26.5h9m3 0h2m4 0h1m1 0h10m1 0h2m3 0h1m2 0h6m1 0h1M0 27.5h3m1 0h2m1 0h2m2 0h2m1 0h3m1 0h1m1 0h1m8 0h1m1 0h9m1 0h2m3 0h1m1 0h1M1 28.5h2m3 0h3m3 0h8m1 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m6 0h1m1 0h1m2 0h1M4 29.5h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h1m3 0h2m2 0h1m3 0h1m2 0h4m1 0h1m2 0h1M0 30.5h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m3 0h2m1 0h2M0 31.5h1m3 0h1m3 0h5m1 0h1m3 0h1m2 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1M5 32.5h3m3 0h2m1 0h1m1 0h2m3 0h1m2 0h4m1 0h2m5 0h1m3 0h2m5 0h1M0 33.5h2m2 0h2m1 0h1m5 0h1m1 0h1m2 0h2m1 0h4m5 0h2m1 0h1m1 0h2m4 0h1m1 0h1m3 0h2M1 34.5h3m1 0h3m2 0h1m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m5 0h1m3 0h1m1 0h1m2 0h1m2 0h1M1 35.5h1m6 0h3m2 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m8 0h1M0 36.5h1m5 0h1m2 0h1m4 0h2m2 0h1m2 0h6m1 0h3m5 0h2m1 0h1m1 0h1m1 0h1m2 0h2M0 37.5h1m1 0h1m1 0h1m2 0h3m2 0h3m2 0h1m2 0h3m1 0h1m1 0h2m2 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1M1 38.5h1m3 0h2m2 0h1m1 0h1m2 0h2m1 0h2m2 0h2m1 0h2m1 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h2m2 0h1M1 39.5h3m7 0h5m1 0h1m1 0h2m1 0h2m1 0h1m5 0h1m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2M0 40.5h3m3 0h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h7m1 0h1m3 0h1m1 0h2m1 0h7M8 41.5h3m4 0h1m4 0h3m3 0h1m6 0h2m1 0h1m3 0h1m3 0h5M0 42.5h7m4 0h1m5 0h2m3 0h1m1 0h1m1 0h8m3 0h1m2 0h1m1 0h1m1 0h1M0 43.5h1m5 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h4m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m3 0h1m3 0h1M0 44.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m3 0h5m2 0h5m2 0h1m3 0h5m2 0h1M0 45.5h1m1 0h3m1 0h1m1 0h8m1 0h1m1 0h3m1 0h2m4 0h9m5 0h2m1 0h1m1 0h1M0 46.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h5m1 0h4m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1M0 47.5h1m5 0h1m2 0h3m1 0h2m3 0h3m2 0h1m3 0h1m1 0h1m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1M0 48.5h7m1 0h2m3 0h5m1 0h1m1 0h1m3 0h1m2 0h1m2 0h5m2 0h1m2 0h2m4 0h2"/></svg>
+      <div class="qrbox"><svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h49v49H0z"/><path stroke="#101828" d="M0 0.5h7m3 0h2m1 0h1m2 0h2m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m1 0h7M0 1.5h1m5 0h1m4 0h1m1 0h3m4 0h1m4 0h1m1 0h1m1 0h2m5 0h5m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m1 0h2m3 0h1m3 0h6m4 0h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h2m3 0h1m3 0h3m2 0h1m1 0h3m2 0h2m1 0h2m1 0h1m3 0h1m2 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m4 0h5m2 0h1m4 0h2m1 0h1m4 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h6m1 0h2m2 0h1m1 0h2m3 0h3m1 0h3m5 0h1m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h1m1 0h3m6 0h2m3 0h2m3 0h1m1 0h4m1 0h2M0 8.5h1m1 0h5m2 0h5m8 0h8m1 0h1m4 0h4m2 0h5M1 9.5h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m3 0h4m1 0h2m1 0h3m2 0h1M0 10.5h1m5 0h3m1 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m2 0h3m1 0h2m1 0h1m1 0h1m2 0h3m1 0h2m1 0h2M0 11.5h2m1 0h1m3 0h1m1 0h1m1 0h2m3 0h1m2 0h4m1 0h1m1 0h2m3 0h1m1 0h3m1 0h4m2 0h1m2 0h3M2 12.5h1m2 0h2m3 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m6 0h1m1 0h2m5 0h1m1 0h1M1 13.5h2m5 0h5m1 0h2m2 0h3m1 0h4m3 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h4M0 14.5h1m1 0h2m1 0h4m1 0h1m7 0h1m1 0h3m5 0h3m2 0h1m2 0h2m1 0h1m3 0h2m2 0h2M3 15.5h3m1 0h1m1 0h1m1 0h4m1 0h5m1 0h3m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m7 0h1M1 16.5h1m2 0h3m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h2m3 0h1m2 0h5m1 0h2m2 0h3M4 17.5h1m2 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h5m1 0h3m2 0h1m1 0h1m3 0h1m1 0h4m3 0h2M1 18.5h2m3 0h1m5 0h1m3 0h1m1 0h2m2 0h2m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h2m1 0h1M2 19.5h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h5m1 0h1m2 0h2m2 0h2M2 20.5h1m2 0h3m3 0h1m2 0h3m1 0h2m6 0h1m1 0h2m5 0h2m1 0h4m4 0h1m1 0h1M2 21.5h2m4 0h2m1 0h2m3 0h2m3 0h3m1 0h3m1 0h1m4 0h1m2 0h1m3 0h4m1 0h3M2 22.5h1m1 0h5m1 0h5m1 0h3m2 0h6m1 0h6m4 0h1m1 0h6m1 0h2M4 23.5h1m3 0h1m2 0h2m2 0h1m3 0h2m1 0h1m3 0h1m4 0h1m1 0h6m1 0h1m3 0h5M0 24.5h5m1 0h1m1 0h1m6 0h2m4 0h2m1 0h1m1 0h1m3 0h1m4 0h3m2 0h1m1 0h1m1 0h2M0 25.5h5m3 0h3m2 0h2m1 0h4m2 0h1m3 0h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h1m1 0h1M1 26.5h9m3 0h2m4 0h1m1 0h10m1 0h2m3 0h1m2 0h6m1 0h1M0 27.5h3m1 0h2m1 0h2m2 0h2m1 0h3m1 0h1m1 0h1m8 0h1m1 0h9m1 0h2m3 0h1m1 0h1M1 28.5h2m3 0h3m3 0h8m1 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m6 0h1m1 0h1m2 0h1M4 29.5h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h1m3 0h2m2 0h1m3 0h1m2 0h4m1 0h1m2 0h1M0 30.5h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m3 0h2m1 0h2M0 31.5h1m3 0h1m3 0h5m1 0h1m3 0h1m2 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1M5 32.5h3m3 0h2m1 0h1m1 0h2m3 0h1m2 0h4m1 0h2m5 0h1m3 0h2m5 0h1M0 33.5h2m2 0h2m1 0h1m5 0h1m1 0h1m2 0h2m1 0h4m5 0h2m1 0h1m1 0h2m4 0h1m1 0h1m3 0h2M1 34.5h3m1 0h3m2 0h1m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m5 0h1m3 0h1m1 0h1m2 0h1m2 0h1M1 35.5h1m6 0h3m2 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m8 0h1M0 36.5h1m5 0h1m2 0h1m4 0h2m2 0h1m2 0h6m1 0h3m5 0h2m1 0h1m1 0h1m1 0h1m2 0h2M0 37.5h1m1 0h1m1 0h1m2 0h3m2 0h3m2 0h1m2 0h3m1 0h1m1 0h2m2 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1M1 38.5h1m3 0h2m2 0h1m1 0h1m2 0h2m1 0h2m2 0h2m1 0h2m1 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h2m2 0h1M1 39.5h3m7 0h5m1 0h1m1 0h2m1 0h2m1 0h1m5 0h1m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2M0 40.5h3m3 0h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h7m1 0h1m3 0h1m1 0h2m1 0h7M8 41.5h3m4 0h1m4 0h3m3 0h1m6 0h2m1 0h1m3 0h1m3 0h5M0 42.5h7m4 0h1m5 0h2m3 0h1m1 0h1m1 0h8m3 0h1m2 0h1m1 0h1m1 0h1M0 43.5h1m5 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h4m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m3 0h1m3 0h1M0 44.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m3 0h5m2 0h5m2 0h1m3 0h5m2 0h1M0 45.5h1m1 0h3m1 0h1m1 0h8m1 0h1m1 0h3m1 0h2m4 0h9m5 0h2m1 0h1m1 0h1M0 46.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h5m1 0h4m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1M0 47.5h1m5 0h1m2 0h3m1 0h2m3 0h3m2 0h1m3 0h1m1 0h1m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1M0 48.5h7m1 0h2m3 0h5m1 0h1m1 0h1m3 0h1m2 0h1m2 0h5m2 0h1m2 0h2m4 0h2"/></svg>
 </div>
-      <div class="ftxt">
+      <div class="qt">
         <div class="h">Demandez votre <span class="accent">démonstration privée</span></div>
-        <div class="l">Scannez le QR code pour nous écrire sur WhatsApp.<br/>WhatsApp / Tél : +221 77 383 13 64 · dionemhd1@gmail.com</div>
+        <div class="s">Scannez le QR code pour nous écrire sur WhatsApp.<br/>WhatsApp / Tél : +221 77 383 13 64 · dionemhd1@gmail.com</div>
       </div>
-      <div class="brand"><div class="name">Gestion<span class="p">Pro</span></div><div class="s">Solution web</div></div>
+      <div class="brand"><div class="name">Gestion<span class="p">Pro</span></div><div class="s2">Solution web</div></div>
     </div>
   </div>
 
-  <!-- ================= VERSO ================= -->
+  <!-- ===================== VERSO ===================== -->
   <div class="page">
-    <div class="hero">
-      <div class="vmain">
-        <div class="vqr"><svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h49v49H0z"/><path stroke="#1e293b" d="M0 0.5h7m3 0h2m1 0h1m2 0h2m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m1 0h7M0 1.5h1m5 0h1m4 0h1m1 0h3m4 0h1m4 0h1m1 0h1m1 0h2m5 0h5m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m1 0h2m3 0h1m3 0h6m4 0h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h2m3 0h1m3 0h3m2 0h1m1 0h3m2 0h2m1 0h2m1 0h1m3 0h1m2 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m4 0h5m2 0h1m4 0h2m1 0h1m4 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h6m1 0h2m2 0h1m1 0h2m3 0h3m1 0h3m5 0h1m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h1m1 0h3m6 0h2m3 0h2m3 0h1m1 0h4m1 0h2M0 8.5h1m1 0h5m2 0h5m8 0h8m1 0h1m4 0h4m2 0h5M1 9.5h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m3 0h4m1 0h2m1 0h3m2 0h1M0 10.5h1m5 0h3m1 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m2 0h3m1 0h2m1 0h1m1 0h1m2 0h3m1 0h2m1 0h2M0 11.5h2m1 0h1m3 0h1m1 0h1m1 0h2m3 0h1m2 0h4m1 0h1m1 0h2m3 0h1m1 0h3m1 0h4m2 0h1m2 0h3M2 12.5h1m2 0h2m3 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m6 0h1m1 0h2m5 0h1m1 0h1M1 13.5h2m5 0h5m1 0h2m2 0h3m1 0h4m3 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h4M0 14.5h1m1 0h2m1 0h4m1 0h1m7 0h1m1 0h3m5 0h3m2 0h1m2 0h2m1 0h1m3 0h2m2 0h2M3 15.5h3m1 0h1m1 0h1m1 0h4m1 0h5m1 0h3m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m7 0h1M1 16.5h1m2 0h3m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h2m3 0h1m2 0h5m1 0h2m2 0h3M4 17.5h1m2 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h5m1 0h3m2 0h1m1 0h1m3 0h1m1 0h4m3 0h2M1 18.5h2m3 0h1m5 0h1m3 0h1m1 0h2m2 0h2m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h2m1 0h1M2 19.5h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h5m1 0h1m2 0h2m2 0h2M2 20.5h1m2 0h3m3 0h1m2 0h3m1 0h2m6 0h1m1 0h2m5 0h2m1 0h4m4 0h1m1 0h1M2 21.5h2m4 0h2m1 0h2m3 0h2m3 0h3m1 0h3m1 0h1m4 0h1m2 0h1m3 0h4m1 0h3M2 22.5h1m1 0h5m1 0h5m1 0h3m2 0h6m1 0h6m4 0h1m1 0h6m1 0h2M4 23.5h1m3 0h1m2 0h2m2 0h1m3 0h2m1 0h1m3 0h1m4 0h1m1 0h6m1 0h1m3 0h5M0 24.5h5m1 0h1m1 0h1m6 0h2m4 0h2m1 0h1m1 0h1m3 0h1m4 0h3m2 0h1m1 0h1m1 0h2M0 25.5h5m3 0h3m2 0h2m1 0h4m2 0h1m3 0h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h1m1 0h1M1 26.5h9m3 0h2m4 0h1m1 0h10m1 0h2m3 0h1m2 0h6m1 0h1M0 27.5h3m1 0h2m1 0h2m2 0h2m1 0h3m1 0h1m1 0h1m8 0h1m1 0h9m1 0h2m3 0h1m1 0h1M1 28.5h2m3 0h3m3 0h8m1 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m6 0h1m1 0h1m2 0h1M4 29.5h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h1m3 0h2m2 0h1m3 0h1m2 0h4m1 0h1m2 0h1M0 30.5h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m3 0h2m1 0h2M0 31.5h1m3 0h1m3 0h5m1 0h1m3 0h1m2 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1M5 32.5h3m3 0h2m1 0h1m1 0h2m3 0h1m2 0h4m1 0h2m5 0h1m3 0h2m5 0h1M0 33.5h2m2 0h2m1 0h1m5 0h1m1 0h1m2 0h2m1 0h4m5 0h2m1 0h1m1 0h2m4 0h1m1 0h1m3 0h2M1 34.5h3m1 0h3m2 0h1m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m5 0h1m3 0h1m1 0h1m2 0h1m2 0h1M1 35.5h1m6 0h3m2 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m8 0h1M0 36.5h1m5 0h1m2 0h1m4 0h2m2 0h1m2 0h6m1 0h3m5 0h2m1 0h1m1 0h1m1 0h1m2 0h2M0 37.5h1m1 0h1m1 0h1m2 0h3m2 0h3m2 0h1m2 0h3m1 0h1m1 0h2m2 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1M1 38.5h1m3 0h2m2 0h1m1 0h1m2 0h2m1 0h2m2 0h2m1 0h2m1 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h2m2 0h1M1 39.5h3m7 0h5m1 0h1m1 0h2m1 0h2m1 0h1m5 0h1m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2M0 40.5h3m3 0h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h7m1 0h1m3 0h1m1 0h2m1 0h7M8 41.5h3m4 0h1m4 0h3m3 0h1m6 0h2m1 0h1m3 0h1m3 0h5M0 42.5h7m4 0h1m5 0h2m3 0h1m1 0h1m1 0h8m3 0h1m2 0h1m1 0h1m1 0h1M0 43.5h1m5 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h4m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m3 0h1m3 0h1M0 44.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m3 0h5m2 0h5m2 0h1m3 0h5m2 0h1M0 45.5h1m1 0h3m1 0h1m1 0h8m1 0h1m1 0h3m1 0h2m4 0h9m5 0h2m1 0h1m1 0h1M0 46.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h5m1 0h4m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1M0 47.5h1m5 0h1m2 0h3m1 0h2m3 0h3m2 0h1m3 0h1m1 0h1m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1M0 48.5h7m1 0h2m3 0h5m1 0h1m1 0h1m3 0h1m2 0h1m2 0h5m2 0h1m2 0h2m4 0h2"/></svg>
+    <div class="hero vhero">
+      <div class="tex"></div>
+      <div class="ring" style="width:280px;height:280px;top:-120px;left:-80px;"></div>
+      <div class="inner">
+        <div class="vmain">
+          <div class="vleft">
+            <div class="vqr"><svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h49v49H0z"/><path stroke="#101828" d="M0 0.5h7m3 0h2m1 0h1m2 0h2m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m1 0h7M0 1.5h1m5 0h1m4 0h1m1 0h3m4 0h1m4 0h1m1 0h1m1 0h2m5 0h5m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m1 0h2m3 0h1m3 0h6m4 0h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h2m3 0h1m3 0h3m2 0h1m1 0h3m2 0h2m1 0h2m1 0h1m3 0h1m2 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m4 0h5m2 0h1m4 0h2m1 0h1m4 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h6m1 0h2m2 0h1m1 0h2m3 0h3m1 0h3m5 0h1m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h1m1 0h3m6 0h2m3 0h2m3 0h1m1 0h4m1 0h2M0 8.5h1m1 0h5m2 0h5m8 0h8m1 0h1m4 0h4m2 0h5M1 9.5h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m3 0h4m1 0h2m1 0h3m2 0h1M0 10.5h1m5 0h3m1 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m2 0h3m1 0h2m1 0h1m1 0h1m2 0h3m1 0h2m1 0h2M0 11.5h2m1 0h1m3 0h1m1 0h1m1 0h2m3 0h1m2 0h4m1 0h1m1 0h2m3 0h1m1 0h3m1 0h4m2 0h1m2 0h3M2 12.5h1m2 0h2m3 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m6 0h1m1 0h2m5 0h1m1 0h1M1 13.5h2m5 0h5m1 0h2m2 0h3m1 0h4m3 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h4M0 14.5h1m1 0h2m1 0h4m1 0h1m7 0h1m1 0h3m5 0h3m2 0h1m2 0h2m1 0h1m3 0h2m2 0h2M3 15.5h3m1 0h1m1 0h1m1 0h4m1 0h5m1 0h3m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m7 0h1M1 16.5h1m2 0h3m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h2m3 0h1m2 0h5m1 0h2m2 0h3M4 17.5h1m2 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h5m1 0h3m2 0h1m1 0h1m3 0h1m1 0h4m3 0h2M1 18.5h2m3 0h1m5 0h1m3 0h1m1 0h2m2 0h2m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h2m1 0h1M2 19.5h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h5m1 0h1m2 0h2m2 0h2M2 20.5h1m2 0h3m3 0h1m2 0h3m1 0h2m6 0h1m1 0h2m5 0h2m1 0h4m4 0h1m1 0h1M2 21.5h2m4 0h2m1 0h2m3 0h2m3 0h3m1 0h3m1 0h1m4 0h1m2 0h1m3 0h4m1 0h3M2 22.5h1m1 0h5m1 0h5m1 0h3m2 0h6m1 0h6m4 0h1m1 0h6m1 0h2M4 23.5h1m3 0h1m2 0h2m2 0h1m3 0h2m1 0h1m3 0h1m4 0h1m1 0h6m1 0h1m3 0h5M0 24.5h5m1 0h1m1 0h1m6 0h2m4 0h2m1 0h1m1 0h1m3 0h1m4 0h3m2 0h1m1 0h1m1 0h2M0 25.5h5m3 0h3m2 0h2m1 0h4m2 0h1m3 0h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h1m1 0h1M1 26.5h9m3 0h2m4 0h1m1 0h10m1 0h2m3 0h1m2 0h6m1 0h1M0 27.5h3m1 0h2m1 0h2m2 0h2m1 0h3m1 0h1m1 0h1m8 0h1m1 0h9m1 0h2m3 0h1m1 0h1M1 28.5h2m3 0h3m3 0h8m1 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m6 0h1m1 0h1m2 0h1M4 29.5h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h1m3 0h2m2 0h1m3 0h1m2 0h4m1 0h1m2 0h1M0 30.5h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m3 0h2m1 0h2M0 31.5h1m3 0h1m3 0h5m1 0h1m3 0h1m2 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1M5 32.5h3m3 0h2m1 0h1m1 0h2m3 0h1m2 0h4m1 0h2m5 0h1m3 0h2m5 0h1M0 33.5h2m2 0h2m1 0h1m5 0h1m1 0h1m2 0h2m1 0h4m5 0h2m1 0h1m1 0h2m4 0h1m1 0h1m3 0h2M1 34.5h3m1 0h3m2 0h1m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m5 0h1m3 0h1m1 0h1m2 0h1m2 0h1M1 35.5h1m6 0h3m2 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m8 0h1M0 36.5h1m5 0h1m2 0h1m4 0h2m2 0h1m2 0h6m1 0h3m5 0h2m1 0h1m1 0h1m1 0h1m2 0h2M0 37.5h1m1 0h1m1 0h1m2 0h3m2 0h3m2 0h1m2 0h3m1 0h1m1 0h2m2 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1M1 38.5h1m3 0h2m2 0h1m1 0h1m2 0h2m1 0h2m2 0h2m1 0h2m1 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h2m2 0h1M1 39.5h3m7 0h5m1 0h1m1 0h2m1 0h2m1 0h1m5 0h1m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2M0 40.5h3m3 0h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h7m1 0h1m3 0h1m1 0h2m1 0h7M8 41.5h3m4 0h1m4 0h3m3 0h1m6 0h2m1 0h1m3 0h1m3 0h5M0 42.5h7m4 0h1m5 0h2m3 0h1m1 0h1m1 0h8m3 0h1m2 0h1m1 0h1m1 0h1M0 43.5h1m5 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h4m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m3 0h1m3 0h1M0 44.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m3 0h5m2 0h5m2 0h1m3 0h5m2 0h1M0 45.5h1m1 0h3m1 0h1m1 0h8m1 0h1m1 0h3m1 0h2m4 0h9m5 0h2m1 0h1m1 0h1M0 46.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h5m1 0h4m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1M0 47.5h1m5 0h1m2 0h3m1 0h2m3 0h3m2 0h1m3 0h1m1 0h1m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1M0 48.5h7m1 0h2m3 0h5m1 0h1m1 0h1m3 0h1m2 0h1m2 0h5m2 0h1m2 0h2m4 0h2"/></svg>
 </div>
-        <!-- petit téléphone : écran liste produits -->
-        <div class="phone" style="width:48mm;">
-          <div class="notch"></div>
-          <div class="scr">
-            <div class="sb"><span>14:32</span><span>100%</span></div>
-            <div class="ah"><span class="b"><svg width="13" height="13" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#ea580c"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="900" font-size="42" fill="#fff">G</text></svg>Mes produits</span><span class="av">MD</span></div>
-            <div class="pad">
-              <div class="row"><span class="th"></span><span class="nm">Café Touba</span><span class="pr">1 500 F</span></div>
-              <div class="row"><span class="th"></span><span class="nm">Savon de Marseille</span><span class="pr">2 500 F</span></div>
-              <div class="row"><span class="th"></span><span class="nm">Sucre 1kg</span><span class="pr">900 F</span></div>
-              <div class="row"><span class="th"></span><span class="nm">Huile 1L</span><span class="pr">1 800 F</span></div>
-              <div class="cta-btn">+ Ajouter un produit</div>
+            <div class="phone sm">
+              <div class="island"></div>
+              <div class="scr">
+                <div class="sb"><span>9:41</span><span class="dots"><i></i><i></i><i></i> 100%</span></div>
+                <div class="ah"><span class="b"><span class="g">G</span>Mes produits</span><span class="av">MD</span></div>
+                <div class="pad">
+                  <div class="srow"><span class="th"></span><span class="nm">Café Touba</span><span class="pr">1 500 F</span></div>
+                  <div class="srow"><span class="th"></span><span class="nm">Savon de Marseille</span><span class="pr">2 500 F</span></div>
+                  <div class="srow"><span class="th"></span><span class="nm">Sucre 1 kg</span><span class="pr">900 F</span></div>
+                  <div class="srow"><span class="th"></span><span class="nm">Huile 1 L</span><span class="pr">1 800 F</span></div>
+                  <div class="addbtn">+ Ajouter un produit</div>
+                </div>
+                <div class="tabs"><i></i><i class="on"></i><i></i><i></i></div>
+              </div>
             </div>
-            <div class="tabs"><span></span><span class="on"></span><span></span><span></span></div>
+          </div>
+          <div class="vcopy">
+            <span class="eb">La solution complète</span>
+            <h1>Tout pour gérer<br/>votre commerce</h1>
+            <p>Des outils simples et puissants réunis dans une seule application web — pensés pour vous faire gagner du temps au quotidien.</p>
           </div>
         </div>
-        <div class="vcopy">
-          <h1>Une solution complète<br/>pour votre commerce</h1>
-          <p>Des outils simples et puissants, réunis dans une seule application web — pensés pour vous faire gagner du temps au quotidien.</p>
-        </div>
       </div>
-      <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#ffffff" d="M0,72 C240,24 480,24 720,72 C960,120 1200,120 1440,64 L1440,120 L0,120 Z"></path></svg>
+      <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#fff" d="M0,72 C240,26 500,26 740,70 C980,114 1220,108 1440,62 L1440,120 L0,120 Z"></path></svg>
     </div>
 
     <div class="vbody">
       <div class="vintro">
-        <h2>Tout pour <span class="accent">gérer</span> et <span class="accent">développer</span></h2>
-        <p>GestionPro couvre l'ensemble de votre activité commerciale, de la vente au pilotage financier.</p>
+        <h2>Gérez et <span class="accent">développez</span> votre activité</h2>
+        <p>De la vente quotidienne au pilotage financier, GestionPro couvre l'ensemble de vos besoins commerciaux.</p>
       </div>
 
       <div class="v3">
-        <div class="vc"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h8l4 4v12H7z"/><path d="M15 4v4h4"/><path d="M10 13h6M10 16h4"/></svg></span><div class="ft">Ventes &amp; Factures PDF</div><div class="fd">Commandes, reçus et factures professionnelles exportables.</div></div>
-        <div class="vc"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5h11v9H2z"/><path d="M13 9h4.5L21 12.5v3h-8z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg></span><div class="ft">Fournisseurs &amp; Achats</div><div class="fd">Suivez vos approvisionnements et vos coûts.</div></div>
-        <div class="vc"><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 19h2v2h-2zM14 19h2v2h-2zM19 14h2v2h-2z"/></svg></span><div class="ft">QR Code Boutique</div><div class="fd">Partagez votre vitrine en ligne d'un simple scan.</div></div>
+        <div class="vc"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h8l4 4v12H7z"/><path d="M15 4v4h4"/><path d="M10 13h6M10 16h4"/></svg></span><div class="ft">Ventes &amp; Factures PDF</div><div class="fd">Commandes, reçus et factures professionnelles exportables.</div></div>
+        <div class="vc"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5h11v9H2z"/><path d="M13 9h4.5L21 12.5v3h-8z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg></span><div class="ft">Fournisseurs &amp; Achats</div><div class="fd">Suivez vos approvisionnements et vos coûts.</div></div>
+        <div class="vc"><span class="bdg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 19h2v2h-2zM14 19h2v2h-2zM19 14h2v2h-2z"/></svg></span><div class="ft">QR Code Boutique</div><div class="fd">Partagez votre vitrine en ligne d'un simple scan.</div></div>
       </div>
 
       <div class="about">
-        <h2>À propos de <span class="accent">GestionPro</span></h2>
-        <p>GestionPro est une solution de gestion commerciale pensée pour les commerçants, boutiques et PME d'Afrique de l'Ouest. Notre objectif : rendre la gestion simple, fiable et accessible à tous, directement depuis un navigateur.</p>
-        <p>Le projet est actuellement en lancement, avec des démonstrations privées sur demande. Contactez-nous pour découvrir la solution et obtenir votre accès.</p>
+        <div class="l"><h2>À propos de GestionPro</h2><div class="bar"></div></div>
+        <div class="r">
+          <p>GestionPro est une solution de gestion commerciale pensée pour les commerçants, boutiques et PME d'Afrique de l'Ouest. Notre mission : rendre la gestion simple, fiable et accessible à tous, directement depuis un navigateur — sans matériel ni installation complexe.</p>
+          <p>Le projet est actuellement en phase de lancement, avec des démonstrations privées sur demande. Contactez-nous pour découvrir la solution et obtenir votre accès.</p>
+        </div>
       </div>
 
       <div class="pay">
-        <span class="pl">Moyens de paiement</span>
+        <span class="pl">Moyens de paiement<span>Réglez votre abonnement en toute simplicité</span></span>
         <div class="pp">
           <div class="paycard"><span class="pb wave">Wave</span> Wave</div>
           <div class="paycard"><span class="pb om">orange</span> Orange Money</div>
@@ -274,14 +334,11 @@
     </div>
 
     <div class="vfoot">
-      <div class="brand">
-        <svg width="30" height="30" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#ea580c"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="900" font-size="42" fill="#fff">G</text></svg>
-        <div class="name">Gestion<span class="p">Pro</span></div>
-      </div>
-      <div class="cs">
-        <div class="ci"><span class="cc wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span><span><span class="cl">WhatsApp</span><br/><span class="cv">+221 77 383 13 64</span></span></div>
-        <div class="ci"><span class="cc or"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span><span><span class="cl">Téléphone</span><br/><span class="cv">+221 77 383 13 64</span></span></div>
-        <div class="ci"><span class="cc or"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span><span class="cl">Email</span><br/><span class="cv">dionemhd1@gmail.com</span></span></div>
+      <div class="brand"><span class="mk">G</span><div class="name">Gestion<span class="p">Pro</span></div></div>
+      <div class="vcs">
+        <div class="vci"><span class="cc wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span><div><div class="cl">WhatsApp</div><div class="cv">+221 77 383 13 64</div></div></div>
+        <div class="vci"><span class="cc or"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span><div><div class="cl">Téléphone</div><div class="cv">+221 77 383 13 64</div></div></div>
+        <div class="vci"><span class="cc or"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><div><div class="cl">Email</div><div class="cv">dionemhd1@gmail.com</div></div></div>
       </div>
     </div>
   </div>
