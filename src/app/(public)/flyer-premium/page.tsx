@@ -11,35 +11,39 @@ import {
   Phone,
   Mail,
   Package,
-  TrendingUp,
-  Store,
   Layers,
-  Receipt,
-  WifiOff,
   ShoppingCart,
+  Users,
+  Truck,
+  BarChart3,
+  Store,
+  QrCode,
+  Check,
 } from "lucide-react";
-import {
-  WhatsAppIcon,
-  FacebookIcon,
-  InstagramIcon,
-  LinkedInIcon,
-} from "@/components/icons/brand-icons";
+import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import QRCode from "qrcode";
 import { toast } from "sonner";
 import { BrandLogo } from "@/components/brand-logo";
 
 /**
- * Flyer "Premium" — fond navy sombre + accent orange unique, inspiré des
- * flyers SaaS premium (gros titre, badge services, liste de fonctionnalités,
- * mockup téléphone avec cartes flottantes, barre de contact + réseaux).
+ * Flyer OFFICIEL de la plateforme GestionPro.
  *
- * 100 % HTML/CSS (aucun gros SVG inline), QR généré en local (data URL),
- * export PNG fiable via html-to-image. Build webpack sain.
+ * Objectif : présenter la solution (web) aux commerçants / PME / entrepreneurs
+ * et acquérir de nouveaux utilisateurs (distribution marchés, boutiques, démos).
+ *
+ * Règles : branding officiel uniquement (logo réel, orange #ea580c, blanc, gris),
+ * AUCUN bleu/violet, communication honnête (app web — pas de store mobile),
+ * uniquement des fonctionnalités réellement développées (vérifiées dans le code).
+ * Imprimable A4/A5, photocopiable, export PDF (impression) + PNG HD.
  */
 export default function FlyerPremiumPage() {
   const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL || "https://gestion-pro.vercel.app";
+    process.env.NEXT_PUBLIC_APP_URL || "https://gestion-pro-rassoultechs-projects.vercel.app";
   const displayUrl = appUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+  const phone = "+221 77 383 13 64";
+  const phoneIntl = "221773831364";
+  const email = "dionemhd1@gmail.com";
 
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [downloading, setDownloading] = useState(false);
@@ -47,9 +51,10 @@ export default function FlyerPremiumPage() {
   useEffect(() => {
     let active = true;
     QRCode.toDataURL(appUrl, {
-      width: 250,
+      width: 320,
       margin: 1,
-      color: { dark: "#0a1326", light: "#ffffff" },
+      errorCorrectionLevel: "M",
+      color: { dark: "#0f172a", light: "#ffffff" },
     })
       .then((url) => {
         if (active) setQrDataUrl(url);
@@ -67,14 +72,14 @@ export default function FlyerPremiumPage() {
     try {
       const { toPng } = await import("html-to-image");
       const dataUrl = await toPng(node, {
-        pixelRatio: 2,
+        pixelRatio: 2.5,
         cacheBust: true,
-        backgroundColor: "#0a1326",
+        backgroundColor: "#ffffff",
         filter: (el) =>
           !(el instanceof HTMLElement && el.classList?.contains("no-print")),
       });
       const link = document.createElement("a");
-      link.download = "flyer-premium-gestionpro.png";
+      link.download = "flyer-gestionpro.png";
       link.href = dataUrl;
       link.click();
       toast.success("Flyer PNG téléchargé !");
@@ -86,47 +91,47 @@ export default function FlyerPremiumPage() {
     }
   }
 
-  const services = [
-    { icon: Store, label: "Multi-boutiques pilotées en temps réel" },
-    { icon: Layers, label: "Stock & alertes de rupture automatiques" },
-    { icon: Receipt, label: "Facturation + reçus par WhatsApp" },
-    { icon: WifiOff, label: "Mode hors-ligne intégré" },
-    { icon: ShoppingCart, label: "Marketplace pour vendre en ligne" },
+  // Fonctionnalités RÉELLEMENT développées (vérifiées dans le code).
+  const features = [
+    { icon: Package, label: "Produits", desc: "Catalogue & prix" },
+    { icon: Layers, label: "Stock", desc: "Alertes de rupture" },
+    { icon: ShoppingCart, label: "Commandes", desc: "Ventes & suivi" },
+    { icon: Users, label: "Clients", desc: "Historique & dettes" },
+    { icon: Truck, label: "Fournisseurs", desc: "Achats & livraisons" },
+    { icon: BarChart3, label: "Rapports PDF", desc: "Performances claires" },
+    { icon: Store, label: "Marketplace", desc: "Vendez en ligne" },
+    { icon: QrCode, label: "QR Code boutique", desc: "Vitrine partageable" },
   ];
 
-  const socials = [FacebookIcon, InstagramIcon, LinkedInIcon, WhatsAppIcon];
+  const trust = ["100 % en ligne", "Sur mobile & ordinateur", "Wave · Orange Money · Carte"];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center py-8 px-4 sm:px-6 relative overflow-hidden">
-      {/* Decorative blobs (screen only) */}
-      <div className="absolute top-1/4 left-1/12 w-96 h-96 bg-orange-600/10 blur-[150px] rounded-full pointer-events-none no-print" />
-      <div className="absolute bottom-1/4 right-1/12 w-96 h-96 bg-blue-600/10 blur-[150px] rounded-full pointer-events-none no-print" />
-
+    <div className="min-h-screen bg-slate-100 dark:bg-zinc-950 flex flex-col items-center py-8 px-4 sm:px-6 relative">
       {/* ── ACTION BAR (no print) ─────────────────────────────────────────── */}
-      <div className="w-full max-w-[210mm] mb-8 bg-zinc-900/80 border border-zinc-800 backdrop-blur-xl rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl z-20 no-print">
+      <div className="w-full max-w-[210mm] mb-8 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg z-20 no-print">
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700 transition-all"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-500 hover:text-slate-900 dark:hover:text-zinc-100 transition-all"
             aria-label="Retour à l'accueil"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
-            <h1 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
-              <span className="text-orange-500 font-extrabold uppercase text-[10px] tracking-widest px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">
-                Premium
+            <h1 className="text-sm font-bold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
+              <span className="text-orange-600 font-extrabold uppercase text-[10px] tracking-widest px-2 py-0.5 rounded bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20">
+                Officiel
               </span>
-              Flyer Services
+              Flyer plateforme
             </h1>
-            <p className="text-xs text-zinc-500">Format A4 · Téléchargeable en PNG</p>
+            <p className="text-xs text-slate-500">A4 / A5 · Imprimable · PNG HD</p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => window.print()}
-            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm font-bold text-zinc-200 hover:text-white transition-all shadow-md active:scale-95 cursor-pointer"
+            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 text-sm font-bold text-slate-700 dark:text-zinc-200 transition-all shadow-sm active:scale-95 cursor-pointer"
           >
             <Printer className="h-4 w-4" />
             <span>Imprimer / PDF</span>
@@ -145,92 +150,101 @@ export default function FlyerPremiumPage() {
       {/* ── FLYER CANVAS (A4 portrait) ────────────────────────────────────── */}
       <div
         id="flyer-canvas"
-        className="w-full max-w-[210mm] min-h-[297mm] bg-gradient-to-br from-[#0a1326] via-[#0d1b38] to-[#070d1c] text-white shadow-2xl relative flex flex-col overflow-hidden select-none"
+        className="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 shadow-2xl relative flex flex-col overflow-hidden select-none"
         style={{ aspectRatio: "1 / 1.4142" }}
       >
-        {/* Tech grid + ambient glow (captured in the PNG) */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:38px_38px] [mask-image:radial-gradient(ellipse_80%_60%_at_70%_30%,#000_55%,transparent_100%)] pointer-events-none" />
-        <div className="absolute -top-24 -right-24 w-[420px] h-[420px] bg-orange-600/25 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-10 -left-24 w-[360px] h-[360px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
+        {/* Bande d'accent orange en haut */}
+        <div className="h-2 w-full bg-orange-600 shrink-0" />
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-1 flex-col p-8 sm:p-12">
-          {/* Top bar : logo + site */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-5">
+        <div className="flex flex-1 flex-col p-8 sm:p-12">
+          {/* ── En-tête : logo + site ── */}
+          <div className="flex items-center justify-between border-b border-slate-100 pb-5">
             <div className="flex items-center gap-3">
-              <BrandLogo size={40} rounded={10} className="shadow-lg shadow-orange-600/20" />
-              <span className="text-xl font-black tracking-tight">
-                Gestion<span className="text-orange-500">Pro</span>
+              <BrandLogo size={42} rounded={10} className="shadow-sm" />
+              <span className="text-2xl font-black tracking-tight text-slate-900">
+                Gestion<span className="text-orange-600">Pro</span>
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm font-bold text-zinc-300">
-              <Globe className="h-4 w-4 text-orange-500" />
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-500">
+              <Globe className="h-4 w-4 text-orange-600" />
               <span>{displayUrl}</span>
             </div>
           </div>
 
-          {/* Main : texte (gauche) + mockup (droite) */}
-          <div className="mt-8 grid flex-1 grid-cols-1 items-center gap-8 md:grid-cols-12">
-            {/* Left column */}
-            <div className="md:col-span-7 space-y-6">
-              <h2 className="text-4xl sm:text-5xl font-black leading-[1.05] tracking-tight">
-                Gérez votre
-                <br />
-                commerce
-                <br />
-                <span className="text-orange-500">comme un Pro</span>
-              </h2>
-
-              <p className="text-zinc-300/90 text-sm sm:text-base leading-relaxed max-w-md">
-                Stock, ventes, clients, facturation et marketplace — une seule
-                application, rapide et fiable, pensée pour les commerçants
-                d&apos;Afrique de l&apos;Ouest.
-              </p>
-
-              <div>
-                <span className="inline-block rounded-full bg-orange-600 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-orange-600/30">
-                  Nos fonctionnalités
+          {/* ── Titre principal ── */}
+          <div className="mt-8 space-y-4">
+            <span className="inline-block rounded-full bg-orange-50 border border-orange-100 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-orange-600">
+              Solution de gestion commerciale
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-black leading-[1.05] tracking-tight text-slate-950">
+              Gérez votre commerce<br />
+              <span className="text-orange-600">simplement</span>
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl">
+              La solution moderne et tout-en-un pour piloter votre activité —
+              ventes, stock, clients et plus — directement depuis votre navigateur.
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {trust.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 border border-slate-200 px-3 py-1 text-xs font-bold text-slate-700"
+                >
+                  <Check className="h-3.5 w-3.5 text-orange-600" strokeWidth={3} />
+                  {t}
                 </span>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              <ul className="space-y-3.5">
-                {services.map((s) => {
-                  const Icon = s.icon;
+          {/* ── Fonctionnalités + mockup ── */}
+          <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-12 items-center">
+            {/* Grille de fonctionnalités (réelles) */}
+            <div className="md:col-span-7">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">
+                Tout ce dont vous avez besoin
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {features.map((f) => {
+                  const Icon = f.icon;
                   return (
-                    <li key={s.label} className="flex items-center gap-3.5">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-orange-400">
+                    <div
+                      key={f.label}
+                      className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-600 border border-orange-100">
                         <Icon className="h-4 w-4" strokeWidth={2.4} />
                       </span>
-                      <span className="text-sm sm:text-[15px] font-semibold text-zinc-100">
-                        {s.label}
-                      </span>
-                    </li>
+                      <div className="min-w-0">
+                        <p className="text-sm font-extrabold text-slate-900 leading-none">
+                          {f.label}
+                        </p>
+                        <p className="text-[11px] font-semibold text-slate-500 mt-0.5 truncate">
+                          {f.desc}
+                        </p>
+                      </div>
+                    </div>
                   );
                 })}
-              </ul>
+              </div>
             </div>
 
-            {/* Right column : phone + floating cards */}
-            <div className="md:col-span-5 relative flex items-center justify-center min-h-[440px]">
-              <div className="absolute inset-0 m-auto h-56 w-56 rounded-full bg-orange-500/25 blur-[80px]" />
-
-              {/* Phone */}
-              <div className="relative h-[420px] w-[210px] rotate-3 rounded-[38px] border-4 border-zinc-800/80 bg-zinc-900 p-2.5 shadow-2xl">
-                <div className="absolute left-1/2 top-4 z-20 h-4 w-20 -translate-x-1/2 rounded-full bg-zinc-900" />
-                <div className="flex h-full w-full flex-col overflow-hidden rounded-[30px] bg-zinc-50 p-3 pt-6 text-zinc-900">
-                  {/* phone header */}
-                  <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+            {/* Mockup propre (clair) */}
+            <div className="md:col-span-5 flex items-center justify-center">
+              <div className="relative h-[400px] w-[200px] rounded-[38px] border-4 border-slate-800 bg-slate-900 p-2.5 shadow-2xl">
+                <div className="absolute left-1/2 top-4 z-20 h-4 w-20 -translate-x-1/2 rounded-full bg-slate-900" />
+                <div className="flex h-full w-full flex-col overflow-hidden rounded-[30px] bg-white p-3 pt-6 text-slate-900 border border-slate-200">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <div className="flex items-center gap-1.5">
                       <BrandLogo size={18} rounded={4} />
                       <span className="text-[9px] font-black tracking-tighter">
                         Gestion<span className="text-orange-600">Pro</span>
                       </span>
                     </div>
-                    <span className="text-[7px] font-bold text-zinc-400">Boutique Dakar</span>
+                    <span className="text-[7px] font-bold text-slate-400">Tableau de bord</span>
                   </div>
 
-                  {/* stat card */}
-                  <div className="my-2 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 p-3 text-white shadow-sm">
+                  <div className="my-2 rounded-xl bg-orange-600 p-3 text-white">
                     <span className="text-[7px] font-semibold uppercase tracking-wider opacity-80">
                       Ventes du jour
                     </span>
@@ -245,105 +259,90 @@ export default function FlyerPremiumPage() {
                     </div>
                   </div>
 
-                  {/* mini graph */}
-                  <div className="flex flex-1 flex-col justify-between rounded-xl bg-zinc-100 p-2">
-                    <span className="text-[7px] font-bold text-zinc-500">Croissance</span>
+                  <div className="flex flex-1 flex-col justify-between rounded-xl bg-slate-50 border border-slate-100 p-2">
+                    <span className="text-[7px] font-bold text-slate-500">Croissance</span>
                     <div className="flex h-12 items-end gap-1.5 px-1 pb-1">
                       <div className="h-5 w-full rounded-t bg-orange-600/30" />
-                      <div className="h-7 w-full rounded-t bg-orange-600/40" />
+                      <div className="h-7 w-full rounded-t bg-orange-600/45" />
                       <div className="h-9 w-full rounded-t bg-orange-600/60" />
                       <div className="h-14 w-full rounded-t bg-orange-600/80" />
                       <div className="h-20 w-full rounded-t bg-orange-600" />
                     </div>
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between border-t border-zinc-100 pt-2 text-[7px] font-bold text-zinc-400">
+                  <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2 text-[7px] font-bold text-slate-400">
                     <span className="flex items-center gap-1">
                       <Package className="h-2.5 w-2.5" /> 12 Articles
                     </span>
                     <span className="flex items-center gap-1">
-                      <TrendingUp className="h-2.5 w-2.5" /> +12.4%
+                      <BarChart3 className="h-2.5 w-2.5" /> Rapports
                     </span>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Floating card — bénéfice (top-left) */}
-              <div className="absolute -left-1 top-4 flex -rotate-6 items-center gap-2 rounded-2xl bg-white px-3 py-2 shadow-xl shadow-black/30">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
-                  <TrendingUp className="h-4 w-4" />
-                </span>
-                <div className="leading-none">
-                  <p className="text-[8px] font-bold text-zinc-400">Bénéfice</p>
-                  <p className="text-[11px] font-black text-zinc-900">+48 000 F</p>
-                </div>
-              </div>
-
-              {/* Floating card — commande (bottom-right) */}
-              <div className="absolute -right-1 bottom-20 flex rotate-6 items-center gap-2 rounded-2xl bg-white px-3 py-2 shadow-xl shadow-black/30">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-100 text-orange-600">
-                  <ShoppingCart className="h-4 w-4" />
-                </span>
-                <div className="leading-none">
-                  <p className="text-[8px] font-bold text-zinc-400">Nouvelle</p>
-                  <p className="text-[11px] font-black text-zinc-900">Commande</p>
-                </div>
-              </div>
-
-              {/* Floating card — QR (bottom-left) */}
-              <div className="absolute -bottom-1 left-1 flex -rotate-3 items-center gap-1.5 rounded-2xl bg-white p-1.5 shadow-xl shadow-black/30">
-                {qrDataUrl ? (
-                  <img
-                    src={qrDataUrl}
-                    alt="QR GestionPro"
-                    className="h-10 w-10 rounded object-contain"
-                  />
-                ) : (
-                  <div className="h-10 w-10 animate-pulse rounded bg-zinc-100" />
-                )}
-                <span className="pr-1 text-[7px] font-black uppercase leading-tight tracking-wide text-zinc-700">
-                  Scannez
-                  <br />
-                  pour
-                  <br />
-                  essayer
-                </span>
-              </div>
+          {/* ── Bloc QR (très visible) ── */}
+          <div className="mt-8 flex items-center gap-5 rounded-3xl bg-orange-600 p-5 sm:p-6 text-white">
+            <div className="shrink-0 rounded-2xl bg-white p-2.5 shadow-lg">
+              {qrDataUrl ? (
+                <img
+                  src={qrDataUrl}
+                  alt="QR code vers GestionPro"
+                  className="h-28 w-28 sm:h-32 sm:w-32 object-contain"
+                />
+              ) : (
+                <div className="h-28 w-28 sm:h-32 sm:w-32 animate-pulse rounded bg-slate-100" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] font-black uppercase tracking-widest text-orange-100">
+                Scannez pour découvrir
+              </p>
+              <p className="text-2xl sm:text-3xl font-black leading-tight mt-1">
+                Essayez gratuitement
+              </p>
+              <p className="text-sm font-semibold text-orange-50/90 mt-1">
+                Aucune installation — ouvrez directement dans votre navigateur.
+              </p>
+              <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
+                <Globe className="h-3.5 w-3.5" />
+                {displayUrl}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Footer bar (div, pas <footer> → conservé à l'impression) */}
-        <div className="relative z-10 flex items-center justify-between gap-4 bg-gradient-to-r from-orange-700 via-orange-600 to-amber-600 px-8 py-5 sm:px-12">
-          <div className="space-y-1.5 text-white">
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold">
-              <Phone className="h-4 w-4 shrink-0" />
-              <span>+221 77 383 13 64</span>
-            </div>
+        {/* ── Pied de page : contact (div, conservé à l'impression) ── */}
+        <div className="border-t border-slate-100 px-8 sm:px-12 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-bold text-slate-700">
+            <a href={`tel:${phoneIntl}`} className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-slate-200">
+                <Phone className="h-4 w-4" />
+              </span>
+              {phone}
+            </a>
             <a
-              href="mailto:dionemhd1@gmail.com"
-              className="flex items-center gap-2 text-xs sm:text-sm font-bold"
+              href={`https://wa.me/${phoneIntl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2"
             >
-              <Mail className="h-4 w-4 shrink-0" />
-              <span>dionemhd1@gmail.com</span>
+              <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
+                <WhatsAppIcon className="h-4 w-4" />
+              </span>
+              WhatsApp
+            </a>
+            <a href={`mailto:${email}`} className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-slate-200">
+                <Mail className="h-4 w-4" />
+              </span>
+              {email}
             </a>
           </div>
-          <div className="flex items-center gap-2">
-            {socials.map((Icon, i) => (
-              <span
-                key={i}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white"
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Test badge (screen only) */}
-        <div className="relative z-10 bg-orange-600 py-2 text-center no-print">
-          <span className="text-[9px] font-black uppercase tracking-widest text-black">
-            Version de test privé
+          <span className="text-2xl font-black tracking-tight text-slate-900 shrink-0">
+            Gestion<span className="text-orange-600">Pro</span>
           </span>
         </div>
       </div>
@@ -352,8 +351,8 @@ export default function FlyerPremiumPage() {
       <style jsx global>{`
         @media print {
           @page {
-            size: A4 portrait !important;
-            margin: 0 !important;
+            size: A4 portrait;
+            margin: 0;
           }
           nav,
           footer,
@@ -369,7 +368,7 @@ export default function FlyerPremiumPage() {
           }
           html,
           body {
-            background: #0a1326 !important;
+            background: #ffffff !important;
             width: 210mm !important;
             height: 297mm !important;
             margin: 0 !important;
