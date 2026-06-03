@@ -7,7 +7,6 @@ import {
   Download,
   ArrowLeft,
   Loader2,
-  Globe,
   Phone,
   Mail,
   Package,
@@ -39,11 +38,6 @@ import { BrandLogo } from "@/components/brand-logo";
  * Imprimable A4/A5, photocopiable, PDF (impression) + PNG HD.
  */
 export default function FlyerPremiumPage() {
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    "https://gestion-pro-rassoultechs-projects.vercel.app";
-  const displayUrl = appUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
-
   const phone = "+221 77 383 13 64";
   const phoneIntl = "221773831364";
   const email = "dionemhd1@gmail.com";
@@ -168,9 +162,8 @@ export default function FlyerPremiumPage() {
                 Gestion<span className="text-orange-600">Pro</span>
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-500">
-              <Globe className="h-4 w-4 text-orange-600" />
-              <span>{displayUrl}</span>
+            <div className="hidden sm:block text-xs font-black uppercase tracking-widest text-slate-400">
+              Commerçants · Boutiques · PME
             </div>
           </div>
 
@@ -319,13 +312,9 @@ export default function FlyerPremiumPage() {
             <span className="text-[11px] font-black uppercase tracking-widest text-slate-500">
               Paiement Mobile Money
             </span>
-            <div className="flex items-center gap-2.5">
-              <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700">
-                <WaveIcon className="h-5 w-8" /> Wave
-              </span>
-              <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700">
-                <OrangeMoneyIcon className="h-5 w-8" /> Orange Money
-              </span>
+            <div className="flex items-center gap-3">
+              <WaveIcon className="h-7 w-[45px]" />
+              <OrangeMoneyIcon className="h-7 w-[45px]" />
             </div>
           </div>
 
@@ -344,14 +333,13 @@ export default function FlyerPremiumPage() {
             </div>
             <div className="min-w-0">
               <p className="text-[11px] font-black uppercase tracking-widest text-orange-100">
-                Démonstration privée sur demande
+                Découvrez comment digitaliser votre commerce
               </p>
               <p className="text-2xl font-black leading-tight mt-1">
-                Demandez votre démonstration
+                Demandez votre démonstration privée
               </p>
               <p className="text-sm font-semibold text-orange-50/90 mt-1">
-                Scannez le QR code pour échanger directement avec nous sur
-                WhatsApp et réserver votre démo.
+                Scannez le QR code et échangeons directement sur WhatsApp.
               </p>
             </div>
           </div>
@@ -359,7 +347,7 @@ export default function FlyerPremiumPage() {
 
         {/* ── Pied de page : contact (div → conservé à l'impression) ── */}
         <div className="border-t border-slate-100 px-8 sm:px-10 py-4">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <a
               href={waLink}
               target="_blank"
@@ -407,19 +395,6 @@ export default function FlyerPremiumPage() {
               </span>
             </a>
 
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-slate-200">
-                <Globe className="h-4 w-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-400">
-                  Site web
-                </span>
-                <span className="block text-[13px] font-black text-slate-900 truncate">
-                  {displayUrl}
-                </span>
-              </span>
-            </div>
           </div>
         </div>
       </div>

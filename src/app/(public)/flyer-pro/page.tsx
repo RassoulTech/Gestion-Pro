@@ -168,7 +168,7 @@ export default function FlyerProPage() {
             </div>
             <span className="flex items-center gap-1.5 text-[10px] font-black tracking-wide text-zinc-700 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100">
               <Globe className="h-3.5 w-3.5 text-orange-600" />
-              gestion-pro.vercel.app
+              Commerçants • Boutiques • PME
             </span>
           </div>
 
