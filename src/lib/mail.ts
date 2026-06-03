@@ -481,7 +481,7 @@ export const sendSubscriptionAlertToAdmin = async (
   
   const htmlContent = `
     <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #10b981; text-align: center;">
-      🎉 Nouvel Abonnement Activé !
+      Nouvel abonnement activé
     </h2>
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
       <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">
@@ -506,7 +506,7 @@ export const sendSubscriptionAlertToAdmin = async (
   
   return sendViaNodemailer({
     to: adminEmail,
-    subject: `🚀 Nouvel abonnement : ${planName} (${montant} FCFA) - ${boutiqueNom}`,
+    subject: `Nouvel abonnement : ${planName} (${montant} FCFA) — ${boutiqueNom}`,
     html: getEmailWrapper("Nouvel Abonnement", htmlContent),
   });
 };
@@ -578,7 +578,7 @@ export const sendOrderNotificationToVendedor = async (
 
   const htmlContent = `
     <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a;">
-      🎉 Nouvelle commande reçue !
+      Nouvelle commande reçue
     </h2>
     <p style="margin: 0 0 24px 0; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
       Bonjour <strong>${escapeHtml(vendorNom)}</strong>, un client vient de passer une commande sur votre boutique <strong>${escapeHtml(boutiqueNom)}</strong>.
@@ -606,7 +606,7 @@ export const sendOrderNotificationToVendedor = async (
 
   return sendViaNodemailer({
     to: email,
-    subject: `🔔 Nouvelle commande #${codeCommande} sur ${boutiqueNom} — GestionPro`,
+    subject: `Nouvelle commande #${codeCommande} sur ${boutiqueNom} — GestionPro`,
     html: getEmailWrapper("Nouvelle commande", htmlContent),
   });
 };
