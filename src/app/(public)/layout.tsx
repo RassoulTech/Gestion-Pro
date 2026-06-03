@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Github, Mail, Twitter } from "lucide-react";
-import { WhatsAppIcon } from "@/components/icons/brand-icons";
+import { Mail } from "lucide-react";
+import { WhatsAppIcon, XIcon, GitHubIcon } from "@/components/icons/brand-icons";
 import { FloatingNavbar } from "@/components/marketing/floating-navbar";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -49,8 +49,8 @@ const footerColumns: Array<{
 const socials: Array<{ href: string; label: string; icon: React.ComponentType<React.ComponentProps<"svg">> }> = [
   { href: "https://wa.me/221773831364", label: "WhatsApp", icon: WhatsAppIcon },
   { href: "mailto:contact@gestionpro.app", label: "Email", icon: Mail as never },
-  { href: "https://twitter.com", label: "Twitter", icon: Twitter as never },
-  { href: "https://github.com", label: "GitHub", icon: Github as never },
+  { href: "https://x.com", label: "X", icon: XIcon },
+  { href: "https://github.com", label: "GitHub", icon: GitHubIcon },
 ];
 
 export default function PublicLayout({

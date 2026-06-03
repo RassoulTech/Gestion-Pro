@@ -1,16 +1,14 @@
 import type { ComponentType, SVGProps } from "react";
+import { Mail, Phone, Globe, MapPin } from "lucide-react";
 import {
-  Mail,
-  Phone,
-  Globe,
-  MapPin,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Github,
-} from "lucide-react";
-import { WhatsAppIcon, TelegramIcon } from "@/components/icons/brand-icons";
+  WhatsAppIcon,
+  TelegramIcon,
+  FacebookIcon,
+  InstagramIcon,
+  XIcon,
+  LinkedInIcon,
+  GitHubIcon,
+} from "@/components/icons/brand-icons";
 import { cn } from "@/lib/utils";
 
 /**
@@ -85,27 +83,27 @@ const CONFIG: Record<ContactKind, ContactConfig> = {
     external: true,
   },
   facebook: {
-    Icon: Facebook,
+    Icon: FacebookIcon,
     buildHref: (v) => normalizeHandle("https://facebook.com/", v),
     external: true,
   },
   instagram: {
-    Icon: Instagram,
+    Icon: InstagramIcon,
     buildHref: (v) => normalizeHandle("https://instagram.com/", v),
     external: true,
   },
   linkedin: {
-    Icon: Linkedin,
+    Icon: LinkedInIcon,
     buildHref: (v) => normalizeHandle("https://linkedin.com/in/", v),
     external: true,
   },
   twitter: {
-    Icon: Twitter,
+    Icon: XIcon,
     buildHref: (v) => normalizeHandle("https://x.com/", v),
     external: true,
   },
   github: {
-    Icon: Github,
+    Icon: GitHubIcon,
     buildHref: (v) => normalizeHandle("https://github.com/", v),
     external: true,
   },
@@ -162,7 +160,7 @@ export function ContactItem({
     <>
       <Icon
         className={cn(
-          "h-3.5 w-3.5 shrink-0",
+          "h-4 w-4 shrink-0",
           iconColor,
           iconClassName
         )}
