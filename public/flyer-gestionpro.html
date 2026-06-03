@@ -3,327 +3,383 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GestionPro — Flyer commercial</title>
+  <title>GestionPro — Flyer commercial (recto-verso)</title>
 
-  <!-- Police de la marque : Plus Jakarta Sans (fallback système si hors-ligne) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <style>
-    /* ============================================================
-       Palette OFFICIELLE GestionPro (codes HEX exacts)
-       ============================================================ */
-    :root {
-      --orange:        #ea580c; /* couleur principale (marque) */
-      --orange-dark:   #7c2d12; /* dégradé bouton/CTA (même teinte) */
-      --orange-soft:   #fff7ed; /* fond orange très clair */
-      --orange-100:    #ffedd5; /* bordures douces */
-      --ink:           #0f172a; /* texte principal (slate-900) */
-      --slate:         #475569; /* secondaire (slate-600) */
-      --muted:         #64748b; /* texte atténué (slate-500) */
-      --line:          #e2e8f0; /* bordures (slate-200) */
-      --bg:            #f8fafc; /* fond clair (slate-50) */
-      --white:         #ffffff;
-      /* Logos tiers (couleurs officielles obligatoires pour rester fidèles) */
-      --wa:            #25D366; /* WhatsApp */
-      --wave:          #1DC3FF; /* Wave */
-      --om:            #FF7900; /* Orange */
+    /* =========================================================
+       Palette OFFICIELLE GestionPro — 2 couleurs + neutres
+       ========================================================= */
+    :root{
+      --orange:#ea580c; --orange-2:#c2410c; --orange-soft:#fff7ed; --orange-100:#ffedd5;
+      --ink:#0f172a;            /* gris foncé élégant (contraste) */
+      --ink-2:#1e293b;
+      --slate:#475569; --muted:#64748b; --line:#e8edf3;
+      --soft:#f8fafc;           /* blanc / gris très clair */
+      --white:#ffffff;
+      --wa:#25D366; --wave:#1DC3FF; --om:#FF7900;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{
+      background:#cbd5e1;
+      color:var(--ink);
+      font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
     }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
+    /* Barre d'aide (écran uniquement) */
+    .toolbar{max-width:210mm;margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13px;color:var(--slate);}
+    .toolbar button{cursor:pointer;border:none;background:var(--orange);color:#fff;font-weight:800;font-family:inherit;font-size:14px;padding:10px 18px;border-radius:12px;box-shadow:0 6px 16px rgba(234,88,12,.25);}
+    .toolbar .tip{background:#fff;padding:8px 14px;border-radius:10px;border:1px solid var(--line);}
 
-    body {
-      background: var(--line);                 /* gris écran autour de la feuille */
-      color: var(--ink);
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+    /* Pages A4 */
+    .page{width:210mm;height:297mm;background:var(--white);position:relative;overflow:hidden;margin:18px auto;box-shadow:0 24px 70px rgba(15,23,42,.20);display:flex;flex-direction:column;}
+
+    @page{size:A4 portrait;margin:0;}
+    @media print{
+      body{background:#fff;}
+      .no-print{display:none!important;}
+      .page{margin:0;box-shadow:none;page-break-after:always;}
+      .page:last-child{page-break-after:auto;}
     }
 
-    /* Barre d'aide (écran uniquement, masquée à l'impression) */
-    .toolbar {
-      max-width: 210mm;
-      margin: 18px auto 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      font-size: 13px;
-      color: var(--slate);
-    }
-    .toolbar button {
-      cursor: pointer;
-      border: none;
-      background: var(--orange);
-      color: #fff;
-      font-weight: 800;
-      font-family: inherit;
-      font-size: 14px;
-      padding: 10px 18px;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(234,88,12,.25);
-    }
-    .toolbar .tip { background:#fff; padding:8px 14px; border-radius:10px; border:1px solid var(--line); }
+    /* ---------- Typo utils ---------- */
+    .eyebrow{font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;}
+    .name{font-weight:900;letter-spacing:-.02em;}
+    .name .p{color:var(--orange);}
 
-    /* ============================================================
-       Feuille A4
-       ============================================================ */
-    .sheet {
-      width: 210mm;
-      min-height: 297mm;
-      margin: 18px auto 40px;
-      background: var(--white);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 24px 70px rgba(15,23,42,.18);
-      display: flex;
-      flex-direction: column;
-    }
+    /* =========================================================
+       RECTO
+       ========================================================= */
+    .hero{position:relative;background:var(--ink);color:#fff;padding:16mm 14mm 14mm;overflow:hidden;}
+    .hero .glow{position:absolute;top:-120px;right:-120px;width:360px;height:360px;border-radius:50%;
+                background:var(--orange);opacity:.22;filter:blur(90px);pointer-events:none;}
+    .hero .glow2{position:absolute;bottom:-140px;left:-100px;width:300px;height:300px;border-radius:50%;
+                 background:#1d4ed8;opacity:.08;filter:blur(90px);pointer-events:none;}
+    .hero-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
+    .hero-top .name{font-size:24px;color:#fff;display:flex;align-items:center;gap:10px;}
+    .hero-top .tag{font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#94a3b8;border:1px solid rgba(255,255,255,.18);padding:5px 12px;border-radius:999px;}
 
-    /* Bande d'accent orange en haut */
-    .accent-top { height: 8px; background: var(--orange); flex-shrink: 0; }
+    .hero-main{display:flex;gap:8mm;align-items:center;margin-top:10mm;position:relative;z-index:2;}
+    .hero-copy{flex:1;}
+    .hero-copy .pill{display:inline-block;background:rgba(234,88,12,.18);color:#fdba74;border:1px solid rgba(234,88,12,.35);border-radius:999px;padding:5px 13px;font-size:10.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;}
+    .hero-copy h1{margin:14px 0 10px;font-size:40px;line-height:1.05;font-weight:900;letter-spacing:-.02em;}
+    .hero-copy h1 .hl{color:var(--orange);}
+    .hero-copy p{margin:0;color:#cbd5e1;font-size:14px;line-height:1.6;font-weight:500;max-width:95mm;}
 
-    .body { flex: 1; padding: 14mm 14mm 8mm; display: flex; flex-direction: column; }
+    /* Phone mockup */
+    .phone{width:62mm;flex-shrink:0;border-radius:26px;background:#0b1220;border:5px solid #020617;
+           box-shadow:0 30px 60px rgba(0,0,0,.45);padding:7px;position:relative;}
+    .phone .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:42px;height:13px;background:#020617;border-radius:999px;z-index:3;}
+    .scr{background:#f4f7fb;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;}
+    .scr .sb{display:flex;justify-content:space-between;align-items:center;padding:6px 10px 2px;font-size:7px;font-weight:800;color:#64748b;}
+    .scr .ah{display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #eef2f7;padding:7px 10px;}
+    .scr .ah .b{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:900;}
+    .scr .ah .av{width:18px;height:18px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+    .scr .pad{padding:8px;display:flex;flex-direction:column;gap:7px;}
+    .scr .kpi{background:var(--orange);color:#fff;border-radius:13px;padding:10px;}
+    .scr .kpi .l{font-size:7px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85;}
+    .scr .kpi .v{font-size:17px;font-weight:900;letter-spacing:-.02em;margin:2px 0;}
+    .scr .kpi .t{font-size:7px;font-weight:800;background:rgba(255,255,255,.2);display:inline-block;padding:2px 6px;border-radius:6px;}
+    .scr .tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+    .scr .tile{background:#fff;border:1px solid #eef2f7;border-radius:11px;padding:7px;}
+    .scr .tile .l{font-size:6.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#94a3b8;}
+    .scr .tile .v{font-size:11px;font-weight:900;color:var(--ink);}
+    .scr .chart{background:#fff;border:1px solid #eef2f7;border-radius:11px;padding:8px;}
+    .scr .chart .l{font-size:6.5px;font-weight:800;color:#94a3b8;}
+    .scr .bars{display:flex;align-items:flex-end;gap:4px;height:34px;margin-top:5px;}
+    .scr .bars i{flex:1;background:var(--orange);border-radius:3px 3px 0 0;display:block;}
+    .scr .tabs{display:flex;justify-content:space-around;align-items:center;background:#fff;border-top:1px solid #eef2f7;padding:6px 0;}
+    .scr .tabs span{width:13px;height:13px;border-radius:4px;background:#dbe3ec;}
+    .scr .tabs span.on{background:var(--orange);}
 
-    /* ---------- En-tête ---------- */
-    .head { display: flex; align-items: center; justify-content: space-between;
-            padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand .name { font-size: 26px; font-weight: 900; letter-spacing: -.02em; }
-    .brand .name span { color: var(--orange); }
-    .audience { font-size: 11px; font-weight: 900; letter-spacing: .18em;
-                text-transform: uppercase; color: #94a3b8; }
+    /* Recto body */
+    .rbody{flex:1;padding:11mm 14mm 0;display:flex;flex-direction:column;}
+    .sec-label{font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#94a3b8;margin-bottom:9px;}
+    .benefits{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+    .benefit{display:flex;gap:11px;align-items:flex-start;}
+    .benefit .bi{flex-shrink:0;width:40px;height:40px;border-radius:12px;background:var(--orange-soft);border:1px solid var(--orange-100);display:flex;align-items:center;justify-content:center;color:var(--orange);}
+    .benefit .bi svg{width:21px;height:21px;}
+    .benefit .bt{font-size:14px;font-weight:800;color:var(--ink);line-height:1.15;}
+    .benefit .bd{font-size:11.5px;font-weight:500;color:var(--muted);margin-top:2px;line-height:1.3;}
 
-    /* ---------- Accroche ---------- */
-    .hero { margin-top: 22px; }
-    .eyebrow { display:inline-block; background: var(--orange-soft); color: var(--orange);
-               border: 1px solid var(--orange-100); border-radius: 999px;
-               padding: 5px 14px; font-size: 11px; font-weight: 900;
-               letter-spacing: .14em; text-transform: uppercase; }
-    .hero h1 { margin: 14px 0 8px; font-size: 42px; line-height: 1.04;
-               font-weight: 900; letter-spacing: -.02em; color: #020617; }
-    .hero h1 .hl { color: var(--orange); }
-    .hero p { margin: 0; max-width: 150mm; color: var(--slate);
-              font-size: 14.5px; line-height: 1.6; font-weight: 500; }
+    /* QR card (secondaire, élégant) */
+    .cta-row{margin-top:auto;display:flex;gap:14px;align-items:stretch;padding:11mm 0 0;}
+    .qr-card{display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;flex:1;background:linear-gradient(180deg,#fff, #fcfdff);}
+    .qr-frame{width:84px;height:84px;flex-shrink:0;border:1px solid var(--line);border-radius:12px;padding:6px;background:#fff;}
+    .qr-frame svg{width:100%;height:100%;display:block;}
+    .qr-card .qh{font-size:9.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);}
+    .qr-card .qt{font-size:16px;font-weight:900;color:var(--ink);line-height:1.1;margin:3px 0;}
+    .qr-card .qs{font-size:11px;font-weight:600;color:var(--muted);}
 
-    /* ---------- Fonctionnalités ---------- */
-    .section-label { margin: 26px 0 12px; font-size: 11px; font-weight: 900;
-                     letter-spacing: .18em; text-transform: uppercase; color:#94a3b8; }
-    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .feature { display: flex; align-items: center; gap: 12px;
-               border: 1px solid var(--line); background: #fcfdfe;
-               border-radius: 14px; padding: 11px 13px; }
-    .feature .ico { flex-shrink: 0; width: 38px; height: 38px; border-radius: 11px;
-                    background: var(--orange-soft); border: 1px solid var(--orange-100);
-                    display: flex; align-items: center; justify-content: center; color: var(--orange); }
-    .feature .ico svg { width: 20px; height: 20px; }
-    .feature .t { font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.1; }
-    .feature .d { font-size: 11.5px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+    /* Contact strip recto */
+    .rcontact{display:flex;flex-direction:column;justify-content:center;gap:9px;border:1.5px solid var(--line);border-radius:18px;padding:12px 16px;min-width:62mm;background:var(--soft);}
+    .ct{display:flex;align-items:center;gap:9px;}
+    .ct .ci{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .ct .ci.wa{background:var(--wa);color:#fff;}
+    .ct .ci.n{background:#fff;border:1px solid var(--line);color:var(--slate);}
+    .ct .ci svg{width:15px;height:15px;}
+    .ct .cl{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;line-height:1;}
+    .ct .cv{font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.25;}
 
-    /* ---------- Bénéfices ---------- */
-    .benefits { margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr);
-                gap: 8px 22px; }
-    .benefit { display: flex; align-items: flex-start; gap: 10px;
-               font-size: 13.5px; font-weight: 600; color: #1e293b; line-height: 1.35; }
-    .benefit .chk { flex-shrink: 0; width: 20px; height: 20px; border-radius: 999px;
-                    background: var(--orange); color:#fff; display:flex; align-items:center;
-                    justify-content:center; margin-top: 1px; }
-    .benefit .chk svg { width: 12px; height: 12px; }
+    .rfoot{padding:7mm 14mm;display:flex;align-items:center;justify-content:space-between;}
+    .rfoot .name{font-size:15px;color:var(--ink);}
+    .rfoot .web{font-size:10.5px;font-weight:700;color:#94a3b8;}
 
-    /* ---------- CTA + QR ---------- */
-    .cta { margin-top: 24px; display: flex; align-items: center; gap: 20px;
-           background: var(--orange); color: #fff; border-radius: 20px; padding: 18px 20px; }
-    .qr-box { flex-shrink: 0; width: 120px; height: 120px; background:#fff; border-radius: 14px;
-              padding: 8px; display:flex; align-items:center; justify-content:center; }
-    .qr-ph { width:100%; height:100%; border:2px dashed #cbd5e1; border-radius: 8px;
-             display:flex; flex-direction:column; align-items:center; justify-content:center;
-             text-align:center; color:#94a3b8; font-size:9px; font-weight:800;
-             text-transform:uppercase; letter-spacing:.08em; gap:6px; padding:4px; }
-    .cta .eyebrow2 { font-size: 11px; font-weight: 900; letter-spacing: .16em;
-                     text-transform: uppercase; color: #ffe7d3; }
-    .cta h2 { margin: 4px 0 4px; font-size: 25px; font-weight: 900; line-height: 1.1; }
-    .cta p  { margin: 0; font-size: 13.5px; font-weight: 600; color: #fff5ec; }
+    /* =========================================================
+       VERSO
+       ========================================================= */
+    .vhead{background:var(--ink);color:#fff;padding:13mm 14mm;position:relative;overflow:hidden;}
+    .vhead .glow{position:absolute;top:-120px;left:-80px;width:300px;height:300px;border-radius:50%;background:var(--orange);opacity:.18;filter:blur(90px);}
+    .vhead .eyebrow{color:#fdba74;}
+    .vhead h2{margin:8px 0 0;font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.08;position:relative;z-index:2;}
+    .vhead h2 .hl{color:var(--orange);}
+    .vhead p{margin:8px 0 0;color:#cbd5e1;font-size:13px;font-weight:500;max-width:130mm;position:relative;z-index:2;}
 
-    /* ---------- Pied : contact + paiements ---------- */
-    .footer { border-top: 1px solid var(--line); padding: 12px 14mm 14mm;
-              display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-shrink: 0; }
-    .contacts { display: flex; flex-direction: column; gap: 9px; }
-    .contact { display: flex; align-items: center; gap: 10px; }
-    .contact .ci { width: 34px; height: 34px; border-radius: 10px; display:flex;
-                   align-items:center; justify-content:center; flex-shrink:0; }
-    .contact .ci.wa { background: var(--wa); color:#fff; }
-    .contact .ci.neutral { background: var(--bg); border:1px solid var(--line); color: var(--slate); }
-    .contact .ci svg { width: 17px; height: 17px; }
-    .contact .lbl { font-size: 9.5px; font-weight: 800; text-transform: uppercase;
-                    letter-spacing: .1em; color:#94a3b8; line-height:1; }
-    .contact .val { font-size: 14px; font-weight: 800; color: var(--ink); line-height:1.2; }
+    .vbody{flex:1;padding:11mm 14mm 0;}
+    .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+    .fcard{border:1.5px solid var(--line);border-radius:16px;padding:13px;display:flex;gap:13px;align-items:flex-start;background:#fff;}
+    .fcard .illu{flex-shrink:0;width:54px;height:54px;border-radius:14px;background:var(--soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;}
+    .fcard .illu svg{width:38px;height:38px;}
+    .fcard .ft{font-size:14.5px;font-weight:900;color:var(--ink);line-height:1.1;}
+    .fcard .fd{font-size:11.5px;font-weight:500;color:var(--muted);margin-top:3px;line-height:1.35;}
 
-    .pay { text-align: right; }
-    .pay .label { font-size: 9.5px; font-weight: 900; text-transform: uppercase;
-                  letter-spacing: .14em; color:#94a3b8; margin-bottom: 7px; }
-    .pay .badges { display: flex; gap: 8px; justify-content: flex-end; }
-    .paybadge { color:#fff; font-weight: 900; font-size: 12px; letter-spacing: -.2px;
-                border-radius: 7px; padding: 6px 12px; line-height: 1; }
-    .paybadge.wave { background: var(--wave); }
-    .paybadge.om   { background: var(--om); text-transform: lowercase; }
-    .pay .note { margin-top: 7px; font-size: 10px; font-weight:600; color: var(--muted); }
+    /* Paiement + contact (verso footer) */
+    .vbottom{padding:10mm 14mm 12mm;}
+    .paysec{border:1.5px solid var(--line);border-radius:18px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--soft);}
+    .paysec .pl{font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--slate);}
+    .pays{display:flex;gap:10px;}
+    .paycard{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:800;color:var(--ink);}
+    .paycard .badge{height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0 9px;color:#fff;font-weight:900;font-size:11.5px;letter-spacing:-.2px;}
+    .paycard .badge.wave{background:var(--wave);}
+    .paycard .badge.om{background:var(--om);text-transform:lowercase;}
 
-    /* ============================================================
-       Impression : A4 plein cadre, couleurs conservées
-       ============================================================ */
-    @page { size: A4 portrait; margin: 0; }
-    @media print {
-      body { background: #fff; }
-      .no-print { display: none !important; }
-      .sheet { margin: 0; width: 210mm; height: 297mm; box-shadow: none; }
-    }
+    .vcontact{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--ink);color:#fff;border-radius:18px;padding:14px 18px;}
+    .vcontact .vc{display:flex;align-items:center;gap:9px;}
+    .vcontact .vc .ci{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .vcontact .vc .ci.wa{background:var(--wa);}
+    .vcontact .vc .ci.n{background:rgba(255,255,255,.1);}
+    .vcontact .vc .ci svg{width:16px;height:16px;color:#fff;}
+    .vcontact .vc .cl{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;line-height:1;}
+    .vcontact .vc .cv{font-size:13px;font-weight:800;line-height:1.25;}
   </style>
 </head>
 
 <body>
-  <!-- Barre d'aide : écran seulement -->
   <div class="toolbar no-print">
-    <span class="tip">Astuce : <strong>Ctrl/Cmd&nbsp;+&nbsp;P</strong> → « Enregistrer en PDF » → Marges <strong>Aucune</strong> → cocher <strong>Graphiques d'arrière-plan</strong>.</span>
+    <span class="tip">Astuce : <strong>Ctrl/Cmd&nbsp;+&nbsp;P</strong> → « Enregistrer en PDF » → Marges <strong>Aucune</strong> → cocher <strong>Graphiques d'arrière-plan</strong>. (2 pages = recto-verso)</span>
     <button onclick="window.print()">Imprimer / Enregistrer en PDF</button>
   </div>
 
-  <!-- ======================= FEUILLE A4 ======================= -->
-  <div class="sheet">
-    <div class="accent-top"></div>
-
-    <div class="body">
-
-      <!-- En-tête : logo officiel + cible -->
-      <div class="head">
-        <div class="brand">
-          <!-- Logo officiel GestionPro (SVG vectoriel, dégradé orange de la marque) -->
-          <svg width="44" height="44" viewBox="0 0 64 64" role="img" aria-label="GestionPro">
-            <defs>
-              <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/>
-              </linearGradient>
-            </defs>
-            <rect width="64" height="64" rx="14" fill="url(#g)"/>
-            <text x="32" y="48" text-anchor="middle" font-family="Arial, sans-serif"
-                  font-weight="900" font-size="44" fill="#fff" letter-spacing="-2">G</text>
+  <!-- =================== RECTO =================== -->
+  <div class="page">
+    <div class="hero">
+      <div class="glow"></div><div class="glow2"></div>
+      <div class="hero-top">
+        <span class="name" style="font-size:24px;">
+          <svg width="34" height="34" viewBox="0 0 64 64" aria-label="GestionPro">
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/></linearGradient></defs>
+            <rect width="64" height="64" rx="14" fill="url(#g1)"/>
+            <text x="32" y="48" text-anchor="middle" font-family="Arial" font-weight="900" font-size="44" fill="#fff" letter-spacing="-2">G</text>
           </svg>
-          <span class="name">Gestion<span>Pro</span></span>
-        </div>
-        <div class="audience">Commerçants · Boutiques · PME</div>
+          Gestion<span class="p">Pro</span>
+        </span>
+        <span class="tag">Commerçants · Boutiques · PME</span>
       </div>
 
-      <!-- Accroche (bénéfice réel, sans exagération) -->
-      <div class="hero">
-        <span class="eyebrow">Solution de gestion commerciale</span>
-        <h1>Gérez votre commerce <span class="hl">simplement</span></h1>
-        <p>
-          La solution moderne et tout-en-un pour piloter votre activité au quotidien —
-          ventes, stock, clients, fournisseurs et facturation — accessible directement
-          depuis votre navigateur, sur mobile comme sur ordinateur.
-        </p>
-      </div>
+      <div class="hero-main">
+        <div class="hero-copy">
+          <span class="pill">Solution de gestion commerciale</span>
+          <h1>Gérez votre commerce.<br/>Vendez <span class="hl">plus</span>.<br/>Gardez le contrôle.</h1>
+          <p>L'application web tout-en-un pour piloter ventes, stock, clients et facturation — simplement, depuis votre téléphone ou votre ordinateur.</p>
+        </div>
 
-      <!-- Fonctionnalités RÉELLES (vérifiées dans le code) -->
-      <div class="section-label">Tout ce dont vous avez besoin</div>
-      <div class="features">
-        <!-- Produits -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span>
-          <div><div class="t">Produits</div><div class="d">Catalogue, prix &amp; photos</div></div>
-        </div>
-        <!-- Stock -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></span>
-          <div><div class="t">Stock</div><div class="d">Alertes de rupture</div></div>
-        </div>
-        <!-- Commandes -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M2 3h3l2.2 11.2a1 1 0 0 0 1 .8h8.5a1 1 0 0 0 1-.8L20 7H6"/></svg></span>
-          <div><div class="t">Commandes</div><div class="d">Ventes &amp; suivi</div></div>
-        </div>
-        <!-- Clients -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.4"/><path d="M21 20a5.5 5.5 0 0 0-4-5.3"/></svg></span>
-          <div><div class="t">Clients</div><div class="d">Historique &amp; dettes</div></div>
-        </div>
-        <!-- Fournisseurs -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5h11v9H2z"/><path d="M13 9h4.5L21 12.5v3h-8z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg></span>
-          <div><div class="t">Fournisseurs</div><div class="d">Achats &amp; livraisons</div></div>
-        </div>
-        <!-- Rapports & factures -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><rect x="5" y="11" width="3.2" height="7" rx="1"/><rect x="10.4" y="6" width="3.2" height="12" rx="1"/><rect x="15.8" y="13" width="3.2" height="5" rx="1"/></svg></span>
-          <div><div class="t">Rapports &amp; factures PDF</div><div class="d">Documents professionnels</div></div>
-        </div>
-        <!-- Marketplace -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4z"/><path d="M3 9l1.5-5h15L21 9z"/><path d="M9.5 20v-5.5h5V20"/></svg></span>
-          <div><div class="t">Marketplace</div><div class="d">Vendez aussi en ligne</div></div>
-        </div>
-        <!-- QR Code boutique -->
-        <div class="feature">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z"/><path d="M19 19h2v2h-2z"/><path d="M14 19h2v2h-2z"/><path d="M19 14h2v2h-2z"/></svg></span>
-          <div><div class="t">QR Code boutique</div><div class="d">Vitrine partageable</div></div>
+        <!-- Mockup téléphone premium -->
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="scr">
+            <div class="sb"><span>14:32</span><span>＿＿ 100%</span></div>
+            <div class="ah">
+              <span class="b">
+                <svg width="14" height="14" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#ea580c"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="900" font-size="42" fill="#fff">G</text></svg>
+                Ma Boutique
+              </span>
+              <span class="av">MD</span>
+            </div>
+            <div class="pad">
+              <div class="kpi">
+                <div class="l">Ventes du jour</div>
+                <div class="v">145 000 F</div>
+                <span class="t">▲ +12 % vs hier</span>
+              </div>
+              <div class="tiles">
+                <div class="tile"><div class="l">Bénéfice</div><div class="v">48 000 F</div></div>
+                <div class="tile"><div class="l">Commandes</div><div class="v">23</div></div>
+              </div>
+              <div class="chart">
+                <div class="l">7 derniers jours</div>
+                <div class="bars"><i style="height:42%"></i><i style="height:58%"></i><i style="height:48%"></i><i style="height:72%"></i><i style="height:63%"></i><i style="height:88%"></i><i style="height:100%"></i></div>
+              </div>
+            </div>
+            <div class="tabs"><span class="on"></span><span></span><span></span><span></span></div>
+          </div>
         </div>
       </div>
-
-      <!-- Bénéfices concrets (réels, sans chiffres inventés) -->
-      <div class="section-label">Ce que ça vous apporte</div>
-      <div class="benefits">
-        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Suivez vos ventes et bénéfices en temps réel</div>
-        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Maîtrisez votre stock, vos marges et dépenses</div>
-        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Gardez l'historique complet de vos clients</div>
-        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Éditez factures &amp; rapports professionnels</div>
-        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Gérez plusieurs boutiques au même endroit</div>
-        <div class="benefit"><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Partagez votre boutique en ligne via un QR Code</div>
-      </div>
-
-      <!-- Appel à l'action + QR (placeholder à compléter) -->
-      <div class="cta">
-        <div class="qr-box">
-          <svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 51 51" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h51v51H0z"/><path stroke="#0f172a" d="M1 1.5h7m3 0h2m1 0h1m2 0h2m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m1 0h7M1 2.5h1m5 0h1m4 0h1m1 0h3m4 0h1m4 0h1m1 0h1m1 0h2m5 0h5m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h3m1 0h2m3 0h1m3 0h6m4 0h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h2m3 0h1m3 0h3m2 0h1m1 0h3m2 0h2m1 0h2m1 0h1m3 0h1m2 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m4 0h5m2 0h1m4 0h2m1 0h1m4 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h6m1 0h2m2 0h1m1 0h2m3 0h3m1 0h3m5 0h1m3 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m1 0h1m1 0h3m6 0h2m3 0h2m3 0h1m1 0h4m1 0h2M1 9.5h1m1 0h5m2 0h5m8 0h8m1 0h1m4 0h4m2 0h5M2 10.5h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m3 0h4m1 0h2m1 0h3m2 0h1M1 11.5h1m5 0h3m1 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m2 0h3m1 0h2m1 0h1m1 0h1m2 0h3m1 0h2m1 0h2M1 12.5h2m1 0h1m3 0h1m1 0h1m1 0h2m3 0h1m2 0h4m1 0h1m1 0h2m3 0h1m1 0h3m1 0h4m2 0h1m2 0h3M3 13.5h1m2 0h2m3 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m6 0h1m1 0h2m5 0h1m1 0h1M2 14.5h2m5 0h5m1 0h2m2 0h3m1 0h4m3 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h4M1 15.5h1m1 0h2m1 0h4m1 0h1m7 0h1m1 0h3m5 0h3m2 0h1m2 0h2m1 0h1m3 0h2m2 0h2M4 16.5h3m1 0h1m1 0h1m1 0h4m1 0h5m1 0h3m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m7 0h1M2 17.5h1m2 0h3m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h2m3 0h1m2 0h5m1 0h2m2 0h3M5 18.5h1m2 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h5m1 0h3m2 0h1m1 0h1m3 0h1m1 0h4m3 0h2M2 19.5h2m3 0h1m5 0h1m3 0h1m1 0h2m2 0h2m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h2m1 0h1M3 20.5h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h5m1 0h1m2 0h2m2 0h2M3 21.5h1m2 0h3m3 0h1m2 0h3m1 0h2m6 0h1m1 0h2m5 0h2m1 0h4m4 0h1m1 0h1M3 22.5h2m4 0h2m1 0h2m3 0h2m3 0h3m1 0h3m1 0h1m4 0h1m2 0h1m3 0h4m1 0h3M3 23.5h1m1 0h5m1 0h5m1 0h3m2 0h6m1 0h6m4 0h1m1 0h6m1 0h2M5 24.5h1m3 0h1m2 0h2m2 0h1m3 0h2m1 0h1m3 0h1m4 0h1m1 0h6m1 0h1m3 0h5M1 25.5h5m1 0h1m1 0h1m6 0h2m4 0h2m1 0h1m1 0h1m3 0h1m4 0h3m2 0h1m1 0h1m1 0h2M1 26.5h5m3 0h3m2 0h2m1 0h4m2 0h1m3 0h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h1m1 0h1M2 27.5h9m3 0h2m4 0h1m1 0h10m1 0h2m3 0h1m2 0h6m1 0h1M1 28.5h3m1 0h2m1 0h2m2 0h2m1 0h3m1 0h1m1 0h1m8 0h1m1 0h9m1 0h2m3 0h1m1 0h1M2 29.5h2m3 0h3m3 0h8m1 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m6 0h1m1 0h1m2 0h1M5 30.5h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h1m3 0h2m2 0h1m3 0h1m2 0h4m1 0h1m2 0h1M1 31.5h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m3 0h2m1 0h2M1 32.5h1m3 0h1m3 0h5m1 0h1m3 0h1m2 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1M6 33.5h3m3 0h2m1 0h1m1 0h2m3 0h1m2 0h4m1 0h2m5 0h1m3 0h2m5 0h1M1 34.5h2m2 0h2m1 0h1m5 0h1m1 0h1m2 0h2m1 0h4m5 0h2m1 0h1m1 0h2m4 0h1m1 0h1m3 0h2M2 35.5h3m1 0h3m2 0h1m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m5 0h1m3 0h1m1 0h1m2 0h1m2 0h1M2 36.5h1m6 0h3m2 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m8 0h1M1 37.5h1m5 0h1m2 0h1m4 0h2m2 0h1m2 0h6m1 0h3m5 0h2m1 0h1m1 0h1m1 0h1m2 0h2M1 38.5h1m1 0h1m1 0h1m2 0h3m2 0h3m2 0h1m2 0h3m1 0h1m1 0h2m2 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1M2 39.5h1m3 0h2m2 0h1m1 0h1m2 0h2m1 0h2m2 0h2m1 0h2m1 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h2m2 0h1M2 40.5h3m7 0h5m1 0h1m1 0h2m1 0h2m1 0h1m5 0h1m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2M1 41.5h3m3 0h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h7m1 0h1m3 0h1m1 0h2m1 0h7M9 42.5h3m4 0h1m4 0h3m3 0h1m6 0h2m1 0h1m3 0h1m3 0h5M1 43.5h7m4 0h1m5 0h2m3 0h1m1 0h1m1 0h8m3 0h1m2 0h1m1 0h1m1 0h1M1 44.5h1m5 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h4m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m3 0h1m3 0h1M1 45.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m3 0h5m2 0h5m2 0h1m3 0h5m2 0h1M1 46.5h1m1 0h3m1 0h1m1 0h8m1 0h1m1 0h3m1 0h2m4 0h9m5 0h2m1 0h1m1 0h1M1 47.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h5m1 0h4m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1M1 48.5h1m5 0h1m2 0h3m1 0h2m3 0h3m2 0h1m3 0h1m1 0h1m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1M1 49.5h7m1 0h2m3 0h5m1 0h1m1 0h1m3 0h1m2 0h1m2 0h5m2 0h1m2 0h2m4 0h2"/></svg>
-
-        </div>
-        <div>
-          <div class="eyebrow2">Découvrez comment digitaliser votre commerce</div>
-          <h2>Demandez votre démonstration privée</h2>
-          <p>Contactez-nous sur WhatsApp pour réserver votre démonstration personnalisée.</p>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Pied de page : contact + paiements réels -->
-    <div class="footer">
-      <div class="contacts">
-        <!-- WhatsApp : vrai logo officiel -->
-        <div class="contact">
-          <span class="ci wa"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></span>
-          <span><span class="lbl">WhatsApp</span><br/><span class="val">+221 77 383 13 64</span></span>
+    <!-- Bénéfices clés -->
+    <div class="rbody">
+      <div class="sec-label">Pourquoi choisir GestionPro</div>
+      <div class="benefits">
+        <div class="benefit">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span>
+          <div><div class="bt">Ventes en temps réel</div><div class="bd">Chiffre d'affaires et bénéfices suivis au quotidien.</div></div>
         </div>
-        <!-- Téléphone -->
-        <div class="contact">
-          <span class="ci neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span>
-          <span><span class="lbl">Téléphone</span><br/><span class="val">+221 77 383 13 64</span></span>
+        <div class="benefit">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></span>
+          <div><div class="bt">Stock maîtrisé</div><div class="bd">Inventaire à jour et alertes de rupture automatiques.</div></div>
         </div>
-        <!-- Email -->
-        <div class="contact">
-          <span class="ci neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
-          <span><span class="lbl">Email</span><br/><span class="val">dionemhd1@gmail.com</span></span>
+        <div class="benefit">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.4"/><path d="M21 20a5.5 5.5 0 0 0-4-5.3"/></svg></span>
+          <div><div class="bt">Clients fidélisés</div><div class="bd">Historique d'achats et suivi des dettes.</div></div>
+        </div>
+        <div class="benefit">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4z"/><path d="M3 9l1.5-5h15L21 9z"/><path d="M9.5 20v-5.5h5V20"/></svg></span>
+          <div><div class="bt">Vendez aussi en ligne</div><div class="bd">Marketplace intégrée + boutique partageable par QR.</div></div>
         </div>
       </div>
 
-      <!-- Moyens de paiement RÉELS (Wave + Orange Money via PayTech) -->
-      <div class="pay">
-        <div class="label">Paiement Mobile Money</div>
-        <div class="badges">
-          <span class="paybadge wave">Wave</span>
-          <span class="paybadge om">orange</span>
+      <!-- Action finale : QR (secondaire) + contact -->
+      <div class="cta-row">
+        <div class="qr-card">
+          <div class="qr-frame"><svg style="width:100%;height:100%;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h49v49H0z"/><path stroke="#0f172a" d="M0 0.5h7m3 0h2m1 0h1m2 0h2m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m1 0h7M0 1.5h1m5 0h1m4 0h1m1 0h3m4 0h1m4 0h1m1 0h1m1 0h2m5 0h5m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m1 0h2m3 0h1m3 0h6m4 0h1m1 0h1m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h2m3 0h1m3 0h3m2 0h1m1 0h3m2 0h2m1 0h2m1 0h1m3 0h1m2 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m4 0h5m2 0h1m4 0h2m1 0h1m4 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h6m1 0h2m2 0h1m1 0h2m3 0h3m1 0h3m5 0h1m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h1m1 0h3m6 0h2m3 0h2m3 0h1m1 0h4m1 0h2M0 8.5h1m1 0h5m2 0h5m8 0h8m1 0h1m4 0h4m2 0h5M1 9.5h3m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m1 0h4m1 0h1m1 0h3m3 0h4m1 0h2m1 0h3m2 0h1M0 10.5h1m5 0h3m1 0h1m1 0h2m1 0h1m1 0h1m3 0h1m2 0h2m2 0h3m1 0h2m1 0h1m1 0h1m2 0h3m1 0h2m1 0h2M0 11.5h2m1 0h1m3 0h1m1 0h1m1 0h2m3 0h1m2 0h4m1 0h1m1 0h2m3 0h1m1 0h3m1 0h4m2 0h1m2 0h3M2 12.5h1m2 0h2m3 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m6 0h1m1 0h2m5 0h1m1 0h1M1 13.5h2m5 0h5m1 0h2m2 0h3m1 0h4m3 0h3m1 0h2m1 0h1m3 0h1m1 0h1m1 0h4M0 14.5h1m1 0h2m1 0h4m1 0h1m7 0h1m1 0h3m5 0h3m2 0h1m2 0h2m1 0h1m3 0h2m2 0h2M3 15.5h3m1 0h1m1 0h1m1 0h4m1 0h5m1 0h3m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m7 0h1M1 16.5h1m2 0h3m1 0h1m1 0h2m2 0h1m1 0h3m2 0h1m1 0h2m3 0h1m2 0h5m1 0h2m2 0h3M4 17.5h1m2 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h5m1 0h3m2 0h1m1 0h1m3 0h1m1 0h4m3 0h2M1 18.5h2m3 0h1m5 0h1m3 0h1m1 0h2m2 0h2m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h2m1 0h1M2 19.5h1m5 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h5m1 0h1m2 0h2m2 0h2M2 20.5h1m2 0h3m3 0h1m2 0h3m1 0h2m6 0h1m1 0h2m5 0h2m1 0h4m4 0h1m1 0h1M2 21.5h2m4 0h2m1 0h2m3 0h2m3 0h3m1 0h3m1 0h1m4 0h1m2 0h1m3 0h4m1 0h3M2 22.5h1m1 0h5m1 0h5m1 0h3m2 0h6m1 0h6m4 0h1m1 0h6m1 0h2M4 23.5h1m3 0h1m2 0h2m2 0h1m3 0h2m1 0h1m3 0h1m4 0h1m1 0h6m1 0h1m3 0h5M0 24.5h5m1 0h1m1 0h1m6 0h2m4 0h2m1 0h1m1 0h1m3 0h1m4 0h3m2 0h1m1 0h1m1 0h2M0 25.5h5m3 0h3m2 0h2m1 0h4m2 0h1m3 0h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h1m1 0h1M1 26.5h9m3 0h2m4 0h1m1 0h10m1 0h2m3 0h1m2 0h6m1 0h1M0 27.5h3m1 0h2m1 0h2m2 0h2m1 0h3m1 0h1m1 0h1m8 0h1m1 0h9m1 0h2m3 0h1m1 0h1M1 28.5h2m3 0h3m3 0h8m1 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m6 0h1m1 0h1m2 0h1M4 29.5h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m1 0h1m3 0h2m2 0h1m3 0h1m2 0h4m1 0h1m2 0h1M0 30.5h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m3 0h2m1 0h2M0 31.5h1m3 0h1m3 0h5m1 0h1m3 0h1m2 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h1m1 0h2m1 0h1m1 0h1M5 32.5h3m3 0h2m1 0h1m1 0h2m3 0h1m2 0h4m1 0h2m5 0h1m3 0h2m5 0h1M0 33.5h2m2 0h2m1 0h1m5 0h1m1 0h1m2 0h2m1 0h4m5 0h2m1 0h1m1 0h2m4 0h1m1 0h1m3 0h2M1 34.5h3m1 0h3m2 0h1m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m1 0h2m5 0h1m3 0h1m1 0h1m2 0h1m2 0h1M1 35.5h1m6 0h3m2 0h1m4 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m8 0h1M0 36.5h1m5 0h1m2 0h1m4 0h2m2 0h1m2 0h6m1 0h3m5 0h2m1 0h1m1 0h1m1 0h1m2 0h2M0 37.5h1m1 0h1m1 0h1m2 0h3m2 0h3m2 0h1m2 0h3m1 0h1m1 0h2m2 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1M1 38.5h1m3 0h2m2 0h1m1 0h1m2 0h2m1 0h2m2 0h2m1 0h2m1 0h1m1 0h4m1 0h2m2 0h1m1 0h1m3 0h2m2 0h1M1 39.5h3m7 0h5m1 0h1m1 0h2m1 0h2m1 0h1m5 0h1m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2M0 40.5h3m3 0h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h7m1 0h1m3 0h1m1 0h2m1 0h7M8 41.5h3m4 0h1m4 0h3m3 0h1m6 0h2m1 0h1m3 0h1m3 0h5M0 42.5h7m4 0h1m5 0h2m3 0h1m1 0h1m1 0h8m3 0h1m2 0h1m1 0h1m1 0h1M0 43.5h1m5 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h4m3 0h1m4 0h2m1 0h1m3 0h1m1 0h1m3 0h1m3 0h1M0 44.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h3m3 0h5m2 0h5m2 0h1m3 0h5m2 0h1M0 45.5h1m1 0h3m1 0h1m1 0h8m1 0h1m1 0h3m1 0h2m4 0h9m5 0h2m1 0h1m1 0h1M0 46.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h5m1 0h4m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1M0 47.5h1m5 0h1m2 0h3m1 0h2m3 0h3m2 0h1m3 0h1m1 0h1m4 0h1m1 0h4m1 0h1m3 0h1m2 0h1M0 48.5h7m1 0h2m3 0h5m1 0h1m1 0h1m3 0h1m2 0h1m2 0h5m2 0h1m2 0h2m4 0h2"/></svg>
+</div>
+          <div>
+            <div class="qh">Démonstration privée sur demande</div>
+            <div class="qt">Demandez votre démonstration</div>
+            <div class="qs">Scannez ce code pour nous écrire sur WhatsApp.</div>
+          </div>
         </div>
-        <div class="note">Site web : [À&nbsp;COMPLÉTER]</div>
+        <div class="rcontact">
+          <div class="ct">
+            <span class="ci wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span>
+            <span><span class="cl">WhatsApp</span><br/><span class="cv">+221 77 383 13 64</span></span>
+          </div>
+          <div class="ct">
+            <span class="ci n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span>
+            <span><span class="cl">Téléphone</span><br/><span class="cv">+221 77 383 13 64</span></span>
+          </div>
+          <div class="ct">
+            <span class="ci n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+            <span><span class="cl">Email</span><br/><span class="cv">dionemhd1@gmail.com</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rfoot">
+      <span class="name" style="font-size:15px;">Gestion<span class="p">Pro</span></span>
+      <span class="web">Solution web · Mobile &amp; ordinateur</span>
+    </div>
+  </div>
+
+  <!-- =================== VERSO =================== -->
+  <div class="page">
+    <div class="vhead">
+      <div class="glow"></div>
+      <span class="eyebrow">La solution complète</span>
+      <h2>Tout pour gérer et <span class="hl">développer</span> votre commerce</h2>
+      <p>Des outils simples et puissants, pensés pour les commerçants, boutiques et PME — réunis dans une seule application web.</p>
+    </div>
+
+    <div class="vbody">
+      <div class="fgrid">
+        <!-- Produits -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><path d="M24 12l10 5.5v13L24 36l-10-5.5v-13z" fill="#fdba74"/><path d="M24 12l10 5.5L24 23l-10-5.5z" fill="#ea580c"/><path d="M14 17.5 24 23v13" fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"/><circle cx="30" cy="16" r="2.4" fill="#0f172a"/></svg>
+          </span>
+          <div><div class="ft">Gestion Produits</div><div class="fd">Catalogue, prix, photos et catégories en quelques secondes.</div></div>
+        </div>
+        <!-- Stock -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><rect x="13" y="26" width="8" height="9" rx="1.5" fill="#0f172a"/><rect x="23" y="21" width="8" height="14" rx="1.5" fill="#ea580c"/><rect x="33" y="16" width="2.6" height="19" rx="1.3" fill="#fdba74"/><path d="M12 18l5-4 5 3 9-7" fill="none" stroke="#ea580c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div><div class="ft">Gestion Stock</div><div class="fd">Suivi des entrées/sorties et alertes de rupture.</div></div>
+        </div>
+        <!-- Ventes -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><path d="M17 12h14v22l-3-2-2 2-2-2-2 2-2-2-3 2z" fill="#fff" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/><path d="M20 18h8M20 22h8M20 26h5" stroke="#ea580c" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div><div class="ft">Gestion Ventes</div><div class="fd">Commandes, reçus et facturation professionnelle.</div></div>
+        </div>
+        <!-- Clients -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><circle cx="24" cy="20" r="5" fill="#ea580c"/><path d="M14 34a10 10 0 0 1 20 0z" fill="#0f172a"/></svg>
+          </span>
+          <div><div class="ft">Gestion Clients</div><div class="fd">Fiches, historique d'achats et suivi des dettes.</div></div>
+        </div>
+        <!-- Fournisseurs -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><rect x="11" y="17" width="15" height="12" rx="1.5" fill="#0f172a"/><path d="M26 21h6l4 4v4h-10z" fill="#ea580c"/><circle cx="17" cy="31" r="2.6" fill="#0f172a"/><circle cx="31" cy="31" r="2.6" fill="#ea580c"/></svg>
+          </span>
+          <div><div class="ft">Gestion Fournisseurs</div><div class="fd">Achats, livraisons et coûts d'approvisionnement.</div></div>
+        </div>
+        <!-- Rapports PDF -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><path d="M16 11h11l6 6v20H16z" fill="#fff" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/><path d="M27 11v6h6" fill="none" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/><rect x="20" y="27" width="2.6" height="6" fill="#ea580c"/><rect x="24" y="24" width="2.6" height="9" fill="#ea580c"/><rect x="28" y="29" width="2.6" height="4" fill="#fdba74"/></svg>
+          </span>
+          <div><div class="ft">Rapports PDF</div><div class="fd">Bilans clairs, exportables et imprimables.</div></div>
+        </div>
+        <!-- Marketplace -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><path d="M14 20h20v15H14z" fill="#0f172a"/><path d="M13 20l2-7h18l2 7z" fill="#ea580c"/><path d="M13 20a3 3 0 0 0 5.3 0 3 3 0 0 0 5.4 0 3 3 0 0 0 5.4 0 3 3 0 0 0 5.3 0" fill="none" stroke="#fff" stroke-width="1.3"/><rect x="21" y="26" width="6" height="9" fill="#fdba74"/></svg>
+          </span>
+          <div><div class="ft">Marketplace</div><div class="fd">Exposez et vendez vos articles en ligne.</div></div>
+        </div>
+        <!-- QR Code boutique -->
+        <div class="fcard">
+          <span class="illu">
+            <svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="11" fill="#fff7ed"/><rect x="14" y="14" width="8" height="8" rx="1.5" fill="#0f172a"/><rect x="26" y="14" width="8" height="8" rx="1.5" fill="#ea580c"/><rect x="14" y="26" width="8" height="8" rx="1.5" fill="#ea580c"/><rect x="27" y="27" width="3" height="3" fill="#0f172a"/><rect x="31" y="31" width="3" height="3" fill="#0f172a"/><rect x="27" y="31" width="3" height="3" fill="#0f172a"/><rect x="31" y="27" width="3" height="3" fill="#0f172a"/></svg>
+          </span>
+          <div><div class="ft">QR Code Boutique</div><div class="fd">Partagez votre vitrine d'un simple scan.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paiement + contact -->
+    <div class="vbottom">
+      <div class="paysec">
+        <span class="pl">Moyens de paiement</span>
+        <div class="pays">
+          <div class="paycard"><span class="badge wave">Wave</span> Wave</div>
+          <div class="paycard"><span class="badge om">orange</span> Orange Money</div>
+        </div>
+      </div>
+
+      <div class="vcontact">
+        <div class="vc">
+          <span class="ci wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span>
+          <span><span class="cl">WhatsApp</span><br/><span class="cv">+221 77 383 13 64</span></span>
+        </div>
+        <div class="vc">
+          <span class="ci n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span>
+          <span><span class="cl">Téléphone</span><br/><span class="cv">+221 77 383 13 64</span></span>
+        </div>
+        <div class="vc">
+          <span class="ci n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+          <span><span class="cl">Email</span><br/><span class="cv">dionemhd1@gmail.com</span></span>
+        </div>
       </div>
     </div>
   </div>
