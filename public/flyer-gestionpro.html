@@ -13,7 +13,7 @@
       --orange-soft:#fff7ed; --orange-100:#ffe7d3; --tint:#fdf2e9;
       --ink:#101828; --ink-2:#1e293b; --muted:#667085; --light:#98a2b3;
       --line:#eceef2; --white:#fff;
-      --wa:#25D366; --wave:#1DC3FF; --om:#FF7900;
+      --wa:#25D366;
       --disp:'Bricolage Grotesque',Georgia,serif;
       --body:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     }
@@ -34,21 +34,22 @@
 
     .name{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;}.name .p{color:var(--orange);}
     .accent{color:var(--orange);}
+    /* Real app logo mark */
+    .brand-logo{display:block;border-radius:26%;}
 
     /* ================= HERO ================= */
     .hero{flex:0 0 auto;position:relative;color:#fff;overflow:hidden;
       background:radial-gradient(125% 130% at 78% -10%, var(--orange-lt) 0%, var(--orange) 46%, var(--orange-2) 100%);}
-    .hero .tex{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1.1px,transparent 1.2px);background-size:15px 15px;opacity:.6;pointer-events:none;}
+    .hero .tex{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1.1px,transparent 1.2px);background-size:15px 15px;opacity:.55;pointer-events:none;}
     .hero .ring{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,.14);pointer-events:none;}
     .hero .inner{position:relative;z-index:3;padding:12mm 13mm 0;}
     .hero .wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:58px;display:block;z-index:2;}
 
     .htop{display:flex;align-items:center;justify-content:space-between;}
-    .logo{display:flex;align-items:center;gap:10px;}
-    .logo .mk{width:38px;height:38px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;}
-    .logo .mk b{font-family:var(--disp);font-weight:800;color:var(--orange);font-size:24px;line-height:1;}
-    .logo .lt{font-family:var(--disp);font-size:19px;font-weight:800;line-height:1;}
-    .logo .ls{font-size:8px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.78);margin-top:3px;}
+    .logo{display:flex;align-items:center;gap:11px;}
+    .logo .mk{width:44px;height:44px;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.22),0 10px 22px rgba(0,0,0,.28);border-radius:12px;}
+    .logo .lt{font-family:var(--disp);font-size:20px;font-weight:800;line-height:1;}
+    .logo .ls{font-size:8px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:3px;}
     .htag{font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);padding:6px 13px;border-radius:999px;}
 
     .hmain{display:flex;align-items:center;gap:6mm;}
@@ -61,44 +62,70 @@
     .hstat .n{font-family:var(--disp);font-weight:800;font-size:17px;line-height:1;}
     .hstat .t{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.04em;margin-top:3px;}
 
-    /* ================= Phone mockup ================= */
-    .phone{flex-shrink:0;border-radius:30px;background:#0b1220;padding:5px;position:relative;
-      box-shadow:0 34px 60px rgba(11,18,32,.4), inset 0 0 0 2px rgba(255,255,255,.06);}
-    .phone.lg{width:58mm;} .phone.sm{width:50mm;}
-    .phone .island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:34px;height:10px;background:#000;border-radius:999px;z-index:4;}
-    .scr{background:#f3f5f9;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;}
-    .sb{display:flex;justify-content:space-between;align-items:center;padding:7px 11px 3px;font-size:7px;font-weight:800;color:#475569;}
-    .sb .dots{display:flex;gap:3px;align-items:center;}.sb .dots i{width:3px;height:3px;border-radius:50%;background:#94a3b8;display:block;}
-    .ah{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:8px 11px;border-bottom:1px solid #eef1f6;}
-    .ah .b{display:flex;align-items:center;gap:6px;font-family:var(--disp);font-size:9px;font-weight:800;color:var(--ink);}
-    .ah .b .g{width:15px;height:15px;border-radius:5px;background:var(--orange);color:#fff;font-family:var(--disp);font-weight:800;font-size:9px;display:flex;align-items:center;justify-content:center;}
-    .ah .av{width:18px;height:18px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;}
-    .pad{padding:9px;display:flex;flex-direction:column;gap:7px;}
-    .kpi{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;border-radius:15px;padding:11px;box-shadow:0 10px 18px rgba(234,88,12,.28);}
-    .kpi .l{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.9;}
-    .kpi .v{font-family:var(--disp);font-size:18px;font-weight:800;margin:3px 0;letter-spacing:-.02em;}
-    .kpi .pill{font-size:7px;font-weight:800;background:rgba(255,255,255,.22);display:inline-flex;gap:3px;align-items:center;padding:2px 7px;border-radius:999px;}
-    .tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-    .tile{background:#fff;border:1px solid #eef1f6;border-radius:12px;padding:8px;}
-    .tile .l{font-size:6px;font-weight:800;text-transform:uppercase;color:#98a2b3;letter-spacing:.04em;}
-    .tile .v{font-family:var(--disp);font-size:12px;font-weight:800;color:var(--ink);margin-top:2px;}
-    .card-w{background:#fff;border:1px solid #eef1f6;border-radius:12px;padding:9px;}
-    .card-w .l{font-size:6.5px;font-weight:800;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;display:flex;justify-content:space-between;}
-    .spark{display:flex;align-items:flex-end;gap:3px;height:30px;margin-top:6px;}
-    .spark i{flex:1;background:linear-gradient(180deg,#fb923c,#ea580c);border-radius:3px 3px 0 0;}
-    .salelist{display:flex;flex-direction:column;gap:5px;}
-    .sale{display:flex;align-items:center;gap:6px;}
-    .sale .th{width:18px;height:18px;border-radius:6px;background:var(--orange-soft);flex-shrink:0;}
-    .sale .nm{font-size:7px;font-weight:700;color:var(--ink);flex:1;}
-    .sale .pr{font-family:var(--disp);font-size:7.5px;font-weight:800;color:var(--ink);}
-    .tabs{display:flex;justify-content:space-around;align-items:center;background:#fff;border-top:1px solid #eef1f6;padding:7px 0;}
-    .tabs i{width:13px;height:13px;border-radius:4px;background:#dde3ec;display:block;}
-    .tabs i.on{background:var(--orange);}
-    .srow{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid #eef1f6;border-radius:11px;padding:6px 7px;}
-    .srow .th{width:20px;height:20px;border-radius:6px;background:var(--orange-soft);flex-shrink:0;}
-    .srow .nm{font-size:7.5px;font-weight:700;color:var(--ink);flex:1;}
-    .srow .pr{font-family:var(--disp);font-size:8px;font-weight:800;color:var(--orange);}
-    .addbtn{background:var(--orange);color:#fff;text-align:center;font-size:8px;font-weight:800;border-radius:10px;padding:8px;box-shadow:0 8px 14px rgba(234,88,12,.25);}
+    /* ================= Phone (premium) ================= */
+    .phone{flex-shrink:0;border-radius:32px;background:#0b1220;padding:5px;position:relative;
+      box-shadow:0 36px 64px rgba(11,18,32,.45), inset 0 0 0 2px rgba(255,255,255,.07);}
+    .phone.lg{width:60mm;} .phone.sm{width:52mm;}
+    .phone .island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:34px;height:10px;background:#000;border-radius:999px;z-index:5;}
+    .scr{background:#eef2f7;border-radius:27px;overflow:hidden;display:flex;flex-direction:column;}
+    /* status bar */
+    .sb{display:flex;justify-content:space-between;align-items:center;padding:7px 12px 3px;color:#475569;}
+    .sb .tm{font-size:8px;font-weight:800;}
+    .sb .ic{display:flex;align-items:center;gap:4px;}
+    .sb .ic svg{display:block;}
+    /* app bar */
+    .ah{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:8px 11px 9px;}
+    .ah .b{display:flex;align-items:center;gap:7px;}
+    .ah .b .g{width:20px;height:20px;border-radius:6px;flex-shrink:0;}
+    .ah .bt{font-family:var(--disp);font-size:9.5px;font-weight:800;color:var(--ink);line-height:1;}
+    .ah .bs{font-size:6.5px;font-weight:600;color:var(--light);margin-top:2px;}
+    .ah .av{position:relative;width:20px;height:20px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+    .ah .av i{position:absolute;right:-1px;bottom:-1px;width:6px;height:6px;border-radius:50%;background:#16a34a;border:1.5px solid #fff;}
+    .body-scr{padding:9px;display:flex;flex-direction:column;gap:8px;background:#eef2f7;flex:1;}
+    /* KPI */
+    .kpi{position:relative;overflow:hidden;background:linear-gradient(135deg,#fb923c,#ea580c 60%,#c2410c);color:#fff;border-radius:16px;padding:11px 12px;box-shadow:0 12px 22px rgba(234,88,12,.3);}
+    .kpi .deco{position:absolute;right:-18px;top:-18px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.12);}
+    .kpi .deco2{position:absolute;right:6px;bottom:-22px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);}
+    .kpi .kl{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.92;position:relative;}
+    .kpi .kv{font-family:var(--disp);font-size:21px;font-weight:800;letter-spacing:-.02em;margin:3px 0;position:relative;}
+    .kpi .kv span{font-size:9px;font-weight:700;opacity:.85;}
+    .kpi .kr{font-size:7px;font-weight:700;display:flex;align-items:center;gap:5px;position:relative;}
+    .kpi .kp{background:rgba(255,255,255,.24);padding:2px 6px;border-radius:999px;font-weight:800;}
+    /* mini stats */
+    .ms{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+    .ms .c{background:#fff;border-radius:11px;padding:7px 6px;text-align:center;}
+    .ms .c .v{font-family:var(--disp);font-size:11px;font-weight:800;color:var(--ink);}
+    .ms .c .l{font-size:5.6px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--light);margin-top:2px;}
+    /* chart */
+    .cw{background:#fff;border-radius:13px;padding:9px;}
+    .cw .h{display:flex;justify-content:space-between;align-items:center;font-size:6.5px;font-weight:800;color:var(--light);text-transform:uppercase;letter-spacing:.04em;}
+    .cw .h b{color:var(--orange);}
+    .cw svg{width:100%;height:38px;display:block;margin-top:5px;}
+    /* transactions */
+    .tx{background:#fff;border-radius:13px;padding:8px 9px;display:flex;flex-direction:column;gap:8px;}
+    .tx .hh{font-size:6.5px;font-weight:800;color:var(--light);text-transform:uppercase;letter-spacing:.04em;}
+    .txr{display:flex;align-items:center;gap:7px;}
+    .txr .ti{width:20px;height:20px;border-radius:7px;background:var(--orange-soft);color:var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .txr .ti svg{width:11px;height:11px;}
+    .txr .tn{flex:1;font-size:7.5px;font-weight:700;color:var(--ink);line-height:1.1;}
+    .txr .tn span{display:block;font-size:6px;font-weight:600;color:var(--light);margin-top:1px;}
+    .txr .ta{font-family:var(--disp);font-size:8px;font-weight:800;color:#16a34a;}
+    /* products (verso) */
+    .search{background:#fff;border-radius:10px;padding:6px 9px;font-size:7px;font-weight:600;color:var(--light);display:flex;align-items:center;gap:6px;}
+    .search svg{width:10px;height:10px;color:var(--light);}
+    .prow{display:flex;align-items:center;gap:8px;background:#fff;border-radius:11px;padding:7px 8px;}
+    .prow .th{width:24px;height:24px;border-radius:7px;flex-shrink:0;background:linear-gradient(135deg,#fdba74,#ea580c);}
+    .prow .pn{flex:1;}
+    .prow .pn .t{font-size:7.5px;font-weight:800;color:var(--ink);line-height:1.1;}
+    .prow .pn .s{font-size:5.8px;font-weight:700;color:#16a34a;margin-top:2px;}
+    .prow .pp{font-family:var(--disp);font-size:8px;font-weight:800;color:var(--orange);}
+    .fab{background:var(--orange);color:#fff;border-radius:11px;padding:8px;text-align:center;font-size:7.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 10px 16px rgba(234,88,12,.28);}
+    .fab svg{width:11px;height:11px;}
+    /* tab bar */
+    .tabs{display:flex;justify-content:space-around;align-items:center;background:#fff;border-top:1px solid #eef1f6;padding:7px 4px 8px;}
+    .tabs .tb{display:flex;flex-direction:column;align-items:center;gap:2px;color:#cbd2dc;font-size:5.2px;font-weight:800;}
+    .tabs .tb svg{width:14px;height:14px;}
+    .tabs .tb.on{color:var(--orange);}
 
     /* ================= RECTO body ================= */
     .rbody{flex:1 1 auto;display:flex;gap:8mm;padding:8mm 13mm 0;min-height:0;}
@@ -120,7 +147,6 @@
     .rfoot{flex:0 0 auto;margin:8mm 13mm 0;border-top:1.5px solid var(--line);padding:7mm 0 8mm;display:flex;align-items:center;gap:16px;}
     .qrbox{width:80px;height:80px;border:1px solid var(--line);border-radius:14px;padding:6px;flex-shrink:0;background:#fff;box-shadow:0 8px 20px rgba(16,24,40,.07);}
     .qrbox svg{width:100%;height:100%;display:block;}
-    .rfoot . qt{}
     .rfoot .qt .h{font-family:var(--disp);font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
     .rfoot .qt .s{font-size:10.5px;font-weight:600;color:var(--muted);line-height:1.5;margin-top:4px;}
     .rfoot .brand{margin-left:auto;text-align:right;}
@@ -128,7 +154,6 @@
     .rfoot .brand .s2{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--light);margin-top:3px;}
 
     /* ================= VERSO ================= */
-    .vhero .inner{padding:12mm 13mm 0;}
     .vmain{display:flex;align-items:center;gap:6mm;}
     .vleft{display:flex;align-items:center;gap:5mm;flex-shrink:0;}
     .vqr{width:78px;height:78px;border-radius:16px;background:#fff;padding:7px;box-shadow:0 16px 34px rgba(11,18,32,.28);flex-shrink:0;}
@@ -157,15 +182,15 @@
     .about p{font-size:11.5px;line-height:1.7;font-weight:500;color:var(--muted);margin-bottom:9px;}
 
     .pay{border:1px solid var(--line);background:var(--tint);border-radius:18px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
-    .pay .pl{font-family:var(--disp);font-size:13px;font-weight:800;letter-spacing:.01em;color:var(--ink);}
-    .pay .pl span{display:block;font-family:var(--body);font-size:9.5px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:2px;}
+    .pay .pl{font-family:var(--disp);font-size:13px;font-weight:800;color:var(--ink);}
+    .pay .pl span{display:block;font-family:var(--body);font-size:9.5px;font-weight:600;color:var(--muted);margin-top:2px;}
     .pp{display:flex;gap:10px;}
     .paycard{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:12px;font-weight:800;color:var(--ink);box-shadow:0 6px 16px rgba(16,24,40,.06);}
     .paycard .pimg{height:26px;width:26px;object-fit:contain;border-radius:6px;}
 
-    .vfoot{flex:0 0 auto;background:var(--ink);color:#fff;padding:7mm 13mm;display:flex;align-items:center;gap:9mm;}
+    .vfoot{flex:0 0 auto;background:var(--ink);color:#fff;padding:7mm 13mm;display:flex;align-items:center;gap:6mm;}
     .vfoot .brand{display:flex;align-items:center;gap:10px;}
-    .vfoot .brand .mk{width:34px;height:34px;border-radius:10px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;color:#fff;font-size:20px;}
+    .vfoot .brand .mk{width:34px;height:34px;flex-shrink:0;border-radius:10px;}
     .vfoot .brand .name{font-size:16px;color:#fff;}.vfoot .brand .name .p{color:var(--orange-lt);}
     .vcs{display:flex;gap:6mm;margin-left:auto;}
     .vci{display:flex;align-items:center;gap:9px;}
@@ -191,7 +216,7 @@
       <div class="inner">
         <div class="htop">
           <div class="logo">
-            <span class="mk"><b>G</b></span>
+            <svg class="mk" viewBox="0 0 64 64" aria-label="GestionPro"><defs><linearGradient id="lg1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg1)"/><text x="32" y="47" text-anchor="middle" font-family="'Bricolage Grotesque',Arial" font-weight="800" font-size="42" fill="#fff" letter-spacing="-2">G</text></svg>
             <div><div class="lt">GestionPro</div><div class="ls">Gestion commerciale</div></div>
           </div>
           <span class="htag">100 % en ligne</span>
@@ -212,20 +237,54 @@
           <div class="phone lg">
             <div class="island"></div>
             <div class="scr">
-              <div class="sb"><span>9:41</span><span class="dots"><i></i><i></i><i></i> 100%</span></div>
-              <div class="ah"><span class="b"><span class="g">G</span>Ma Boutique</span><span class="av">MD</span></div>
-              <div class="pad">
-                <div class="kpi"><div class="l">Ventes du jour</div><div class="v">145 000 F</div><span class="pill">▲ +12 % vs hier</span></div>
-                <div class="tiles"><div class="tile"><div class="l">Bénéfice net</div><div class="v">48 000 F</div></div><div class="tile"><div class="l">Commandes</div><div class="v">23</div></div></div>
-                <div class="card-w"><div class="l"><span>7 derniers jours</span><span>+18 %</span></div><div class="spark"><i style="height:40%"></i><i style="height:55%"></i><i style="height:46%"></i><i style="height:70%"></i><i style="height:60%"></i><i style="height:84%"></i><i style="height:100%"></i></div></div>
-                <div class="card-w"><div class="l" style="margin-bottom:6px;"><span>Dernières ventes</span></div>
-                  <div class="salelist">
-                    <div class="sale"><span class="th"></span><span class="nm">Café Touba ×3</span><span class="pr">4 500 F</span></div>
-                    <div class="sale"><span class="th"></span><span class="nm">Savon de Marseille</span><span class="pr">2 500 F</span></div>
-                  </div>
+              <div class="sb">
+                <span class="tm">9:41</span>
+                <span class="ic">
+                  <svg width="11" height="8" viewBox="0 0 18 12" fill="#475569"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg width="11" height="8" viewBox="0 0 16 12" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 4.2a10 10 0 0 1 13 0"/><path d="M4 6.8a6 6 0 0 1 8 0"/><path d="M6.6 9.4a2.2 2.2 0 0 1 2.8 0"/></svg>
+                  <svg width="16" height="8" viewBox="0 0 24 12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="#475569" stroke-width="1.5"/><rect x="3" y="3" width="14" height="6" rx="1.5" fill="#475569"/><rect x="22" y="4" width="2" height="4" rx="1" fill="#475569"/></svg>
+                </span>
+              </div>
+              <div class="ah">
+                <div class="b">
+                  <svg class="g" viewBox="0 0 64 64"><defs><linearGradient id="lg2" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg2)"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="800" font-size="42" fill="#fff">G</text></svg>
+                  <div><div class="bt">Ma Boutique</div><div class="bs">Bonjour, Mamadou</div></div>
+                </div>
+                <span class="av">MD<i></i></span>
+              </div>
+              <div class="body-scr">
+                <div class="kpi">
+                  <span class="deco"></span><span class="deco2"></span>
+                  <div class="kl">Ventes du jour</div>
+                  <div class="kv">145 000 <span>FCFA</span></div>
+                  <div class="kr"><span class="kp">▲ 12 %</span> vs hier</div>
+                </div>
+                <div class="ms">
+                  <div class="c"><div class="v">48 000</div><div class="l">Bénéfice</div></div>
+                  <div class="c"><div class="v">23</div><div class="l">Commandes</div></div>
+                  <div class="c"><div class="v">12</div><div class="l">Clients</div></div>
+                </div>
+                <div class="cw">
+                  <div class="h"><span>Évolution des ventes</span><b>+18 %</b></div>
+                  <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                    <defs><linearGradient id="ar1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ea580c" stop-opacity=".34"/><stop offset="1" stop-color="#ea580c" stop-opacity="0"/></linearGradient></defs>
+                    <path d="M0,30 L18,25 L36,27 L54,16 L72,20 L90,9 L108,5 L120,7 L120,40 L0,40 Z" fill="url(#ar1)"/>
+                    <path d="M0,30 L18,25 L36,27 L54,16 L72,20 L90,9 L108,5 L120,7" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="108" cy="5" r="2.6" fill="#fff" stroke="#ea580c" stroke-width="1.6"/>
+                  </svg>
+                </div>
+                <div class="tx">
+                  <div class="hh">Dernières ventes</div>
+                  <div class="txr"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/><path d="M2 3h3l2 12h11"/></svg></span><div class="tn">Café Touba ×3<span>il y a 5 min</span></div><span class="ta">+4 500 F</span></div>
+                  <div class="txr"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/><path d="M2 3h3l2 12h11"/></svg></span><div class="tn">Savon de Marseille<span>il y a 22 min</span></div><span class="ta">+2 500 F</span></div>
                 </div>
               </div>
-              <div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+              <div class="tabs">
+                <span class="tb on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 10 12 3l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Accueil</span>
+                <span class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/></svg>Produits</span>
+                <span class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/><path d="M2 3h3l2 12h11l2-8H6"/></svg>Ventes</span>
+                <span class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Rapports</span>
+              </div>
             </div>
           </div>
         </div>
@@ -263,7 +322,10 @@
         <div class="h">Demandez votre <span class="accent">démonstration privée</span></div>
         <div class="s">Scannez le QR code pour nous écrire sur WhatsApp.<br/>WhatsApp / Tél : +221 77 383 13 64 · dionemhd1@gmail.com</div>
       </div>
-      <div class="brand"><div class="name">Gestion<span class="p">Pro</span></div><div class="s2">Solution web</div></div>
+      <div class="brand">
+        <div class="name">Gestion<span class="p">Pro</span></div>
+        <div class="s2">Solution web</div>
+      </div>
     </div>
   </div>
 
@@ -280,16 +342,30 @@
             <div class="phone sm">
               <div class="island"></div>
               <div class="scr">
-                <div class="sb"><span>9:41</span><span class="dots"><i></i><i></i><i></i> 100%</span></div>
-                <div class="ah"><span class="b"><span class="g">G</span>Mes produits</span><span class="av">MD</span></div>
-                <div class="pad">
-                  <div class="srow"><span class="th"></span><span class="nm">Café Touba</span><span class="pr">1 500 F</span></div>
-                  <div class="srow"><span class="th"></span><span class="nm">Savon de Marseille</span><span class="pr">2 500 F</span></div>
-                  <div class="srow"><span class="th"></span><span class="nm">Sucre 1 kg</span><span class="pr">900 F</span></div>
-                  <div class="srow"><span class="th"></span><span class="nm">Huile 1 L</span><span class="pr">1 800 F</span></div>
-                  <div class="addbtn">+ Ajouter un produit</div>
+                <div class="sb"><span class="tm">9:41</span><span class="ic">
+                  <svg width="11" height="8" viewBox="0 0 18 12" fill="#475569"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                  <svg width="16" height="8" viewBox="0 0 24 12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="#475569" stroke-width="1.5"/><rect x="3" y="3" width="14" height="6" rx="1.5" fill="#475569"/><rect x="22" y="4" width="2" height="4" rx="1" fill="#475569"/></svg>
+                </span></div>
+                <div class="ah">
+                  <div class="b">
+                    <svg class="g" viewBox="0 0 64 64"><defs><linearGradient id="lg3" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg3)"/><text x="32" y="47" text-anchor="middle" font-family="Arial" font-weight="800" font-size="42" fill="#fff">G</text></svg>
+                    <div><div class="bt">Mes produits</div><div class="bs">128 articles</div></div>
+                  </div>
+                  <span class="av">MD<i></i></span>
                 </div>
-                <div class="tabs"><i></i><i class="on"></i><i></i><i></i></div>
+                <div class="body-scr">
+                  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>Rechercher un produit…</div>
+                  <div class="prow"><span class="th"></span><div class="pn"><div class="t">Café Touba</div><div class="s">En stock · 42</div></div><span class="pp">1 500 F</span></div>
+                  <div class="prow"><span class="th"></span><div class="pn"><div class="t">Savon de Marseille</div><div class="s">En stock · 18</div></div><span class="pp">2 500 F</span></div>
+                  <div class="prow"><span class="th"></span><div class="pn"><div class="t">Sucre 1 kg</div><div class="s">En stock · 60</div></div><span class="pp">900 F</span></div>
+                  <div class="fab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Ajouter un produit</div>
+                </div>
+                <div class="tabs">
+                  <span class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10 12 3l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>Accueil</span>
+                  <span class="tb on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 8 12 3 3 8v8l9 5 9-5z" opacity=".25"/><path d="M21 8 12 3 3 8l9 5z"/></svg>Produits</span>
+                  <span class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/><path d="M2 3h3l2 12h11l2-8H6"/></svg>Ventes</span>
+                  <span class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Rapports</span>
+                </div>
               </div>
             </div>
           </div>
@@ -333,7 +409,10 @@
     </div>
 
     <div class="vfoot">
-      <div class="brand"><span class="mk">G</span><div class="name">Gestion<span class="p">Pro</span></div></div>
+      <div class="brand">
+        <svg class="mk" viewBox="0 0 64 64"><defs><linearGradient id="lg4" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA580C"/><stop offset="1" stop-color="#7C2D12"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg4)"/><text x="32" y="47" text-anchor="middle" font-family="'Bricolage Grotesque',Arial" font-weight="800" font-size="42" fill="#fff">G</text></svg>
+        <div class="name">Gestion<span class="p">Pro</span></div>
+      </div>
       <div class="vcs">
         <div class="vci"><span class="cc wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></span><div><div class="cl">WhatsApp</div><div class="cv">+221 77 383 13 64</div></div></div>
         <div class="vci"><span class="cc or"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.4 1.5a11 11 0 0 0 4.9 4.9L16 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5 2 2 0 0 1 6 3z"/></svg></span><div><div class="cl">Téléphone</div><div class="cv">+221 77 383 13 64</div></div></div>
