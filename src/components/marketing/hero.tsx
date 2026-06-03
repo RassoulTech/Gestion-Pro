@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, WifiOff, Zap, Store } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/brand-icons";
  
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -108,6 +109,29 @@ export function Hero() {
               <Link href="/marketplace">Voir la démo</Link>
             </Button>
           </motion.div>
+
+          {/* Trust strip — signaux concrets (sans chiffres inventés) */}
+          <motion.ul
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.7 }}
+            className="mt-12 flex flex-wrap items-center justify-center gap-2.5"
+          >
+            {[
+              { icon: WifiOff, label: "Fonctionne hors-ligne" },
+              { icon: Zap, label: "Synchronisation temps réel" },
+              { icon: Store, label: "Multi-boutiques" },
+              { icon: WhatsAppIcon, label: "Reçus par WhatsApp" },
+            ].map(({ icon: Icon, label }) => (
+              <li
+                key={label}
+                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/40 px-4 py-2 text-xs font-bold text-muted-foreground backdrop-blur-md shadow-sm transition-colors hover:text-foreground hover:border-brand/30"
+              >
+                <Icon className="h-4 w-4 text-brand" />
+                {label}
+              </li>
+            ))}
+          </motion.ul>
         </div>
       </div>
     </section>
