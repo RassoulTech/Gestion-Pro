@@ -251,7 +251,6 @@ export function CommandesClientTable({
                               )}
                             >
                               <span className="flex items-center gap-1.5">
-                                <status.icon className="h-3 w-3" />
                                 <SelectValue />
                               </span>
                             </SelectTrigger>
@@ -390,7 +389,6 @@ export function CommandesClientTable({
                         )}
                       >
                         <span className="flex items-center gap-1.5">
-                          <status.icon className="h-3 w-3" />
                           <SelectValue />
                         </span>
                       </SelectTrigger>

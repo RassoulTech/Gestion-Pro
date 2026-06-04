@@ -86,7 +86,6 @@ export function EtatActions({ boutiqueId, commandeId, currentEtat }: EtatActions
   }
 
   const meta = ETAT_META[value];
-  const Icon = meta.icon;
 
   return (
     <div className="space-y-2">
@@ -98,7 +97,7 @@ export function EtatActions({ boutiqueId, commandeId, currentEtat }: EtatActions
           )}
         >
           <span className="flex items-center gap-2">
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             <SelectValue />
           </span>
         </SelectTrigger>
