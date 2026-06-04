@@ -1,4 +1,5 @@
 import type { SVGProps } from "react";
+import { PaymentLogo } from "./payment-logo";
 
 /**
  * Brand icons not provided by lucide-react.
@@ -70,28 +71,42 @@ export function GitHubIcon(props: SVGProps<SVGSVGElement>) {
  * Size with className (e.g. `h-5 w-auto`).
  */
 
-/** Wave — brand-blue badge with a clean white wave motif (SVG, no asset needed). */
-export function WaveIcon(props: SVGProps<SVGSVGElement>) {
+/** Wave — official asset /logos/wave.png if present, else a clean wave-motif SVG. */
+export function WaveIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" {...props}>
-      <rect width="32" height="32" rx="7" fill="#1DC3FF" />
-      <path d="M5 19c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
-      <path d="M5 13c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.55" />
-    </svg>
+    <PaymentLogo
+      src="/logos/wave.png"
+      alt="Wave"
+      className={className}
+      fallback={
+        <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="7" fill="#1DC3FF" />
+          <path d="M5 19c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <path d="M5 13c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.55" />
+        </svg>
+      }
+    />
   );
 }
 
-/** Orange Money — Orange square with white exchange arrows (SVG, no asset needed). */
-export function OrangeMoneyIcon(props: SVGProps<SVGSVGElement>) {
+/** Orange Money — official asset /logos/orange-money.png if present, else arrows SVG. */
+export function OrangeMoneyIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" {...props}>
-      <rect width="32" height="32" rx="7" fill="#FF7900" />
-      <g stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 18 18 9" />
-        <path d="M13 9h6v6" />
-        <path d="M23 14 14 23" />
-        <path d="M19 23h-6v-6" />
-      </g>
-    </svg>
+    <PaymentLogo
+      src="/logos/orange-money.png"
+      alt="Orange Money"
+      className={className}
+      fallback={
+        <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="7" fill="#FF7900" />
+          <g stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18 18 9" />
+            <path d="M13 9h6v6" />
+            <path d="M23 14 14 23" />
+            <path d="M19 23h-6v-6" />
+          </g>
+        </svg>
+      }
+    />
   );
 }

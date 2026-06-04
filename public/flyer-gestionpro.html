@@ -187,7 +187,11 @@
     .pp{display:flex;gap:10px;}
     .paycard{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:12px;font-weight:800;color:var(--ink);box-shadow:0 6px 16px rgba(16,24,40,.06);}
     .paycard .plogo{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;flex-shrink:0;}
+    .paycard .plogo img{width:26px;height:26px;object-fit:contain;border-radius:6px;}
     .paycard .plogo svg{width:26px;height:26px;display:block;}
+    .paycard .plogo .fb{display:none;}
+    .paycard .plogo.noimg img{display:none;}
+    .paycard .plogo.noimg .fb{display:inline-flex;}
 
     .vfoot{flex:0 0 auto;background:var(--ink);color:#fff;padding:7mm 13mm;display:flex;align-items:center;gap:6mm;}
     .vfoot .brand{display:flex;align-items:center;gap:10px;}
@@ -403,8 +407,8 @@
       <div class="pay">
         <span class="pl">Moyens de paiement<span>Réglez votre abonnement en toute simplicité</span></span>
         <div class="pp">
-          <div class="paycard"><span class="plogo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1DC3FF"/><path d="M5 19c3-5 6-5 9 0s6 5 9 0" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M5 13c3-5 6-5 9 0s6 5 9 0" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".55"/></svg></span> Wave</div>
-          <div class="paycard"><span class="plogo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#FF7900"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M9 18 18 9"/><path d="M13 9h6v6"/><path d="M23 14 14 23"/><path d="M19 23h-6v-6"/></g></svg></span> Orange Money</div>
+          <div class="paycard"><span class="plogo"><img src="logos/wave.png" alt="" onerror="this.closest('.plogo').classList.add('noimg')"/><span class="fb"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1DC3FF"/><path d="M5 19c3-5 6-5 9 0s6 5 9 0" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M5 13c3-5 6-5 9 0s6 5 9 0" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".55"/></svg></span></span> Wave</div>
+          <div class="paycard"><span class="plogo"><img src="logos/orange-money.png" alt="" onerror="this.closest('.plogo').classList.add('noimg')"/><span class="fb"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#FF7900"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M9 18 18 9"/><path d="M13 9h6v6"/><path d="M23 14 14 23"/><path d="M19 23h-6v-6"/></g></svg></span></span> Orange Money</div>
         </div>
       </div>
     </div>
