@@ -80,15 +80,15 @@ export function WaveIcon({ className }: { className?: string }) {
       className={className}
       fallback={
         <svg className={className} viewBox="0 0 64 64" fill="none" aria-hidden="true">
-          <rect width="64" height="64" rx="13" fill="#2BC4F3" />
-          <path d="M23.5 50.5c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4-2 3.8-4.5 3.8-4.5-1.4-4.5-3.8Z" fill="#F7901E" />
-          <path d="M31.5 50.5c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4-2 3.8-4.5 3.8-4.5-1.4-4.5-3.8Z" fill="#F7901E" />
-          <path d="M32 9c-8 0-13.5 6.2-13.5 16 0 11 5.5 19 13.5 19s13.5-8 13.5-19C45.5 15.2 40 9 32 9Z" fill="#0A0A0A" />
-          <path d="M19.8 27 9.4 19.4c-1.7-1.2-2-3.4-.8-5 1.2-1.5 3.5-1.7 5.2-.4l8.8 6.8Z" fill="#0A0A0A" />
-          <ellipse cx="32" cy="34" rx="8.5" ry="12" fill="#ffffff" />
-          <circle cx="28.2" cy="22" r="2.7" fill="#ffffff" />
-          <circle cx="36.8" cy="22" r="2.7" fill="#ffffff" />
-          <path d="M28.5 27c1.7 2.3 5.3 2.3 7 0 .8 2.6-1.8 4.2-3.5 4.2S27.7 29.6 28.5 27Z" fill="#F7901E" />
+          <rect width="64" height="64" rx="13" fill="#29C3F4" />
+          <ellipse cx="27" cy="52" rx="5" ry="3.4" fill="#F7901E" />
+          <ellipse cx="37" cy="52" rx="5" ry="3.4" fill="#F7901E" />
+          <path d="M32 7C22.6 7 16.5 13.8 16.5 25c0 13 6.2 22 15.5 22s15.5-9 15.5-22C47.5 13.8 41.4 7 32 7Z" fill="#0A0A0A" />
+          <path d="M18.5 28 8 19.8c-1.8-1.4-2.1-3.7-.7-5.4 1.4-1.6 3.8-1.7 5.6-.3l9.2 7.4z" fill="#0A0A0A" />
+          <ellipse cx="32.5" cy="36" rx="9" ry="11" fill="#ffffff" />
+          <circle cx="28" cy="20" r="2.8" fill="#ffffff" />
+          <circle cx="37" cy="20" r="2.8" fill="#ffffff" />
+          <path d="M28.8 24.5c1.7 2.2 4.9 2.2 6.6 0 .6 2.4-1.8 3.9-3.3 3.9s-3.9-1.5-3.3-3.9Z" fill="#F7901E" />
         </svg>
       }
     />
@@ -103,13 +103,13 @@ export function OrangeMoneyIcon({ className }: { className?: string }) {
       alt="Orange Money"
       className={className}
       fallback={
-        <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect width="32" height="32" rx="7" fill="#FF7900" />
-          <g stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18 18 9" />
-            <path d="M13 9h6v6" />
-            <path d="M23 14 14 23" />
-            <path d="M19 23h-6v-6" />
+        <svg className={className} viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <rect width="64" height="64" rx="13" fill="#FF7900" />
+          <g fill="none" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 24h30" stroke="#ffffff" />
+            <path d="M39 18l6.5 6-6.5 6" stroke="#ffffff" />
+            <path d="M49 40H19" stroke="#111111" />
+            <path d="M25 34l-6.5 6 6.5 6" stroke="#111111" />
           </g>
         </svg>
       }
