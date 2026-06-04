@@ -22,8 +22,13 @@
       -webkit-print-color-adjust:exact;print-color-adjust:exact;}
     h1,h2,h3,.disp{font-family:var(--disp);}
 
-    .toolbar{max-width:210mm;margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13px;color:#475569;}
-    .toolbar button{cursor:pointer;border:none;background:var(--orange);color:#fff;font-weight:800;font-family:var(--body);font-size:14px;padding:11px 20px;border-radius:12px;box-shadow:0 8px 20px rgba(234,88,12,.3);}
+    .toolbar{max-width:210mm;margin:18px auto 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#475569;}
+    .toolbar .tip{flex:1 1 240px;}
+    .toolbar .btns{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+    .toolbar button{cursor:pointer;border:none;background:var(--orange);color:#fff;font-weight:800;font-family:var(--body);font-size:14px;padding:11px 18px;border-radius:12px;box-shadow:0 8px 20px rgba(234,88,12,.3);transition:transform .08s ease,opacity .15s ease;}
+    .toolbar button:hover{transform:translateY(-1px);}
+    .toolbar button:disabled{opacity:.6;cursor:wait;transform:none;}
+    .toolbar button.ghost{background:#fff;color:var(--orange);border:1.5px solid var(--orange);box-shadow:none;}
     .toolbar .tip{background:#fff;padding:9px 14px;border-radius:10px;border:1px solid var(--line);}
 
     .page{width:210mm;height:297mm;background:#fff;position:relative;overflow:hidden;margin:18px auto;
@@ -208,12 +213,16 @@
 </head>
 <body>
   <div class="toolbar no-print">
-    <span class="tip">Astuce : <strong>Ctrl/Cmd&nbsp;+&nbsp;P</strong> → « Enregistrer en PDF » → Marges <strong>Aucune</strong> → cocher <strong>Graphiques d'arrière-plan</strong>. (2 pages = recto-verso)</span>
-    <button onclick="window.print()">Imprimer / Enregistrer en PDF</button>
+    <span class="tip">Téléchargez en <strong>PNG haute définition</strong> (≈300&nbsp;DPI, fidèle au design) — recto et verso séparés. Le <strong>PDF</strong> reste disponible pour l'impression.</span>
+    <div class="btns">
+      <button onclick="downloadPng('recto','GestionPro-flyer-recto.png',this)">⬇ PNG — Recto</button>
+      <button onclick="downloadPng('verso','GestionPro-flyer-verso.png',this)">⬇ PNG — Verso</button>
+      <button class="ghost" onclick="window.print()">PDF / Imprimer</button>
+    </div>
   </div>
 
   <!-- ===================== RECTO ===================== -->
-  <div class="page">
+  <div class="page" id="recto">
     <div class="hero">
       <div class="tex"></div>
       <div class="ring" style="width:300px;height:300px;top:-130px;right:-90px;"></div>
@@ -335,7 +344,7 @@
   </div>
 
   <!-- ===================== VERSO ===================== -->
-  <div class="page">
+  <div class="page" id="verso">
     <div class="hero vhero">
       <div class="tex"></div>
       <div class="ring" style="width:280px;height:280px;top:-120px;left:-80px;"></div>
@@ -407,8 +416,8 @@
       <div class="pay">
         <span class="pl">Moyens de paiement<span>Réglez votre abonnement en toute simplicité</span></span>
         <div class="pp">
-          <div class="paycard"><span class="plogo"><img src="logos/wave.png" alt="" onerror="this.closest('.plogo').classList.add('noimg')"/><span class="fb"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="13" fill="#29C3F4"/><ellipse cx="27" cy="52" rx="5" ry="3.4" fill="#F7901E"/><ellipse cx="37" cy="52" rx="5" ry="3.4" fill="#F7901E"/><path d="M32 7C22.6 7 16.5 13.8 16.5 25c0 13 6.2 22 15.5 22s15.5-9 15.5-22C47.5 13.8 41.4 7 32 7Z" fill="#0A0A0A"/><path d="M18.5 28 8 19.8c-1.8-1.4-2.1-3.7-.7-5.4 1.4-1.6 3.8-1.7 5.6-.3l9.2 7.4z" fill="#0A0A0A"/><ellipse cx="32.5" cy="36" rx="9" ry="11" fill="#fff"/><circle cx="28" cy="20" r="2.8" fill="#fff"/><circle cx="37" cy="20" r="2.8" fill="#fff"/><path d="M28.8 24.5c1.7 2.2 4.9 2.2 6.6 0 .6 2.4-1.8 3.9-3.3 3.9s-3.9-1.5-3.3-3.9Z" fill="#F7901E"/></svg></span></span> Wave</div>
-          <div class="paycard"><span class="plogo"><img src="logos/orange-money.png" alt="" onerror="this.closest('.plogo').classList.add('noimg')"/><span class="fb"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="13" fill="#FF7900"/><g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 24h30" stroke="#fff"/><path d="M39 18l6.5 6-6.5 6" stroke="#fff"/><path d="M49 40H19" stroke="#111"/><path d="M25 34l-6.5 6 6.5 6" stroke="#111"/></g></svg></span></span> Orange Money</div>
+          <div class="paycard"><span class="plogo"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="13" fill="#29C3F4"/><ellipse cx="27" cy="52" rx="5" ry="3.4" fill="#F7901E"/><ellipse cx="37" cy="52" rx="5" ry="3.4" fill="#F7901E"/><path d="M32 7C22.6 7 16.5 13.8 16.5 25c0 13 6.2 22 15.5 22s15.5-9 15.5-22C47.5 13.8 41.4 7 32 7Z" fill="#0A0A0A"/><path d="M18.5 28 8 19.8c-1.8-1.4-2.1-3.7-.7-5.4 1.4-1.6 3.8-1.7 5.6-.3l9.2 7.4z" fill="#0A0A0A"/><ellipse cx="32.5" cy="36" rx="9" ry="11" fill="#fff"/><circle cx="28" cy="20" r="2.8" fill="#fff"/><circle cx="37" cy="20" r="2.8" fill="#fff"/><path d="M28.8 24.5c1.7 2.2 4.9 2.2 6.6 0 .6 2.4-1.8 3.9-3.3 3.9s-3.9-1.5-3.3-3.9Z" fill="#F7901E"/></svg></span> Wave</div>
+          <div class="paycard"><span class="plogo"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="13" fill="#FF7900"/><g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 24h30" stroke="#fff"/><path d="M39 18l6.5 6-6.5 6" stroke="#fff"/><path d="M49 40H19" stroke="#111"/><path d="M25 34l-6.5 6 6.5 6" stroke="#111"/></g></svg></span> Orange Money</div>
         </div>
       </div>
     </div>
@@ -425,5 +434,51 @@
       </div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <script>
+    // Google Fonts are cross-origin, so html-to-image can't read their @font-face
+    // rules directly. We fetch the CSS + each font file and inline them as
+    // data-URLs, then hand the result to toPng() so text renders pixel-perfect.
+    const FONT_CSS_URL = "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap";
+    let _fontCSS = null;
+    async function buildFontEmbedCSS() {
+      if (_fontCSS !== null) return _fontCSS;
+      try {
+        let css = await fetch(FONT_CSS_URL).then(r => r.text());
+        const urls = [...new Set([...css.matchAll(/url\((https:[^)]+)\)/g)].map(m => m[1]))];
+        const map = {};
+        await Promise.all(urls.map(async (u) => {
+          const blob = await fetch(u).then(r => r.blob());
+          map[u] = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(blob); });
+        }));
+        for (const u of urls) css = css.split(u).join(map[u]);
+        _fontCSS = css;
+      } catch (e) { _fontCSS = ""; }
+      return _fontCSS;
+    }
+    async function downloadPng(id, filename, btn) {
+      const node = document.getElementById(id);
+      const label = btn.textContent;
+      btn.disabled = true; btn.textContent = "Génération…";
+      try {
+        await document.fonts.ready;
+        const fontEmbedCSS = await buildFontEmbedCSS();
+        // 210mm ≈ 794px → pixelRatio 3.2 ≈ 2540px wide ≈ 305 DPI (print quality).
+        const dataUrl = await window.htmlToImage.toPng(node, {
+          pixelRatio: 3.2,
+          cacheBust: true,
+          backgroundColor: "#ffffff",
+          fontEmbedCSS: fontEmbedCSS || undefined,
+          style: { margin: "0", boxShadow: "none" },
+        });
+        const a = document.createElement("a");
+        a.href = dataUrl; a.download = filename; a.click();
+      } catch (e) {
+        alert("Échec de l'export PNG : " + (e && e.message ? e.message : e) + "\nUtilisez le bouton « PDF / Imprimer » en secours.");
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    }
+  </script>
 </body>
 </html>
