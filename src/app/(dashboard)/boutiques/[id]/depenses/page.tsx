@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { DepensesClient } from "./_components/depenses-client";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 interface DepensesPageProps {
@@ -57,7 +56,7 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
     ];
   }
 
-  const [depenses, totalCount, totalAmountResult, distinctCategories] = await Promise.all([
+  const [depenses, totalCount, totalAmountResult] = await Promise.all([
     prisma.depense.findMany({
       where: whereClause,
       orderBy: { date: "desc" },
@@ -73,19 +72,9 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
         montant: true,
       },
     }),
-    prisma.depense.findMany({
-      where: { boutiqueId },
-      select: { categorie: true },
-      distinct: ["categorie"],
-    }),
   ]);
 
   const totalDepenses = totalAmountResult._sum.montant || 0;
-
-  const categoriesList = distinctCategories
-    .map((c) => c.categorie)
-    .filter((c): c is string => !!c)
-    .map((c) => ({ id: c, nom: c }));
 
   return (
     <div className="space-y-8 pb-10">
@@ -104,13 +93,6 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
           </Button>
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        searchPlaceholder="Rechercher par libellé..."
-        categories={categoriesList}
-        categoryLabel="Catégorie de dépense"
-      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

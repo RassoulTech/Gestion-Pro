@@ -11,9 +11,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
-import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Commandes fournisseur" };
 
@@ -41,20 +39,13 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
   const dateFilter = parseDateFilter(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
 
-  const [suppliers, { data: commandes, total }] = await Promise.all([
-    prisma.fournisseur.findMany({
-      where: { boutiqueId: id },
-      select: { id: true, nom: true },
-      orderBy: { nom: "asc" },
-    }),
-    getBoutiqueCommandesFournisseur(id, {
-      search: q,
-      page,
-      perPage: limit,
-      dateFilter: filterParam,
-      supplierId,
-    }),
-  ]);
+  const { data: commandes, total } = await getBoutiqueCommandesFournisseur(id, {
+    search: q,
+    page,
+    perPage: limit,
+    dateFilter: filterParam,
+    supplierId,
+  });
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">
@@ -73,13 +64,6 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
           </Button>
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        searchPlaceholder="Rechercher par code..."
-        suppliers={suppliers}
-        supplierLabel="Fournisseur de l'achat"
-      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

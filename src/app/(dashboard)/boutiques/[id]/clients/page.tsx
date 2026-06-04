@@ -20,7 +20,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ClientActions } from "./_components/client-actions";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 interface ClientsPageProps {
@@ -98,11 +97,6 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
           </Button>
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        searchPlaceholder="Rechercher un client..."
-      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

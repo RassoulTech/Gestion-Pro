@@ -8,7 +8,6 @@ import { getBoutiqueProduits } from "@/server/queries/produit.queries";
 import { AjustementStockModal } from "./_components/ajustement-modal";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
@@ -110,17 +109,6 @@ export default async function StockPage({ params, searchParams }: StockPageProps
         featureName="Stock avancé & Historique des mouvements"
         featureDescription="Suivez chaque entrée et sortie de stock, avec un historique complet et des indicateurs avancés. Disponible dès le plan Pro."
       >
-        {/* Panel de Filtres (Pleine largeur dans le corps) */}
-        <UnifiedFilterPanel
-          searchPlaceholder="Rechercher par produit..."
-          typeOptions={[
-            { value: "ALL", label: "Tous les types" },
-            { value: "ENTREE", label: "Entrées" },
-            { value: "SORTIE", label: "Sorties" },
-          ]}
-          sourceOptions={availableSources}
-        />
-
         {/* Contenu principal */}
         <div className="space-y-6">
             <StockClient

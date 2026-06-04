@@ -4,7 +4,6 @@ import { getBoutiqueFournisseurs } from "@/server/queries/fournisseur.queries";
 import { FournisseursClient } from "./_components/fournisseurs-client";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 export const metadata: Metadata = { title: "Fournisseurs" };
@@ -51,11 +50,6 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
           <PeriodFilterSelect />
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        searchPlaceholder="Rechercher un fournisseur..."
-      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

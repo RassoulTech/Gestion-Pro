@@ -12,7 +12,6 @@ import {
 } from "./_components/commandes-client-table";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 interface CommandesPageProps {
@@ -116,19 +115,6 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
           </Button>
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        searchPlaceholder="Rechercher par code ou client..."
-        statusOptions={[
-          { value: "ALL", label: "Tous les statuts" },
-          { value: "EN_ATTENTE", label: "En attente" },
-          { value: "VALIDEE", label: "Validée" },
-          { value: "LIVREE", label: "Livrée" },
-          { value: "ANNULEE", label: "Annulée" },
-        ]}
-        statusLabel="Statut de commande"
-      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

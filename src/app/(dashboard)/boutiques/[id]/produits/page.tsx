@@ -26,7 +26,6 @@ import { ProduitActions } from "./_components/produit-actions";
 import { ExcelImportButton } from "./_components/excel-import-button";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 interface ProduitsPageProps {
@@ -116,7 +115,6 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
     lowStockCount,
     outOfStockCount,
     filteredCount,
-    categories,
   ] = await Promise.all([
     prisma.boutique.findUnique({
       where: { id: boutiqueId },
@@ -141,12 +139,6 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
     prisma.produit.count({ where: { boutiqueId, quantite: 0 } }),
     // Count of filtered products
     prisma.produit.count({ where: whereClause }),
-    // Categories list for filter panel
-    prisma.categorie.findMany({
-      where: { boutiqueId },
-      select: { id: true, nom: true },
-      orderBy: { nom: "asc" },
-    }),
   ]);
 
   if (!boutique) notFound();
@@ -190,20 +182,6 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
           </Button>
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        searchPlaceholder="Rechercher par nom, code barre..."
-        categories={categories}
-        categoryLabel="Catégorie de produit"
-        statusOptions={[
-          { value: "all", label: "Tous les produits" },
-          { value: "alert", label: "Stock critique" },
-          { value: "instock", label: "En stock" },
-          { value: "outofstock", label: "Rupture" },
-        ]}
-        statusLabel="Statut du stock"
-      />
 
       {/* Contenu principal */}
       <div className="space-y-8">
