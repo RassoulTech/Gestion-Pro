@@ -34,9 +34,14 @@ function writeCart(items: CartItem[]) {
 
 export function useCart() {
   const [items, setItems] = useState<CartItem[]>([]);
+  // `hydrated` passe à true une fois le panier lu depuis localStorage.
+  // Indispensable pour distinguer « panier réellement vide » de
+  // « panier pas encore chargé » (sinon /checkout redirige à tort vers /panier).
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setItems(readCart());
+    setHydrated(true);
     const onChange = () => setItems(readCart());
     listeners.add(onChange);
     return () => { listeners.delete(onChange); };
@@ -82,5 +87,5 @@ export function useCart() {
   const totalItems = items.reduce((sum, i) => sum + i.quantite, 0);
   const totalPrice = items.reduce((sum, i) => sum + i.prixUnitaire * i.quantite, 0);
 
-  return { items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice };
+  return { items, hydrated, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice };
 }

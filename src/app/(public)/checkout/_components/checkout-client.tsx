@@ -32,7 +32,7 @@ const checkoutFormSchema = z.object({
 type CheckoutForm = z.infer<typeof checkoutFormSchema>;
 
 export function CheckoutClient() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, hydrated, totalPrice, clearCart } = useCart();
   const router = useRouter();
   const { data: session, status } = useSession();
   
@@ -57,10 +57,12 @@ export function CheckoutClient() {
   const isAuthenticated = status === "authenticated";
 
   useEffect(() => {
-    if (items.length === 0) {
+    // On attend que le panier soit chargé depuis localStorage avant de juger
+    // qu'il est vide — sinon on renvoie l'utilisateur vers /panier par erreur.
+    if (hydrated && items.length === 0) {
       router.push("/panier");
     }
-  }, [items, router]);
+  }, [hydrated, items, router]);
 
   const { execute, isExecuting } = useAction(createMarketplaceCommande, {
     onSuccess: ({ data }) => {
@@ -205,6 +207,13 @@ export function CheckoutClient() {
     });
   }
 
+  if (!hydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] dark:bg-[#0a0a0a]">
+        <Loader2 className="h-7 w-7 animate-spin text-orange-500" />
+      </div>
+    );
+  }
   if (items.length === 0) return null;
 
   return (
