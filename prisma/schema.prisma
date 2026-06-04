@@ -180,6 +180,7 @@ model Boutique {
   mouvementsStock  MouvementStock[]
   depenses         Depense[]
   resumesJournaliers ResumeJournalier[]
+  factures         Facture[]
 
   @@map("boutiques")
 }
@@ -322,6 +323,7 @@ model Produit {
   lignesCommandeClient     LigneCommandeClient[]
   lignesCommandeFournisseur LigneCommandeFournisseur[]
   lignesVenteFlash         LigneVenteFlash[]
+  lignesFacture            LigneFacture[]
   mouvementsStock          MouvementStock[]
 
   @@unique([boutiqueId, code])
@@ -348,6 +350,7 @@ model Client {
 
   boutique   Boutique  @relation(fields: [boutiqueId], references: [id], onDelete: Cascade)
   commandes  CommandeClient[]
+  factures   Facture[]
 
   @@index([boutiqueId, createdAt])
   @@map("clients")
@@ -553,6 +556,65 @@ model ContactMessage {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("contact_messages")
+}
+
+// ─── FACTURES MANUELLES (Pro / Enterprise) ────────────────────
+
+enum StatutFacture {
+  BROUILLON
+  PAYEE
+  IMPAYEE
+  ANNULEE
+}
+
+model Facture {
+  id              String        @id @default(cuid())
+  boutiqueId      String        @map("boutique_id")
+  clientId        String?       @map("client_id")
+  numero          String
+  date            DateTime      @default(now())
+  statut          StatutFacture @default(BROUILLON)
+
+  // Snapshot client (archivage + clients non enregistrés)
+  clientNom       String?       @map("client_nom")
+  clientTelephone String?       @map("client_telephone")
+  clientEmail     String?       @map("client_email")
+  clientAdresse   String?       @map("client_adresse")
+
+  sousTotal       Float         @default(0) @map("sous_total")
+  remise          Float         @default(0)
+  tauxTva         Float         @default(0) @map("taux_tva") // pourcentage, ex. 18
+  montantTva      Float         @default(0) @map("montant_tva")
+  total           Float         @default(0)
+
+  stockDeduit     Boolean       @default(false) @map("stock_deduit")
+  notes           String?       @db.Text
+
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  boutique        Boutique      @relation(fields: [boutiqueId], references: [id], onDelete: Cascade)
+  client          Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  lignes          LigneFacture[]
+
+  @@unique([boutiqueId, numero])
+  @@index([boutiqueId, date])
+  @@index([boutiqueId, statut])
+  @@map("factures")
+}
+
+model LigneFacture {
+  id           String   @id @default(cuid())
+  factureId    String   @map("facture_id")
+  produitId    String?  @map("produit_id")
+  designation  String
+  quantite     Int
+  prixUnitaire Float    @map("prix_unitaire")
+
+  facture      Facture  @relation(fields: [factureId], references: [id], onDelete: Cascade)
+  produit      Produit? @relation(fields: [produitId], references: [id], onDelete: SetNull)
+
+  @@map("lignes_facture")
 }
 
 // ─── AUDIT ─────────────────────────────────────────────────────

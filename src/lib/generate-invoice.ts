@@ -32,12 +32,21 @@ interface InvoiceLigne {
 interface InvoiceData {
   invoiceNumber: string;
   date: Date;
+  /** Code de statut (sert au choix de la couleur) — ex. "PAYEE". */
   status: string;
+  /** Libellé lisible affiché (ex. "Payée"). À défaut, `status` est utilisé. */
+  statusLabel?: string;
   boutique: InvoiceBoutique;
   client: InvoiceClient;
   lignes: InvoiceLigne[];
   total: number;
   remise: number;
+  /** Montant de TVA (FCFA). Optionnel — affiché seulement si > 0. */
+  montantTva?: number;
+  /** Taux de TVA appliqué (%) — pour le libellé "TVA (18 %)". */
+  tauxTva?: number;
+  /** Notes libres affichées sous le tableau (optionnel). */
+  notes?: string | null;
 }
 
 function formatCurrencyCFA(amount: number): string {
@@ -144,12 +153,19 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text("Statut :", metaX, y + 5);
   doc.setFont("helvetica", "bold");
-  if (data.status === "VALIDEE" || data.status === "CONFIRME" || data.status === "LIVREE") {
+  if (
+    data.status === "VALIDEE" ||
+    data.status === "CONFIRME" ||
+    data.status === "LIVREE" ||
+    data.status === "PAYEE"
+  ) {
     doc.setTextColor(16, 185, 129);
+  } else if (data.status === "ANNULEE") {
+    doc.setTextColor(239, 68, 68);
   } else {
     doc.setTextColor(BRAND_COLOR[0], BRAND_COLOR[1], BRAND_COLOR[2]);
   }
-  doc.text(data.status, metaX + 30, y + 5);
+  doc.text(data.statusLabel ?? data.status, metaX + 30, y + 5);
 
   doc.setFont("helvetica", "normal");
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
@@ -198,7 +214,20 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  y = (doc as any).lastAutoTable.finalY + 12;
+  const tableFinalY = (doc as any).lastAutoTable.finalY + 12;
+  y = tableFinalY;
+
+  // ─── Notes (left, optional) ───
+  if (data.notes && data.notes.trim()) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
+    doc.text("NOTES", margin, tableFinalY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
+    const noteLines = doc.splitTextToSize(data.notes.trim(), pageWidth - margin - 75);
+    doc.text(noteLines, margin, tableFinalY + 5);
+  }
 
   // ─── Summary (Totals) ───
   const summaryX = pageWidth - margin - 60;
@@ -221,6 +250,16 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
     doc.setFont("helvetica", "bold");
     doc.setTextColor(239, 68, 68);
     doc.text(`- ${formatCurrencyCFA(data.remise)}`, pageWidth - margin, y, { align: "right" });
+  }
+
+  if (data.montantTva && data.montantTva > 0) {
+    y += 6;
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
+    doc.text(`TVA${data.tauxTva ? ` (${data.tauxTva} %)` : ""} :`, summaryX, y);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
+    doc.text(formatCurrencyCFA(data.montantTva), pageWidth - margin, y, { align: "right" });
   }
 
   y += 8;

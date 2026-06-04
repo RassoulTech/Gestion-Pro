@@ -108,6 +108,7 @@ function getBoutiqueNavGroups(boutiqueId: string, boutiqueSlug?: string): NavGro
     {
       label: "Gestion financière",
       items: [
+        { label: "Factures", href: `${base}/factures`, icon: FileText, requires: "PRO" },
         { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
         { label: "Achats Fournisseurs", href: `${base}/commandes-fournisseur`, icon: Truck },
         { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },

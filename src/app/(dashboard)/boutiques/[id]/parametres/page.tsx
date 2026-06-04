@@ -18,6 +18,7 @@ import {
 } from "@/lib/quotas";
 import { SectionProfil } from "./_components/section-profil";
 import { SectionBoutique } from "./_components/section-boutique";
+import { SectionLienPublic } from "./_components/section-lien-public";
 import { SectionCompte } from "./_components/section-compte";
 import { SectionSecurite } from "./_components/section-securite";
 import { SectionAbonnement } from "./_components/section-abonnement";
@@ -96,6 +97,13 @@ export default async function ParametresPage({ params }: PageProps) {
     getRecentActivityForUser(session.user.id, 8),
   ]);
 
+  const [produitsCount, clientsCount, facturesCount, stockAgg] = await Promise.all([
+    prisma.produit.count({ where: { boutiqueId: id } }),
+    prisma.client.count({ where: { boutiqueId: id } }),
+    prisma.facture.count({ where: { boutiqueId: id } }),
+    prisma.produit.aggregate({ where: { boutiqueId: id }, _sum: { quantite: true } }),
+  ]);
+
   const notifs = parseNotifs(vendeur.notifications);
   const prefs = parsePrefs(vendeur.preferences);
 
@@ -156,6 +164,13 @@ export default async function ParametresPage({ params }: PageProps) {
                   }}
                 />
               ),
+              lienPublic: (
+                <SectionLienPublic
+                  boutiqueId={id}
+                  slug={boutique.slug}
+                  planCode={quotas.codePlan}
+                />
+              ),
               compte: (
                 <SectionCompte
                   initial={{
@@ -201,6 +216,13 @@ export default async function ParametresPage({ params }: PageProps) {
                   boutiqueId={id}
                   boutiqueNom={boutique.nom}
                   boutiqueStatut={boutique.statut}
+                  stats={{
+                    produits: produitsCount,
+                    clients: clientsCount,
+                    commandes: commandeCount,
+                    factures: facturesCount,
+                    stock: stockAgg._sum.quantite ?? 0,
+                  }}
                 />
               ),
             }}

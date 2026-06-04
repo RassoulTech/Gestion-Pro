@@ -118,6 +118,7 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean, boutiqueSlug?:
     // Fournisseurs
     { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
     // Gestion financière
+    { label: "Factures", href: `${base}/factures`, icon: FileText, requires: "PRO" },
     { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
     { label: "Achats Fourn.", href: `${base}/commandes-fournisseur`, icon: Truck },
     { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },

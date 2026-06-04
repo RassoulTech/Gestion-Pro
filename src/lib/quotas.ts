@@ -217,6 +217,8 @@ export async function isPremiumFeatureAllowed(
       "EXPORT",
       "STOCK_AVANCE",
       "MULTI_MEMBRES",
+      "FACTURES_MANUELLES",
+      "LIEN_BOUTIQUE",
     ];
     return allowedFeatures.includes(featureCode);
   }
@@ -252,6 +254,40 @@ export async function getBoutiqueOwnerQuotas(
     };
   }
   return getVendeurQuotas(owner.vendeurId);
+}
+
+/**
+ * Vérifie si une boutique débloque une fonctionnalité premium, en se basant
+ * sur le plan effectif de son OWNER (et non du membre courant). Ainsi un membre
+ * STAFF d'une boutique Pro bénéficie aussi des fonctionnalités du plan.
+ *
+ * En mode sandbox (BILLING_ENABLED ≠ "true"), tout est autorisé.
+ */
+export async function boutiqueHasFeature(
+  boutiqueId: string,
+  featureCode: string
+): Promise<boolean> {
+  if (process.env.BILLING_ENABLED !== "true" && env.BILLING_ENABLED !== "true") {
+    return true;
+  }
+  const quotas = await getBoutiqueOwnerQuotas(boutiqueId);
+  if (!quotas.isActive) return false;
+  if (quotas.codePlan === "ENTERPRISE") return true;
+  if (quotas.codePlan === "PRO") {
+    const allowedFeatures = [
+      "POS_AVANCE",
+      "VENTES_FLASH",
+      "RAPPORTS_DETAILLES",
+      "MARKETPLACE",
+      "EXPORT",
+      "STOCK_AVANCE",
+      "MULTI_MEMBRES",
+      "FACTURES_MANUELLES",
+      "LIEN_BOUTIQUE",
+    ];
+    return allowedFeatures.includes(featureCode);
+  }
+  return false;
 }
 
 /**

@@ -2,12 +2,14 @@
 
 import { z } from "zod";
 import bcrypt from "bcryptjs";
+import { revalidatePath } from "next/cache";
+import { env } from "@/env.mjs";
 import { vendeurActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { requireBoutiqueOwner } from "@/lib/permissions";
 import { generateCode, slugify } from "@/lib/utils";
-import { checkBoutiqueCreationLimit, checkMembreCreationLimit, clearQuotaCache, getVendeurQuotas } from "@/lib/quotas";
+import { boutiqueHasFeature, checkBoutiqueCreationLimit, checkMembreCreationLimit, clearQuotaCache, getVendeurQuotas } from "@/lib/quotas";
 import { getLimitReachedMessage } from "@/lib/plan-limits";
 import {
   createBoutiqueSchema,
@@ -125,6 +127,57 @@ export const updateBoutique = vendeurActionClient
     return { boutique };
   });
 
+/** Slugs réservés (routes de l'app) — interdits comme lien de boutique. */
+const RESERVED_SLUGS = new Set([
+  "admin", "api", "marketplace", "boutiques", "boutique", "login", "register",
+  "pricing", "contact", "support", "blog", "s", "shop", "store", "checkout",
+  "panier", "profil", "onboarding", "status", "flyer", "cgu", "cgv",
+]);
+
+export const updateBoutiqueSlug = vendeurActionClient
+  .schema(z.object({ boutiqueId: z.string().min(1), slug: z.string().min(1) }))
+  .action(async ({ parsedInput: { boutiqueId, slug: rawSlug }, ctx }) => {
+    const { vendeurId, user } = ctx;
+    await requireBoutiqueOwner(boutiqueId, vendeurId);
+
+    if (!(await boutiqueHasFeature(boutiqueId, "LIEN_BOUTIQUE"))) {
+      throw new Error(
+        "Le lien personnalisé est réservé aux forfaits Pro et Enterprise."
+      );
+    }
+
+    const slug = slugify(rawSlug);
+    if (slug.length < 3 || slug.length > 40) {
+      throw new Error(
+        "Le lien doit contenir entre 3 et 40 caractères (lettres, chiffres et tirets)."
+      );
+    }
+    if (RESERVED_SLUGS.has(slug)) {
+      throw new Error("Ce lien est réservé. Choisissez-en un autre.");
+    }
+
+    const existing = await prisma.boutique.findUnique({ where: { slug } });
+    if (existing && existing.id !== boutiqueId) {
+      throw new Error("Ce lien est déjà utilisé par une autre boutique.");
+    }
+
+    const boutique = await prisma.boutique.update({
+      where: { id: boutiqueId },
+      data: { slug },
+    });
+
+    await logActivity({
+      userId: user.id,
+      action: "BOUTIQUE_SLUG_UPDATED",
+      subjectType: "Boutique",
+      subjectId: boutiqueId,
+      changes: { slug },
+    });
+
+    revalidatePath(`/boutiques/${boutiqueId}/parametres`);
+    return { slug: boutique.slug };
+  });
+
 export const deleteBoutique = vendeurActionClient
   .schema(z.object({ boutiqueId: z.string().min(1) }))
   .action(async ({ parsedInput, ctx }) => {
@@ -184,11 +237,33 @@ export const deleteBoutiquePermanent = vendeurActionClient
     const { boutiqueId, password, confirmation } = parsedInput;
     const { vendeurId, user } = ctx;
 
-    if (confirmation !== "SUPPRIMER") {
-      throw new Error("La confirmation doit être exactement \"SUPPRIMER\"");
+    if (confirmation !== "SUPPRIMER MA BOUTIQUE") {
+      throw new Error("La confirmation doit être exactement « SUPPRIMER MA BOUTIQUE »");
     }
 
     await requireBoutiqueOwner(boutiqueId, vendeurId);
+
+    // Garde-fou facturation : on empêche la suppression de la DERNIÈRE boutique
+    // tant qu'un abonnement payant actif n'est pas résilié (uniquement quand le
+    // billing est activé — en mode sandbox cette règle est ignorée).
+    const billingOn =
+      process.env.BILLING_ENABLED === "true" || env.BILLING_ENABLED === "true";
+    if (billingOn) {
+      const [activeSub, ownedCount] = await Promise.all([
+        prisma.abonnement.findFirst({
+          where: { vendeurId, statut: "ACTIF", cancelAtPeriodEnd: false },
+          include: { plan: true },
+        }),
+        prisma.boutique.count({
+          where: { membres: { some: { vendeurId, role: "OWNER" } } },
+        }),
+      ]);
+      if (activeSub && activeSub.plan.codePlan !== "STARTER" && ownedCount <= 1) {
+        throw new Error(
+          "Vous avez un abonnement actif. Résiliez-le depuis l'onglet Abonnement avant de supprimer votre dernière boutique."
+        );
+      }
+    }
 
     const dbUser = await prisma.user.findUnique({
       where: { id: user.id },
