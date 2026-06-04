@@ -31,7 +31,6 @@ import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 import { parseDateFilter } from "@/lib/date-filters";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 interface BoutiquePageProps {
@@ -418,11 +417,6 @@ export default async function BoutiqueDashboardPage({
           </div>
         </div>
       </div>
-
-      {/* Panel de Filtres (Pleine largeur dans le corps) */}
-      <UnifiedFilterPanel
-        enableSearch={false}
-      />
 
       {/* Contenu principal */}
       <div className="space-y-6 sm:space-y-10">

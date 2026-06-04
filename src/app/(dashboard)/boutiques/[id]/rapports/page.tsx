@@ -13,7 +13,6 @@ import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { parseDateFilter } from "@/lib/date-filters";
-import { UnifiedFilterPanel } from "@/components/dashboard/unified-filter-panel";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
 export const metadata: Metadata = { title: "Rapports" };
@@ -132,11 +131,6 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
         featureName="Rapports Détaillés & Analytics"
         featureDescription="Obtenez des graphiques interactifs avancés sur l'évolution de vos ventes et de vos stocks."
       >
-        {/* Panel de Filtres (Pleine largeur dans le corps) */}
-        <UnifiedFilterPanel
-          enableSearch={false}
-        />
-
         {/* Contenu principal */}
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-center justify-end gap-4 mb-6">
