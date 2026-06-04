@@ -89,6 +89,8 @@ export const createProduit = vendeurActionClient
           quantite: data.quantite,
           seuilAlerte: data.seuilAlerte,
           photo: data.photo,
+          aiGenerated: data.aiGenerated ?? false,
+          aiPrompt: data.aiPrompt || null,
         },
       });
 
@@ -150,6 +152,8 @@ export const updateProduit = vendeurActionClient
         quantite: data.quantite,
         seuilAlerte: data.seuilAlerte,
         photo: data.photo,
+        aiGenerated: data.aiGenerated,
+        aiPrompt: data.aiPrompt,
       },
     });
 

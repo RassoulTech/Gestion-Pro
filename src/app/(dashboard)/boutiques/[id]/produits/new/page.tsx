@@ -23,6 +23,8 @@ import Link from "next/link";
 
 import { createProduitSchema, type CreateProduitInput } from "@/schemas/produit.schema";
 import { createProduit, checkProductLimitAction } from "@/server/actions/produit.actions";
+import { AiProductAssistant } from "../_components/ai-product-assistant";
+import type { AiProductResult } from "@/lib/ai/tasks";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -68,6 +70,8 @@ export default function NewProductPage({ params }: NewProductPageProps) {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Categorie[]>([]);
   const [limitData, setLimitData] = useState<LimitData | null>(null);
+  const [aiGenerated, setAiGenerated] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
 
   const form = useForm<CreateProduitInput>({
     resolver: zodResolver(createProduitSchema),
@@ -98,6 +102,19 @@ export default function NewProductPage({ params }: NewProductPageProps) {
       .catch(() => {});
   }, [boutiqueId]);
 
+  function applyAi(r: AiProductResult, prompt: string) {
+    form.setValue("nom", r.nom, { shouldValidate: true });
+    if (r.description) form.setValue("description", r.description);
+    if (r.sku && !form.getValues("code")) form.setValue("code", r.sku, { shouldValidate: true });
+    const match = categories.find((c) => c.nom.toLowerCase() === r.categorie.toLowerCase());
+    if (match) form.setValue("categorieId", match.id);
+    if (typeof r.prixConseille === "number" && r.prixConseille > 0 && !form.getValues("prixUnitaire")) {
+      form.setValue("prixUnitaire", r.prixConseille);
+    }
+    setAiGenerated(true);
+    setAiPrompt(prompt);
+  }
+
   async function onSubmit(data: CreateProduitInput) {
     if (limitData?.limitReached) {
       toast.error("Limite de produits atteinte. Veuillez passer au plan supérieur.");
@@ -107,7 +124,7 @@ export default function NewProductPage({ params }: NewProductPageProps) {
     try {
       const result = await createProduit({
         boutiqueId,
-        data,
+        data: { ...data, aiGenerated, aiPrompt: aiPrompt || undefined },
       });
 
       if (result?.serverError) {
@@ -194,6 +211,9 @@ export default function NewProductPage({ params }: NewProductPageProps) {
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* Bloc IA — premier élément (mobile-first) */}
+              <AiProductAssistant boutiqueId={boutiqueId} onApply={applyAi} />
+
               <div className="grid gap-8 lg:grid-cols-3">
                 {/* Left Column: Main Info */}
                 <div className="lg:col-span-2 space-y-6">

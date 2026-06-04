@@ -30,7 +30,6 @@ import {
   Plus,
   Layers,
   FileText,
-  Sparkles,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
@@ -111,7 +110,6 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean, boutiqueSlug?:
   if (!boutiqueId) return [];
   const base = `/boutiques/${boutiqueId}`;
   return [
-    { label: "Assistant IA", href: `${base}/assistant`, icon: Sparkles },
     // Gestion commerciale (rest)
     { label: "Clients", href: `${base}/clients`, icon: Users },
     { label: "Catégories", href: `${base}/categories`, icon: Tag },

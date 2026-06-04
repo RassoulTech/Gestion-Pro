@@ -89,6 +89,82 @@ export async function aiComplete({ system, user, mock, maxTokens = 1024 }: Compl
   }
 }
 
+interface VisionOpts {
+  system: string;
+  user: string;
+  imageBase64: string; // base64 brut (sans préfixe data:)
+  mimeType: string;
+  mock: () => string;
+  maxTokens?: number;
+}
+
+/** Complétion avec image (vision). Repli mock si pas de clé ou erreur. */
+export async function aiCompleteVision({ system, user, imageBase64, mimeType, mock, maxTokens = 700 }: VisionOpts): Promise<string> {
+  const mode = getAiMode();
+  if (mode === "mock") return mock();
+
+  try {
+    if (mode === "anthropic") {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": process.env.ANTHROPIC_API_KEY!,
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          model: ANTHROPIC_MODEL,
+          max_tokens: maxTokens,
+          system,
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "image", source: { type: "base64", media_type: mimeType, data: imageBase64 } },
+                { type: "text", text: user },
+              ],
+            },
+          ],
+        }),
+      });
+      if (!res.ok) throw new Error(`Anthropic ${res.status}`);
+      const data = await res.json();
+      const text = data?.content?.[0]?.text;
+      return typeof text === "string" && text.trim() ? text : mock();
+    }
+
+    // openai (vision)
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY!}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        max_tokens: maxTokens,
+        messages: [
+          { role: "system", content: system },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: user },
+              { type: "image_url", image_url: { url: `data:${mimeType};base64,${imageBase64}` } },
+            ],
+          },
+        ],
+      }),
+    });
+    if (!res.ok) throw new Error(`OpenAI ${res.status}`);
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content;
+    return typeof text === "string" && text.trim() ? text : mock();
+  } catch (err) {
+    console.error("[ai] vision failed, falling back to mock:", err);
+    return mock();
+  }
+}
+
 /** Découpe un texte en petits morceaux pour simuler le streaming en mode mock. */
 function* chunkText(text: string): Generator<string> {
   const tokens = text.split(/(\s+)/);

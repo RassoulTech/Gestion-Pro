@@ -13,7 +13,23 @@ export interface AiProductResult {
   unite: string;
   tags: string[];
   caracteristiques: string[];
+  sku: string;
   prixConseille: number | null;
+}
+
+/** Génère une référence/SKU lisible à partir d'un nom de produit. */
+export function suggestSku(nom: string): string {
+  const base = nom
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[^A-Z0-9 ]/g, "")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w.slice(0, 3))
+    .join("-");
+  const suffix = Math.floor(1000 + Math.random() * 9000);
+  return `${base || "PRD"}-${suffix}`;
 }
 
 const SECTORS: { rx: RegExp; cat: string }[] = [
@@ -46,7 +62,8 @@ export function buildProductTask(input: string) {
     "À partir d'une saisie libre, génère une fiche produit complète. " +
     "Réponds UNIQUEMENT par un objet JSON valide, sans texte autour, avec exactement ces clés : " +
     "nom (string), description (string, 2-3 phrases commerciales), categorie (string), sousCategorie (string), " +
-    "unite (string), tags (string[] de 4 à 6), caracteristiques (string[] de 3 à 5), prixConseille (number ou null).";
+    "unite (string), tags (string[] de 4 à 6), caracteristiques (string[] de 3 à 5), " +
+    "sku (string, référence courte ex. COC-COL-1234), prixConseille (number ou null).";
   const user = `Saisie du vendeur : "${input}"`;
 
   const mock = (): string => {
@@ -69,10 +86,38 @@ export function buildProductTask(input: string) {
       unite,
       tags: tags.length ? tags : [categorie.toLowerCase()],
       caracteristiques: ["Bonne qualité", "Disponible en stock", "Garantie vendeur"],
+      sku: suggestSku(nom),
       prixConseille: null,
     };
     return JSON.stringify(result);
   };
+
+  return { system, user, mock };
+}
+
+/** Tâche d'analyse d'image (vision) → fiche produit. */
+export function buildImageProductTask() {
+  const system =
+    "Tu es un assistant e-commerce. Analyse l'image d'un produit et génère une fiche produit. " +
+    "Réponds UNIQUEMENT par un objet JSON valide avec les clés : nom, description, categorie, sousCategorie, " +
+    "unite, tags (string[]), caracteristiques (string[]), sku, prixConseille (number ou null). " +
+    "Si tu ne reconnais pas le produit, mets nom à \"\" (chaîne vide).";
+  const user = "Analyse cette image de produit et remplis la fiche.";
+
+  // Le mock ne peut pas voir l'image → renvoie un résultat vide qui déclenche
+  // le message « complétez manuellement » côté UI.
+  const mock = (): string =>
+    JSON.stringify({
+      nom: "",
+      description: "",
+      categorie: "",
+      sousCategorie: "",
+      unite: "",
+      tags: [],
+      caracteristiques: [],
+      sku: "",
+      prixConseille: null,
+    });
 
   return { system, user, mock };
 }

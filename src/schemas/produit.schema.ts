@@ -10,6 +10,9 @@ export const createProduitSchema = z.object({
   quantite: z.coerce.number().int("La quantite doit etre un entier").min(0, "La quantite doit etre positive"),
   seuilAlerte: z.coerce.number().int().min(0).default(5),
   photo: z.string().optional().or(z.literal("")),
+  // Suivi IA : marqué quand la fiche a été pré-remplie par l'Assistant IA.
+  aiGenerated: z.boolean().optional(),
+  aiPrompt: z.string().max(300).optional(),
 });
 
 export const updateProduitSchema = createProduitSchema.partial();
