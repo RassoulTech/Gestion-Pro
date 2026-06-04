@@ -381,7 +381,12 @@ export function CheckoutClient() {
               </div>
             ) : (
               // Connected: Show checkout form
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+              <form
+                onSubmit={form.handleSubmit(onSubmit, () =>
+                  toast.error("Veuillez remplir tous les champs obligatoires (nom, téléphone, email, adresse).")
+                )}
+                className="space-y-6 relative z-10"
+              >
                 <div className="space-y-4">
                   <h2 className="text-xl font-bold border-b border-slate-100 dark:border-zinc-800 pb-2">Mes Informations</h2>
                   
@@ -399,8 +404,9 @@ export function CheckoutClient() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="font-bold">Email</Label>
-                    <Input {...form.register("emailClient")} type="email" disabled className="h-12 rounded-xl bg-slate-100 dark:bg-zinc-800 border-none text-zinc-400 font-bold cursor-not-allowed" />
+                    <Label className="font-bold">Email *</Label>
+                    <Input {...form.register("emailClient")} type="email" placeholder="exemple@mail.com" className="h-12 rounded-xl bg-slate-50 dark:bg-zinc-800 border-none" />
+                    <p className="text-[11px] font-medium text-slate-400">Votre facture détaillée sera envoyée à cette adresse.</p>
                     {form.formState.errors.emailClient && <p className="text-sm text-red-500">{form.formState.errors.emailClient.message}</p>}
                   </div>
 
