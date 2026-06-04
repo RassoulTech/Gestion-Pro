@@ -186,7 +186,12 @@
     .pay .pl span{display:block;font-family:var(--body);font-size:9.5px;font-weight:600;color:var(--muted);margin-top:2px;}
     .pp{display:flex;gap:10px;}
     .paycard{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:12px;font-weight:800;color:var(--ink);box-shadow:0 6px 16px rgba(16,24,40,.06);}
-    .paycard .pimg{height:26px;width:26px;object-fit:contain;border-radius:6px;}
+    .paycard .plogo{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;flex-shrink:0;}
+    .paycard .plogo img{width:26px;height:26px;object-fit:contain;border-radius:6px;}
+    .paycard .plogo .fb{display:none;width:26px;height:26px;}
+    .paycard .plogo .fb svg{width:26px;height:26px;display:block;}
+    .paycard .plogo.noimg img{display:none;}
+    .paycard .plogo.noimg .fb{display:inline-flex;}
 
     .vfoot{flex:0 0 auto;background:var(--ink);color:#fff;padding:7mm 13mm;display:flex;align-items:center;gap:6mm;}
     .vfoot .brand{display:flex;align-items:center;gap:10px;}
@@ -402,8 +407,14 @@
       <div class="pay">
         <span class="pl">Moyens de paiement<span>Réglez votre abonnement en toute simplicité</span></span>
         <div class="pp">
-          <div class="paycard"><img class="pimg" src="logos/wave.png" alt="" onerror="this.style.display='none'"/> Wave</div>
-          <div class="paycard"><img class="pimg" src="logos/orange-money.png" alt="" onerror="this.style.display='none'"/> Orange Money</div>
+          <div class="paycard">
+            <span class="plogo"><img src="logos/wave.png" alt="" onerror="this.closest('.plogo').classList.add('noimg')"/><span class="fb"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1DC3FF"/><text x="16" y="19.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="8" letter-spacing="-0.4" fill="#fff">Wave</text></svg></span></span>
+            Wave
+          </div>
+          <div class="paycard">
+            <span class="plogo"><img src="logos/orange-money.png" alt="" onerror="this.closest('.plogo').classList.add('noimg')"/><span class="fb"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#FF7900"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M9 18 18 9"/><path d="M13 9h6v6"/><path d="M23 14 14 23"/><path d="M19 23h-6v-6"/></g></svg></span></span>
+            Orange Money
+          </div>
         </div>
       </div>
     </div>
