@@ -79,10 +79,16 @@ export function WaveIcon({ className }: { className?: string }) {
       alt="Wave"
       className={className}
       fallback={
-        <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect width="32" height="32" rx="7" fill="#1DC3FF" />
-          <path d="M5 19c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
-          <path d="M5 13c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.55" />
+        <svg className={className} viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <rect width="64" height="64" rx="13" fill="#2BC4F3" />
+          <path d="M23.5 50.5c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4-2 3.8-4.5 3.8-4.5-1.4-4.5-3.8Z" fill="#F7901E" />
+          <path d="M31.5 50.5c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4-2 3.8-4.5 3.8-4.5-1.4-4.5-3.8Z" fill="#F7901E" />
+          <path d="M32 9c-8 0-13.5 6.2-13.5 16 0 11 5.5 19 13.5 19s13.5-8 13.5-19C45.5 15.2 40 9 32 9Z" fill="#0A0A0A" />
+          <path d="M19.8 27 9.4 19.4c-1.7-1.2-2-3.4-.8-5 1.2-1.5 3.5-1.7 5.2-.4l8.8 6.8Z" fill="#0A0A0A" />
+          <ellipse cx="32" cy="34" rx="8.5" ry="12" fill="#ffffff" />
+          <circle cx="28.2" cy="22" r="2.7" fill="#ffffff" />
+          <circle cx="36.8" cy="22" r="2.7" fill="#ffffff" />
+          <path d="M28.5 27c1.7 2.3 5.3 2.3 7 0 .8 2.6-1.8 4.2-3.5 4.2S27.7 29.6 28.5 27Z" fill="#F7901E" />
         </svg>
       }
     />
