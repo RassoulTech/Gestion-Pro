@@ -26,6 +26,7 @@ import {
   Megaphone,
   FileText,
   Globe,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
@@ -91,6 +92,7 @@ function getBoutiqueNavGroups(boutiqueId: string, boutiqueSlug?: string): NavGro
     {
       items: [
         { label: "Dashboard", href: base, icon: LayoutDashboard },
+        { label: "Assistant IA", href: `${base}/assistant`, icon: Sparkles },
       ],
     },
     {

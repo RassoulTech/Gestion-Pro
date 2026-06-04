@@ -32,6 +32,8 @@ model User {
   sessions     Session[]
   vendeur      Vendeur?
   activityLogs ActivityLog[]
+  aiGenerations AiGeneration[]
+  aiUsages      AiUsage[]
 
   @@map("users")
 }
@@ -615,6 +617,50 @@ model LigneFacture {
   produit      Produit? @relation(fields: [produitId], references: [id], onDelete: SetNull)
 
   @@map("lignes_facture")
+}
+
+// ─── ASSISTANT IA ──────────────────────────────────────────────
+
+enum AiGenerationType {
+  PRODUCT
+  DESCRIPTION
+  PRICE
+  ANALYSIS
+  RESTOCK
+  INVOICE
+  QUOTE
+  MARKETING
+  CHAT
+}
+
+model AiGeneration {
+  id         String           @id @default(cuid())
+  userId     String           @map("user_id")
+  boutiqueId String?          @map("shop_id")
+  type       AiGenerationType
+  prompt     String           @db.Text
+  response   String           @db.Text
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([boutiqueId, createdAt])
+  @@map("ai_generations")
+}
+
+model AiUsage {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  month      String // format "AAAA-MM"
+  usageCount Int      @default(0) @map("usage_count")
+  quota      Int      @default(5)
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month])
+  @@map("ai_usage")
 }
 
 // ─── AUDIT ─────────────────────────────────────────────────────
