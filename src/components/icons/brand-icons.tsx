@@ -1,5 +1,4 @@
 import type { SVGProps } from "react";
-import { PaymentLogo } from "./payment-logo";
 
 /**
  * Brand icons not provided by lucide-react.
@@ -71,47 +70,28 @@ export function GitHubIcon(props: SVGProps<SVGSVGElement>) {
  * Size with className (e.g. `h-5 w-auto`).
  */
 
-/**
- * Wave — uses the official asset at /logos/wave.png when present, else a clean
- * brand-blue "Wave" wordmark fallback (no broken image).
- */
-export function WaveIcon({ className }: { className?: string }) {
+/** Wave — brand-blue badge with a clean white wave motif (SVG, no asset needed). */
+export function WaveIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <PaymentLogo
-      src="/logos/wave.png"
-      alt="Wave"
-      className={className}
-      fallback={
-        <svg className={className} viewBox="0 0 32 20" fill="none" aria-hidden="true">
-          <rect width="32" height="20" rx="4" fill="#1DC3FF" />
-          <text x="16" y="14" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="8.5" letterSpacing="-0.3" fill="#ffffff">Wave</text>
-        </svg>
-      }
-    />
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" {...props}>
+      <rect width="32" height="32" rx="7" fill="#1DC3FF" />
+      <path d="M5 19c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
+      <path d="M5 13c3-5 6-5 9 0s6 5 9 0" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.55" />
+    </svg>
   );
 }
 
-/**
- * Orange Money — uses /logos/orange-money.png when present, else a brand-faithful
- * fallback (white exchange arrows on the Orange square).
- */
-export function OrangeMoneyIcon({ className }: { className?: string }) {
+/** Orange Money — Orange square with white exchange arrows (SVG, no asset needed). */
+export function OrangeMoneyIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <PaymentLogo
-      src="/logos/orange-money.png"
-      alt="Orange Money"
-      className={className}
-      fallback={
-        <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect width="32" height="32" rx="6" fill="#FF7900" />
-          <g stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18 18 9" />
-            <path d="M13 9h6v6" />
-            <path d="M23 14 14 23" />
-            <path d="M19 23h-6v-6" />
-          </g>
-        </svg>
-      }
-    />
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" {...props}>
+      <rect width="32" height="32" rx="7" fill="#FF7900" />
+      <g stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 18 18 9" />
+        <path d="M13 9h6v6" />
+        <path d="M23 14 14 23" />
+        <path d="M19 23h-6v-6" />
+      </g>
+    </svg>
   );
 }
