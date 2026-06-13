@@ -104,7 +104,7 @@ export function SectionLienPublic({ boutiqueId, slug: initialSlug, planCode }: P
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <Button onClick={copyLink} variant="outline" className="h-11 rounded-xl font-bold text-xs">
             {copied ? <Check className="mr-1.5 h-4 w-4 text-emerald-500" /> : <Copy className="mr-1.5 h-4 w-4" />}
             Copier

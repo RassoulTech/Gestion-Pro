@@ -1,17 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useRouter, useParams } from "next/navigation";
+import React, { useState, useRef } from "react";
 import { toast } from "sonner";
 import {
   ShoppingCart,
   Search,
   Plus,
   Minus,
-  Trash2,
   Printer,
   X,
-  CreditCard,
   CheckCircle2,
   Package,
 } from "lucide-react";
@@ -20,8 +17,6 @@ import { createCommandeClient } from "@/server/actions/commande.actions";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import {
@@ -31,7 +26,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { TicketImprimable } from "@/components/pos/ticket-imprimable";
+import { TicketImprimable, type TicketProps } from "@/components/pos/ticket-imprimable";
 import { useReactToPrint } from "react-to-print";
 
 // ─── TYPES ────────────────────────────────────────────────────
@@ -70,8 +65,6 @@ export default function PosInterface({
   categories: { id: string; nom: string; couleur: string | null }[];
   vendeurNom: string;
 }) {
-  const router = useRouter();
-
   // ─── ETAT DU PANIER ──────────────────────────────────────────
   const [cart, setCart] = useState<CartItem[]>([]);
   const [remise, setRemise] = useState<number>(0);
@@ -83,7 +76,7 @@ export default function PosInterface({
   const [loading, setLoading] = useState(false);
 
   // ─── ETAT IMPRESSION ─────────────────────────────────────────
-  const [ticketData, setTicketData] = useState<any>(null);
+  const [ticketData, setTicketData] = useState<TicketProps | null>(null);
   const [showTicketModal, setShowTicketModal] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -198,7 +191,7 @@ export default function PosInterface({
       });
       setShowTicketModal(true);
 
-    } catch (e: any) {
+    } catch {
       toast.error("Erreur serveur.");
     } finally {
       setLoading(false);
@@ -298,18 +291,18 @@ export default function PosInterface({
               <div key={item.id} className="flex flex-col gap-2 p-3 border border-zinc-100 dark:border-zinc-800 rounded-xl">
                 <div className="flex justify-between items-start">
                   <span className="font-semibold text-sm leading-tight pr-4">{item.nom}</span>
-                  <button onClick={() => removeFromCart(item.id)} className="text-zinc-400 hover:text-red-500">
+                  <button onClick={() => removeFromCart(item.id)} aria-label={`Retirer ${item.nom}`} className="-m-2 p-2 rounded-md text-zinc-400 hover:text-red-500">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-black text-brand">{formatCurrency(item.prixUnitaire * item.cartQty)}</span>
-                  <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800 rounded-lg p-1">
-                    <button onClick={() => updateCartQty(item.id, -1)} className="p-1 hover:bg-white dark:hover:bg-zinc-700 rounded-md">
+                  <div className="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-800 rounded-lg p-1">
+                    <button onClick={() => updateCartQty(item.id, -1)} aria-label="Diminuer la quantité" className="flex h-9 w-9 items-center justify-center hover:bg-white dark:hover:bg-zinc-700 rounded-md">
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="w-6 text-center font-bold text-sm">{item.cartQty}</span>
-                    <button onClick={() => updateCartQty(item.id, 1)} className="p-1 hover:bg-white dark:hover:bg-zinc-700 rounded-md">
+                    <span className="w-7 text-center font-bold text-sm">{item.cartQty}</span>
+                    <button onClick={() => updateCartQty(item.id, 1)} aria-label="Augmenter la quantité" className="flex h-9 w-9 items-center justify-center hover:bg-white dark:hover:bg-zinc-700 rounded-md">
                       <Plus className="h-4 w-4" />
                     </button>
                   </div>

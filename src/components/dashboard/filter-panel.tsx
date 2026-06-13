@@ -354,7 +354,7 @@ export function FilterPanel({
             <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
             <PopoverContent
               align="end"
-              className="w-[360px] p-4 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-2xl bg-white dark:bg-zinc-900 max-h-[70vh] overflow-y-auto overscroll-contain z-50"
+              className="w-[min(360px,calc(100vw-1.5rem))] p-4 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-2xl bg-white dark:bg-zinc-900 max-h-[70vh] overflow-y-auto overscroll-contain z-50"
             >
               {panelFields}
               <div className="sticky bottom-0 -mx-4 -mb-4 mt-4 px-4 pb-4 pt-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur border-t border-slate-100 dark:border-zinc-800">
