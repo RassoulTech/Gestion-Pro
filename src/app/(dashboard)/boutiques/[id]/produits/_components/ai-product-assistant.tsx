@@ -177,15 +177,15 @@ export function AiProductAssistant({
               variant="brand"
               className="h-12 rounded-xl font-black px-4 flex-1 sm:flex-none"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4 sm:mr-2" />}
-              <span className="hidden sm:inline">Générer</span>
+              {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Wand2 className="h-4 w-4 mr-2" />}
+              Générer
             </Button>
             <Button
               type="button"
               onClick={() => fileRef.current?.click()}
               disabled={busy || disabled}
               variant="outline"
-              className="h-12 rounded-xl font-bold px-4"
+              className="h-12 rounded-xl font-bold px-4 shrink-0"
               aria-label="Générer depuis une image"
             >
               {imgLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4 sm:mr-2" />}
