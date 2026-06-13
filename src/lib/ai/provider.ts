@@ -1,5 +1,7 @@
 import "server-only";
 
+import * as Sentry from "@sentry/nextjs";
+
 /**
  * Couche IA unique et provider-agnostique.
  *
@@ -34,10 +36,16 @@ interface CompleteOpts {
   user: string;
   mock: () => string;
   maxTokens?: number;
+  /**
+   * Schéma JSON pour sortie structurée : la réponse est GARANTIE conforme
+   * (Anthropic `output_config.format`, OpenAI `response_format`). Chaque objet
+   * du schéma doit porter `additionalProperties: false`.
+   */
+  jsonSchema?: Record<string, unknown>;
 }
 
 /** Complétion non-streamée. Renvoie toujours une chaîne (repli mock si besoin). */
-export async function aiComplete({ system, user, mock, maxTokens = 1024 }: CompleteOpts): Promise<string> {
+export async function aiComplete({ system, user, mock, maxTokens = 1024, jsonSchema }: CompleteOpts): Promise<string> {
   const mode = getAiMode();
   if (mode === "mock") return mock();
 
@@ -55,6 +63,9 @@ export async function aiComplete({ system, user, mock, maxTokens = 1024 }: Compl
           max_tokens: maxTokens,
           system,
           messages: [{ role: "user", content: user }],
+          ...(jsonSchema && {
+            output_config: { format: { type: "json_schema", schema: jsonSchema } },
+          }),
         }),
       });
       if (!res.ok) throw new Error(`Anthropic ${res.status}`);
@@ -77,6 +88,12 @@ export async function aiComplete({ system, user, mock, maxTokens = 1024 }: Compl
           { role: "system", content: system },
           { role: "user", content: user },
         ],
+        ...(jsonSchema && {
+          response_format: {
+            type: "json_schema",
+            json_schema: { name: "result", strict: true, schema: jsonSchema },
+          },
+        }),
       }),
     });
     if (!res.ok) throw new Error(`OpenAI ${res.status}`);
@@ -85,6 +102,7 @@ export async function aiComplete({ system, user, mock, maxTokens = 1024 }: Compl
     return typeof text === "string" && text.trim() ? text : mock();
   } catch (err) {
     console.error("[ai] complete failed, falling back to mock:", err);
+    Sentry.captureException(err, { tags: { feature: "ai", call: "complete" } });
     return mock();
   }
 }
@@ -96,10 +114,12 @@ interface VisionOpts {
   mimeType: string;
   mock: () => string;
   maxTokens?: number;
+  /** Schéma JSON pour sortie structurée (cf. CompleteOpts.jsonSchema). */
+  jsonSchema?: Record<string, unknown>;
 }
 
 /** Complétion avec image (vision). Repli mock si pas de clé ou erreur. */
-export async function aiCompleteVision({ system, user, imageBase64, mimeType, mock, maxTokens = 700 }: VisionOpts): Promise<string> {
+export async function aiCompleteVision({ system, user, imageBase64, mimeType, mock, maxTokens = 700, jsonSchema }: VisionOpts): Promise<string> {
   const mode = getAiMode();
   if (mode === "mock") return mock();
 
@@ -125,6 +145,9 @@ export async function aiCompleteVision({ system, user, imageBase64, mimeType, mo
               ],
             },
           ],
+          ...(jsonSchema && {
+            output_config: { format: { type: "json_schema", schema: jsonSchema } },
+          }),
         }),
       });
       if (!res.ok) throw new Error(`Anthropic ${res.status}`);
@@ -153,6 +176,12 @@ export async function aiCompleteVision({ system, user, imageBase64, mimeType, mo
             ],
           },
         ],
+        ...(jsonSchema && {
+          response_format: {
+            type: "json_schema",
+            json_schema: { name: "result", strict: true, schema: jsonSchema },
+          },
+        }),
       }),
     });
     if (!res.ok) throw new Error(`OpenAI ${res.status}`);
@@ -161,6 +190,7 @@ export async function aiCompleteVision({ system, user, imageBase64, mimeType, mo
     return typeof text === "string" && text.trim() ? text : mock();
   } catch (err) {
     console.error("[ai] vision failed, falling back to mock:", err);
+    Sentry.captureException(err, { tags: { feature: "ai", call: "vision" } });
     return mock();
   }
 }
@@ -251,6 +281,7 @@ export async function streamChat({ system, messages, mock, maxTokens = 1024 }: S
     return parseSse(res.body, (json) => json.choices?.[0]?.delta?.content ?? "");
   } catch (err) {
     console.error("[ai] stream failed, falling back to mock:", err);
+    Sentry.captureException(err, { tags: { feature: "ai", call: "stream" } });
     const text = mock();
     return new ReadableStream({
       start(controller) {

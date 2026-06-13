@@ -19,6 +19,7 @@ interface QuotaState {
   remaining: number;
   unlimited: boolean;
   codePlan: string;
+  mode?: "anthropic" | "openai" | "mock";
 }
 
 const FAIL_MSG = "Impossible de générer automatiquement les informations. Veuillez compléter manuellement.";
@@ -35,6 +36,7 @@ export function AiProductAssistant({
   const [imgLoading, setImgLoading] = useState(false);
   const [quota, setQuota] = useState<QuotaState | null>(null);
   const [result, setResult] = useState<AiProductResult | null>(null);
+  const [imageResults, setImageResults] = useState<AiProductResult[]>([]);
   const [err, setErr] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -109,10 +111,16 @@ export function AiProductAssistant({
         return;
       }
       if (r?.data?.confident && r.data.result) {
+        const all = r.data.results ?? [r.data.result];
         setResult(r.data.result);
+        setImageResults(all.length > 1 ? all : []);
         onApply(r.data.result, "[image]");
         bump();
-        toast.success("Champs pré-remplis depuis l'image ✨");
+        toast.success(
+          all.length > 1
+            ? `${all.length} produits détectés — le premier est pré-rempli ✨`
+            : "Champs pré-remplis depuis l'image ✨"
+        );
       } else {
         setErr(FAIL_MSG);
       }
@@ -142,8 +150,15 @@ export function AiProductAssistant({
         </div>
 
         <p className="text-[11px] font-medium text-zinc-400">
-          Décrivez votre produit, l'IA pré-remplit le formulaire. Vous gardez le contrôle.
+          Décrivez votre produit, l&apos;IA pré-remplit le formulaire. Vous gardez le contrôle.
         </p>
+
+        {quota?.mode === "mock" && (
+          <div className="flex items-start gap-2 text-[11px] font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 rounded-xl px-3 py-2">
+            <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            Mode aperçu : aucune clé IA n&apos;est configurée sur ce serveur — les suggestions sont simulées.
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-2">
           <Input
@@ -199,9 +214,36 @@ export function AiProductAssistant({
           </div>
         )}
 
+        {imageResults.length > 1 && !err && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400 mr-1">
+              {imageResults.length} produits détectés — cliquez pour remplir :
+            </span>
+            {imageResults.map((p, i) => (
+              <button
+                key={`${p.nom}-${i}`}
+                type="button"
+                onClick={() => {
+                  setResult(p);
+                  onApply(p, "[image]");
+                  toast.success(`« ${p.nom} » appliqué au formulaire`);
+                }}
+                className={cn(
+                  "px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors",
+                  result?.nom === p.nom
+                    ? "bg-brand text-white border-transparent"
+                    : "bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-brand/50"
+                )}
+              >
+                {p.nom}
+              </button>
+            ))}
+          </div>
+        )}
+
         {disabled && (
           <p className="text-[11px] font-bold text-rose-500">
-            Quota IA mensuel atteint. Passez à un forfait supérieur pour continuer à utiliser l'IA.
+            Quota IA mensuel atteint. Passez à un forfait supérieur pour continuer à utiliser l&apos;IA.
           </p>
         )}
       </div>

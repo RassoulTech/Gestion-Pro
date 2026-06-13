@@ -30,6 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
+import { AiInsightsCard } from "./_components/ai-insights-card";
 import { parseDateFilter } from "@/lib/date-filters";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
 
@@ -461,6 +462,9 @@ export default async function BoutiqueDashboardPage({
           </div>
         ))}
       </div>
+
+      {/* Conseils IA — analyse à la demande des 30 derniers jours */}
+      <AiInsightsCard boutiqueId={boutique.id} />
 
       <div className="grid gap-6 sm:gap-8 lg:grid-cols-12">
         {/* Performance & Revenue Section */}
