@@ -11,7 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { renewCurrentSubscription } from "@/server/actions/subscription.actions";
-import { RefreshCw, Smartphone, CreditCard, Zap } from "lucide-react";
+import { RefreshCw, CreditCard, Zap } from "lucide-react";
+import { WaveIcon, OrangeMoneyIcon } from "@/components/icons/brand-icons";
 
 type RenewMethod = "WAVE" | "ORANGE_MONEY" | "STRIPE";
 
@@ -24,13 +25,13 @@ interface RenewSubscriptionButtonProps {
 const METHOD_LABEL: Record<RenewMethod, { label: string; sub: string; icon: React.ReactNode }> = {
   WAVE: {
     label: "Wave",
-    sub: "Mobile Money via PayDunya",
-    icon: <Smartphone className="h-5 w-5" />,
+    sub: "Mobile Money",
+    icon: <WaveIcon className="h-5 w-5 rounded" />,
   },
   ORANGE_MONEY: {
     label: "Orange Money",
-    sub: "Mobile Money via PayDunya",
-    icon: <Smartphone className="h-5 w-5" />,
+    sub: "Mobile Money",
+    icon: <OrangeMoneyIcon className="h-5 w-5 rounded" />,
   },
   STRIPE: {
     label: "Carte bancaire",

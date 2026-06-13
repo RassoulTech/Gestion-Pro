@@ -12,7 +12,16 @@ import {
   Smartphone,
   ExternalLink,
 } from "lucide-react";
+import { WaveIcon, OrangeMoneyIcon } from "@/components/icons/brand-icons";
 import { auth } from "@/lib/auth";
+
+/** Icône d'un moyen de paiement — logos de marque réels pour Wave / Orange Money. */
+function PaymentMethodIcon({ methode, className }: { methode: string; className?: string }) {
+  if (methode === "WAVE") return <WaveIcon className={className ?? "h-3 w-3 rounded"} />;
+  if (methode === "ORANGE_MONEY") return <OrangeMoneyIcon className={className ?? "h-3 w-3 rounded"} />;
+  if (methode === "STRIPE") return <CreditCard className={className ?? "h-3 w-3"} />;
+  return <Smartphone className={className ?? "h-3 w-3"} />;
+}
 import { prisma } from "@/lib/prisma";
 import {
   getVendeurQuotas,
@@ -287,7 +296,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                             </td>
                             <td className="py-4 px-6">
                               <span className="inline-flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase text-zinc-600 dark:text-zinc-400">
-                                {payment.methode === "STRIPE" ? <CreditCard className="h-3 w-3 text-brand" /> : <Smartphone className="h-3 w-3 text-brand" />}
+                                <PaymentMethodIcon methode={payment.methode} className="h-3 w-3 rounded text-brand" />
                                 {payment.methode}
                               </span>
                             </td>
@@ -314,7 +323,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                         <div className="flex justify-between items-center text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                           <span>{new Date(payment.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}</span>
                           <span className="flex items-center gap-1">
-                            {payment.methode === "STRIPE" ? <CreditCard className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
+                            <PaymentMethodIcon methode={payment.methode} className="h-3 w-3 rounded" />
                             {payment.methode}
                           </span>
                         </div>

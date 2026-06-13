@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CreditCard, Smartphone, Wallet, Mail, Phone, MapPin } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
+import { ArrowLeft, CreditCard, Wallet, Mail, Phone, MapPin } from "lucide-react";
+import { WaveIcon, OrangeMoneyIcon } from "@/components/icons/brand-icons";
 import { getCommandeById } from "@/server/queries/commande.queries";
 import { getBoutiqueById } from "@/server/queries/boutique.queries";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
@@ -13,9 +15,14 @@ import { Separator } from "@/components/ui/separator";
 import { EtatActions } from "./_components/etat-actions";
 import { FactureCommandeButtons } from "./_components/facture-commande-buttons";
 
-const PAYMENT_LABELS: Record<string, { label: string; icon: typeof CreditCard; color: string }> = {
-  WAVE: { label: "Wave", icon: Smartphone, color: "text-orange-500" },
-  ORANGE_MONEY: { label: "Orange Money", icon: Smartphone, color: "text-amber-500" },
+// `color` ne s'applique qu'aux icônes de ligne (Lucide) ; les logos de marque
+// Wave / Orange Money portent déjà leurs couleurs officielles.
+const PAYMENT_LABELS: Record<
+  string,
+  { label: string; icon: ComponentType<{ className?: string } & Partial<SVGProps<SVGSVGElement>>>; color: string; brand?: boolean }
+> = {
+  WAVE: { label: "Wave", icon: WaveIcon, color: "", brand: true },
+  ORANGE_MONEY: { label: "Orange Money", icon: OrangeMoneyIcon, color: "", brand: true },
   STRIPE: { label: "Carte bancaire (Stripe)", icon: CreditCard, color: "text-orange-500" },
   PAYPAL: { label: "PayPal", icon: CreditCard, color: "text-orange-500" },
   CASH_ON_DELIVERY: { label: "Paiement à la livraison", icon: Wallet, color: "text-emerald-500" },
@@ -233,7 +240,13 @@ export default async function CommandeDetailPage({
                   const Icon = pay?.icon ?? CreditCard;
                   return (
                     <div className="flex items-center gap-2">
-                      <Icon className={`h-4 w-4 shrink-0 ${pay?.color ?? "text-muted-foreground"}`} />
+                      <Icon
+                        className={
+                          pay?.brand
+                            ? "h-5 w-5 shrink-0 rounded"
+                            : `h-4 w-4 shrink-0 ${pay?.color ?? "text-muted-foreground"}`
+                        }
+                      />
                       <span className="font-medium truncate">{pay?.label ?? commande.modePaiement}</span>
                     </div>
                   );

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, Loader2, Sparkles, ExternalLink } from "lucide-react";
+import { Loader2, Sparkles, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -76,7 +77,7 @@ export function RelanceWhatsappButton({
           if (!message) void generate();
         }}
       >
-        <MessageCircle className="mr-2 h-4 w-4 text-emerald-600" />
+        <WhatsAppIcon className="mr-2 h-4 w-4 text-emerald-600" />
         Relance WhatsApp
       </Button>
 
