@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Trash2, Pencil, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Trash2, Pencil, Loader2, History } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -82,10 +83,23 @@ export function ClientActions({ clientId, boutiqueId, clientNom, clientData }: C
   return (
     <div className="flex items-center justify-end gap-2">
       <Button
+        asChild
         variant="ghost"
         size="icon"
-        className="h-10 w-10 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
+        className="h-10 w-10 rounded-xl hover:bg-accent"
+        aria-label={`Voir l'historique de ${clientNom}`}
+      >
+        <Link href={`/boutiques/${boutiqueId}/clients/${clientId}`}>
+          <History className="h-4 w-4" />
+        </Link>
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-10 w-10 rounded-xl hover:bg-accent"
         onClick={() => setShowEditDialog(true)}
+        aria-label={`Modifier ${clientNom}`}
       >
         <Pencil className="h-4 w-4" />
       </Button>
@@ -95,6 +109,7 @@ export function ClientActions({ clientId, boutiqueId, clientNom, clientData }: C
         size="icon"
         className="h-10 w-10 rounded-xl hover:bg-rose-50 text-rose-500 hover:text-rose-600 dark:hover:bg-rose-950"
         onClick={() => setShowDeleteDialog(true)}
+        aria-label={`Supprimer ${clientNom}`}
       >
         <Trash2 className="h-4 w-4" />
       </Button>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { Plus, Users, Phone, Mail, MapPin } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -7,6 +6,7 @@ import Link from "next/link";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -49,7 +49,7 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
 
   const dateFilter = parseDateFilter(range, from, to);
 
-  const whereClause: any = {
+  const whereClause: Prisma.ClientWhereInput = {
     boutiqueId,
   };
 
@@ -127,15 +127,18 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
                       clients.map((client) => (
                         <TableRow key={client.id} className="border-zinc-50 dark:border-zinc-800 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 transition-colors group">
                           <TableCell className="px-8 py-6">
-                            <div className="flex items-center gap-4">
+                            <Link
+                              href={`/boutiques/${boutiqueId}/clients/${client.id}`}
+                              className="flex items-center gap-4 group/client"
+                            >
                               <div className="h-12 w-12 rounded-2xl bg-brand/10 flex items-center justify-center text-brand font-black text-lg">
                                 {(client.prenom?.[0] || "") + (client.nom?.[0] || "")}
                               </div>
                               <div>
-                                <p className="font-black text-base">{client.prenom} {client.nom}</p>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Client Fidèle</p>
+                                <p className="font-black text-base group-hover/client:text-brand transition-colors">{client.prenom} {client.nom}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Voir l&apos;historique</p>
                               </div>
-                            </div>
+                            </Link>
                           </TableCell>
                           <TableCell className="py-6">
                             <div className="space-y-1">

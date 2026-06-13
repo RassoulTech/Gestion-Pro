@@ -33,3 +33,16 @@ export async function getBoutiqueClients(
 
   return { data, total, page, perPage, totalPages: Math.ceil(total / perPage) };
 }
+
+/** Fiche client + historique complet de ses commandes (plus récentes d'abord). */
+export async function getClientWithCommandes(boutiqueId: string, clientId: string) {
+  return prisma.client.findFirst({
+    where: { id: clientId, boutiqueId },
+    include: {
+      commandes: {
+        orderBy: { date: "desc" },
+        include: { _count: { select: { lignes: true } } },
+      },
+    },
+  });
+}
