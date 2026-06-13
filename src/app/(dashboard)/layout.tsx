@@ -14,8 +14,8 @@ function DashboardSkeleton() {
   return (
     <div className="flex h-screen w-full">
       {/* Sidebar skeleton */}
-      <div className="hidden w-[220px] shrink-0 border-r border-zinc-100 bg-white dark:border-zinc-800 dark:bg-zinc-950 lg:block">
-        <div className="flex h-14 items-center border-b border-zinc-100 px-4 dark:border-zinc-800">
+      <div className="hidden w-[220px] shrink-0 border-r border-border bg-card lg:block">
+        <div className="flex h-14 items-center border-b border-border px-4">
           <Skeleton className="h-7 w-7 rounded-md" />
           <Skeleton className="ml-2 h-4 w-28" />
         </div>
@@ -28,7 +28,7 @@ function DashboardSkeleton() {
 
       {/* Main area skeleton */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex h-14 shrink-0 items-center border-b border-zinc-100 px-4 dark:border-zinc-800">
+        <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
           <Skeleton className="h-8 w-8 rounded-full" />
           <Skeleton className="ml-auto h-8 w-8 rounded-full" />
         </div>

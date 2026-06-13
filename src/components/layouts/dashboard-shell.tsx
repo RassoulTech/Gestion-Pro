@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Sidebar } from "@/components/layouts/sidebar";
 import { Header } from "@/components/layouts/header";
 import { BottomNav } from "@/components/layouts/bottom-nav";
@@ -17,15 +17,7 @@ type DashboardShellProps = {
   userRole?: string;
 };
 
-function BoutiqueAwareSidebar({
-  mobileOpen,
-  onMobileClose,
-  role,
-}: {
-  mobileOpen: boolean;
-  onMobileClose: () => void;
-  role?: string;
-}) {
+function BoutiqueAwareSidebar({ role }: { role?: string }) {
   const pathname = usePathname() || "";
   const isAdminRoute = pathname.startsWith("/admin");
   const params = useParams();
@@ -49,16 +41,12 @@ function BoutiqueAwareSidebar({
     <Sidebar
       boutiqueId={finalBoutiqueId}
       boutiqueName={finalBoutiqueName}
-      mobileOpen={mobileOpen}
-      onMobileCloseAction={onMobileClose}
       role={isAdminRoute ? "ADMIN" : role}
     />
   );
 }
 
-function BoutiqueAwareHeader(
-  props: Omit<DashboardShellProps, "children"> & { onToggleSidebar: () => void },
-) {
+function BoutiqueAwareHeader(props: Omit<DashboardShellProps, "children">) {
   const pathname = usePathname() || "";
   const isAdminRoute = pathname.startsWith("/admin");
   const params = useParams();
@@ -78,7 +66,6 @@ function BoutiqueAwareHeader(
   return (
     <Header
       boutiqueName={finalBoutiqueName}
-      onToggleSidebarAction={props.onToggleSidebar}
       userName={props.userName}
       userEmail={props.userEmail}
       userImage={props.userImage}
@@ -93,19 +80,12 @@ export function DashboardShell({
   userImage,
   userRole,
 }: DashboardShellProps) {
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-zinc-50 dark:bg-zinc-950">
-      <BoutiqueAwareSidebar
-        mobileOpen={mobileSidebarOpen}
-        onMobileClose={() => setMobileSidebarOpen(false)}
-        role={userRole}
-      />
+    <div className="flex h-screen w-full overflow-hidden bg-background">
+      <BoutiqueAwareSidebar role={userRole} />
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <BoutiqueAwareHeader
-          onToggleSidebar={() => setMobileSidebarOpen((o) => !o)}
           userName={userName}
           userEmail={userEmail}
           userImage={userImage}

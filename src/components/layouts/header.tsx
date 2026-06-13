@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useBoutique } from "@/components/layouts/boutique-provider";
 import { useTheme } from "next-themes";
 import { signOut, useSession } from "next-auth/react";
-import { Sun, Moon, Menu, Store, User, LogOut } from "lucide-react";
+import { Sun, Moon, Store, User, LogOut } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,6 @@ import {
 
 type HeaderProps = {
   boutiqueName?: string;
-  onToggleSidebarAction?: () => void;
   /** Pre-fetched user info from server – used as fallback before session loads */
   userName?: string | null;
   userEmail?: string | null;
@@ -47,7 +46,7 @@ function ThemeToggle() {
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Basculer le thème"
-      className="h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+      className="h-9 w-9 text-muted-foreground hover:text-foreground"
     >
       <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
@@ -85,7 +84,7 @@ function UserMenu({
         >
           <Avatar className="h-8 w-8">
             {image && <AvatarImage src={image} alt={name} />}
-            <AvatarFallback className="bg-zinc-100 text-xs font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+            <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -95,11 +94,11 @@ function UserMenu({
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-semibold leading-none text-zinc-900 dark:text-zinc-50">
+            <p className="text-sm font-semibold leading-none text-foreground">
               {name}
             </p>
             {email && (
-              <p className="truncate text-xs leading-none text-zinc-500 dark:text-zinc-400">
+              <p className="truncate text-xs leading-none text-muted-foreground">
                 {email}
               </p>
             )}
@@ -126,7 +125,7 @@ function UserMenu({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          className="cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950 dark:focus:text-red-300"
+          className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
           onSelect={() => signOut({ callbackUrl: "/login" })}
         >
           <LogOut className="mr-2 h-4 w-4" />
@@ -141,14 +140,13 @@ function UserMenu({
 
 export function Header({
   boutiqueName,
-  onToggleSidebarAction,
   userName,
   userEmail,
   userImage,
 }: HeaderProps) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin") ?? false;
-  const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : <span className="tracking-tight">Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span></span>;
+  const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : <span className="tracking-tight">Gestion<span className="text-brand">Pro</span></span>;
 
   let boutiqueLogo: string | null = null;
   try {
@@ -161,26 +159,13 @@ export function Header({
   return (
     <header
       className={cn(
-        "flex h-14 shrink-0 items-center gap-3 border-b border-zinc-100 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950",
+        "flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-4",
       )}
     >
       <div className="flex flex-1 items-center justify-start gap-2 min-w-0">
-        {/* Hamburger Menu hidden on mobile as bottom navigation is preferred */}
-        {/*
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggleSidebarAction}
-          className="lg:hidden h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-          aria-label="Ouvrir le menu"
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
-        */}
-        
         <div className="flex items-center gap-2.5 min-w-0">
           {boutiqueLogo && (
-            <div className="h-6 w-6 rounded-md overflow-hidden border border-zinc-200 dark:border-zinc-850 flex items-center justify-center shrink-0 relative bg-zinc-50 dark:bg-zinc-900 shadow-sm">
+            <div className="h-6 w-6 rounded-md overflow-hidden border border-border flex items-center justify-center shrink-0 relative bg-muted shadow-sm">
               <Image 
                 src={boutiqueLogo} 
                 alt={boutiqueName || "Logo"} 
@@ -191,7 +176,7 @@ export function Header({
               />
             </div>
           )}
-          <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-200">
+          <span className="truncate text-sm font-bold text-foreground">
             {boutiqueName || defaultTitle}
           </span>
         </div>

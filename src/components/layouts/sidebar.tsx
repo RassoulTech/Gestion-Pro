@@ -32,12 +32,6 @@ import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -78,8 +72,6 @@ function isItemLocked(item: NavItem, currentPlan?: PlanCode): boolean {
 type SidebarProps = {
   boutiqueId?: string;
   boutiqueName?: string;
-  mobileOpen?: boolean;
-  onMobileCloseAction?: () => void;
   role?: string;
 };
 
@@ -212,10 +204,10 @@ function NavLink({
       rel={item.external ? "noopener noreferrer" : undefined}
       className={cn(
         "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
-        "hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50",
+        "hover:bg-accent hover:text-accent-foreground",
         isActive
-          ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
-          : "text-zinc-500 dark:text-zinc-400",
+          ? "bg-accent text-accent-foreground"
+          : "text-muted-foreground",
         collapsed && "justify-center px-2",
       )}
     >
@@ -223,15 +215,15 @@ function NavLink({
         className={cn(
           "h-4 w-4 shrink-0 transition-colors",
           isActive
-            ? "text-zinc-900 dark:text-zinc-50"
-            : "text-zinc-400 group-hover:text-zinc-900 dark:text-zinc-500 dark:group-hover:text-zinc-50",
+            ? "text-accent-foreground"
+            : "text-muted-foreground group-hover:text-accent-foreground",
         )}
       />
       {!collapsed && (
         <span className="truncate leading-none flex-1">{item.label}</span>
       )}
       {!collapsed && item.external && (
-        <Globe className="h-3 w-3 shrink-0 text-zinc-400" aria-label="Lien externe" />
+        <Globe className="h-3 w-3 shrink-0 text-muted-foreground" aria-label="Lien externe" />
       )}
       {!collapsed && locked && (
         <Lock className="h-3 w-3 shrink-0 text-amber-500" aria-label="Plan supérieur requis" />
@@ -296,15 +288,15 @@ function SidebarContent({
       {/* Logo + collapse toggle */}
       <div
         className={cn(
-          "flex h-14 shrink-0 items-center border-b border-zinc-100 px-4 dark:border-zinc-800",
+          "flex h-14 shrink-0 items-center border-b border-border px-4",
           collapsed ? "justify-center" : "justify-between",
         )}
       >
         {!collapsed && (
           <Link href="/" className="flex items-center gap-2 overflow-hidden" aria-label="Accueil GestionPro">
             <BrandLogo size={28} rounded={6} />
-            <span className="truncate text-sm font-bold text-zinc-800 dark:text-zinc-100">
-              Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span>
+            <span className="truncate text-sm font-bold text-foreground">
+              Gestion<span className="text-brand">Pro</span>
             </span>
           </Link>
         )}
@@ -321,7 +313,7 @@ function SidebarContent({
             size="icon"
             onClick={onToggleCollapse}
             className={cn(
-              "h-7 w-7 shrink-0 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50",
+              "h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground",
               collapsed && "mt-0",
             )}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -343,12 +335,12 @@ function SidebarContent({
             {navGroups.map((group, gIdx) => (
               <div key={group.label || `group-${gIdx}`} className="space-y-0.5">
                 {group.label && !collapsed && (
-                  <p className="px-3 pt-1 pb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                  <p className="px-3 pt-1 pb-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                     {group.label}
                   </p>
                 )}
                 {group.label && collapsed && gIdx > 0 && (
-                  <div className="my-2 mx-2 h-px bg-zinc-100 dark:bg-zinc-800" />
+                  <div className="my-2 mx-2 h-px bg-border" />
                 )}
                 {group.items.map((item) => (
                   <NavLink
@@ -368,7 +360,7 @@ function SidebarContent({
 
       {/* Bottom section – global nav if in boutique context */}
       {boutiqueId && (
-        <div className="shrink-0 border-t border-zinc-100 px-2 py-3 dark:border-zinc-800">
+        <div className="shrink-0 border-t border-border px-2 py-3">
           <TooltipProvider delayDuration={0}>
             <NavLink
               item={{ label: "Mes Boutiques", href: "/boutiques", icon: Store }}
@@ -385,45 +377,23 @@ function SidebarContent({
 
 // ─── Main Sidebar export ──────────────────────────────────────
 
-export function Sidebar({
-  boutiqueId,
-  mobileOpen = false,
-  onMobileCloseAction,
-  role,
-}: SidebarProps) {
+export function Sidebar({ boutiqueId, role }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
+  // La navigation mobile passe par la BottomNav — pas de drawer mobile ici.
   return (
-    <>
-      {/* Desktop sidebar */}
-      <aside
-        className={cn(
-          "hidden shrink-0 border-r border-zinc-100 bg-white transition-all duration-200 dark:border-zinc-800 dark:bg-zinc-950 lg:flex lg:flex-col",
-          collapsed ? "lg:w-[60px]" : "lg:w-[220px]",
-        )}
-      >
-        <SidebarContent
-          boutiqueId={boutiqueId}
-          collapsed={collapsed}
-          onToggleCollapse={() => setCollapsed((c) => !c)}
-          role={role}
-        />
-      </aside>
-
-      {/* Mobile sheet */}
-      <Sheet open={mobileOpen} onOpenChange={(open) => !open && onMobileCloseAction?.()}>
-        <SheetContent side="left" className="w-[260px] p-0">
-          <SheetHeader className="sr-only">
-            <SheetTitle>Navigation</SheetTitle>
-          </SheetHeader>
-          <SidebarContent
-            boutiqueId={boutiqueId}
-            collapsed={false}
-            onLinkClick={onMobileCloseAction}
-            role={role}
-          />
-        </SheetContent>
-      </Sheet>
-    </>
+    <aside
+      className={cn(
+        "hidden shrink-0 border-r border-border bg-card transition-all duration-200 lg:flex lg:flex-col",
+        collapsed ? "lg:w-[60px]" : "lg:w-[220px]",
+      )}
+    >
+      <SidebarContent
+        boutiqueId={boutiqueId}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed((c) => !c)}
+        role={role}
+      />
+    </aside>
   );
 }
