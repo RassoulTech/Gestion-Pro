@@ -19,6 +19,7 @@ import {
   TrendingUp,
   Truck,
   Boxes,
+  type LucideIcon,
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
@@ -26,7 +27,9 @@ import { prisma } from "@/lib/prisma";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { KpiCard, type KpiTone } from "@/components/ui/kpi-card";
 import { Badge } from "@/components/ui/badge";
+import { formatPrice } from "@/lib/format";
 import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
@@ -207,88 +210,74 @@ export default async function BoutiqueDashboardPage({
   const allTimeBenefice = financeData.ventesTotal - allTimeCharges;
   const stockTotal = stockAgg._sum.quantite ?? 0;
 
-  function formatCurrency(v: number): string {
-    if (Math.abs(v) >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
-    if (Math.abs(v) >= 1_000) return `${(v / 1_000).toFixed(1)}k`;
-    return v.toLocaleString("fr-FR");
-  }
+  const periodeLabel = range ? "Sur la période" : "Depuis le début";
 
-  const stats = [
-    // Line 1
+  const stats: {
+    label: string;
+    value: string;
+    icon: LucideIcon;
+    tone: KpiTone;
+    subtext: string;
+    accent?: boolean;
+  }[] = [
     {
       label: "Chiffre d'affaires",
-      value: formatCurrency(financeData.ventesTotal),
-      suffix: "FCFA",
+      value: formatPrice(financeData.ventesTotal),
       icon: TrendingUp,
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
-      trend: range ? "Période" : "Total",
+      tone: "success",
+      subtext: periodeLabel,
+      accent: true,
     },
     {
       label: "Commandes",
       value: commandesCount.toLocaleString("fr-FR"),
-      suffix: undefined as string | undefined,
       icon: ShoppingCart,
-      color: "text-brand",
-      bg: "bg-brand/10",
-      trend: range ? "Période" : "Total",
+      tone: "brand",
+      subtext: range ? "Sur la période" : "Total",
+      accent: true,
     },
-    // Line 2
     {
       label: "Produits",
       value: produitsCount.toLocaleString("fr-FR"),
-      suffix: undefined as string | undefined,
       icon: Package,
-      color: "text-orange-500",
-      bg: "bg-orange-500/10",
-      trend: range ? "Période" : "Total",
+      tone: "neutral",
+      subtext: "Au catalogue",
     },
     {
       label: "Clients",
       value: clientsCount.toLocaleString("fr-FR"),
-      suffix: undefined as string | undefined,
       icon: Users,
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
-      trend: range ? "Période" : "Total",
+      tone: "neutral",
+      subtext: "Enregistrés",
     },
-    // Line 3
     {
       label: "Stock",
-      value: stockTotal.toLocaleString("fr-FR"),
-      suffix: "unités",
+      value: `${stockTotal.toLocaleString("fr-FR")} unités`,
       icon: Boxes,
-      color: "text-violet-500",
-      bg: "bg-violet-500/10",
-      trend: range ? "Période" : "Total",
+      tone: "neutral",
+      subtext: "En stock",
     },
     {
       label: "Dépenses",
       value: depensesCount.toLocaleString("fr-FR"),
-      suffix: undefined as string | undefined,
       icon: Wallet,
-      color: "text-rose-500",
-      bg: "bg-rose-500/10",
-      trend: range ? "Période" : "Total",
+      tone: "neutral",
+      subtext: "Enregistrées",
     },
-    // Line 4
     {
       label: "Fournisseurs",
       value: fournisseursCount.toLocaleString("fr-FR"),
-      suffix: undefined as string | undefined,
       icon: Truck,
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
-      trend: range ? "Période" : "Total",
+      tone: "neutral",
+      subtext: "Partenaires",
     },
     {
       label: "Bénéfice net",
-      value: formatCurrency(allTimeBenefice),
-      suffix: "FCFA",
+      value: formatPrice(allTimeBenefice),
       icon: Layers,
-      color: allTimeBenefice >= 0 ? "text-emerald-500" : "text-rose-500",
-      bg: allTimeBenefice >= 0 ? "bg-emerald-500/10" : "bg-rose-500/10",
-      trend: "Total",
+      tone: allTimeBenefice >= 0 ? "success" : "danger",
+      subtext: "Depuis le début",
+      accent: true,
     },
   ];
 
@@ -422,44 +411,18 @@ export default async function BoutiqueDashboardPage({
       {/* Contenu principal */}
       <div className="space-y-6 sm:space-y-10">
 
-      {/* Main Stats Bento Grid — 8 KPIs strictly in 4 rows × 2 cols, all viewports */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
+      {/* Main Stats — 8 KPIs : 2 colonnes mobile → 4 colonnes desktop */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
         {stats.map((stat) => (
-          <div
+          <KpiCard
             key={stat.label}
-            className="relative group p-4 sm:p-6 lg:p-7 rounded-[1.25rem] sm:rounded-[1.75rem] bg-white dark:bg-zinc-900 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 overflow-hidden"
-          >
-            <div
-              className={`absolute top-0 right-0 -mr-4 -mt-4 h-24 w-24 rounded-full ${stat.bg} blur-2xl opacity-50 group-hover:opacity-100 transition-opacity`}
-            />
-            <div className="relative z-10">
-              <div
-                className={`mb-3 sm:mb-5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 w-fit ${stat.bg} ${stat.color} ring-1 ring-inset ring-white/10 shadow-inner`}
-              >
-                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-baseline gap-1.5 flex-wrap">
-                  <span className="text-xl sm:text-3xl font-black tracking-tighter leading-none">
-                    {stat.value}
-                  </span>
-                  {stat.suffix && (
-                    <span className="text-[10px] sm:text-xs font-black text-muted-foreground uppercase tracking-wider">
-                      {stat.suffix}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1 sm:mt-2 gap-1">
-                  <p className="text-xs sm:text-sm font-bold text-muted-foreground truncate">
-                    {stat.label}
-                  </p>
-                  <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md w-fit">
-                    {stat.trend}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+            label={stat.label}
+            value={stat.value}
+            icon={stat.icon}
+            tone={stat.tone}
+            subtext={stat.subtext}
+            accent={stat.accent}
+          />
         ))}
       </div>
 

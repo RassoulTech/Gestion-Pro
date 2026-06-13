@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { getAdminStats, getPlatformGrowthStats, getAdvancedAnalytics } from "@/server/queries/admin.queries";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { KpiCard } from "@/components/kpi-card";
+import { KpiCard } from "@/components/ui/kpi-card";
 import { PageSkeleton } from "@/components/loading";
 import { StatusBadge } from "@/components/status-badge";
 import { PlatformChart } from "./_components/platform-chart";
@@ -152,38 +152,30 @@ async function DashboardContent() {
       </div>
 
       {/* Secondary Stats Grid */}
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-6 shadow-lg shadow-slate-200/30 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/30">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="rounded-xl bg-slate-100 p-2.5 dark:bg-slate-800">
-              <Package className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Produits</span>
-          </div>
-          <span className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-50">{stats.totalProduits}</span>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-6 shadow-lg shadow-slate-200/30 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/30">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="rounded-xl bg-slate-100 p-2.5 dark:bg-slate-800">
-              <ShoppingCart className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Commandes</span>
-          </div>
-          <span className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-50">{stats.totalCommandes}</span>
-        </div>
-
-        <div className="col-span-2 md:col-span-1 rounded-2xl border border-orange-100 bg-orange-50/50 p-6 shadow-lg shadow-orange-100/30 dark:border-orange-900/30 dark:bg-orange-900/10 backdrop-blur-md">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="rounded-xl bg-orange-100 p-2.5 dark:bg-orange-900/50">
-              <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 dark:text-orange-400">Ventes Globales Boutiques</span>
-          </div>
-          <span className="text-3xl font-black tracking-tight text-orange-700 dark:text-orange-300 truncate block">
-            {formatCurrency(stats.totalVentesGlobales)}
-          </span>
-        </div>
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+        <KpiCard
+          label="Produits"
+          value={stats.totalProduits.toLocaleString("fr-FR")}
+          icon={Package}
+          tone="neutral"
+          subtext="Sur la plateforme"
+        />
+        <KpiCard
+          label="Commandes"
+          value={stats.totalCommandes.toLocaleString("fr-FR")}
+          icon={ShoppingCart}
+          tone="neutral"
+          subtext="Toutes boutiques"
+        />
+        <KpiCard
+          className="col-span-2 md:col-span-1"
+          label="Ventes Globales Boutiques"
+          value={formatCurrency(stats.totalVentesGlobales)}
+          icon={TrendingUp}
+          tone="brand"
+          subtext="Volume marchand"
+          accent
+        />
       </div>
 
       {/* Visual Analytics Chart */}
@@ -217,7 +209,7 @@ async function DashboardContent() {
                 <p className="text-sm font-bold text-slate-500">Aucun vendeur inscrit.</p>
               </div>
             ) : (
-              stats.vendeursRecents.map((vendeur: any) => (
+              stats.vendeursRecents.map((vendeur) => (
                 <div
                   key={vendeur.id}
                   className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-orange-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-orange-500/30 transition-all duration-300"
@@ -268,7 +260,7 @@ async function DashboardContent() {
                 <p className="text-sm font-bold text-slate-500">Aucune transaction récente.</p>
               </div>
             ) : (
-              stats.paiementsRecents.map((p: any) => (
+              stats.paiementsRecents.map((p) => (
                 <div
                   key={p.id}
                   className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-amber-200 hover:shadow-md dark:border-white/5 dark:bg-slate-900/50 dark:hover:bg-slate-800 dark:hover:border-amber-500/30 transition-all duration-300"
@@ -324,7 +316,7 @@ async function DashboardContent() {
           {stats.logsRecents.length === 0 ? (
             <p className="text-sm text-slate-500 font-bold text-center py-6">Aucune activité enregistrée.</p>
           ) : (
-            stats.logsRecents.map((log: any) => (
+            stats.logsRecents.map((log) => (
               <div key={log.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-3 group hover:bg-white/50 dark:hover:bg-slate-800/30 px-4 rounded-2xl transition-colors -mx-4">
                 <div className="space-y-1.5">
                   <p className="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-slate-50 group-hover:text-orange-500 transition-colors">
