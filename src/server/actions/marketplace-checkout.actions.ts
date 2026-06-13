@@ -1,7 +1,6 @@
 "use server";
 
 import { z } from "zod";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";
 import { auth } from "@/lib/auth";
@@ -438,13 +437,20 @@ export const confirmMockOrderPayment = actionClient
     const { ids, transactionRef } = parsedInput;
     const commandeIds = ids.split(",");
 
-    await prisma.commandeClient.updateMany({
-      where: { id: { in: commandeIds } },
+    // La référence doit correspondre au paymentToken stocké lors du checkout :
+    // sans cette clause, n'importe qui pourrait confirmer n'importe quelle
+    // commande en devinant des IDs.
+    const result = await prisma.commandeClient.updateMany({
+      where: { id: { in: commandeIds }, paymentToken: transactionRef },
       data: {
         statutPaiement: "CONFIRME",
         etat: "VALIDEE",
       },
     });
+
+    if (result.count === 0) {
+      throw new Error("Référence de transaction invalide ou commandes introuvables.");
+    }
 
     console.log(`Mock order payment confirmed for orders: ${ids} (ref: ${transactionRef})`);
 

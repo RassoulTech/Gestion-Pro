@@ -18,18 +18,29 @@ export async function POST(request: Request) {
 
     console.log(`PayTech IPN received: ${type_event} for ref ${ref_command}`);
 
-    // 1. Validation de la signature SHA-256 d'après la spécification PayTech
-    const localApiKeySha = crypto
-      .createHash("sha256")
-      .update(process.env.PAYTECH_API_KEY || "")
-      .digest("hex");
+    // 1. Validation de la signature SHA-256 d'après la spécification PayTech.
+    // Sans clés configurées, sha256("") validerait la signature d'un attaquant
+    // qui connaît la misconfiguration — on refuse explicitement.
+    const apiKey = process.env.PAYTECH_API_KEY;
+    const apiSecret = process.env.PAYTECH_API_SECRET;
+    if (!apiKey || !apiSecret) {
+      console.error("PayTech IPN: PAYTECH_API_KEY / PAYTECH_API_SECRET non configurés");
+      return NextResponse.json(
+        { error: "PayTech n'est pas configuré sur ce serveur" },
+        { status: 503 }
+      );
+    }
 
-    const localApiSecretSha = crypto
-      .createHash("sha256")
-      .update(process.env.PAYTECH_API_SECRET || "")
-      .digest("hex");
+    const localApiKeySha = crypto.createHash("sha256").update(apiKey).digest("hex");
+    const localApiSecretSha = crypto.createHash("sha256").update(apiSecret).digest("hex");
 
-    if (api_key_sha256 !== localApiKeySha || api_secret_sha256 !== localApiSecretSha) {
+    const safeEqual = (received: unknown, expected: string) => {
+      const a = Buffer.from(String(received ?? ""), "utf8");
+      const b = Buffer.from(expected, "utf8");
+      return a.length === b.length && crypto.timingSafeEqual(a, b);
+    };
+
+    if (!safeEqual(api_key_sha256, localApiKeySha) || !safeEqual(api_secret_sha256, localApiSecretSha)) {
       console.warn("PayTech IPN signature verification failed!");
       return NextResponse.json(
         { error: "Signature de notification invalide ou non authentifiée" },
@@ -70,11 +81,13 @@ export async function POST(request: Request) {
         console.log(`PayTech IPN subscription processing result for ${subscriptionRef}:`, result);
       } else if (commandeIds.length > 0) {
         // Mettre à jour toutes les commandes associées
+        // Payé ≠ livré : la commande passe en VALIDEE, la livraison reste
+        // une étape distincte gérée par le vendeur.
         await prisma.commandeClient.updateMany({
           where: { id: { in: commandeIds } },
           data: {
             statutPaiement: "CONFIRME",
-            etat: "LIVREE", // ou VALIDEE selon les états définis
+            etat: "VALIDEE",
             modePaiement: payment_method || "PAYTECH",
             paymentToken: token || ref_command
           }
@@ -91,7 +104,7 @@ export async function POST(request: Request) {
             where: { id: order.id },
             data: {
               statutPaiement: "CONFIRME",
-              etat: "LIVREE",
+              etat: "VALIDEE",
               modePaiement: payment_method || "PAYTECH",
               paymentToken: token || ref_command
             }
@@ -104,11 +117,10 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error processing PayTech IPN:", error);
-    return NextResponse.json(
-      { error: error.message || "Erreur lors du traitement de l'IPN" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Erreur lors du traitement de l'IPN";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
