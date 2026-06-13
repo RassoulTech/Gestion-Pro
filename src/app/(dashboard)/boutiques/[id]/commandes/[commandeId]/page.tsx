@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CreditCard, Smartphone, Wallet, Mail, Phone, MapPin } from "lucide-react";
 import { getCommandeById } from "@/server/queries/commande.queries";
+import { getBoutiqueById } from "@/server/queries/boutique.queries";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "@/components/status-badge";
 import { Separator } from "@/components/ui/separator";
 import { EtatActions } from "./_components/etat-actions";
+import { FactureCommandeButtons } from "./_components/facture-commande-buttons";
 
 const PAYMENT_LABELS: Record<string, { label: string; icon: typeof CreditCard; color: string }> = {
   WAVE: { label: "Wave", icon: Smartphone, color: "text-orange-500" },
@@ -34,9 +36,12 @@ export default async function CommandeDetailPage({
   params: Promise<{ id: string; commandeId: string }>;
 }) {
   const { id: boutiqueId, commandeId } = await params;
-  const commande = await getCommandeById(boutiqueId, commandeId);
+  const [commande, boutique] = await Promise.all([
+    getCommandeById(boutiqueId, commandeId),
+    getBoutiqueById(boutiqueId),
+  ]);
 
-  if (!commande) notFound();
+  if (!commande || !boutique) notFound();
 
   return (
     <div className="space-y-5 sm:space-y-6 p-3 sm:p-6">
@@ -55,8 +60,40 @@ export default async function CommandeDetailPage({
             <p className="text-xs sm:text-sm text-muted-foreground">{formatDateTime(commande.date)}</p>
           </div>
         </div>
-        <div className="sm:ml-auto">
+        <div className="flex flex-col gap-3 sm:ml-auto sm:flex-row sm:items-center">
           <StatusBadge status={commande.etat} />
+          <FactureCommandeButtons
+            boutique={{
+              nom: boutique.nom,
+              logo: boutique.logo,
+              telephone: boutique.telephone,
+              email: boutique.email,
+              adresse: boutique.adresse,
+            }}
+            commande={{
+              code: commande.code,
+              date: commande.date.toISOString(),
+              invoiceNumber: commande.invoiceNumber,
+              statutPaiement: commande.statutPaiement,
+              remise: commande.remise,
+              total: commande.total,
+              notes: commande.notes,
+              client: commande.client
+                ? {
+                    nom: commande.client.nom,
+                    prenom: commande.client.prenom,
+                    telephone: commande.client.telephone,
+                    email: commande.client.email,
+                    adresse: commande.client.adresse,
+                  }
+                : null,
+              lignes: commande.lignes.map((ligne) => ({
+                nom: ligne.produit.nom,
+                quantite: ligne.quantite,
+                prixUnitaire: ligne.prixUnitaire,
+              })),
+            }}
+          />
         </div>
       </div>
 
