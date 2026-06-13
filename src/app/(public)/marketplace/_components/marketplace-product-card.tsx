@@ -117,16 +117,19 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
           </div>
         )}
 
-        {/* Footer actions */}
+        {/* Footer actions — à 375px (2 colonnes), le bouton prend toute la
+            largeur et le libellé « Voir détails » (redondant, la carte est
+            cliquable) n'apparaît qu'à partir de sm. */}
         <div className="pt-3 mt-auto flex items-center justify-between gap-2 border-t border-slate-100/60 dark:border-zinc-800/50">
-          <span className="text-[10px] font-extrabold text-orange-500 uppercase tracking-widest">
+          <span className="hidden sm:inline text-[10px] font-extrabold text-orange-500 uppercase tracking-widest">
             Voir détails
           </span>
           <Button
             size="sm"
-            className="rounded-xl px-3 h-9 font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300"
+            className="rounded-xl px-3 h-10 sm:h-9 flex-1 sm:flex-none font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300"
             onClick={handleAddToCart}
             disabled={!enStock}
+            aria-label={`Ajouter ${produit.nom} au panier`}
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1" />
             Ajouter

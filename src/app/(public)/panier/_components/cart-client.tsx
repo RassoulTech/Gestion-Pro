@@ -112,7 +112,7 @@ export function CartClient() {
                       <button
                         onClick={() => updateQuantity(item.produitId, Math.max(1, item.quantite - 1))}
                         disabled={item.quantite <= 1}
-                        className="h-8 w-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 border border-transparent active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all shadow-sm"
+                        className="h-10 w-10 sm:h-8 sm:w-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 border border-transparent active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all shadow-sm"
                         aria-label="Diminuer"
                       >
                         <Minus className="h-3.5 w-3.5" />
@@ -122,7 +122,7 @@ export function CartClient() {
                       </span>
                       <button
                         onClick={() => updateQuantity(item.produitId, item.quantite + 1)}
-                        className="h-8 w-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 border border-transparent active:scale-95 transition-all shadow-sm"
+                        className="h-10 w-10 sm:h-8 sm:w-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 border border-transparent active:scale-95 transition-all shadow-sm"
                         aria-label="Augmenter"
                       >
                         <Plus className="h-3.5 w-3.5" />

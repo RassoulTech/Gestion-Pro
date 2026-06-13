@@ -106,7 +106,7 @@ export function MarketplacePagination({
   const pageRange = getPageRange(currentPage, totalPages);
 
   return (
-    <div className="flex flex-col gap-6 p-6 sm:p-8 border border-slate-100 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 shadow-xl backdrop-blur-xl rounded-[2rem] mt-12">
+    <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-8 border border-slate-100 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 shadow-xl backdrop-blur-xl rounded-2xl sm:rounded-[2rem] mt-8 sm:mt-12">
       {/* Première ligne : Informations de pagination + Taille de page + Aller à la page */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-zinc-800/80">
         <div className="text-sm font-bold text-slate-500 dark:text-zinc-400 text-center lg:text-left">
