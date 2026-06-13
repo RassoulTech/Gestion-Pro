@@ -61,7 +61,7 @@ export default async function ProduitPublicPage({ params }: Props) {
     : "#";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-12 sm:py-20 relative">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-12 sm:pt-20 pb-28 lg:pb-20 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
         
         {/* Back Link */}
@@ -78,7 +78,7 @@ export default async function ProduitPublicPage({ params }: Props) {
         <div className="grid gap-12 lg:grid-cols-2 items-start">
           
           {/* Product Image Section with ambient color glow */}
-          <div className="relative group w-full">
+          <div className="relative group w-full min-w-0">
             {/* Ambient background glow */}
             <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 opacity-20 blur-3xl rounded-[2.5rem] group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
             
@@ -107,9 +107,9 @@ export default async function ProduitPublicPage({ params }: Props) {
           </div>
 
           {/* Product Info Section */}
-          <div className="flex flex-col space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-800 dark:text-zinc-100 leading-tight">
+          <div className="flex flex-col space-y-8 min-w-0">
+            <div className="space-y-4 min-w-0">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-800 dark:text-zinc-100 leading-tight break-words">
                 {produit.nom}
               </h1>
               
@@ -269,25 +269,45 @@ export default async function ProduitPublicPage({ params }: Props) {
 
       </div>
 
-      {/* Requirement 3: Floating WhatsApp FAB fixed in the bottom right corner */}
+      {/* Floating WhatsApp FAB — remonté au-dessus de la barre sticky sur mobile */}
       {whatsappNumber && (
-        <div className="fixed bottom-6 right-6 z-50 animate-pulse hover:animate-none">
+        <div className="fixed bottom-24 right-6 z-50 lg:bottom-6 animate-pulse hover:animate-none">
           <a
             href={whatsappUrlFlottant}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-16 w-16 rounded-full bg-[#25D366] text-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group relative border-4 border-white dark:border-zinc-900"
+            className="flex items-center justify-center h-14 w-14 lg:h-16 lg:w-16 rounded-full bg-[#25D366] text-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group relative border-4 border-white dark:border-zinc-900"
             title="Commander via WhatsApp"
+            aria-label="Commander via WhatsApp"
           >
             <span className="absolute right-20 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl shadow-lg border border-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
               Commander via WhatsApp
             </span>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.437 0 9.862-4.41 9.865-9.85.002-2.636-1.02-5.115-2.879-6.979C16.398 1.912 13.926.887 11.3.887 5.86.887 1.439 5.3 1.436 10.74c0 1.562.415 3.09 1.202 4.457l-1.018 3.719 3.824-.997c1.336.727 2.766 1.096 4.203 1.096zM17.65 14.15c-.3-.15-1.785-.88-2.062-.98-.278-.1-.48-.15-.68.15-.2.3-.77.98-.945 1.18-.175.2-.35.225-.65.075-.3-.15-1.27-.47-2.42-1.49-.89-.8-1.5-1.78-1.675-2.08-.175-.3-.02-.46.13-.61.135-.13.3-.35.45-.52.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.68-1.64-.93-2.24-.24-.58-.49-.5-.68-.51h-.58c-.2 0-.525.075-.8 0-.275-.3-1.05-1.025-1.44-1.95-.36-.85-.15-1.52.075-1.7.35-.3.6-.525.9-.9.1-.125.175-.25.25-.425.075-.175.04-.325-.02-.475-.06-.15-.58-1.4-.8-1.92-.215-.52-.46-.45-.63-.45h-.54c-.18 0-.475.067-.723.342-.248.275-.945.925-.945 2.25s.965 2.6 1.1 2.775c.135.175 1.9 2.9 4.6 4.075.64.28 1.14.448 1.53.573.645.205 1.23.175 1.69.107.514-.077 1.785-.73 2.037-1.435.252-.705.252-1.31.176-1.435-.075-.125-.275-.2-.575-.35z" />
-            </svg>
+            <WhatsAppIcon className="h-7 w-7" />
           </a>
         </div>
       )}
+
+      {/* CTA principal sticky en bas (mobile uniquement) */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 shrink-0">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              {produit.quantite > 0 ? "En stock" : "Épuisé"}
+            </p>
+            <p className="text-lg font-black text-orange-600 dark:text-orange-400 tabular-nums leading-none">
+              {formatCurrency(produit.prixUnitaire)}
+            </p>
+          </div>
+          <AddToCartButton
+            produit={{ id: produit.id, nom: produit.nom, prixUnitaire: produit.prixUnitaire, photo: produit.photo }}
+            boutiqueSlug={slug}
+            boutiqueNom={boutique.nom}
+            disabled={produit.quantite <= 0}
+            className="h-12 flex-1 rounded-xl text-base"
+          />
+        </div>
+      </div>
     </div>
   );
 }

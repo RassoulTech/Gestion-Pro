@@ -115,7 +115,7 @@ export default async function MarketplacePage({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12">
         {/* Hero orienté produits */}
         <div className="max-w-3xl mx-auto text-center space-y-4 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-gradient-to-r from-orange-500/10 to-orange-500/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,350px)] h-[350px] bg-gradient-to-r from-orange-500/10 to-orange-500/10 rounded-full blur-[120px] pointer-events-none" />
 
           <div className="inline-flex items-center gap-2 rounded-full bg-orange-500/10 border border-orange-500/20 px-3.5 py-1 text-xs font-extrabold text-orange-500 uppercase tracking-widest relative z-10">
             <Sparkles className="w-3.5 h-3.5" />

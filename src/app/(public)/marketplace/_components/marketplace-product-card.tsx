@@ -76,7 +76,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
 
       {/* Content */}
       <div className="p-4 sm:p-5 flex flex-col flex-1 space-y-2">
-        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-1 text-sm">
+        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 min-h-[2.5rem] text-sm leading-tight">
           {produit.nom}
         </h3>
 
@@ -86,7 +86,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
           </p>
         )}
 
-        <p className="text-base sm:text-lg font-black text-orange-600 dark:text-orange-400 tracking-tight pt-0.5">
+        <p className="text-base sm:text-lg font-black text-orange-600 dark:text-orange-400 tracking-tight tabular-nums pt-0.5">
           {formatCurrency(produit.prixUnitaire)}
         </p>
 
