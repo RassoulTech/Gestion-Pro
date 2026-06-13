@@ -111,7 +111,7 @@ export default async function MarketplacePage({
   const suspenseKey = JSON.stringify(params);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-8 sm:py-12 lg:py-20">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-24 pb-10 sm:pb-12 lg:pt-28 lg:pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12">
         {/* Hero orienté produits */}
         <div className="max-w-3xl mx-auto text-center space-y-4 relative">
