@@ -51,9 +51,19 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
           <Package className="h-14 w-14 text-slate-300 dark:text-zinc-700 transition-transform duration-500 group-hover:scale-105" />
         )}
 
-        <div className="absolute top-3 right-3">
+        {/* Étiquettes en ligne au-dessus de l'image : la catégorie tronque
+            pour ne jamais chevaucher l'étiquette de stock sur les cartes
+            étroites (2 colonnes en mobile). */}
+        <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+          {produit.categorie ? (
+            <Badge className="min-w-0 max-w-[60%] rounded-full px-2.5 py-0.5 bg-white/90 dark:bg-zinc-900/90 text-orange-600 dark:text-orange-400 font-bold text-[9px] uppercase tracking-wider border border-orange-100 dark:border-orange-500/20 backdrop-blur-sm">
+              <span className="block min-w-0 truncate">{produit.categorie.nom}</span>
+            </Badge>
+          ) : (
+            <span aria-hidden />
+          )}
           <Badge
-            className={`rounded-full px-2.5 py-0.5 font-extrabold text-[9px] uppercase tracking-widest border-none ${
+            className={`shrink-0 rounded-full px-2.5 py-0.5 font-extrabold text-[9px] uppercase tracking-widest border-none ${
               enStock
                 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
                 : "bg-rose-500 text-white shadow-lg shadow-rose-500/20"
@@ -62,14 +72,6 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
             {enStock ? "En stock" : "Épuisé"}
           </Badge>
         </div>
-
-        {produit.categorie && (
-          <div className="absolute top-3 left-3">
-            <Badge className="rounded-full px-2.5 py-0.5 bg-white/90 dark:bg-zinc-900/90 text-orange-600 dark:text-orange-400 font-bold text-[9px] uppercase tracking-wider border border-orange-100 dark:border-orange-500/20 backdrop-blur-sm">
-              {produit.categorie.nom}
-            </Badge>
-          </div>
-        )}
       </div>
 
       {/* Content */}
