@@ -84,8 +84,8 @@ export default function PublicLayout({
                   size={40}
                   className="shadow-lg shadow-orange-600/20 group-hover:rotate-6 transition-all duration-500 rounded-xl"
                 />
-                <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-                  Gestion<span className="text-orange-600 dark:text-orange-500">Pro</span>
+                <span className="text-xl font-black tracking-tight text-foreground">
+                  Gestion<span className="text-brand">Pro</span>
                 </span>
               </Link>
               <p className="max-w-sm text-sm font-semibold leading-relaxed text-zinc-500 dark:text-zinc-400">
