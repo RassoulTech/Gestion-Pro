@@ -2,9 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { auth } from "@/lib/auth";
+
+// Extension dérivée du type MIME validé (jamais du nom de fichier fourni par
+// le client) pour éviter toute extension arbitraire ou traversée de chemin.
+const MIME_EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
 
 export async function POST(req: NextRequest) {
   try {
+    // Upload réservé aux utilisateurs authentifiés — sinon l'écriture de
+    // fichiers (ou le renvoi base64) est ouverte à n'importe qui.
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Authentification requise." }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
 
@@ -12,8 +30,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Aucun fichier fourni" }, { status: 400 });
     }
 
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
+    const ext = MIME_EXT[file.type];
+    if (!ext) {
       return NextResponse.json(
         { error: `Format non supporté (${file.type}). Utilisez JPG, PNG, WebP ou GIF.` },
         { status: 400 }
@@ -28,9 +46,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ext = file.name.split(".").pop() || "jpg";
     const fileName = `${randomUUID()}.${ext}`;
-    
+
     // Safe buffer conversion for Node.js environment
     const buffer = Buffer.from(await file.arrayBuffer());
     
@@ -40,17 +57,18 @@ export async function POST(req: NextRequest) {
       await writeFile(path.join(uploadDir, fileName), buffer);
       
       return NextResponse.json({ url: `/uploads/${fileName}` });
-    } catch (fsError: any) {
+    } catch {
       // Fallback transparent si le système de fichiers est en lecture seule (Vercel serverless / EROFS)
       console.warn("Système de fichiers en lecture seule (Vercel EROFS). Conversion de l'image en Base64...");
       const base64 = buffer.toString("base64");
       const mimeType = file.type || "image/webp";
       return NextResponse.json({ url: `data:${mimeType};base64,${base64}` });
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("UPLOAD API EXCEPTION:", error);
+    const message = error instanceof Error ? error.message : "Erreur inconnue";
     return NextResponse.json(
-      { error: `Erreur d'écriture sur le serveur : ${error?.message || "Erreur inconnue"}` },
+      { error: `Erreur d'écriture sur le serveur : ${message}` },
       { status: 500 }
     );
   }

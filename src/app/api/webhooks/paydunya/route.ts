@@ -87,13 +87,6 @@ export async function POST(req: Request) {
       return new NextResponse("Invalid signature", { status: 401 });
     }
 
-    // Verify the IPN signature before doing anything else. In dev/mock mode
-    // (no MASTER_KEY configured) this is a no-op so sandbox flows keep working.
-    if (!PayDunyaClient.verifyIpnHash(receivedHash)) {
-      console.warn(`PayDunya webhook: invalid hash for token ${token}`);
-      return new NextResponse("Invalid signature", { status: 401 });
-    }
-
     // Re-verify with PayDunya to avoid spoofed callbacks
     const verification = await PayDunyaClient.confirmInvoice(token);
 
