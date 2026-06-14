@@ -15,6 +15,7 @@ import {
 
 import { createCommandeClient } from "@/server/actions/commande.actions";
 import { formatCurrency } from "@/lib/utils";
+import { computePosTotals } from "@/lib/pos-math";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -87,9 +88,11 @@ export default function PosInterface({
   });
 
   // ─── CALCULS ─────────────────────────────────────────────────
-  const subtotal = cart.reduce((sum, item) => sum + item.prixUnitaire * item.cartQty, 0);
-  const total = Math.max(0, subtotal - remise);
-  const monnaieRendue = montantRecu !== undefined && montantRecu > total ? montantRecu - total : 0;
+  const { subtotal, total, monnaieRendue } = computePosTotals({
+    lines: cart.map((item) => ({ prixUnitaire: item.prixUnitaire, quantite: item.cartQty })),
+    remise,
+    montantRecu,
+  });
 
   // ─── FILTRES ─────────────────────────────────────────────────
   const filteredProduits = initialProduits.filter((p) => {
