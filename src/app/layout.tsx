@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/providers";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import { auth } from "@/lib/auth";
 import "./globals.css";
 
@@ -71,6 +72,7 @@ export default async function RootLayout({
           {children}
           <Toaster richColors position="top-right" />
         </Providers>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
