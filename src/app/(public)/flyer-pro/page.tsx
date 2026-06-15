@@ -32,7 +32,7 @@ import { BrandLogo } from "@/components/brand-logo";
  */
 export default function FlyerProPage() {
   const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL || "https://gestion-pro.vercel.app";
+    process.env.NEXT_PUBLIC_APP_URL || "https://mongestionpro.com";
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [downloading, setDownloading] = useState(false);
 
