@@ -16,6 +16,13 @@ export const createCommandeClientSchema = z.object({
   date: z.string().optional(),
   etat: z.enum(["EN_ATTENTE", "VALIDEE", "LIVREE", "ANNULEE"]).optional(),
   modePaiement: z.string().optional(),
+  /**
+   * Code de commande généré côté client. Sert de clé d'idempotence pour la
+   * synchronisation des ventes hors-ligne : la contrainte `@@unique([boutiqueId,
+   * code])` empêche tout doublon si une vente en file est rejouée. Si absent,
+   * le serveur en génère un.
+   */
+  clientCode: z.string().min(3).max(40).optional(),
 });
 
 export const updateEtatCommandeSchema = z.object({

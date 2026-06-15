@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import {
   ShoppingCart,
@@ -11,11 +11,18 @@ import {
   X,
   CheckCircle2,
   Package,
+  CloudOff,
 } from "lucide-react";
 
 import { createCommandeClient } from "@/server/actions/commande.actions";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, generateCode } from "@/lib/utils";
 import { computePosTotals } from "@/lib/pos-math";
+import {
+  enqueueSale,
+  getQueuedSales,
+  removeSale,
+  countQueuedSales,
+} from "@/lib/offline-queue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +82,8 @@ export default function PosInterface({
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [loading, setLoading] = useState(false);
+  // Ventes hors-ligne en attente de synchronisation.
+  const [pendingCount, setPendingCount] = useState(0);
 
   // ─── ETAT IMPRESSION ─────────────────────────────────────────
   const [ticketData, setTicketData] = useState<TicketProps | null>(null);
@@ -152,25 +161,87 @@ export default function PosInterface({
   };
 
   // ─── VALIDATION COMMANDE ────────────────────────────────────
+  // Rejoue les ventes en file (au montage + retour réseau). Idempotent : un
+  // rejeu d'une vente déjà enregistrée est dédupliqué côté serveur via le code.
+  const syncQueue = useCallback(async () => {
+    if (typeof navigator !== "undefined" && !navigator.onLine) return;
+    const queued = await getQueuedSales().catch(() => []);
+    if (queued.length === 0) {
+      setPendingCount(0);
+      return;
+    }
+    let synced = 0;
+    for (const sale of queued) {
+      try {
+        const res = await createCommandeClient({ boutiqueId: sale.boutiqueId, data: sale.data });
+        if (res?.serverError) break; // erreur transitoire → on garde pour plus tard
+        await removeSale(sale.code);
+        synced++;
+      } catch {
+        break;
+      }
+    }
+    const remaining = await countQueuedSales().catch(() => 0);
+    setPendingCount(remaining);
+    if (synced > 0) {
+      toast.success(`${synced} vente${synced > 1 ? "s" : ""} synchronisée${synced > 1 ? "s" : ""}.`);
+    }
+  }, []);
+
+  useEffect(() => {
+    void syncQueue();
+    const onOnline = () => void syncQueue();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [syncQueue]);
+
   const handleValider = async () => {
     if (cart.length === 0) return toast.error("Le panier est vide");
 
+    // Code généré côté client = clé d'idempotence (déduplication à la sync).
+    const code = generateCode("CMD");
+    const data = {
+      lignes: cart.map((c) => ({
+        produitId: c.id,
+        quantite: c.cartQty,
+        prixUnitaire: c.prixUnitaire,
+      })),
+      remise,
+      montantRecu: montantRecu || undefined,
+      monnaieRendue: montantRecu && montantRecu > total ? monnaieRendue : undefined,
+      notes: notes || undefined,
+      clientCode: code,
+    };
+
+    const ticket: TicketProps = {
+      boutique,
+      commandeCode: code,
+      date: new Date().toISOString(),
+      lignes: cart.map((c) => ({ nom: c.nom, quantite: c.cartQty, prixUnitaire: c.prixUnitaire })),
+      total,
+      remise,
+      montantRecu,
+      monnaieRendue,
+      vendeurNom,
+    };
+
+    // Hors-ligne : on enregistre localement et on imprime quand même le ticket.
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      try {
+        await enqueueSale({ code, boutiqueId: boutique.id, data, createdAt: Date.now() });
+        setPendingCount((n) => n + 1);
+        toast.success("Hors-ligne : vente enregistrée localement, synchronisation automatique au retour du réseau.");
+        setTicketData(ticket);
+        setShowTicketModal(true);
+      } catch {
+        toast.error("Stockage hors-ligne indisponible. Vérifiez votre connexion.");
+      }
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await createCommandeClient({
-        boutiqueId: boutique.id,
-        data: {
-          lignes: cart.map((c) => ({
-            produitId: c.id,
-            quantite: c.cartQty,
-            prixUnitaire: c.prixUnitaire,
-          })),
-          remise,
-          montantRecu: montantRecu || undefined,
-          monnaieRendue: montantRecu && montantRecu > total ? monnaieRendue : undefined,
-          notes: notes || undefined,
-        },
-      });
+      const res = await createCommandeClient({ boutiqueId: boutique.id, data });
 
       if (res?.serverError) {
         toast.error(res.serverError);
@@ -179,21 +250,8 @@ export default function PosInterface({
       }
 
       toast.success("Vente enregistrée !");
-      
-      // Préparer les données pour le ticket
-      setTicketData({
-        boutique,
-        commandeCode: res?.data?.code || "N/A",
-        date: new Date().toISOString(),
-        lignes: cart.map(c => ({ nom: c.nom, quantite: c.cartQty, prixUnitaire: c.prixUnitaire })),
-        total,
-        remise,
-        montantRecu,
-        monnaieRendue,
-        vendeurNom
-      });
+      setTicketData({ ...ticket, commandeCode: res?.data?.code || code });
       setShowTicketModal(true);
-
     } catch {
       toast.error("Erreur serveur.");
     } finally {
@@ -204,9 +262,15 @@ export default function PosInterface({
   return (
     <div className="flex flex-col md:flex-row gap-4 -mx-4 -mt-4 px-4 pt-4 pb-24 items-start">
       {/* ─── ZONE GAUCHE : PRODUITS ───────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0 w-full bg-zinc-50/50 dark:bg-zinc-900/20 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
+      <div className="flex-1 flex flex-col min-w-0 w-full bg-zinc-50/50 dark:bg-zinc-900/20 rounded-2xl border border-border shadow-sm">
         {/* Header filtres */}
-        <div className="p-4 bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800 space-y-3 z-10 sticky top-0 rounded-t-2xl">
+        <div className="p-4 bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 border-b border-border space-y-3 z-10 sticky top-0 rounded-t-2xl">
+          {pendingCount > 0 && (
+            <div className="flex items-center gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-500/20 px-3 py-2 text-[11px] font-bold text-amber-700 dark:text-amber-400">
+              <CloudOff className="h-3.5 w-3.5 shrink-0" />
+              {pendingCount} vente{pendingCount > 1 ? "s" : ""} en attente de synchronisation
+            </div>
+          )}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -245,7 +309,7 @@ export default function PosInterface({
               <div
                 key={p.id}
                 onClick={() => addToCart(p)}
-                className={`relative group bg-white dark:bg-zinc-900 rounded-xl p-3 border shadow-sm cursor-pointer transition-all hover:border-brand/50 hover:shadow-md ${
+                className={`relative group bg-card rounded-xl p-3 border shadow-sm cursor-pointer transition-all hover:border-brand/50 hover:shadow-md ${
                   p.quantite <= 0 ? "opacity-50 grayscale border-red-200" : "border-zinc-200 dark:border-zinc-800"
                 }`}
               >
@@ -275,8 +339,8 @@ export default function PosInterface({
       </div>
 
       {/* ─── ZONE DROITE : PANIER ──────────────────────────────────── */}
-      <div className="w-full md:w-[400px] flex flex-col bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-xl shrink-0 sticky top-4 z-20">
-        <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50">
+      <div className="w-full md:w-[400px] flex flex-col bg-card border border-border rounded-2xl shadow-xl shrink-0 sticky top-4 z-20">
+        <div className="p-4 border-b border-border flex justify-between items-center bg-zinc-50 dark:bg-zinc-800/50">
           <h2 className="font-black text-lg flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-brand" /> Ticket
           </h2>
@@ -291,7 +355,7 @@ export default function PosInterface({
             </div>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex flex-col gap-2 p-3 border border-zinc-100 dark:border-zinc-800 rounded-xl">
+              <div key={item.id} className="flex flex-col gap-2 p-3 border border-border rounded-xl">
                 <div className="flex justify-between items-start">
                   <span className="font-semibold text-sm leading-tight pr-4">{item.nom}</span>
                   <button onClick={() => removeFromCart(item.id)} aria-label={`Retirer ${item.nom}`} className="-m-2 p-2 rounded-md text-zinc-400 hover:text-red-500">
@@ -315,7 +379,7 @@ export default function PosInterface({
           )}
         </div>
 
-        <div className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 space-y-4">
+        <div className="p-4 border-t border-border bg-zinc-50 dark:bg-zinc-800/50 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Remise (FCFA)</Label>

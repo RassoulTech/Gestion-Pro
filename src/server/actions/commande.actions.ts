@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { vendeurActionClient } from "@/lib/safe-action";
 import { requireBoutiqueAccess } from "@/lib/permissions";
@@ -20,18 +21,64 @@ export const createCommandeClient = vendeurActionClient
   .action(async ({ parsedInput: { boutiqueId, data }, ctx }) => {
     await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
 
-    const result = await prisma.$transaction(async (tx) => {
-      const code = generateCode("CMD");
+    // Code fourni par le client (ventes hors-ligne) = clé d'idempotence ; sinon
+    // généré côté serveur. Si une vente déjà synchronisée est rejouée, la
+    // contrainte @@unique([boutiqueId, code]) lève P2002 → on renvoie la commande
+    // existante au lieu d'en créer un doublon.
+    const code = data.clientCode || generateCode("CMD");
+
+    let result;
+    try {
+      result = await createCommandeTransaction({ boutiqueId, data, code, userId: ctx.user.id });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === "P2002" &&
+        data.clientCode
+      ) {
+        const existing = await prisma.commandeClient.findFirst({
+          where: { boutiqueId, code },
+        });
+        if (existing) {
+          revalidatePath(`/boutiques/${boutiqueId}/commandes`);
+          return existing;
+        }
+      }
+      throw e;
+    }
+
+    await logActivity({
+      userId: ctx.user.id,
+      action: "commande.create",
+      subjectType: "CommandeClient",
+      subjectId: result.id,
+    });
+
+    revalidatePath(`/boutiques/${boutiqueId}/commandes`);
+    return result;
+  });
+
+async function createCommandeTransaction({
+  boutiqueId,
+  data,
+  code,
+  userId,
+}: {
+  boutiqueId: string;
+  data: import("@/schemas/commande.schema").CreateCommandeClientInput;
+  code: string;
+  userId: string;
+}) {
+  return prisma.$transaction(async (tx) => {
       let total = 0;
 
       const commande = await tx.commandeClient.create({
         data: {
           boutiqueId,
           clientId: data.clientId || null,
-          userId: ctx.user.id,
+          userId,
           code,
           total: 0,
-          // @ts-ignore - Prisma IDE cache glitch
           remise: data.remise || 0,
           montantRecu: data.montantRecu,
           monnaieRendue: data.monnaieRendue,
@@ -86,18 +133,8 @@ export const createCommandeClient = vendeurActionClient
         where: { id: commande.id },
         data: { total: finalTotal },
       });
-    });
-
-    await logActivity({
-      userId: ctx.user.id,
-      action: "commande.create",
-      subjectType: "CommandeClient",
-      subjectId: result.id,
-    });
-
-    revalidatePath(`/boutiques/${boutiqueId}/commandes`);
-    return result;
   });
+}
 
 export const updateEtatCommande = vendeurActionClient
   .schema(
