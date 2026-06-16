@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus, Search, MoreHorizontal, Pencil, Trash2, Truck, Phone, Mail } from "lucide-react";
+import { Plus, MoreHorizontal, Pencil, Trash2, Truck, Phone, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFournisseurSchema, type CreateFournisseurInput } from "@/schemas/fournisseur.schema";
@@ -18,7 +18,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 
-import { SearchInput } from "@/components/ui/search-input";
 
 interface Fournisseur {
   id: string; nom: string; telephone: string | null; email: string | null; adresse: string | null;

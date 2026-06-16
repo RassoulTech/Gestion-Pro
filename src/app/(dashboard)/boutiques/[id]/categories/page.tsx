@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { CategoriesClient } from "./_components/categories-client";
-import { TableSkeleton } from "@/components/loading";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";

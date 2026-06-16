@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
  
-import { Sidebar } from "@/components/layouts/sidebar";
- 
-import { Header } from "@/components/layouts/header";
+
 import { Skeleton } from "@/components/ui/skeleton";
 
 // ─── Loading skeleton ─────────────────────────────────────────

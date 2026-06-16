@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, HelpCircle, ChevronDown, BookOpen, CreditCard, ShoppingBag, Settings, MessageSquare, PhoneCall } from "lucide-react";
-import Link from "next/link";
+import { Search, HelpCircle, ChevronDown, BookOpen, CreditCard, ShoppingBag, Settings, PhoneCall } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 

@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { 
-  Download, 
   Share2, 
   RefreshCw, 
   FileText, 
@@ -18,7 +17,6 @@ import {
   Palette,
   Sparkles,
   Copy,
-  ExternalLink,
   MessageSquare,
   Type
 } from "lucide-react";

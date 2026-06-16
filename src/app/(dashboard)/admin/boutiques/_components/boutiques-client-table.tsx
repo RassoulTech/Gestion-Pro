@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Store, User, Tag, Layers, Package, Calendar, X, Filter, Sparkles, AlertTriangle } from "lucide-react";
+import { Search, Store, User, Tag, Package, Calendar, X, Filter } from "lucide-react";
 import { formatDate, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";

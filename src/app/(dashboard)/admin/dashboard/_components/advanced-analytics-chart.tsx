@@ -10,7 +10,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { Users, UserX, Crown, ShieldCheck, Zap } from "lucide-react";
 
 interface AdvancedAnalyticsChartProps {
   data: {

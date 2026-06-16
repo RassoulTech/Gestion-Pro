@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, Sparkles, ArrowRight, ShieldCheck, Check } from "lucide-react";
+import { Lock, Sparkles, ArrowRight, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { UpgradeModal } from "./upgrade-modal";
