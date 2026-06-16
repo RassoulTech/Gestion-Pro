@@ -35,7 +35,8 @@ import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 import { AiInsightsCard } from "./_components/ai-insights-card";
 import { parseDateFilter } from "@/lib/date-filters";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { PeriodQuickFilter } from "@/components/dashboard/period-quick-filter";
+import { Fab } from "@/components/ui/fab";
 
 interface BoutiquePageProps {
   params: Promise<{ id: string }>;
@@ -283,130 +284,112 @@ export default async function BoutiqueDashboardPage({
 
   return (
     <div className="space-y-6 sm:space-y-10 pb-6">
-      {/* Header Premium & Dynamic Hero */}
-      <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] lg:rounded-[3.5rem] bg-zinc-950 p-5 sm:p-10 text-white shadow-2xl lg:p-16">
-        {/* Ambient backup glow */}
-        <div className="absolute right-0 top-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-brand/30 blur-[120px] animate-pulse pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-emerald-500/20 blur-[100px] pointer-events-none" />
-
-        {/* Dynamic Smart Banner: ambient background glow derived entirely from the shop logo */}
+      {/* Hero premium — adaptatif clair & sombre via tokens */}
+      <section className="relative overflow-hidden rounded-3xl border border-border/60 bg-card p-5 shadow-sm sm:rounded-[2rem] sm:p-8 lg:p-10">
+        {/* Dégradé d'ambiance subtil (marque + succès), discret dans les deux thèmes */}
+        <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-brand/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -left-24 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
         {boutique.logo && (
-          <div className="absolute inset-0 select-none pointer-events-none overflow-hidden">
-            <Image 
-              src={boutique.logo} 
-              alt="" 
-              fill 
-              className="object-cover scale-150 blur-3xl opacity-[0.18] dark:opacity-[0.25] transition-opacity duration-700" 
-              sizes="100vw"
-              unoptimized 
-            />
+          <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.04]">
+            <Image src={boutique.logo} alt="" fill className="scale-150 object-cover blur-3xl" sizes="100vw" unoptimized />
           </div>
         )}
 
-        <div className="relative z-10 flex flex-col gap-6 sm:gap-10 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-            {/* Logo premium container with glassmorphic border */}
-            <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-[1.8rem] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center shrink-0 relative shadow-xl">
+        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-start gap-4 sm:gap-5">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm sm:h-20 sm:w-20">
               {boutique.logo ? (
-                <Image 
-                  src={boutique.logo} 
-                  alt={boutique.nom} 
-                  fill 
-                  className="object-cover transition-transform duration-500 hover:scale-105" 
-                  sizes="(max-width: 640px) 80px, 96px"
-                  unoptimized 
+                <Image
+                  src={boutique.logo}
+                  alt={boutique.nom}
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                  sizes="(max-width: 640px) 64px, 80px"
+                  unoptimized
                 />
               ) : (
-                <Store className="h-10 w-10 text-orange-500" />
+                <span className="flex h-full w-full items-center justify-center">
+                  <Store className="h-8 w-8 text-brand" />
+                </span>
               )}
             </div>
 
-            <div className="space-y-2.5">
+            <div className="min-w-0 space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Bonjour{session.user.name ? `, ${session.user.name.split(" ")[0]}` : ""} 👋
+              </p>
+              <h1 className="truncate font-[family-name:var(--font-display)] text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+                {boutique.nom}
+              </h1>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse inline-block mr-1" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-success ring-1 ring-success/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
                   En ligne
                 </span>
                 {(() => {
                   const Icon = getSectorIcon(boutique.secteurActivite);
                   return (
-                    <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-md px-2 py-1 text-[9px] uppercase tracking-wider font-extrabold shadow-sm flex items-center gap-1.5">
-                      <Icon className="h-3 w-3 text-brand shrink-0" />
-                      <span>{getSectorLabel(boutique.secteurActivite)}</span>
-                    </Badge>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-brand ring-1 ring-brand/20">
+                      <Icon className="h-3 w-3 shrink-0" />
+                      {getSectorLabel(boutique.secteurActivite)}
+                    </span>
                   );
                 })()}
-              </div>
-              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                {boutique.nom}
-              </h1>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-zinc-400 font-bold text-xs sm:text-sm">
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-brand shrink-0" />
-                  <span>
-                    {new Date().toLocaleDateString("fr-FR", {
-                      weekday: "long",
-                      day: "numeric",
-                      month: "long",
-                    })}
-                  </span>
-                </div>
-                {boutique.adresse && (
-                  <span className="text-zinc-500">•</span>
-                )}
-                {boutique.adresse && (
-                  <span className="truncate max-w-[200px]">{boutique.adresse}</span>
-                )}
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                  <Calendar className="h-3.5 w-3.5 shrink-0 text-brand" />
+                  {new Date().toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 sm:gap-4 items-center shrink-0 w-full lg:w-auto">
-            <PeriodFilterSelect />
-            <Button
-              asChild
-              size="lg"
-              variant="brand"
-              className="flex-1 sm:flex-initial h-12 sm:h-14 rounded-xl sm:rounded-2xl px-4 sm:px-6 font-black shadow-xl shadow-brand/20 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs sm:text-sm whitespace-nowrap"
-            >
-              <Link href={`/boutiques/${id}/commandes/new`}>
-                <Zap className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5 fill-white" />
-                Vente Rapide
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="flex-1 sm:flex-initial h-12 sm:h-14 rounded-xl sm:rounded-2xl px-4 sm:px-6 font-black border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 text-white border-2 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs sm:text-sm whitespace-nowrap"
-            >
-              <Link href={`/boutiques/${id}/produits/new`}>
-                <Plus className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Produit
-              </Link>
-            </Button>
-            
-            {isEnterprise && (
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:shrink-0">
+            <PeriodQuickFilter />
+            <div className="flex gap-2">
               <Button
                 asChild
-                size="lg"
-                className="w-full sm:w-auto h-12 sm:h-14 rounded-xl sm:rounded-2xl px-4 sm:px-6 font-black bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-450 hover:to-amber-650 shadow-2xl shadow-amber-500/20 text-white text-xs sm:text-sm border border-amber-450/30 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+                variant="brand"
+                className="active-press h-11 flex-1 rounded-xl px-4 font-extrabold shadow-md shadow-brand/20 sm:flex-initial"
               >
-                <a
-                  href={`https://wa.me/221773831364?text=${encodeURIComponent(
-                    `Bonjour Rassoul, je suis le gérant de la boutique ${boutique.nom}. J'ai besoin d'une assistance prioritaire concernant mon compte Enterprise.`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Crown className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Contacter le fondateur (VIP)
-                </a>
+                <Link href={`/boutiques/${id}/commandes/new`}>
+                  <Zap className="mr-1.5 h-4 w-4 fill-current" />
+                  Vente rapide
+                </Link>
               </Button>
-            )}
+              <Button
+                asChild
+                variant="outline"
+                className="active-press h-11 flex-1 rounded-xl px-4 font-extrabold sm:flex-initial"
+              >
+                <Link href={`/boutiques/${id}/produits/new`}>
+                  <Plus className="mr-1.5 h-4 w-4" />
+                  Produit
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+
+        {isEnterprise && (
+          <div className="relative z-10 mt-5 border-t border-border/60 pt-4">
+            <a
+              href={`https://wa.me/221773831364?text=${encodeURIComponent(
+                `Bonjour Rassoul, je suis le gérant de la boutique ${boutique.nom}. J'ai besoin d'une assistance prioritaire concernant mon compte Enterprise.`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-amber-500/20 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Crown className="h-4 w-4" />
+              Contacter le fondateur (VIP)
+            </a>
+          </div>
+        )}
+      </section>
 
       {/* Contenu principal */}
       <div className="space-y-6 sm:space-y-10">
@@ -636,6 +619,14 @@ export default async function BoutiqueDashboardPage({
         </div>
       </div>
       </div>
+
+      <Fab
+        actions={[
+          { label: "Vente rapide", href: `/boutiques/${id}/commandes/new`, icon: Zap, tone: "brand" },
+          { label: "Nouveau produit", href: `/boutiques/${id}/produits/new`, icon: Package, tone: "neutral" },
+          { label: "Nouvelle dépense", href: `/boutiques/${id}/depenses/new`, icon: Wallet, tone: "danger" },
+        ]}
+      />
     </div>
   );
 }
