@@ -622,9 +622,9 @@ export default async function BoutiqueDashboardPage({
 
       <Fab
         actions={[
-          { label: "Vente rapide", href: `/boutiques/${id}/commandes/new`, icon: Zap, tone: "brand" },
-          { label: "Nouveau produit", href: `/boutiques/${id}/produits/new`, icon: Package, tone: "neutral" },
-          { label: "Nouvelle dépense", href: `/boutiques/${id}/depenses/new`, icon: Wallet, tone: "danger" },
+          { label: "Vente rapide", href: `/boutiques/${id}/commandes/new`, icon: "zap", tone: "brand" },
+          { label: "Nouveau produit", href: `/boutiques/${id}/produits/new`, icon: "package", tone: "neutral" },
+          { label: "Nouvelle dépense", href: `/boutiques/${id}/depenses/new`, icon: "wallet", tone: "danger" },
         ]}
       />
     </div>

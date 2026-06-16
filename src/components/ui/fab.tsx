@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, type LucideIcon } from "lucide-react";
+import { Plus, Zap, Package, Wallet, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,10 +15,23 @@ import { cn } from "@/lib/utils";
 
 export type FabActionTone = "brand" | "success" | "danger" | "neutral";
 
+// Icônes résolues CÔTÉ CLIENT : interdit de passer un composant (fonction) en
+// prop d'un Server Component vers un Client Component (règle RSC). On passe donc
+// un nom sérialisable, mappé ici vers l'icône.
+const FAB_ICONS = {
+  plus: Plus,
+  zap: Zap,
+  package: Package,
+  wallet: Wallet,
+  store: Store,
+} as const;
+
+export type FabIconName = keyof typeof FAB_ICONS;
+
 export interface FabAction {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: FabIconName;
   tone?: FabActionTone;
 }
 
@@ -78,7 +91,7 @@ export function Fab({
               }}
             >
               {actions.map((action) => {
-                const Icon = action.icon;
+                const Icon = FAB_ICONS[action.icon];
                 return (
                   <motion.li
                     key={action.href}

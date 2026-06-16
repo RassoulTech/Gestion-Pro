@@ -324,7 +324,7 @@ export default async function BoutiquesPage() {
       {canCreate && (
         <Fab
           actions={[
-            { label: "Créer une boutique", href: "/boutiques/new", icon: Plus, tone: "brand" },
+            { label: "Créer une boutique", href: "/boutiques/new", icon: "plus", tone: "brand" },
           ]}
         />
       )}
