@@ -5,9 +5,7 @@ import crypto from "crypto";
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     commandeClient: {
-      updateMany: vi.fn(),
       findFirst: vi.fn(),
-      update: vi.fn(),
     },
   },
 }));
@@ -18,9 +16,14 @@ vi.mock("@/server/services/payment.service", () => ({
   },
 }));
 
+vi.mock("@/server/services/order-fulfillment", () => ({
+  confirmMarketplaceOrders: vi.fn().mockResolvedValue(1),
+}));
+
 import { POST } from "@/app/api/paytech/ipn/route";
 import { prisma } from "@/lib/prisma";
 import { PaymentService } from "@/server/services/payment.service";
+import { confirmMarketplaceOrders } from "@/server/services/order-fulfillment";
 
 const API_KEY = "test-api-key";
 const API_SECRET = "test-api-secret";
@@ -55,14 +58,13 @@ beforeEach(() => {
 });
 
 describe("POST /api/paytech/ipn — authentification", () => {
-  it("rejette une signature invalide avec un 401 sans toucher à la base", async () => {
+  it("rejette une signature invalide avec un 401 sans rien confirmer", async () => {
     const res = await POST(
       ipnRequest(signedBody({ api_key_sha256: sha256("forged-key") }))
     );
 
     expect(res.status).toBe(401);
-    expect(prisma.commandeClient.updateMany).not.toHaveBeenCalled();
-    expect(prisma.commandeClient.update).not.toHaveBeenCalled();
+    expect(confirmMarketplaceOrders).not.toHaveBeenCalled();
     expect(PaymentService.handlePaymentWebhook).not.toHaveBeenCalled();
   });
 
@@ -72,7 +74,7 @@ describe("POST /api/paytech/ipn — authentification", () => {
     );
 
     expect(res.status).toBe(401);
-    expect(prisma.commandeClient.updateMany).not.toHaveBeenCalled();
+    expect(confirmMarketplaceOrders).not.toHaveBeenCalled();
   });
 
   it("refuse de traiter quoi que ce soit si les clés PayTech ne sont pas configurées", async () => {
@@ -90,7 +92,7 @@ describe("POST /api/paytech/ipn — authentification", () => {
     );
 
     expect(res.status).toBe(503);
-    expect(prisma.commandeClient.updateMany).not.toHaveBeenCalled();
+    expect(confirmMarketplaceOrders).not.toHaveBeenCalled();
   });
 });
 
@@ -109,16 +111,10 @@ describe("POST /api/paytech/ipn — commandes marketplace", () => {
 
     expect(res.status).toBe(200);
     await expect(res.json()).resolves.toEqual({ success: true });
-    expect(prisma.commandeClient.updateMany).toHaveBeenCalledWith({
-      where: { id: { in: ["cmd-1", "cmd-2"] } },
-      data: {
-        statutPaiement: "CONFIRME",
-        // Payé ≠ livré : le paiement valide la commande, il ne la livre pas.
-        etat: "VALIDEE",
-        modePaiement: "Orange Money",
-        paymentToken: "tok_abc",
-      },
-    });
+    expect(confirmMarketplaceOrders).toHaveBeenCalledWith(
+      ["cmd-1", "cmd-2"],
+      expect.objectContaining({ modePaiement: "Orange Money", paymentToken: "tok_abc" })
+    );
   });
 
   it("retombe sur la recherche par code commande quand custom_field est absent", async () => {
@@ -132,20 +128,19 @@ describe("POST /api/paytech/ipn — commandes marketplace", () => {
     expect(prisma.commandeClient.findFirst).toHaveBeenCalledWith({
       where: { code: "CMD-777" },
     });
-    expect(prisma.commandeClient.update).toHaveBeenCalledWith({
-      where: { id: "order-77" },
-      data: expect.objectContaining({ statutPaiement: "CONFIRME" }),
-    });
+    expect(confirmMarketplaceOrders).toHaveBeenCalledWith(
+      ["order-77"],
+      expect.objectContaining({ modePaiement: "Orange Money", paymentToken: "tok_abc" })
+    );
   });
 
-  it("répond 200 sans écrire si aucune commande ne correspond au code", async () => {
+  it("répond 200 sans rien confirmer si aucune commande ne correspond au code", async () => {
     vi.mocked(prisma.commandeClient.findFirst).mockResolvedValueOnce(null);
 
     const res = await POST(ipnRequest(signedBody({ ref_command: "CMD-INCONNUE" })));
 
     expect(res.status).toBe(200);
-    expect(prisma.commandeClient.update).not.toHaveBeenCalled();
-    expect(prisma.commandeClient.updateMany).not.toHaveBeenCalled();
+    expect(confirmMarketplaceOrders).not.toHaveBeenCalled();
   });
 
   it("ne plante pas sur un custom_field JSON malformé", async () => {
@@ -179,7 +174,7 @@ describe("POST /api/paytech/ipn — abonnements", () => {
       "SUB-42",
       "SUCCESS"
     );
-    expect(prisma.commandeClient.updateMany).not.toHaveBeenCalled();
+    expect(confirmMarketplaceOrders).not.toHaveBeenCalled();
   });
 
   it("détecte un abonnement via le préfixe SUB- même sans custom_field", async () => {
@@ -194,14 +189,14 @@ describe("POST /api/paytech/ipn — abonnements", () => {
 });
 
 describe("POST /api/paytech/ipn — autres événements", () => {
-  it("accuse réception des événements non gérés sans rien écrire", async () => {
+  it("accuse réception des événements non gérés sans rien confirmer", async () => {
     const res = await POST(
       ipnRequest(signedBody({ type_event: "sale_canceled" }))
     );
 
     expect(res.status).toBe(200);
     await expect(res.json()).resolves.toEqual({ received: true });
-    expect(prisma.commandeClient.updateMany).not.toHaveBeenCalled();
+    expect(confirmMarketplaceOrders).not.toHaveBeenCalled();
     expect(PaymentService.handlePaymentWebhook).not.toHaveBeenCalled();
   });
 });

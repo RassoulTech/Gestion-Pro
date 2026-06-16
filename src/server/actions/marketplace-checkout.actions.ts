@@ -5,21 +5,37 @@ import { prisma } from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";
 import { auth } from "@/lib/auth";
 import { generateCode } from "@/lib/utils";
-import { generateInvoicePDF } from "@/lib/generate-invoice";
-import { sendOrderConfirmationToClient, sendOrderNotificationToVendedor } from "@/lib/mail";
+import {
+  generateAndSendOrderInvoice,
+  confirmMarketplaceOrders,
+} from "@/server/services/order-fulfillment";
 
 const checkoutItemSchema = z.object({
   produitId: z.string().min(1),
   quantite: z.number().min(1),
+  // Sent by the cart for optimistic display only. The server re-reads the
+  // authoritative price from the DB and ignores this value (see below).
   prixUnitaire: z.number().min(0),
 });
 
 const checkoutSchema = z.object({
   nomClient: z.string().min(1, "Le nom est obligatoire"),
-  emailClient: z.string().email("Email invalide"),
-  telephoneClient: z.string().min(8, "Le numéro de téléphone est obligatoire"),
+  prenomClient: z.string().min(1, "Le prénom est obligatoire"),
+  emailClient: z.string().trim().toLowerCase().email("Email invalide"),
+  // Téléphone au format international (indicatif pays inclus). On retire les
+  // séparateurs avant de valider (ex. "+221 77 123 45 67" -> "+221771234567").
+  telephoneClient: z
+    .string()
+    .transform((v) => v.replace(/[\s().-]/g, ""))
+    .pipe(
+      z
+        .string()
+        .regex(/^\+\d{8,15}$/, "Téléphone invalide (format international, ex. +221771234567)")
+    ),
   adresseLivraison: z.string().min(3, "L'adresse de livraison est obligatoire"),
-  notes: z.string().optional(),
+  ville: z.string().min(1, "La ville est obligatoire"),
+  pays: z.string().min(1, "Le pays est obligatoire").default("Sénégal"),
+  notes: z.string().max(1000).optional(),
   paymentMethod: z.enum([
     "WAVE",
     "ORANGE_MONEY",
@@ -35,27 +51,37 @@ export const createMarketplaceCommande = actionClient
   .action(async ({ parsedInput }) => {
     const {
       nomClient,
+      prenomClient,
       emailClient,
       telephoneClient,
       adresseLivraison,
+      ville,
+      pays,
       notes,
       paymentMethod,
       items,
     } = parsedInput;
 
-    // 1. Enforce active customer authentication
+    // 1. Guest checkout : l'authentification n'est PAS requise. Si une session
+    // existe, la commande est rattachée à l'utilisateur ; sinon userId reste null.
     const session = await auth();
-    const existingUserId: string | null = session?.user?.id ?? null;
-    if (!existingUserId) {
-      throw new Error("Vous devez obligatoirement être connecté pour passer une commande.");
-    }
+    const buyerUserId: string | null = session?.user?.id ?? null;
+
+    // Adresse complète stockée d'un seul tenant (ville + pays compris).
+    const fullAddress = `${adresseLivraison}, ${ville}, ${pays}`;
+
+    // Paiement à la livraison = commande honorée immédiatement (stock décrémenté
+    // + facture émise). Pour les paiements EN LIGNE, on attend la confirmation
+    // de la passerelle (IPN) avant de toucher au stock ou d'émettre la facture :
+    // un paiement abandonné ne laisse ainsi ni stock fantôme ni fausse facture.
+    const isInstant = paymentMethod === "CASH_ON_DELIVERY";
 
     // 2. Group items by boutique
     const itemsWithBoutique = await Promise.all(
       items.map(async (item) => {
         const product = await prisma.produit.findUnique({
           where: { id: item.produitId },
-          select: { boutiqueId: true, nom: true, quantite: true },
+          select: { boutiqueId: true, nom: true, quantite: true, prixUnitaire: true },
         });
         if (!product) {
           throw new Error(`Produit introuvable.`);
@@ -63,7 +89,15 @@ export const createMarketplaceCommande = actionClient
         if (product.quantite < item.quantite) {
           throw new Error(`Stock insuffisant pour le produit: ${product.nom}`);
         }
-        return { ...item, boutiqueId: product.boutiqueId, nom: product.nom };
+        // Authoritative price: always take prixUnitaire from the DB, never the
+        // client cart. Trusting the submitted price lets a tampered cart buy
+        // real stock for an arbitrary amount (and charge that amount via PayTech).
+        return {
+          ...item,
+          boutiqueId: product.boutiqueId,
+          nom: product.nom,
+          prixUnitaire: product.prixUnitaire,
+        };
       })
     );
 
@@ -78,7 +112,6 @@ export const createMarketplaceCommande = actionClient
 
     const createdCommandeIds: string[] = [];
     let totalAmount = 0;
-    const buyerUserId = existingUserId;
 
     // 3. Persist orders + upsert Client per boutique
     await prisma.$transaction(async (tx) => {
@@ -97,13 +130,15 @@ export const createMarketplaceCommande = actionClient
           // Enrich client with any missing data from this order
           const updates: {
             nom?: string;
+            prenom?: string;
             telephone?: string;
             email?: string;
             adresse?: string;
           } = {};
+          if (!client.prenom && prenomClient) updates.prenom = prenomClient;
           if (!client.email && emailClient) updates.email = emailClient;
           if (!client.telephone && telephoneClient) updates.telephone = telephoneClient;
-          if (!client.adresse && adresseLivraison) updates.adresse = adresseLivraison;
+          if (!client.adresse && fullAddress) updates.adresse = fullAddress;
           if (Object.keys(updates).length > 0) {
             client = await tx.client.update({
               where: { id: client.id },
@@ -115,9 +150,10 @@ export const createMarketplaceCommande = actionClient
             data: {
               boutiqueId,
               nom: nomClient,
+              prenom: prenomClient,
               telephone: telephoneClient,
               email: emailClient ?? null,
-              adresse: adresseLivraison,
+              adresse: fullAddress,
             },
           });
         }
@@ -155,119 +191,42 @@ export const createMarketplaceCommande = actionClient
             },
           });
 
-          await tx.produit.update({
-            where: { id: item.produitId },
-            data: {
-              quantite: { decrement: item.quantite },
-            },
-          });
+          // Stock décrémenté à la création UNIQUEMENT pour le paiement à la
+          // livraison. Pour les paiements en ligne, la décrémentation a lieu à
+          // la confirmation du paiement (voir confirmMarketplaceOrders).
+          if (isInstant) {
+            await tx.produit.update({
+              where: { id: item.produitId },
+              data: {
+                quantite: { decrement: item.quantite },
+              },
+            });
 
-          await tx.mouvementStock.create({
-            data: {
-              boutiqueId,
-              produitId: item.produitId,
-              type: "SORTIE",
-              quantite: item.quantite,
-              sourceType: "CommandeClient",
-              sourceId: order.id,
-            },
-          });
+            await tx.mouvementStock.create({
+              data: {
+                boutiqueId,
+                produitId: item.produitId,
+                type: "SORTIE",
+                quantite: item.quantite,
+                sourceType: "CommandeClient",
+                sourceId: order.id,
+              },
+            });
+          }
         }
       }
     });
 
-    // 4. Generate professional invoice PDFs and send confirmation/notification emails
-    for (const orderId of createdCommandeIds) {
-      try {
-        const order = await prisma.commandeClient.findUnique({
-          where: { id: orderId },
-          include: {
-            client: true,
-            boutique: {
-              include: {
-                vendeur: true
-              }
-            },
-            lignes: {
-              include: {
-                produit: true
-              }
-            }
-          }
-        });
-
-        if (order && order.client) {
-          const dateSuffix = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-          const invoiceNumber = `FAC-${dateSuffix}-${order.code.substring(4)}`;
-          
-          const invoiceData = {
-            invoiceNumber,
-            date: new Date(),
-            status: order.etat,
-            boutique: {
-              nom: order.boutique.nom,
-              logo: order.boutique.logo,
-              telephone: order.boutique.telephone,
-              email: order.boutique.email,
-              adresse: order.boutique.adresse,
-            },
-            client: {
-              nom: order.client.nom,
-              prenom: order.client.prenom,
-              telephone: order.client.telephone,
-              email: order.client.email,
-              adresse: order.client.adresse,
-            },
-            lignes: order.lignes.map(line => ({
-              nom: line.produit.nom,
-              quantite: line.quantite,
-              prixUnitaire: line.prixUnitaire,
-            })),
-            total: order.total,
-            remise: order.remise,
-          };
-
-          const doc = generateInvoicePDF(invoiceData);
-          const pdfBase64 = doc.output("datauristring").split(",")[1] || "";
-          const pdfBuffer = Buffer.from(pdfBase64, "base64");
-
-          // Touch file to trigger IDE TS cache reload for the new prisma client fields
-          // Store invoice number and fake invoice PDF URL inside database
-          await prisma.commandeClient.update({
-            where: { id: order.id },
-            data: {
-              invoiceNumber,
-              invoicePdfUrl: `data:application/pdf;base64,${pdfBase64}`,
-            }
-          });
-
-          // Send Email to Client with PDF attachment
-          if (order.client.email) {
-            await sendOrderConfirmationToClient(
-              order.client.email,
-              order.client.nom,
-              order.code,
-              order.total,
-              pdfBuffer
-            );
-          }
-
-          // Send Email to Shop Owner (vendeur)
-          if (order.boutique.vendeur.email) {
-            const vendorName = `${order.boutique.vendeur.prenom} ${order.boutique.vendeur.nom}`;
-            await sendOrderNotificationToVendedor(
-              order.boutique.vendeur.email,
-              vendorName,
-              order.boutique.nom,
-              order.code,
-              order.total,
-              order.client.nom,
-              order.client.telephone || "N/A"
-            );
-          }
+    // 4. Facture + emails de confirmation : uniquement pour le paiement à la
+    // livraison (commande honorée immédiatement). Pour les paiements en ligne,
+    // c'est confirmMarketplaceOrders qui s'en charge après confirmation du paiement.
+    if (isInstant) {
+      for (const orderId of createdCommandeIds) {
+        try {
+          await generateAndSendOrderInvoice(orderId);
+        } catch (err) {
+          console.error(`[invoice-generation-failed] order ${orderId}:`, err);
         }
-      } catch (err) {
-        console.error(`[invoice-generation-failed] Failed to generate/send invoice for order ${orderId}:`, err);
       }
     }
 
@@ -386,11 +345,20 @@ export const createMarketplaceCommande = actionClient
               }
             }
           }
+
+          // PayTech est configuré mais n'a pas renvoyé d'URL exploitable : on
+          // signale une erreur claire plutôt que de simuler un paiement (ce qui
+          // marquerait la commande payée à tort en production).
+          throw new Error("Réponse PayTech invalide.");
         } catch (error) {
           console.error("PayTech marketplace API error :", error);
+          throw new Error(
+            "Le paiement Mobile Money est temporairement indisponible. Réessayez ou choisissez le paiement à la livraison."
+          );
         }
       }
 
+      // PayTech NON configuré (dév/test local) → simulateur de paiement.
       await prisma.commandeClient.updateMany({
         where: { id: { in: createdCommandeIds } },
         data: { paymentToken: transactionRef },
@@ -440,21 +408,23 @@ export const confirmMockOrderPayment = actionClient
     // La référence doit correspondre au paymentToken stocké lors du checkout :
     // sans cette clause, n'importe qui pourrait confirmer n'importe quelle
     // commande en devinant des IDs.
-    const result = await prisma.commandeClient.updateMany({
+    const matching = await prisma.commandeClient.findMany({
       where: { id: { in: commandeIds }, paymentToken: transactionRef },
-      data: {
-        statutPaiement: "CONFIRME",
-        etat: "VALIDEE",
-      },
+      select: { id: true },
     });
 
-    if (result.count === 0) {
+    if (matching.length === 0) {
       throw new Error("Référence de transaction invalide ou commandes introuvables.");
     }
 
+    // Confirmation centralisée : décrémente le stock, génère facture + emails,
+    // idempotente sur les rejeux.
+    await confirmMarketplaceOrders(
+      matching.map((o) => o.id),
+      { modePaiement: "MOCK", paymentToken: transactionRef }
+    );
+
     console.log(`Mock order payment confirmed for orders: ${ids} (ref: ${transactionRef})`);
 
-    return {
-      success: true,
-    };
+    return { success: true };
   });
