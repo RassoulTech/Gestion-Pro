@@ -35,6 +35,24 @@ export function isOwner(ctx: BoutiqueContext): boolean {
 }
 
 /**
+ * Resolve a vendeurId from the session, falling back to the DB when the JWT
+ * is out of sync (Google OAuth signin, profile created after token issuance…).
+ * Mirrors the fallback used by vendeurActionClient. Returns null when the user
+ * has no vendeur profile. Use this in route handlers before getBoutiqueAccess.
+ */
+export async function resolveVendeurId(
+  userId: string,
+  sessionVendeurId: string | null | undefined
+): Promise<string | null> {
+  if (sessionVendeurId) return sessionVendeurId;
+  const vendeur = await prisma.vendeur.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+  return vendeur?.id ?? null;
+}
+
+/**
  * Ensure vendeur has access, throw if not.
  */
 export async function requireBoutiqueAccess(

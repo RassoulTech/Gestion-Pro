@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import sharp from "sharp";
 import { auth } from "@/lib/auth";
+import { ratelimit } from "@/lib/ratelimit";
 
 // Extension dérivée du type MIME validé (jamais du nom de fichier fourni par
 // le client) pour éviter toute extension arbitraire ou traversée de chemin.
@@ -21,6 +23,15 @@ export async function POST(req: NextRequest) {
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: "Authentification requise." }, { status: 401 });
+    }
+
+    // Per-user rate limit to prevent disk/DB flooding via repeated uploads.
+    const { success } = await ratelimit.limit(`upload:${session.user.id}`);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Trop de requêtes. Réessayez dans un instant." },
+        { status: 429 }
+      );
     }
 
     const formData = await req.formData();
@@ -48,14 +59,41 @@ export async function POST(req: NextRequest) {
 
     const fileName = `${randomUUID()}.${ext}`;
 
-    // Safe buffer conversion for Node.js environment
-    const buffer = Buffer.from(await file.arrayBuffer());
-    
+    const rawBuffer = Buffer.from(await file.arrayBuffer());
+
+    // Decode and re-encode through sharp: this proves the bytes are a genuine
+    // raster image (not an HTML/SVG polyglot disguised with an image MIME type)
+    // and strips any embedded metadata or payload. The output format is forced
+    // from the MIME-derived extension, never the client-supplied content-type.
+    let buffer: Buffer;
+    try {
+      const pipeline = sharp(rawBuffer, { failOn: "error", animated: true }).rotate();
+      switch (ext) {
+        case "png":
+          buffer = await pipeline.png().toBuffer();
+          break;
+        case "webp":
+          buffer = await pipeline.webp().toBuffer();
+          break;
+        case "gif":
+          buffer = await pipeline.gif().toBuffer();
+          break;
+        default:
+          buffer = await pipeline.jpeg().toBuffer();
+          break;
+      }
+    } catch {
+      return NextResponse.json(
+        { error: "Fichier image invalide ou corrompu." },
+        { status: 400 }
+      );
+    }
+
     try {
       const uploadDir = path.join(process.cwd(), "public", "uploads");
       await mkdir(uploadDir, { recursive: true });
       await writeFile(path.join(uploadDir, fileName), buffer);
-      
+
       return NextResponse.json({ url: `/uploads/${fileName}` });
     } catch {
       // Fallback transparent si le système de fichiers est en lecture seule (Vercel serverless / EROFS)
