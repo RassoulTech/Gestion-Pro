@@ -80,17 +80,13 @@ export async function POST(request: Request) {
         const result = await PaymentService.handlePaymentWebhook(subscriptionRef, "SUCCESS");
         console.log(`PayTech IPN subscription processing result for ${subscriptionRef}:`, result);
       } else if (commandeIds.length > 0) {
-        // Mettre à jour toutes les commandes associées
-        // Payé ≠ livré : la commande passe en VALIDEE, la livraison reste
-        // une étape distincte gérée par le vendeur.
-        await prisma.commandeClient.updateMany({
-          where: { id: { in: commandeIds } },
-          data: {
-            statutPaiement: "CONFIRME",
-            etat: "VALIDEE",
-            modePaiement: payment_method || "PAYTECH",
-            paymentToken: token || ref_command
-          }
+        // Confirmation centralisée : décrémente le stock, passe en VALIDEE,
+        // génère facture + emails, idempotente sur les rejeux d'IPN.
+        // Payé ≠ livré : la livraison reste gérée ensuite par le vendeur.
+        const { confirmMarketplaceOrders } = await import("@/server/services/order-fulfillment");
+        await confirmMarketplaceOrders(commandeIds, {
+          modePaiement: payment_method || "PAYTECH",
+          paymentToken: token || ref_command,
         });
         console.log(`Successfully confirmed orders in database: ${commandeIds.join(",")}`);
       } else {
@@ -100,14 +96,10 @@ export async function POST(request: Request) {
         });
 
         if (order) {
-          await prisma.commandeClient.update({
-            where: { id: order.id },
-            data: {
-              statutPaiement: "CONFIRME",
-              etat: "VALIDEE",
-              modePaiement: payment_method || "PAYTECH",
-              paymentToken: token || ref_command
-            }
+          const { confirmMarketplaceOrders } = await import("@/server/services/order-fulfillment");
+          await confirmMarketplaceOrders([order.id], {
+            modePaiement: payment_method || "PAYTECH",
+            paymentToken: token || ref_command,
           });
           console.log(`Successfully confirmed single order by ref_command: ${ref_command}`);
         }
