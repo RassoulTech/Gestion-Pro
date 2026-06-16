@@ -24,7 +24,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Fab } from "@/components/ui/fab";
 import { getSectorLabel, getSectorIcon } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -79,86 +79,86 @@ export default async function BoutiquesPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-10 sm:space-y-14 py-4 sm:py-8 px-4 sm:px-6">
       
-      {/* Top Banner and Navigation Portfolio */}
-      <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] bg-gradient-to-br from-slate-900 via-zinc-900 to-slate-950 p-6 sm:p-12 text-white shadow-2xl">
-        <div className="absolute right-0 top-0 -mr-20 -mt-20 h-80 w-80 rounded-full bg-orange-500/20 blur-[100px] animate-pulse" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-80 w-80 rounded-full bg-slate-500/10 blur-[100px]" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+      {/* Hero premium — adaptatif clair & sombre via tokens */}
+      <section className="relative overflow-hidden rounded-3xl border border-border/60 bg-card p-6 shadow-sm sm:rounded-[2rem] sm:p-10">
+        <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-brand/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -left-24 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+
+        <div className="relative z-10 flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs font-bold text-orange-400">
-                <Sparkles className="w-3.5 h-3.5" />
-                Tableau de Bord Vendeur
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand ring-1 ring-brand/20">
+                <Sparkles className="h-3.5 w-3.5" />
+                Tableau de bord vendeur
               </span>
               {currentPlan && (
-                <Badge className="bg-brand/20 border border-brand/35 text-brand rounded-lg px-2.5 py-0.5 text-[9px] uppercase tracking-wider font-extrabold shadow-md">
+                <span className="rounded-full bg-success/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-success ring-1 ring-success/20">
                   Plan {currentPlan.nom}
-                </Badge>
+                </span>
               )}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-none">
-              Bonjour, {vendeur.prenom} !
+            <h1 className="font-[family-name:var(--font-display)] text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl">
+              Bonjour, {vendeur.prenom} 👋
             </h1>
-            <p className="text-zinc-400 font-medium max-w-xl text-xs sm:text-sm">
+            <p className="max-w-xl text-sm font-medium text-muted-foreground">
               Gérez vos commerces, suivez vos stocks en temps réel et analysez vos ventes depuis un espace unique.
             </p>
           </div>
 
-          <div>
+          <div className="shrink-0">
             {canCreate ? (
-              <Button asChild size="xl" variant="premium" className="w-full sm:w-auto h-14 rounded-2xl px-8 font-extrabold transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-orange-500/20">
+              <Button asChild size="xl" variant="brand" className="active-press h-14 w-full rounded-2xl px-7 font-extrabold shadow-md shadow-brand/20 sm:w-auto">
                 <Link href="/boutiques/new">
-                  <Plus className="mr-2.5 h-5 w-5" />
+                  <Plus className="mr-2 h-5 w-5" />
                   Créer une boutique
                 </Link>
               </Button>
             ) : (
-              <div className="text-center sm:text-right space-y-2">
-                <Button size="xl" variant="outline" className="w-full sm:w-auto h-14 rounded-2xl px-8 font-extrabold opacity-50 cursor-not-allowed border-zinc-700 bg-zinc-800 text-zinc-400" disabled>
+              <div className="space-y-2 text-center sm:text-right">
+                <Button size="xl" variant="outline" className="h-14 w-full cursor-not-allowed rounded-2xl px-7 font-extrabold opacity-60 sm:w-auto" disabled>
                   <Plus className="mr-2 h-5 w-5" />
                   Créer une boutique
                 </Button>
-                <p className="text-xs text-zinc-400 font-bold">
-                  Limite atteinte — <Link href="/pricing" className="text-orange-400 hover:underline">passez au plan supérieur</Link>
+                <p className="text-xs font-bold text-muted-foreground">
+                  Limite atteinte — <Link href="/pricing" className="text-brand hover:underline">passez au plan supérieur</Link>
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Mini stats portfolio overview */}
-        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-8 border-t border-white/5">
+        {/* Mini stats portfolio */}
+        <div className="relative z-10 mt-8 grid grid-cols-2 gap-4 border-t border-border/60 pt-6 md:grid-cols-4">
           <div className="space-y-1">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Boutiques</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Boutiques</span>
             <div className="flex items-center gap-2">
-              <Store className="w-4 h-4 text-orange-400" />
-              <span className="text-xl sm:text-2xl font-black">{totalBoutiques} / {maxBoutiques}</span>
+              <Store className="h-4 w-4 text-brand" />
+              <span className="font-[family-name:var(--font-display)] text-xl font-extrabold tabular-nums sm:text-2xl">{totalBoutiques} / {maxBoutiques}</span>
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Produits total</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Produits total</span>
             <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-brand" />
-              <span className="text-xl sm:text-2xl font-black">{totalProduits}</span>
+              <Package className="h-4 w-4 text-brand" />
+              <span className="font-[family-name:var(--font-display)] text-xl font-extrabold tabular-nums sm:text-2xl">{totalProduits}</span>
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Ventes globales</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ventes globales</span>
             <div className="flex items-center gap-2">
-              <ShoppingCart className="w-4 h-4 text-emerald-400" />
-              <span className="text-xl sm:text-2xl font-black">{totalVentes}</span>
+              <ShoppingCart className="h-4 w-4 text-success" />
+              <span className="font-[family-name:var(--font-display)] text-xl font-extrabold tabular-nums sm:text-2xl">{totalVentes}</span>
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Estimation CA</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Estimation CA</span>
             <div className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-amber-400" />
-              <span className="text-xl sm:text-2xl font-black text-emerald-400">{totalRevenue.toLocaleString()} FCFA</span>
+              <DollarSign className="h-4 w-4 text-success" />
+              <span className="font-[family-name:var(--font-display)] text-base font-extrabold tabular-nums text-success sm:text-xl">{totalRevenue.toLocaleString()} FCFA</span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Main Section - Boutiques Grid */}
       <div className="space-y-6">
@@ -321,6 +321,13 @@ export default async function BoutiquesPage() {
         </div>
       </div>
       
+      {canCreate && (
+        <Fab
+          actions={[
+            { label: "Créer une boutique", href: "/boutiques/new", icon: Plus, tone: "brand" },
+          ]}
+        />
+      )}
     </div>
   );
 }

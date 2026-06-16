@@ -159,7 +159,8 @@ export function Header({
   return (
     <header
       className={cn(
-        "flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-4",
+        "sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-card/80 px-4",
+        "backdrop-blur-lg supports-[backdrop-filter]:bg-card/70",
       )}
     >
       <div className="flex flex-1 items-center justify-start gap-2 min-w-0">

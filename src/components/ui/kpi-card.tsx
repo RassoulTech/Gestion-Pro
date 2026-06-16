@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
  *
  * Présentation uniquement : la valeur arrive déjà formatée (string). Aucune
  * logique métier ici. Marque = orange (`brand`) ; le vert est réservé au tone
- * `success`.
+ * `success`. Micro-interactions 100 % CSS → reste un Server Component.
  *
  * @example
  *   <KpiCard label="Chiffre d'affaires" value="454 000 F CFA" icon={TrendingUp}
@@ -19,12 +19,37 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export type KpiTone = "brand" | "success" | "warning" | "danger" | "neutral";
 
-const TONE: Record<KpiTone, { icon: string; accent: string }> = {
-  brand: { icon: "bg-brand/10 text-brand", accent: "before:bg-brand" },
-  success: { icon: "bg-success/10 text-success", accent: "before:bg-success" },
-  warning: { icon: "bg-warning/10 text-warning", accent: "before:bg-warning" },
-  danger: { icon: "bg-destructive/10 text-destructive", accent: "before:bg-destructive" },
-  neutral: { icon: "bg-muted text-muted-foreground", accent: "before:bg-border" },
+// NB: classes en dur (pas de transformation runtime) pour que le JIT Tailwind
+// les génère. ::before = halo radial (glow), ::after = liseré d'accent (bar).
+const TONE: Record<
+  KpiTone,
+  { icon: string; bar: string; glow: string }
+> = {
+  brand: {
+    icon: "bg-brand/10 text-brand ring-brand/15",
+    bar: "after:bg-gradient-to-b after:from-brand after:to-brand/40",
+    glow: "before:bg-brand/10",
+  },
+  success: {
+    icon: "bg-success/10 text-success ring-success/15",
+    bar: "after:bg-gradient-to-b after:from-success after:to-success/40",
+    glow: "before:bg-success/10",
+  },
+  warning: {
+    icon: "bg-warning/10 text-warning ring-warning/15",
+    bar: "after:bg-gradient-to-b after:from-warning after:to-warning/40",
+    glow: "before:bg-warning/10",
+  },
+  danger: {
+    icon: "bg-destructive/10 text-destructive ring-destructive/15",
+    bar: "after:bg-gradient-to-b after:from-destructive after:to-destructive/40",
+    glow: "before:bg-destructive/10",
+  },
+  neutral: {
+    icon: "bg-muted text-muted-foreground ring-border/60",
+    bar: "after:bg-gradient-to-b after:from-border after:to-border/40",
+    glow: "before:bg-foreground/[0.04]",
+  },
 };
 
 export interface KpiTrend {
@@ -52,15 +77,25 @@ export interface KpiCardProps {
 
 function CardShell({
   href,
+  glow,
   className,
   children,
 }: {
   href?: string;
+  glow: string;
   className?: string;
   children: React.ReactNode;
 }) {
   const base = cn(
-    "group relative flex flex-col gap-3 overflow-hidden rounded-xl border border-border/60 bg-card p-4 text-card-foreground shadow-sm transition-[box-shadow,border-color] duration-200 sm:p-5",
+    // Surface premium : léger dégradé, bord doux, élévation qui se lève au survol.
+    "group relative flex flex-col gap-3.5 overflow-hidden rounded-2xl border border-border/60",
+    "bg-gradient-to-b from-card to-card/60 p-4 text-card-foreground shadow-sm sm:p-5",
+    "transition-all duration-300 ease-out",
+    // Halo radial teinté en haut à droite (pseudo ::before).
+    "before:pointer-events-none before:absolute before:-right-10 before:-top-10 before:h-28 before:w-28",
+    "before:rounded-full before:blur-2xl before:opacity-0 before:transition-opacity before:duration-500",
+    "before:content-[''] group-hover:before:opacity-100",
+    glow,
     className
   );
   if (href) {
@@ -69,14 +104,15 @@ function CardShell({
         href={href}
         className={cn(
           base,
-          "cursor-pointer hover:border-brand/40 hover:shadow-md active:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          "cursor-pointer hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-lg active:translate-y-0 active:shadow-md",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         )}
       >
         {children}
       </Link>
     );
   }
-  return <div className={base}>{children}</div>;
+  return <div className={cn(base, "hover:-translate-y-0.5 hover:shadow-md")}>{children}</div>;
 }
 
 export function KpiCard({
@@ -97,30 +133,31 @@ export function KpiCard({
   return (
     <CardShell
       href={href}
+      glow={t.glow}
       className={cn(
         accent &&
-          "before:absolute before:inset-y-0 before:left-0 before:w-1 before:content-['']",
-        accent && t.accent,
+          "after:absolute after:inset-y-2.5 after:left-0 after:w-1 after:rounded-r-full after:content-['']",
+        accent && t.bar,
         accent && "pl-5 sm:pl-6",
         className
       )}
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="relative z-10 flex items-start justify-between gap-2">
         <span
           className={cn(
-            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+            "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-105",
             t.icon
           )}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="h-5 w-5" strokeWidth={2.25} />
         </span>
         {trend && (
           <span
             className={cn(
-              "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums",
+              "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums ring-1",
               trendUp
-                ? "bg-success/10 text-success"
-                : "bg-destructive/10 text-destructive"
+                ? "bg-success/10 text-success ring-success/15"
+                : "bg-destructive/10 text-destructive ring-destructive/15"
             )}
           >
             <TrendIcon className="h-3 w-3" aria-hidden="true" />
@@ -129,16 +166,16 @@ export function KpiCard({
         )}
       </div>
 
-      <div className="min-w-0">
+      <div className="relative z-10 min-w-0">
         <p className="truncate text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
           {label}
         </p>
-        {/* Montants jamais tronqués : on enroule si nécessaire (pas de truncate). */}
-        <p className="mt-1 text-lg font-black leading-tight tracking-tight tabular-nums break-words sm:text-2xl">
+        {/* Montants jamais tronqués : on enroule si nécessaire. Police display pour le caractère éditorial. */}
+        <p className="mt-1.5 font-[family-name:var(--font-display)] text-xl font-extrabold leading-none tracking-tight tabular-nums break-words sm:text-2xl">
           {value}
         </p>
         {(subtext || (trend && trend.label)) && (
-          <p className="mt-0.5 truncate text-xs font-medium text-muted-foreground">
+          <p className="mt-1.5 truncate text-xs font-medium text-muted-foreground">
             {subtext}
             {trend?.label && (
               <span className={cn(subtext && "ml-1")}>{trend.label}</span>
@@ -155,11 +192,11 @@ export function KpiCardSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm sm:p-5",
+        "flex flex-col gap-3.5 rounded-2xl border border-border/60 bg-card p-4 shadow-sm sm:p-5",
         className
       )}
     >
-      <Skeleton className="h-10 w-10 rounded-xl" />
+      <Skeleton className="h-11 w-11 rounded-2xl" />
       <div className="space-y-2">
         <Skeleton className="h-3 w-20" />
         <Skeleton className="h-6 w-28" />
