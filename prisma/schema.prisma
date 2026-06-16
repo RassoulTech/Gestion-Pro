@@ -22,7 +22,6 @@ model User {
   email           String    @unique
   emailVerified   DateTime? @map("email_verified")
   password        String?
-  passwordChangedAt DateTime? @map("password_changed_at")
   image           String?
   role            UserRole  @default(CLIENT)
   customerAccountStatus String? @default("ACTIVE") @map("customer_account_status")

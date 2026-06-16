@@ -339,8 +339,7 @@ export const resetPassword = actionClient
 
     await prisma.user.update({
       where: { id: existingUser.id },
-      // passwordChangedAt invalide les sessions (JWT) émises avant ce reset.
-      data: { password: hashedPassword, passwordChangedAt: new Date() },
+      data: { password: hashedPassword },
     });
 
     await prisma.passwordResetToken.delete({

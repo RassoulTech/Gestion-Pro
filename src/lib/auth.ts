@@ -127,29 +127,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
 
-      // Invalidation des sessions après reset de mot de passe : tout jeton émis
-      // AVANT le dernier changement de mot de passe est rejeté (les sessions
-      // volées meurent dès le reset). passwordChangedAt est NULL tant qu'aucun
-      // reset n'a eu lieu → aucun effet. Fail-open si la DB est indisponible.
-      if (!params.user && !baseToken.isImpersonating && baseToken.id) {
-        try {
-          const iat = (params.token as { iat?: number }).iat;
-          const dbUser = await prisma.user.findUnique({
-            where: { id: baseToken.id as string },
-            select: { passwordChangedAt: true },
-          });
-          if (
-            dbUser?.passwordChangedAt &&
-            typeof iat === "number" &&
-            iat * 1000 < dbUser.passwordChangedAt.getTime()
-          ) {
-            return null;
-          }
-        } catch (err) {
-          console.error("[auth] passwordChangedAt check failed (fail-open):", err);
-        }
-      }
-
       return baseToken;
     },
   },
