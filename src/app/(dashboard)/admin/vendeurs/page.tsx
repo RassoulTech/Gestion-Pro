@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getAllVendeurs, getAllUsersWithoutShop } from "@/server/queries/admin.queries";
+import { getAllVendeurs } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
 import { VendeursClientTable } from "./_components/vendeurs-client-table";
-import { Users, Store } from "lucide-react";
-import Link from "next/link";
+import { Store } from "lucide-react";
 
 export const metadata: Metadata = { title: "Vendeurs - Admin" };
 

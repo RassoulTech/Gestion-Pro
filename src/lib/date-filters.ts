@@ -5,8 +5,7 @@ import {
   startOfMonth, 
   endOfMonth, 
   subMonths, 
-  startOfYear, 
-  endOfYear 
+  startOfYear 
 } from "date-fns";
 
 export type DateRangeOption =

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, ArrowRight, Search, BookOpen, Sparkles } from "lucide-react";
-import Link from "next/link";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, use } from "react";
@@ -8,8 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { 
- 
-  User, 
   ArrowLeft, 
   Save, 
   Phone, 
@@ -18,7 +16,6 @@ import {
   Loader2 
 } from "lucide-react";
  
-import { motion } from "framer-motion";
 import Link from "next/link";
 
 import { createClient } from "@/server/actions/client.actions";

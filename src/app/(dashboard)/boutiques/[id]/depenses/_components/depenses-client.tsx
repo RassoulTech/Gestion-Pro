@@ -18,7 +18,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import Link from "next/link";
 
-import { SearchInput } from "@/components/ui/search-input";
 
 interface Depense {
   id: string;

@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatCurrency } from "@/lib/utils";
-import { TrendingUp, Users } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 interface PlatformChartProps {
   revenuTotal: number;

@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { Users, Target, Shield, Heart, Store, Rocket } from "lucide-react";
+import { Target, Shield, Heart, Store, Rocket } from "lucide-react";
 import Link from "next/link";
 
 const EASE = [0.16, 1, 0.3, 1] as const;

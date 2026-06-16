@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 "use client";
 
 import * as React from "react";
@@ -6,10 +6,9 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, WifiOff, Zap, Store } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
  
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
  
-import { cn } from "@/lib/utils";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 

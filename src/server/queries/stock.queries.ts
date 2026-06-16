@@ -1,7 +1,6 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import type { TypeMouvement } from "@prisma/client";
 
 export async function getMouvementsStock(
   boutiqueId: string,

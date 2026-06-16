@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Camera, X, Loader2, FileWarning, Sparkles } from "lucide-react";
+import { Camera, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface ImageUploadProps {

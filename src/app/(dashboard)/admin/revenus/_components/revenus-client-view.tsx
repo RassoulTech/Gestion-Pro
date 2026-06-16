@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Wallet, DollarSign, Search, Calendar, Landmark, CreditCard, ChevronRight, X, Filter } from "lucide-react";
+import { Wallet, DollarSign, Search, Landmark, CreditCard, X, Filter } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 

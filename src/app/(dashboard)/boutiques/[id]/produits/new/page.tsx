@@ -15,7 +15,6 @@ import {
   Hash,
   Layers,
   AlertTriangle,
-  Sparkles,
   ArrowUpRight,
 } from "lucide-react";
 import { motion } from "framer-motion";

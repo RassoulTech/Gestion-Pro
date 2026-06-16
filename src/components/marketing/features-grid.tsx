@@ -1,14 +1,10 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+﻿ 
 "use client";
 
 import {
   Store,
   Zap,
   Package,
- 
-  Users,
- 
-  BarChart3,
   Globe,
   ArrowUpRight,
 } from "lucide-react";

@@ -15,7 +15,6 @@ import {
   Calendar, 
   CreditCard,
   Notebook,
-  DollarSign,
   Banknote,
   Wallet,
   ShoppingBag,

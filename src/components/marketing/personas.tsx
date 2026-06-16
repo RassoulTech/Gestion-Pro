@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 "use client";
 
 import { Smartphone, Store, Check, Sparkles } from "lucide-react";
 import { Section, SectionHeader } from "./section";
  
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 type Persona = {

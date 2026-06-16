@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Server, Database, MessageSquare, CreditCard, Activity, ArrowUpRight } from "lucide-react";
+import { CheckCircle2, Server, Database, MessageSquare, CreditCard, Activity } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 

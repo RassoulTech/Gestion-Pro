@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { Calculator } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Check, Flame, ShieldCheck, Star, Sparkles, HelpCircle } from "lucide-react";
+import { Check, Flame, ShieldCheck, Star, HelpCircle } from "lucide-react";
 
 interface Plan {
   id: string;
