@@ -10,8 +10,9 @@ import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema 
 import { createVendeurProfileSchema } from "@/schemas/vendeur.schema";
 
 import { z } from "zod";
-import { generateVerificationToken, generatePasswordResetToken } from "@/lib/tokens";
+import { generateVerificationToken, generatePasswordResetToken, hashToken } from "@/lib/tokens";
 import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/mail";
+import { DUMMY_PASSWORD_HASH } from "@/lib/password";
 
 export const registerUser = actionClient
   .schema(registerSchema)
@@ -66,16 +67,20 @@ export const registerUser = actionClient
   });
 
 export const resendVerificationEmail = actionClient
-  .schema(z.object({ email: z.string().email("Email invalide") }))
+  .schema(z.object({ email: z.string().trim().toLowerCase().email("Email invalide") }))
   .action(async ({ parsedInput }) => {
+    const { email } = parsedInput;
     const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
-    const { success } = await authRatelimit.limit(ip);
+    // Limiter aussi par email cible, pas seulement par IP, pour empêcher le
+    // bombardement de la boîte d'une victime.
+    const [ipLimit, emailLimit] = await Promise.all([
+      authRatelimit.limit(ip),
+      authRatelimit.limit(`resend:${email}`),
+    ]);
 
-    if (!success) {
+    if (!ipLimit.success || !emailLimit.success) {
       throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
     }
-
-    const { email } = parsedInput;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
@@ -117,9 +122,12 @@ export const loginPrecheck = actionClient
   .schema(loginSchema)
   .action(async ({ parsedInput }) => {
     const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
-    const { success } = await authRatelimit.limit(ip);
+    const [ipLimit, emailLimit] = await Promise.all([
+      authRatelimit.limit(ip),
+      authRatelimit.limit(`login:${parsedInput.email}`),
+    ]);
 
-    if (!success) {
+    if (!ipLimit.success || !emailLimit.success) {
       throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
     }
 
@@ -128,6 +136,8 @@ export const loginPrecheck = actionClient
     });
 
     if (!user?.password) {
+      // Comparaison à vide pour égaliser le temps de réponse (anti-énumération).
+      await bcrypt.compare(parsedInput.password, DUMMY_PASSWORD_HASH);
       return { status: "invalid_credentials" as const };
     }
 
@@ -218,12 +228,12 @@ export const createVendeurProfile = authActionClient
   });
 
 export const verifyEmail = actionClient
-  .schema(z.object({ token: z.string() }))
+  .schema(z.object({ token: z.string().min(1, "Jeton requis") }))
   .action(async ({ parsedInput }) => {
     const { token } = parsedInput;
 
     const existingToken = await prisma.verificationToken.findFirst({
-      where: { token },
+      where: { token: hashToken(token) },
     });
 
     if (!existingToken) {
@@ -266,14 +276,17 @@ export const verifyEmail = actionClient
 export const forgotPassword = actionClient
   .schema(forgotPasswordSchema)
   .action(async ({ parsedInput }) => {
+    const { email } = parsedInput;
     const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
-    const { success } = await authRatelimit.limit(ip);
+    // Limiter aussi par email cible pour empêcher le bombardement d'une victime.
+    const [ipLimit, emailLimit] = await Promise.all([
+      authRatelimit.limit(ip),
+      authRatelimit.limit(`pwreset:${email}`),
+    ]);
 
-    if (!success) {
+    if (!ipLimit.success || !emailLimit.success) {
       throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
     }
-
-    const { email } = parsedInput;
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -302,7 +315,7 @@ export const resetPassword = actionClient
     const { token, password } = parsedInput;
 
     const existingToken = await prisma.passwordResetToken.findFirst({
-      where: { token },
+      where: { token: hashToken(token) },
     });
 
     if (!existingToken) {
@@ -326,7 +339,8 @@ export const resetPassword = actionClient
 
     await prisma.user.update({
       where: { id: existingUser.id },
-      data: { password: hashedPassword },
+      // passwordChangedAt invalide les sessions (JWT) émises avant ce reset.
+      data: { password: hashedPassword, passwordChangedAt: new Date() },
     });
 
     await prisma.passwordResetToken.delete({
