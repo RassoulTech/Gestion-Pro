@@ -8,6 +8,7 @@ import type { UserRole } from "@prisma/client";
 import { authRatelimit } from "@/lib/ratelimit";
 import { headers, cookies } from "next/headers";
 import { authConfig } from "@/lib/auth.config";
+import { DUMMY_PASSWORD_HASH } from "@/lib/password";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -35,7 +36,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           include: { vendeur: { select: { id: true } } },
         });
 
-        if (!user?.password) return null;
+        if (!user?.password) {
+          // Comparaison à vide pour égaliser le temps de réponse, que le compte
+          // existe ou non (anti-énumération par timing).
+          await bcrypt.compare(parsed.data.password, DUMMY_PASSWORD_HASH);
+          return null;
+        }
 
         const valid = await bcrypt.compare(parsed.data.password, user.password);
         if (!valid) return null;
@@ -118,6 +124,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           baseToken.role = trueUser.role;
           baseToken.vendeurId = trueUser.vendeur?.id ?? null;
           baseToken.isImpersonating = false;
+        }
+      }
+
+      // Invalidation des sessions après reset de mot de passe : tout jeton émis
+      // AVANT le dernier changement de mot de passe est rejeté (les sessions
+      // volées meurent dès le reset). passwordChangedAt est NULL tant qu'aucun
+      // reset n'a eu lieu → aucun effet. Fail-open si la DB est indisponible.
+      if (!params.user && !baseToken.isImpersonating && baseToken.id) {
+        try {
+          const iat = (params.token as { iat?: number }).iat;
+          const dbUser = await prisma.user.findUnique({
+            where: { id: baseToken.id as string },
+            select: { passwordChangedAt: true },
+          });
+          if (
+            dbUser?.passwordChangedAt &&
+            typeof iat === "number" &&
+            iat * 1000 < dbUser.passwordChangedAt.getTime()
+          ) {
+            return null;
+          }
+        } catch (err) {
+          console.error("[auth] passwordChangedAt check failed (fail-open):", err);
         }
       }
 

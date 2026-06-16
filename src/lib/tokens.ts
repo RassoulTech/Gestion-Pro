@@ -1,12 +1,22 @@
-import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Hache un token (SHA-256) pour le stockage en base. Le token n'est JAMAIS
+ * stocké en clair : seul son hash l'est, et le token brut ne vit que dans
+ * l'email envoyé. Une fuite de la base ne permet donc pas de réutiliser un
+ * lien de vérification ou de réinitialisation actif.
+ */
+export const hashToken = (rawToken: string): string =>
+  crypto.createHash("sha256").update(rawToken).digest("hex");
+
 export const generateVerificationToken = async (email: string) => {
-  const token = uuidv4();
-  const expires = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const token = hashToken(rawToken);
+  const expires = new Date(Date.now() + 3600 * 1000); // 1 heure
 
   const existingToken = await prisma.verificationToken.findFirst({
-    where: { identifier: email }
+    where: { identifier: email },
   });
 
   if (existingToken) {
@@ -15,25 +25,23 @@ export const generateVerificationToken = async (email: string) => {
         identifier_token: {
           identifier: existingToken.identifier,
           token: existingToken.token,
-        }
-      }
+        },
+      },
     });
   }
 
-  const verificationToken = await prisma.verificationToken.create({
-    data: {
-      identifier: email,
-      token,
-      expires,
-    }
+  await prisma.verificationToken.create({
+    data: { identifier: email, token, expires },
   });
 
-  return verificationToken;
+  // On renvoie le token BRUT (pour le lien de l'email), pas le hash stocké.
+  return { identifier: email, token: rawToken };
 };
 
 export const generatePasswordResetToken = async (email: string) => {
-  const token = uuidv4();
-  const expires = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const token = hashToken(rawToken);
+  const expires = new Date(Date.now() + 3600 * 1000); // 1 heure
 
   const existingToken = await prisma.passwordResetToken.findFirst({
     where: { identifier: email },
@@ -50,13 +58,9 @@ export const generatePasswordResetToken = async (email: string) => {
     });
   }
 
-  const passwordResetToken = await prisma.passwordResetToken.create({
-    data: {
-      identifier: email,
-      token,
-      expires,
-    },
+  await prisma.passwordResetToken.create({
+    data: { identifier: email, token, expires },
   });
 
-  return passwordResetToken;
+  return { identifier: email, token: rawToken };
 };
