@@ -1,7 +1,28 @@
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
+export type MailResult = { sent: boolean; devLink?: string; error?: string };
+
+interface SendOpts {
+  to: string | string[];
+  subject: string;
+  html: string;
+  replyTo?: string;
+  attachments?: { filename: string; content: Buffer }[];
+}
+
+// ── Resend (fournisseur préféré) ─────────────────────────────────────────
+// Domaine vérifié = SPF/DKIM alignés = bonne délivrabilité. Activé dès que
+// AUTH_RESEND_KEY est posée. AUTH_EMAIL_FROM doit être une adresse d'un
+// domaine vérifié (sinon onboarding@resend.dev en test, vers sa propre adresse).
+const resendClient = process.env.AUTH_RESEND_KEY
+  ? new Resend(process.env.AUTH_RESEND_KEY)
+  : null;
+const resendFrom = process.env.AUTH_EMAIL_FROM || "GestionPro <onboarding@resend.dev>";
+
+// ── Gmail SMTP (repli) ───────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -9,39 +30,58 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
+const smtpFrom = process.env.SMTP_EMAIL
+  ? `GestionPro <${process.env.SMTP_EMAIL}>`
+  : "GestionPro <no-reply@gestionpro.com>";
 
-const emailFrom = process.env.SMTP_EMAIL ? `GestionPro <${process.env.SMTP_EMAIL}>` : "GestionPro <no-reply@gestionpro.com>";
-
-export type MailResult = { sent: boolean; devLink?: string; error?: string };
+const resendConfigured = () => !!resendClient;
+const smtpConfigured = () =>
+  !!process.env.SMTP_EMAIL && !!process.env.SMTP_PASSWORD;
 
 /**
- * Indique si le pipeline d'envoi d'email est opérationnel.
+ * Indique si au moins un fournisseur d'email est opérationnel (Resend ou SMTP).
  */
 export function isMailConfigured(): boolean {
-  return !!process.env.SMTP_EMAIL && !!process.env.SMTP_PASSWORD;
+  return resendConfigured() || smtpConfigured();
 }
 
 const isDevExposeLink = !isMailConfigured() && process.env.NODE_ENV !== "production";
 
-/**
- * Wrapper unifié autour de Nodemailer qui normalise le format `{ sent, error }`
- */
-async function sendViaNodemailer(opts: {
-  to: string | string[];
-  subject: string;
-  html: string;
-  replyTo?: string;
-}): Promise<MailResult> {
-  if (!isMailConfigured()) {
-    return { sent: false, error: "SMTP credentials not set" };
-  }
+async function sendViaResend(opts: SendOpts): Promise<MailResult> {
+  if (!resendClient) return { sent: false, error: "Resend non configuré" };
   try {
-    await transporter.sendMail({
-      from: emailFrom,
+    const { error } = await resendClient.emails.send({
+      from: resendFrom,
       to: opts.to,
       subject: opts.subject,
       html: opts.html,
       ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
+      ...(opts.attachments ? { attachments: opts.attachments } : {}),
+    });
+    if (error) {
+      console.error("[mail] resend error:", error.message ?? error);
+      return { sent: false, error: error.message ?? "Resend error" };
+    }
+    return { sent: true };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[mail] resend exception:", msg);
+    return { sent: false, error: msg };
+  }
+}
+
+async function sendViaNodemailer(opts: SendOpts): Promise<MailResult> {
+  if (!smtpConfigured()) {
+    return { sent: false, error: "SMTP credentials not set" };
+  }
+  try {
+    await transporter.sendMail({
+      from: smtpFrom,
+      to: opts.to,
+      subject: opts.subject,
+      html: opts.html,
+      ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
+      ...(opts.attachments ? { attachments: opts.attachments } : {}),
     });
     return { sent: true };
   } catch (e) {
@@ -49,6 +89,24 @@ async function sendViaNodemailer(opts: {
     console.error("[mail] nodemailer exception:", msg);
     return { sent: false, error: msg };
   }
+}
+
+/**
+ * Envoi unifié `{ sent, error }`. Resend en priorité ; repli automatique sur
+ * Gmail SMTP si Resend n'est pas configuré OU échoue → migration sans coupure.
+ */
+async function sendEmail(opts: SendOpts): Promise<MailResult> {
+  if (resendConfigured()) {
+    const res = await sendViaResend(opts);
+    if (res.sent) return res;
+    if (smtpConfigured()) {
+      console.warn("[mail] Resend a échoué — repli sur Gmail SMTP.");
+      return sendViaNodemailer(opts);
+    }
+    return res;
+  }
+  if (smtpConfigured()) return sendViaNodemailer(opts);
+  return { sent: false, error: "Aucun fournisseur email configuré" };
 }
 
 // --- Premium Shared Email Header & Footer Generators ---
@@ -165,7 +223,7 @@ export const sendVerificationEmail = async (
     </div>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to: email,
     subject: "Vérifiez votre adresse email — GestionPro",
     html: getEmailWrapper("Vérifiez votre adresse email", htmlContent),
@@ -238,7 +296,7 @@ export const sendContactNotificationEmail = async (
     </div>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to,
     replyTo: payload.email,
     subject: `[Contact Landing] ${payload.sujet} — ${payload.nom}`,
@@ -276,7 +334,7 @@ export const sendContactAutoReplyEmail = async (
     </p>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to: payload.email,
     subject: "Nous avons bien reçu votre message — GestionPro",
     html: getEmailWrapper("Accusé de réception", htmlContent),
@@ -339,7 +397,7 @@ export const sendSubscriptionRenewalReminderEmail = async (
     </div>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to: ctx.email,
     subject: `Votre abonnement ${ctx.planName} expire le ${formattedDate} — GestionPro`,
     html: getEmailWrapper("Rappel de renouvellement", htmlContent),
@@ -378,7 +436,7 @@ export const sendSubscriptionExpiredEmail = async (
     </p>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to: ctx.email,
     subject: `Abonnement ${ctx.planName} expiré — réactivez votre compte GestionPro`,
     html: getEmailWrapper("Abonnement expiré", htmlContent),
@@ -420,7 +478,7 @@ export const sendPasswordResetEmail = async (
     </div>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to: email,
     subject: "Réinitialisez votre mot de passe — GestionPro",
     html: getEmailWrapper("Réinitialisation de mot de passe", htmlContent),
@@ -459,7 +517,7 @@ export const sendSubscriptionActivatedEmailToClient = async (
     </div>
   `;
   
-  return sendViaNodemailer({
+  return sendEmail({
     to: email,
     subject: `Bienvenue dans le forfait ${planName} — GestionPro`,
     html: getEmailWrapper("Abonnement activé", htmlContent),
@@ -504,7 +562,7 @@ export const sendSubscriptionAlertToAdmin = async (
     </div>
   `;
   
-  return sendViaNodemailer({
+  return sendEmail({
     to: adminEmail,
     subject: `Nouvel abonnement : ${planName} (${montant} FCFA) — ${boutiqueNom}`,
     html: getEmailWrapper("Nouvel Abonnement", htmlContent),
@@ -541,25 +599,17 @@ export const sendOrderConfirmationToClient = async (
     </div>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: emailFrom,
-      to: email,
-      subject: `Confirmation de votre commande #${codeCommande} — GestionPro`,
-      html: getEmailWrapper("Confirmation de commande", htmlContent),
-      attachments: [
-        {
-          filename: `Facture-${codeCommande}.pdf`,
-          content: pdfBuffer,
-        },
-      ],
-    });
-    return { sent: true };
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    console.error("[mail] sendOrderConfirmationToClient exception:", msg);
-    return { sent: false, error: msg };
-  }
+  return sendEmail({
+    to: email,
+    subject: `Confirmation de votre commande #${codeCommande} — GestionPro`,
+    html: getEmailWrapper("Confirmation de commande", htmlContent),
+    attachments: [
+      {
+        filename: `Facture-${codeCommande}.pdf`,
+        content: pdfBuffer,
+      },
+    ],
+  });
 };
 
 export const sendOrderNotificationToVendedor = async (
@@ -604,7 +654,7 @@ export const sendOrderNotificationToVendedor = async (
     </div>
   `;
 
-  return sendViaNodemailer({
+  return sendEmail({
     to: email,
     subject: `Nouvelle commande #${codeCommande} sur ${boutiqueNom} — GestionPro`,
     html: getEmailWrapper("Nouvelle commande", htmlContent),
