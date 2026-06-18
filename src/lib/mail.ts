@@ -23,20 +23,22 @@ const resendClient = process.env.AUTH_RESEND_KEY
 const resendFrom = process.env.AUTH_EMAIL_FROM || "GestionPro <onboarding@resend.dev>";
 
 // ── Gmail SMTP (repli) ───────────────────────────────────────────────────
+// Support multiple common env var names (SMTP_EMAIL or SMTP_USER, SMTP_PASSWORD or SMTP_PASS)
+const smtpUser = process.env.SMTP_EMAIL || process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS;
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASSWORD,
+    user: smtpUser,
+    pass: smtpPass,
   },
 });
-const smtpFrom = process.env.SMTP_EMAIL
-  ? `GestionPro <${process.env.SMTP_EMAIL}>`
-  : "GestionPro <no-reply@gestionpro.com>";
+
+const smtpFrom = process.env.SMTP_FROM || process.env.AUTH_EMAIL_FROM || (smtpUser ? `GestionPro <${smtpUser}>` : "GestionPro <no-reply@gestionpro.com>");
 
 const resendConfigured = () => !!resendClient;
-const smtpConfigured = () =>
-  !!process.env.SMTP_EMAIL && !!process.env.SMTP_PASSWORD;
+const smtpConfigured = () => !!smtpUser && !!smtpPass;
 
 /**
  * Indique si au moins un fournisseur d'email est opérationnel (Resend ou SMTP).
