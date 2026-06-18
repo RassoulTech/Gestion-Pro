@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import { Resend } from "resend";
 
 const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -13,71 +12,54 @@ interface SendOpts {
   attachments?: { filename: string; content: Buffer }[];
 }
 
-// ── Resend (fournisseur préféré) ─────────────────────────────────────────
-// Domaine vérifié = SPF/DKIM alignés = bonne délivrabilité. Activé dès que
-// AUTH_RESEND_KEY est posée. AUTH_EMAIL_FROM doit être une adresse d'un
-// domaine vérifié (sinon onboarding@resend.dev en test, vers sa propre adresse).
-const resendClient = process.env.AUTH_RESEND_KEY
-  ? new Resend(process.env.AUTH_RESEND_KEY)
-  : null;
-const resendFrom = process.env.AUTH_EMAIL_FROM || "GestionPro <onboarding@resend.dev>";
+// SMTP-only strategy (Render).
+// Read common env names and prefer explicit SMTP_HOST + PORT when provided by Render.
+const smtpUser = process.env.SMTP_USER || process.env.SMTP_EMAIL;
+const smtpPass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
+const smtpHost = process.env.SMTP_HOST;
+const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+const smtpSecure = process.env.SMTP_SECURE === "true";
 
-// ── Gmail SMTP (repli) ───────────────────────────────────────────────────
-// Support multiple common env var names (SMTP_EMAIL or SMTP_USER, SMTP_PASSWORD or SMTP_PASS)
-const smtpUser = process.env.SMTP_EMAIL || process.env.SMTP_USER;
-const smtpPass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS;
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: smtpUser,
-    pass: smtpPass,
-  },
-});
+let transporter: ReturnType<typeof nodemailer.createTransport> | null = null;
+try {
+  if (smtpHost) {
+    transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort ?? 587,
+      secure: smtpSecure,
+      auth: smtpUser && smtpPass ? { user: smtpUser, pass: smtpPass } : undefined,
+    });
+  } else if (smtpUser && smtpPass) {
+    // Legacy fallback (if Render provided only user/pass) — use Gmail service as a last resort.
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: smtpUser, pass: smtpPass },
+    });
+  }
+} catch (e) {
+  console.error("[mail] transporter creation failed:", e);
+  transporter = null;
+}
 
 const smtpFrom = process.env.SMTP_FROM || process.env.AUTH_EMAIL_FROM || (smtpUser ? `GestionPro <${smtpUser}>` : "GestionPro <no-reply@gestionpro.com>");
 
-const resendConfigured = () => !!resendClient;
-const smtpConfigured = () => !!smtpUser && !!smtpPass;
+const smtpConfigured = () => !!smtpUser && !!smtpPass && !!transporter;
 
 /**
- * Indique si au moins un fournisseur d'email est opérationnel (Resend ou SMTP).
+ * Indique si un fournisseur SMTP est opérationnel (Render SMTP).
  */
 export function isMailConfigured(): boolean {
-  return resendConfigured() || smtpConfigured();
+  return smtpConfigured();
 }
 
 const isDevExposeLink = !isMailConfigured() && process.env.NODE_ENV !== "production";
-
-async function sendViaResend(opts: SendOpts): Promise<MailResult> {
-  if (!resendClient) return { sent: false, error: "Resend non configuré" };
-  try {
-    const { error } = await resendClient.emails.send({
-      from: resendFrom,
-      to: opts.to,
-      subject: opts.subject,
-      html: opts.html,
-      ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
-      ...(opts.attachments ? { attachments: opts.attachments } : {}),
-    });
-    if (error) {
-      console.error("[mail] resend error:", error.message ?? error);
-      return { sent: false, error: error.message ?? "Resend error" };
-    }
-    return { sent: true };
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    console.error("[mail] resend exception:", msg);
-    return { sent: false, error: msg };
-  }
-}
 
 async function sendViaNodemailer(opts: SendOpts): Promise<MailResult> {
   if (!smtpConfigured()) {
     return { sent: false, error: "SMTP credentials not set" };
   }
   try {
-    await transporter.sendMail({
+    await transporter!.sendMail({
       from: smtpFrom,
       to: opts.to,
       subject: opts.subject,
@@ -94,20 +76,11 @@ async function sendViaNodemailer(opts: SendOpts): Promise<MailResult> {
 }
 
 /**
- * Envoi unifié `{ sent, error }`. Resend en priorité ; repli automatique sur
- * Gmail SMTP si Resend n'est pas configuré OU échoue → migration sans coupure.
+ * Envoi unifié `{ sent, error }`. Utilise exclusivement SMTP (Render).
  */
 async function sendEmail(opts: SendOpts): Promise<MailResult> {
-  if (resendConfigured()) {
-    const res = await sendViaResend(opts);
-    if (res.sent) return res;
-    if (smtpConfigured()) {
-      console.warn("[mail] Resend a échoué — repli sur Gmail SMTP.");
-      return sendViaNodemailer(opts);
-    }
-    return res;
-  }
   if (smtpConfigured()) return sendViaNodemailer(opts);
+  console.error("[mail] no SMTP provider configured");
   return { sent: false, error: "Aucun fournisseur email configuré" };
 }
 
