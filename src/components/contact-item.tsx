@@ -137,6 +137,7 @@ interface ContactItemProps {
   asLink?: boolean;
   className?: string;
   iconClassName?: string;
+  href?: string;
 }
 
 export function buildContactHref(kind: ContactKind, value: string): string {
@@ -150,6 +151,7 @@ export function ContactItem({
   asLink = true,
   className,
   iconClassName,
+  href: customHref,
 }: ContactItemProps) {
   const cfg = CONFIG[kind];
   const Icon = cfg.Icon;
@@ -181,12 +183,12 @@ export function ContactItem({
     return <span className={baseCls}>{inner}</span>;
   }
 
-  const href = cfg.buildHref(value);
+  const resolvedHref = customHref ?? cfg.buildHref(value);
   const external = cfg.external;
 
   return (
     <a
-      href={href}
+      href={resolvedHref}
       className={baseCls}
       {...(external && { target: "_blank", rel: "noopener noreferrer" })}
     >

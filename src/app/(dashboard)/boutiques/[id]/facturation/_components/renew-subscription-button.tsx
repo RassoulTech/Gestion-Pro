@@ -14,7 +14,7 @@ import { renewCurrentSubscription } from "@/server/actions/subscription.actions"
 import { RefreshCw, CreditCard, Zap } from "lucide-react";
 import { WaveIcon, OrangeMoneyIcon } from "@/components/icons/brand-icons";
 
-type RenewMethod = "WAVE" | "ORANGE_MONEY" | "STRIPE";
+type RenewMethod = "WAVE" | "ORANGE_MONEY";
 
 interface RenewSubscriptionButtonProps {
   planName: string;
@@ -32,11 +32,6 @@ const METHOD_LABEL: Record<RenewMethod, { label: string; sub: string; icon: Reac
     label: "Orange Money",
     sub: "Mobile Money",
     icon: <OrangeMoneyIcon className="h-5 w-5 rounded" />,
-  },
-  STRIPE: {
-    label: "Carte bancaire",
-    sub: "Stripe (renouvellement automatique)",
-    icon: <CreditCard className="h-5 w-5" />,
   },
 };
 

@@ -23,8 +23,6 @@ const PAYMENT_LABELS: Record<
 > = {
   WAVE: { label: "Wave", icon: WaveIcon, color: "", brand: true },
   ORANGE_MONEY: { label: "Orange Money", icon: OrangeMoneyIcon, color: "", brand: true },
-  STRIPE: { label: "Carte bancaire (Stripe)", icon: CreditCard, color: "text-orange-500" },
-  PAYPAL: { label: "PayPal", icon: CreditCard, color: "text-orange-500" },
   CASH_ON_DELIVERY: { label: "Paiement à la livraison", icon: Wallet, color: "text-emerald-500" },
 };
 

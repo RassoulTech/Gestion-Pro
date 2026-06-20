@@ -192,7 +192,7 @@ export function CheckoutClient() {
   const errClass = "text-xs font-semibold text-red-500 mt-1";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-12 lg:py-20 animate-fade-in">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-24 pb-12 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-24 animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <Button asChild variant="ghost" className="rounded-2xl font-bold group mb-6 px-4 py-2">
           <Link href="/panier" className="inline-flex items-center">
@@ -201,10 +201,10 @@ export function CheckoutClient() {
           </Link>
         </Button>
 
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-3">
+        <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-slate-900 dark:text-white mb-3">
           Finaliser la commande
         </h1>
-        <p className="text-sm font-semibold text-slate-400 mb-8">
+        <p className="text-fluid-body font-semibold text-slate-400 mb-8">
           Pas besoin de compte — commandez en quelques secondes.
         </p>
 
@@ -387,19 +387,19 @@ export function CheckoutClient() {
                   onValueChange={(val: string) =>
                     form.setValue("paymentMethod", val as CheckoutForm["paymentMethod"])
                   }
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                  className="grid grid-cols-1 md:grid-cols-3 gap-4"
                 >
-                  <Label className="flex items-center gap-3 p-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10">
+                  <Label className="h-14 flex items-center gap-3 px-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 shrink-0">
                     <RadioGroupItem value="CASH_ON_DELIVERY" id="cod" />
-                    <span className="font-bold">Paiement à la livraison</span>
+                    <span className="font-bold text-sm">Paiement à la livraison</span>
                   </Label>
-                  <Label className="flex items-center gap-3 p-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10">
+                  <Label className="h-14 flex items-center gap-3 px-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 shrink-0">
                     <RadioGroupItem value="WAVE" id="wave" />
-                    <span className="font-bold">Wave</span>
+                    <span className="font-bold text-sm">Wave</span>
                   </Label>
-                  <Label className="flex items-center gap-3 p-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10">
+                  <Label className="h-14 flex items-center gap-3 px-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 shrink-0">
                     <RadioGroupItem value="ORANGE_MONEY" id="om" />
-                    <span className="font-bold">Orange Money</span>
+                    <span className="font-bold text-sm">Orange Money</span>
                   </Label>
                 </RadioGroup>
                 <p className="text-[11px] font-medium text-slate-400">
@@ -410,7 +410,7 @@ export function CheckoutClient() {
               <Button
                 type="submit"
                 disabled={busy}
-                className="w-full h-14 rounded-2xl font-black text-lg bg-orange-600 hover:bg-orange-700 text-white shadow-xl shadow-orange-500/20"
+                className="w-full h-14 rounded-2xl font-black text-lg bg-orange-600 hover:bg-orange-700 text-white shadow-xl shadow-orange-500/20 flex items-center justify-center shrink-0"
               >
                 {busy ? (
                   <Loader2 className="mr-2 h-6 w-6 animate-spin" />

@@ -7,6 +7,7 @@ import {
   sendOrderConfirmationToClient,
   sendOrderNotificationToVendedor,
 } from "@/lib/mail";
+import { notifyBoutiqueOwner } from "@/server/services/notifications";
 
 /**
  * Génère la facture PDF d'une commande, l'archive sur la commande et envoie les
@@ -172,6 +173,26 @@ export async function confirmMarketplaceOrders(
       await generateAndSendOrderInvoice(id);
     } catch (err) {
       console.error(`[order-fulfillment] facture/email échoués pour ${id}:`, err);
+    }
+  }
+
+  // Notification "paiement confirmé" au vendeur (best-effort).
+  if (claimedIds.length > 0) {
+    try {
+      const confirmed = await prisma.commandeClient.findMany({
+        where: { id: { in: claimedIds } },
+        select: { boutiqueId: true, code: true, total: true },
+      });
+      for (const o of confirmed) {
+        await notifyBoutiqueOwner(o.boutiqueId, {
+          type: "PAIEMENT_CONFIRME",
+          title: "Paiement reçu",
+          message: `Commande ${o.code} payée — ${o.total.toLocaleString("fr-FR")} FCFA`,
+          link: `/boutiques/${o.boutiqueId}/commandes`,
+        });
+      }
+    } catch (err) {
+      console.error("[notifications] paiement confirmé:", err);
     }
   }
 

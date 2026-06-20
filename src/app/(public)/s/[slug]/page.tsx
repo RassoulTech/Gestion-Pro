@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ShopCatalog } from "./_components/shop-catalog";
 import { ContactItem } from "@/components/contact-item";
 import { getSectorLabel, getSectorIcon } from "@/lib/utils";
+import { getShopWhatsAppLink } from "@/lib/whatsapp";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -29,7 +30,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
   if (!boutique) notFound();
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-8 sm:py-12 lg:py-20">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-24 pb-8 sm:pt-28 sm:pb-12 lg:pt-32 lg:pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12">
         
         {/* Back to Marketplace */}
@@ -80,7 +81,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
 
             <div className="flex-1 space-y-4">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+                <h1 className="text-fluid-h1 font-extrabold tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
                   {boutique.nom}
                   <CheckCircle2 className="w-5 h-5 text-orange-500 fill-orange-500/10 shrink-0" />
                 </h1>
@@ -97,7 +98,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
               </div>
 
               {boutique.description && (
-                <p className="max-w-3xl text-sm text-slate-500 dark:text-zinc-400 leading-relaxed font-medium">
+                <p className="max-w-3xl text-fluid-body text-slate-500 dark:text-zinc-400 leading-relaxed font-medium">
                   {boutique.description}
                 </p>
               )}
@@ -105,7 +106,12 @@ export default async function BoutiquePubliquePage({ params }: Props) {
               <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {boutique.adresse && <ContactItem kind="address" value={boutique.adresse} />}
                 {boutique.telephone && <ContactItem kind="phone" value={boutique.telephone} />}
-                {boutique.whatsapp && <ContactItem kind="whatsapp" value={boutique.whatsapp} label="WhatsApp" />}
+                {boutique.whatsapp && (() => {
+                  const href = getShopWhatsAppLink(boutique.whatsapp, boutique.nom);
+                  return href ? (
+                    <ContactItem kind="whatsapp" value={boutique.whatsapp} label="WhatsApp" href={href} />
+                  ) : null;
+                })()}
                 {boutique.email && <ContactItem kind="email" value={boutique.email} />}
                 {boutique.siteWeb && <ContactItem kind="website" value={boutique.siteWeb} label="Site web" />}
               </div>

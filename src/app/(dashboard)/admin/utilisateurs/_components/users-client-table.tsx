@@ -13,6 +13,7 @@ interface User {
   email: string;
   role: string;
   createdAt: Date;
+  emailVerified: Date | string | null;
   vendeur: {
     id: string;
     statut: string;
@@ -40,6 +41,7 @@ function getGradient(name: string) {
 export function UsersClientTable({ initialUsers, total }: UsersClientTableProps) {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"TOUT" | "CLIENT" | "VENDEUR">("TOUT");
+  const [verifFilter, setVerifFilter] = useState<"TOUT" | "VERIFIE" | "EN_ATTENTE">("TOUT");
 
   const filteredUsers = initialUsers.filter((u) => {
     const matchesSearch =
@@ -49,7 +51,12 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
 
     const matchesRole = roleFilter === "TOUT" || u.role === roleFilter;
 
-    return matchesSearch && matchesRole;
+    const matchesVerif =
+      verifFilter === "TOUT" ||
+      (verifFilter === "VERIFIE" && u.emailVerified !== null) ||
+      (verifFilter === "EN_ATTENTE" && u.emailVerified === null);
+
+    return matchesSearch && matchesRole && matchesVerif;
   });
 
   return (
@@ -81,30 +88,68 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mr-2">
-              <Filter className="h-3.5 w-3.5" /> Filtrer par :
-            </span>
-            <button
-              onClick={() => setRoleFilter("TOUT")}
-              className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
-                roleFilter === "TOUT"
-                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
-              }`}
-            >
-              Tous
-            </button>
-            <button
-              onClick={() => setRoleFilter("CLIENT")}
-              className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
-                roleFilter === "CLIENT"
-                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
-              }`}
-            >
-              Client
-            </button>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mr-2">
+                <Filter className="h-3.5 w-3.5" /> Rôle :
+              </span>
+              <button
+                onClick={() => setRoleFilter("TOUT")}
+                className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  roleFilter === "TOUT"
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                Tous
+              </button>
+              <button
+                onClick={() => setRoleFilter("CLIENT")}
+                className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  roleFilter === "CLIENT"
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                Client
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mr-2">
+                Statut :
+              </span>
+              <button
+                onClick={() => setVerifFilter("TOUT")}
+                className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  verifFilter === "TOUT"
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                Tous
+              </button>
+              <button
+                onClick={() => setVerifFilter("VERIFIE")}
+                className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  verifFilter === "VERIFIE"
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                Vérifiés
+              </button>
+              <button
+                onClick={() => setVerifFilter("EN_ATTENTE")}
+                className={`h-9 px-4 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  verifFilter === "EN_ATTENTE"
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                En attente
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -150,6 +195,7 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                         <span className="flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-slate-400" /> Email</span>
                       </TableHead>
                       <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Rôle</TableHead>
+                      <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">Statut</TableHead>
                       <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">
                         <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-slate-400" /> Inscription</span>
                       </TableHead>
@@ -187,6 +233,17 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                               {u.role}
                             </Badge>
                           </TableCell>
+                          <TableCell className="py-4">
+                            {u.emailVerified ? (
+                              <Badge variant="outline" className="rounded-lg text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 border-emerald-200 text-emerald-700 bg-emerald-50 dark:border-emerald-900/30 dark:text-emerald-400 dark:bg-emerald-950/20">
+                                Vérifié & Actif
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="rounded-lg text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 border-amber-200 text-amber-700 bg-amber-50 dark:border-amber-900/30 dark:text-amber-400 dark:bg-amber-950/20">
+                                En attente
+                              </Badge>
+                            )}
+                          </TableCell>
                           <TableCell className="py-4 text-slate-500 dark:text-slate-400 text-xs font-bold">
                             {formatDate(u.createdAt)}
                           </TableCell>
@@ -220,6 +277,17 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                           </span>
                           <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 font-mono">ID: {u.id.slice(0, 8)}</span>
                         </div>
+                      </div>
+                      <div>
+                        {u.emailVerified ? (
+                          <Badge variant="outline" className="rounded-lg text-[9px] font-black uppercase tracking-widest px-2 py-0.5 border-emerald-200 text-emerald-700 bg-emerald-50 dark:border-emerald-900/30 dark:text-emerald-400 dark:bg-emerald-950/20">
+                            Vérifié
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="rounded-lg text-[9px] font-black uppercase tracking-widest px-2 py-0.5 border-amber-200 text-amber-700 bg-amber-50 dark:border-amber-900/30 dark:text-amber-400 dark:bg-amber-950/20">
+                            En attente
+                          </Badge>
+                        )}
                       </div>
                     </div>
 

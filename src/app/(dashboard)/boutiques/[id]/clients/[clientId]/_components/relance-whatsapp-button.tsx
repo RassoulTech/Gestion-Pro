@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 import {
   Dialog,
   DialogContent,
@@ -33,7 +34,6 @@ export function RelanceWhatsappButton({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const phoneDigits = (telephone ?? "").replace(/[^\d]/g, "");
 
   async function generate() {
     setLoading(true);
@@ -56,12 +56,13 @@ export function RelanceWhatsappButton({
   }
 
   function openWhatsapp() {
-    if (!phoneDigits || !message.trim()) return;
-    window.open(
-      `https://wa.me/${phoneDigits}?text=${encodeURIComponent(message.trim())}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    if (!telephone || !message.trim()) return;
+    const url = buildWhatsAppLink(telephone, message.trim());
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    } else {
+      toast.error("Numéro de téléphone invalide.");
+    }
   }
 
   if (!telephone) return null;

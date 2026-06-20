@@ -24,6 +24,8 @@ import {
 import QRCode from "qrcode";
 import { toast } from "sonner";
 import { BrandLogo } from "@/components/brand-logo";
+import { getAdminWhatsAppLink } from "@/lib/whatsapp";
+import { env } from "@/env.mjs";
 
 /**
  * Flyer OFFICIEL de la plateforme GestionPro — support commercial SaaS.
@@ -38,12 +40,11 @@ import { BrandLogo } from "@/components/brand-logo";
  * Imprimable A4/A5, photocopiable, PDF (impression) + PNG HD.
  */
 export default function FlyerPremiumPage() {
-  const phone = "+221 77 383 13 64";
-  const phoneIntl = "221773831364";
+  const adminPhone = env.NEXT_PUBLIC_WHATSAPP_ADMIN_NUMBER || "221773831364";
+  const phone = env.NEXT_PUBLIC_WHATSAPP_ADMIN_NUMBER ? `+${env.NEXT_PUBLIC_WHATSAPP_ADMIN_NUMBER}` : "+221 77 383 13 64";
+  const phoneIntl = adminPhone;
   const email = "dionemhd1@gmail.com";
-  const waMessage =
-    "Bonjour, je souhaite demander une démonstration privée de GestionPro.";
-  const waLink = `https://wa.me/${phoneIntl}?text=${encodeURIComponent(waMessage)}`;
+  const waLink = getAdminWhatsAppLink();
 
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [downloading, setDownloading] = useState(false);

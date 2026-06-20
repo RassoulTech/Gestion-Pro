@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -42,7 +42,7 @@ export function CartClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] py-12 lg:py-20">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-24 pb-12 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Header */}
@@ -53,11 +53,11 @@ export function CartClient() {
               Retour au marketplace
             </Link>
           </Button>
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
+            <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-slate-900 dark:text-white">
               Votre panier
             </h1>
-            <p className="text-slate-500 dark:text-zinc-400 font-bold text-sm sm:text-base bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 px-4 py-1.5 rounded-full shadow-sm">
+            <p className="text-slate-500 dark:text-zinc-400 font-bold text-fluid-caption sm:text-fluid-body bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 px-4 py-1.5 rounded-full shadow-sm w-fit">
               {totalItems} article{totalItems > 1 ? "s" : ""} sélectionné{totalItems > 1 ? "s" : ""}
             </p>
           </div>
@@ -88,7 +88,7 @@ export function CartClient() {
                   <div className="space-y-1">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 text-base sm:text-lg truncate group-hover:text-orange-500 transition-colors">
+                        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 text-fluid-subtitle line-clamp-2 group-hover:text-orange-500 transition-colors">
                           {item.nom}
                         </h3>
                         <p className="text-xs font-bold text-slate-400 dark:text-zinc-500 mt-0.5 uppercase tracking-wider flex items-center gap-1.5">
@@ -193,7 +193,7 @@ export function CartClient() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="w-full h-12 rounded-2xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-100/50 dark:bg-zinc-800/20"
+                  className="w-full h-14 rounded-2xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-100/50 dark:bg-zinc-800/20 inline-flex items-center justify-center"
                 >
                   <Link href="/marketplace" className="inline-flex items-center justify-center">
                     Continuer mes achats

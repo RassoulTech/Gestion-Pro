@@ -91,7 +91,7 @@ export const authConfig = {
 
       if (isOnAdmin) {
         if (!isLoggedIn) return false;
-        return userRole === "ADMIN";
+        return userRole === "ADMIN" && session?.user?.email === "dionemhd1@gmail.com";
       }
 
       if (isOnBoutiques) {

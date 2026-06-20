@@ -19,7 +19,6 @@ import { auth } from "@/lib/auth";
 function PaymentMethodIcon({ methode, className }: { methode: string; className?: string }) {
   if (methode === "WAVE") return <WaveIcon className={className ?? "h-3 w-3 rounded"} />;
   if (methode === "ORANGE_MONEY") return <OrangeMoneyIcon className={className ?? "h-3 w-3 rounded"} />;
-  if (methode === "STRIPE") return <CreditCard className={className ?? "h-3 w-3"} />;
   return <Smartphone className={className ?? "h-3 w-3"} />;
 }
 import { prisma } from "@/lib/prisma";
@@ -33,7 +32,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { QuotaIndicator } from "@/components/dashboard/quota-indicators";
 import Link from "next/link";
-import { ManageStripeButton } from "./_components/manage-stripe-button";
 import { RenewSubscriptionButton } from "./_components/renew-subscription-button";
 import { PaymentFeedbackToast } from "./_components/payment-feedback-toast";
 import { Suspense } from "react";
@@ -158,11 +156,6 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                 Mettre à niveau
               </Link>
             </Button>
-            {vendeur.stripeCustomerId && (
-              <div className="w-full sm:w-auto">
-                <ManageStripeButton hasStripeCustomer={!!vendeur.stripeCustomerId} />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -353,11 +346,11 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
             <div className="space-y-6">
               <div className="space-y-2">
                 <h5 className="font-extrabold text-sm text-zinc-100">Comment changer de forfait ?</h5>
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Cliquez sur &quot;Mettre à niveau&quot; pour choisir un nouveau plan et effectuer le règlement via Mobile Money (Wave, OM) ou par Carte Bancaire.</p>
+                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Cliquez sur &quot;Mettre à niveau&quot; pour choisir un nouveau plan et effectuer le règlement via Mobile Money (Wave, OM).</p>
               </div>
               <div className="space-y-2">
                 <h5 className="font-extrabold text-sm text-zinc-100">Puis-je annuler à tout moment ?</h5>
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Oui, absolument. Si vous avez souscrit via Stripe, vous pouvez gérer et résilier votre abonnement directement via le bouton de redirection Stripe Billing portal.</p>
+                <p className="text-xs text-zinc-400 font-medium leading-relaxed">Oui, absolument. Votre abonnement expirera automatiquement à la fin de la période de 30 jours si vous ne le renouvelez pas manuellement.</p>
               </div>
               <div className="space-y-2">
                 <h5 className="font-extrabold text-sm text-zinc-100">Que se passe-t-il si je dépasse mes quotas ?</h5>

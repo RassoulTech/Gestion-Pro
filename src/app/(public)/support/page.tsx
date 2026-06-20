@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, HelpCircle, ChevronDown, BookOpen, CreditCard, ShoppingBag, Settings, PhoneCall } from "lucide-react";
+import { getAdminWhatsAppLink } from "@/lib/whatsapp";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -217,8 +218,8 @@ export default function SupportPage() {
                 Besoin d&apos;aide en direct ? Parlez à nos techniciens locaux directement sur WhatsApp pour une assistance pas-à-pas.
               </p>
             </div>
-            <a
-              href="https://wa.me/221773831364"
+             <a
+              href={getAdminWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#25D366] text-white text-xs font-black uppercase tracking-wider hover:bg-[#20ba59] shadow-lg shadow-emerald-600/20 transition-all self-start px-6"

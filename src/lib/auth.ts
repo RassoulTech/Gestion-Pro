@@ -150,5 +150,8 @@ export async function requireRole(role: UserRole) {
   if (user.role !== role) {
     throw new Error("FORBIDDEN");
   }
+  if (role === "ADMIN" && user.email !== "dionemhd1@gmail.com") {
+    throw new Error("FORBIDDEN");
+  }
   return user;
 }

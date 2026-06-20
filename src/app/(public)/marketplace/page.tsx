@@ -18,7 +18,7 @@ export const metadata: Metadata = { title: "Marketplace — GestionPro" };
 
 function ProductGridSkeleton() {
   return (
-    <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 min-[370px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
         <Skeleton key={i} className="h-80 rounded-2xl sm:rounded-[2rem] bg-slate-100 dark:bg-zinc-800" />
       ))}
@@ -82,7 +82,7 @@ async function ProductGrid({
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 min-[370px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {data.map((produit) => (
           <MarketplaceProductCard key={produit.id} produit={produit} />
         ))}

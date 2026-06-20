@@ -15,6 +15,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
+import { NotificationBell } from "@/components/layouts/notification-bell";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -185,6 +186,7 @@ export function Header({
 
       {/* Right-side controls */}
       <div className="ml-auto flex items-center gap-1">
+        <NotificationBell />
         <ThemeToggle />
         <UserMenu
           userName={userName}

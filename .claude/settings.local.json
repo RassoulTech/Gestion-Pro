@@ -89,7 +89,29 @@
       "Bash(xargs -r kill)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 3 http://localhost:3000/marketplace)",
       "PowerShell($conns = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($conns\\) { $conns | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } ; \"killed\" } else { \"no listener\" })",
-      "Bash(xargs grep -lE \"useRouter|useSearchParams|searchParams\")"
+      "Bash(xargs grep -lE \"useRouter|useSearchParams|searchParams\")",
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\('html2canvas-pro', require\\('./node_modules/html2canvas-pro/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\('playwright:', require\\('./node_modules/playwright/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\('@playwright/test:', require\\('./node_modules/@playwright/test/package.json'\\).version\\)\")",
+      "Bash(echo \"dev pid $!\")",
+      "Bash(curl -s -o /dev/null -w \"flyer http=%{http_code}\\\\n\" http://localhost:3000/flyer)",
+      "Bash(break)",
+      "Bash(curl *)",
+      "PowerShell(try { Stop-Process -Id 20260 -Force -ErrorAction Stop; \"killed 20260\" } catch { \"20260 already gone: $\\($_.Exception.Message\\)\" }; $c = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { $c.OwningProcess | Select-Object -Unique | ForEach-Object { try { Stop-Process -Id $_ -Force } catch {} }; \"freed 3000\" } else { \"3000 free\" })",
+      "PowerShell($c = Get-NetTCPConnection -LocalPort 3001 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { $c.OwningProcess | Select-Object -Unique | ForEach-Object { try { Stop-Process -Id $_ -Force } catch {} }; \"killed 3001\" } else { \"3001 free\" })",
+      "Bash(tasklist)",
+      "PowerShell(Get-Process *)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(npx playwright *)",
+      "Bash(node extract-phone.cjs)",
+      "Bash(node gen-flyer-standalone.mjs)",
+      "Bash(awk '{print $NF, $5\"o\"}')",
+      "PowerShell(npm run typecheck)",
+      "Bash(node tmp-diag.mjs)",
+      "Bash(node tmp-shot.mjs)",
+      "Bash(taskkill //F //IM node.exe)",
+      "PowerShell(git push origin main)"
     ]
   }
 }

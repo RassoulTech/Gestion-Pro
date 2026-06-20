@@ -88,6 +88,10 @@ export const adminActionClient = authActionClient.use(
   async ({ ctx, next }) => {
     let role = ctx.user.role;
 
+    if (ctx.user.email !== "dionemhd1@gmail.com") {
+      throw new Error("FORBIDDEN");
+    }
+
     if (role !== "ADMIN") {
       const user = await prisma.user.findUnique({
         where: { id: ctx.user.id },

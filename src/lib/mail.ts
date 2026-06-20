@@ -1,6 +1,8 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+import { env } from "@/env.mjs";
+import { logActivity } from "@/lib/activity-log";
 
-const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const domain = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export type MailResult = { sent: boolean; devLink?: string; error?: string };
 
@@ -12,76 +14,65 @@ interface SendOpts {
   attachments?: { filename: string; content: Buffer }[];
 }
 
-// SMTP-only strategy (Render).
-// Read common env names and prefer explicit SMTP_HOST + PORT when provided by Render.
-const smtpUser = process.env.SMTP_USER || process.env.SMTP_EMAIL;
-const smtpPass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
-const smtpHost = process.env.SMTP_HOST;
-const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
-const smtpSecure = process.env.SMTP_SECURE === "true";
+const resendKey = env.AUTH_RESEND_KEY;
+const resendFrom = env.AUTH_EMAIL_FROM || "onboarding@resend.dev";
 
-let transporter: ReturnType<typeof nodemailer.createTransport> | null = null;
-try {
-  if (smtpHost) {
-    transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort ?? 587,
-      secure: smtpSecure,
-      auth: smtpUser && smtpPass ? { user: smtpUser, pass: smtpPass } : undefined,
-    });
-  } else if (smtpUser && smtpPass) {
-    // Legacy fallback (if Render provided only user/pass) — use Gmail service as a last resort.
-    transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: smtpUser, pass: smtpPass },
-    });
-  }
-} catch (e) {
-  console.error("[mail] transporter creation failed:", e);
-  transporter = null;
-}
-
-const smtpFrom = process.env.SMTP_FROM || process.env.AUTH_EMAIL_FROM || (smtpUser ? `GestionPro <${smtpUser}>` : "GestionPro <no-reply@gestionpro.com>");
-
-const smtpConfigured = () => !!smtpUser && !!smtpPass && !!transporter;
+const resend = resendKey ? new Resend(resendKey) : null;
 
 /**
- * Indique si un fournisseur SMTP est opérationnel (Render SMTP).
+ * Indique si Resend est configuré.
  */
 export function isMailConfigured(): boolean {
-  return smtpConfigured();
+  return !!resend;
 }
 
 const isDevExposeLink = !isMailConfigured() && process.env.NODE_ENV !== "production";
 
-async function sendViaNodemailer(opts: SendOpts): Promise<MailResult> {
-  if (!smtpConfigured()) {
-    return { sent: false, error: "SMTP credentials not set" };
+/**
+ * Envoi unifié `{ sent, error }`. Utilise exclusivement Resend.
+ */
+async function sendEmail(opts: SendOpts): Promise<MailResult> {
+  if (!resend) {
+    console.error("[mail] Resend API key is not configured.");
+    return { sent: false, error: "Clé API Resend non configurée." };
   }
+  
+  const to = Array.isArray(opts.to) ? opts.to : [opts.to];
   try {
-    await transporter!.sendMail({
-      from: smtpFrom,
-      to: opts.to,
+    console.log(`[mail] Sending email via Resend to: ${to.join(", ")}, Subject: "${opts.subject}"`);
+    
+    const { data, error } = await resend.emails.send({
+      from: resendFrom,
+      to,
       subject: opts.subject,
       html: opts.html,
-      ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
-      ...(opts.attachments ? { attachments: opts.attachments } : {}),
+      replyTo: opts.replyTo,
+      attachments: opts.attachments?.map((att) => ({
+        filename: att.filename,
+        content: att.content,
+      })),
     });
+
+    if (error) {
+      console.error("[mail] Resend error:", error);
+      await logActivity({
+        action: "RESEND_ERROR",
+        changes: { error: error.message, subject: opts.subject, to: to.join(", ") },
+      });
+      return { sent: false, error: error.message };
+    }
+
+    console.log(`[mail] Email sent successfully. Resend ID: ${data?.id}`);
     return { sent: true };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("[mail] nodemailer exception:", msg);
+    console.error("[mail] Resend exception:", msg);
+    await logActivity({
+      action: "RESEND_ERROR",
+      changes: { error: msg, subject: opts.subject, to: to.join(", ") },
+    });
     return { sent: false, error: msg };
   }
-}
-
-/**
- * Envoi unifié `{ sent, error }`. Utilise exclusivement SMTP (Render).
- */
-async function sendEmail(opts: SendOpts): Promise<MailResult> {
-  if (smtpConfigured()) return sendViaNodemailer(opts);
-  console.error("[mail] no SMTP provider configured");
-  return { sent: false, error: "Aucun fournisseur email configuré" };
 }
 
 // --- Premium Shared Email Header & Footer Generators ---
@@ -171,7 +162,7 @@ export const sendVerificationEmail = async (
   const confirmLink = `${domain}/verify-email?token=${token}`;
 
   if (!isMailConfigured()) {
-    console.warn("[mail] Nodemailer not configured. Email skipped.");
+    console.warn("[mail] Resend not configured. Email skipped.");
     console.log(`Lien généré (DEV) : ${confirmLink}`);
     return { sent: false, devLink: isDevExposeLink ? confirmLink : undefined };
   }
@@ -202,6 +193,36 @@ export const sendVerificationEmail = async (
     to: email,
     subject: "Vérifiez votre adresse email — GestionPro",
     html: getEmailWrapper("Vérifiez votre adresse email", htmlContent),
+  });
+};
+
+export const sendAlreadyRegisteredEmail = async (email: string): Promise<MailResult> => {
+  if (!isMailConfigured()) {
+    console.warn("[mail] Resend not configured. Already registered email skipped.");
+    return { sent: false };
+  }
+  const loginLink = `${domain}/login`;
+  const resetLink = `${domain}/forgot-password`;
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a; text-align: center;">
+      Un compte existe déjà !
+    </h2>
+    <p style="margin: 0 0 24px 0; text-align: center; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
+      Vous avez tenté de créer un compte sur GestionPro avec cette adresse e-mail. Cependant, un compte actif est déjà associé à cet e-mail.
+    </p>
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="${loginLink}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%); color: #ffffff; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px -6px rgba(234, 88, 12, 0.4); margin-right: 12px;">
+        Se connecter
+      </a>
+      <a href="${resetLink}" style="display: inline-block; padding: 16px 32px; background-color: #f1f5f9; color: #475569; text-decoration: none; border-radius: 14px; font-weight: 800; font-size: 15px; border: 1px solid #e2e8f0; text-decoration: none;">
+        Mot de passe oublié ?
+      </a>
+    </div>
+  `;
+  return sendEmail({
+    to: email,
+    subject: "Tentative d'inscription sur votre compte GestionPro",
+    html: getEmailWrapper("Compte existant", htmlContent),
   });
 };
 

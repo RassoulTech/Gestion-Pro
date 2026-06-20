@@ -115,30 +115,4 @@ export function getLimitReachedMessage(planCode: PlanCode): string {
   return "Limite atteinte. Contactez-nous si vous avez besoin d'augmenter vos capacités.";
 }
 
-/**
- * Stripe price IDs are read from env vars at runtime (not committed). This
- * helper centralizes the mapping so we can swap providers without scattering
- * env lookups.
- */
-export function getStripePriceIds(code: PlanCode): {
-  monthly: string | null;
-  annual: string | null;
-} {
-  if (code === "PRO") {
-    return {
-      monthly: process.env.STRIPE_PRICE_PRO_MONTHLY || "price_pro_monthly_mock",
-      annual: process.env.STRIPE_PRICE_PRO_ANNUAL || "price_pro_annual_mock",
-    };
-  }
-  if (code === "ENTERPRISE") {
-    return {
-      monthly:
-        process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY ||
-        "price_enterprise_monthly_mock",
-      annual:
-        process.env.STRIPE_PRICE_ENTERPRISE_ANNUAL ||
-        "price_enterprise_annual_mock",
-    };
-  }
-  return { monthly: null, annual: null };
-}
+

@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { sendContactMessage } from "@/server/actions/contact.actions";
 import { Section } from "./section";
 import { Button } from "@/components/ui/button";
+import { getAdminWhatsAppLink } from "@/lib/whatsapp";
 import {
   Form,
   FormControl,
@@ -105,7 +106,7 @@ export function ContactSection() {
                 title: "Support WhatsApp",
                 value: "+221 77 383 13 64",
                 desc: "Conseillers disponibles 7j/7",
-                href: "https://wa.me/221773831364"
+                href: getAdminWhatsAppLink()
               }
             ].map((card, idx) => (
               <motion.a

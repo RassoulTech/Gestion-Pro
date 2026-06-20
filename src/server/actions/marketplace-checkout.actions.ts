@@ -9,6 +9,7 @@ import {
   generateAndSendOrderInvoice,
   confirmMarketplaceOrders,
 } from "@/server/services/order-fulfillment";
+import { notifyBoutiqueOwner, notifyAdmins } from "@/server/services/notifications";
 
 const checkoutItemSchema = z.object({
   produitId: z.string().min(1),
@@ -39,8 +40,6 @@ const checkoutSchema = z.object({
   paymentMethod: z.enum([
     "WAVE",
     "ORANGE_MONEY",
-    "PAYPAL",
-    "STRIPE",
     "CASH_ON_DELIVERY",
   ]),
   items: z.array(checkoutItemSchema).min(1, "Le panier ne peut pas être vide"),
@@ -230,65 +229,33 @@ export const createMarketplaceCommande = actionClient
       }
     }
 
+    // Notifications (best-effort) : prévenir le vendeur + les admins.
+    try {
+      const newOrders = await prisma.commandeClient.findMany({
+        where: { id: { in: createdCommandeIds } },
+        select: { code: true, total: true, boutiqueId: true },
+      });
+      for (const o of newOrders) {
+        await notifyBoutiqueOwner(o.boutiqueId, {
+          type: "NOUVELLE_COMMANDE",
+          title: "Nouvelle commande",
+          message: `Commande ${o.code} — ${o.total.toLocaleString("fr-FR")} FCFA`,
+          link: `/boutiques/${o.boutiqueId}/commandes`,
+        });
+      }
+      await notifyAdmins({
+        type: "NOUVELLE_COMMANDE_MARKETPLACE",
+        title: "Nouvelle commande marketplace",
+        message: `${newOrders.length} commande(s) passée(s) sur la marketplace`,
+        link: "/admin/dashboard",
+      });
+    } catch (err) {
+      console.error("[notifications] nouvelle commande:", err);
+    }
+
     // 4. Initiate payment processing based on selected method
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-    if (paymentMethod === "STRIPE") {
-      const stripeEnabled = process.env.STRIPE_ENABLED === "true";
-      const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
-      const stripeConfigured =
-        stripeEnabled && stripeSecret.length > 0 && !stripeSecret.includes("mock");
-
-      if (!stripeConfigured) {
-        const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
-        await prisma.commandeClient.updateMany({
-          where: { id: { in: createdCommandeIds } },
-          data: { paymentToken: transactionRef },
-        });
-        return {
-          success: true,
-          paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=STRIPE&ids=${createdCommandeIds.join(",")}`,
-          accountCreatedEmail: undefined,
-        };
-      }
-
-      const stripe = (await import("@/lib/stripe")).getStripe();
-
-      const stripeSession = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price_data: {
-              currency: "xof",
-              product_data: {
-                name: `Commande sur GestionPro`,
-                description: `Règlement des achats clients (${createdCommandeIds.length} boutiques)`,
-              },
-              unit_amount: Math.round(totalAmount),
-            },
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        success_url: `${appUrl}/checkout/success?success=true&method=stripe&ids=${createdCommandeIds.join(",")}`,
-        cancel_url: `${appUrl}/panier`,
-        customer_email: emailClient,
-        metadata: {
-          type: "marketplace_order",
-          commandeIds: createdCommandeIds.join(","),
-        },
-      });
-
-      await prisma.commandeClient.updateMany({
-        where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: stripeSession.id },
-      });
-
-      return {
-        success: true,
-        paymentUrl: stripeSession.url || undefined,
-        accountCreatedEmail: undefined,
-      };
-    }
 
     if (paymentMethod === "WAVE" || paymentMethod === "ORANGE_MONEY") {
       const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
@@ -298,92 +265,66 @@ export const createMarketplaceCommande = actionClient
         process.env.PAYTECH_API_KEY &&
         process.env.PAYTECH_API_SECRET;
 
-      if (paytechConfigured) {
-        try {
-          const paytechUrl = "https://paytech.sn/api/payment/request-payment";
-          const requestBody = {
-            item_name: `Commande GestionPro - ${createdCommandeIds.length} boutique${createdCommandeIds.length > 1 ? "s" : ""}`,
-            item_price: totalAmount,
-            ref_command: transactionRef,
-            command_name: `Achat sur la marketplace GestionPro`,
-            currency: "XOF",
-            env: process.env.PAYTECH_ENV === "live" || process.env.PAYTECH_ENV === "prod" ? "prod" : "test",
-            ipn_url: `${appUrl}/api/paytech/ipn`,
-            success_url: `${appUrl}/checkout/success?success=true&method=paytech&ids=${createdCommandeIds.join(",")}`,
-            cancel_url: `${appUrl}/panier`,
-            custom_field: JSON.stringify({
-              kind: "marketplace_order",
-              commandeIds: createdCommandeIds.join(",")
-            })
-          };
-
-          const response = await fetch(paytechUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "API_KEY": process.env.PAYTECH_API_KEY || "",
-              "API_SECRET": process.env.PAYTECH_API_SECRET || ""
-            },
-            body: JSON.stringify(requestBody)
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            if (data.success === 1 || data.success === true) {
-              const redirectUrl = data.redirectUrl || data.redirect_url;
-              if (redirectUrl && data.token) {
-                await prisma.commandeClient.updateMany({
-                  where: { id: { in: createdCommandeIds } },
-                  data: { paymentToken: data.token },
-                });
-
-                return {
-                  success: true,
-                  paymentUrl: redirectUrl,
-                  accountCreatedEmail: undefined,
-                };
-              }
-            }
-          }
-
-          // PayTech est configuré mais n'a pas renvoyé d'URL exploitable : on
-          // signale une erreur claire plutôt que de simuler un paiement (ce qui
-          // marquerait la commande payée à tort en production).
-          throw new Error("Réponse PayTech invalide.");
-        } catch (error) {
-          console.error("PayTech marketplace API error :", error);
-          throw new Error(
-            "Le paiement Mobile Money est temporairement indisponible. Réessayez ou choisissez le paiement à la livraison."
-          );
-        }
+      if (!paytechConfigured) {
+        throw new Error(
+          "Le paiement Mobile Money n'est pas activé ou configuré sur ce serveur."
+        );
       }
 
-      // PayTech NON configuré (dév/test local) → simulateur de paiement.
-      await prisma.commandeClient.updateMany({
-        where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: transactionRef },
-      });
+      try {
+        const paytechUrl = "https://paytech.sn/api/payment/request-payment";
+        const requestBody = {
+          item_name: `Commande GestionPro - ${createdCommandeIds.length} boutique${createdCommandeIds.length > 1 ? "s" : ""}`,
+          item_price: totalAmount,
+          ref_command: transactionRef,
+          command_name: `Achat sur la marketplace GestionPro`,
+          currency: "XOF",
+          env: process.env.PAYTECH_ENV === "live" || process.env.PAYTECH_ENV === "prod" ? "prod" : "test",
+          ipn_url: `${appUrl}/api/paytech/ipn`,
+          success_url: `${appUrl}/checkout/success?success=true&method=paytech&ids=${createdCommandeIds.join(",")}`,
+          cancel_url: `${appUrl}/panier`,
+          custom_field: JSON.stringify({
+            kind: "marketplace_order",
+            commandeIds: createdCommandeIds.join(",")
+          })
+        };
 
-      return {
-        success: true,
-        paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=${paymentMethod}&ids=${createdCommandeIds.join(",")}`,
-        accountCreatedEmail: undefined,
-      };
-    }
+        const response = await fetch(paytechUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "API_KEY": process.env.PAYTECH_API_KEY || "",
+            "API_SECRET": process.env.PAYTECH_API_SECRET || ""
+          },
+          body: JSON.stringify(requestBody)
+        });
 
-    if (paymentMethod === "PAYPAL") {
-      const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success === 1 || data.success === true) {
+            const redirectUrl = data.redirectUrl || data.redirect_url;
+            if (redirectUrl && data.token) {
+              await prisma.commandeClient.updateMany({
+                where: { id: { in: createdCommandeIds } },
+                data: { paymentToken: data.token },
+              });
 
-      await prisma.commandeClient.updateMany({
-        where: { id: { in: createdCommandeIds } },
-        data: { paymentToken: transactionRef },
-      });
+              return {
+                success: true,
+                paymentUrl: redirectUrl,
+                accountCreatedEmail: undefined,
+              };
+            }
+          }
+        }
 
-      return {
-        success: true,
-        paymentUrl: `/checkout/mock/order?ref=${transactionRef}&amount=${totalAmount}&method=PAYPAL&ids=${createdCommandeIds.join(",")}`,
-        accountCreatedEmail: undefined,
-      };
+        throw new Error("Réponse PayTech invalide.");
+      } catch (error) {
+        console.error("PayTech marketplace API error :", error);
+        throw new Error(
+          "Le paiement Mobile Money est temporairement indisponible. Réessayez ou choisissez le paiement à la livraison."
+        );
+      }
     }
 
     // Cash on Delivery
@@ -392,39 +333,4 @@ export const createMarketplaceCommande = actionClient
       paymentUrl: `/checkout/success?success=true&method=cod&ids=${createdCommandeIds.join(",")}`,
       accountCreatedEmail: undefined,
     };
-  });
-
-export const confirmMockOrderPayment = actionClient
-  .schema(
-    z.object({
-      ids: z.string().min(1),
-      transactionRef: z.string().min(1),
-    })
-  )
-  .action(async ({ parsedInput }) => {
-    const { ids, transactionRef } = parsedInput;
-    const commandeIds = ids.split(",");
-
-    // La référence doit correspondre au paymentToken stocké lors du checkout :
-    // sans cette clause, n'importe qui pourrait confirmer n'importe quelle
-    // commande en devinant des IDs.
-    const matching = await prisma.commandeClient.findMany({
-      where: { id: { in: commandeIds }, paymentToken: transactionRef },
-      select: { id: true },
-    });
-
-    if (matching.length === 0) {
-      throw new Error("Référence de transaction invalide ou commandes introuvables.");
-    }
-
-    // Confirmation centralisée : décrémente le stock, génère facture + emails,
-    // idempotente sur les rejeux.
-    await confirmMarketplaceOrders(
-      matching.map((o) => o.id),
-      { modePaiement: "MOCK", paymentToken: transactionRef }
-    );
-
-    console.log(`Mock order payment confirmed for orders: ${ids} (ref: ${transactionRef})`);
-
-    return { success: true };
   });

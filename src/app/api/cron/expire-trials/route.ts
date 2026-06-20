@@ -7,6 +7,7 @@ import {
   sendSubscriptionExpiredEmail,
   sendSubscriptionRenewalReminderEmail,
 } from "@/lib/mail";
+import { logActivity } from "@/lib/activity-log";
 
 const REMINDER_WINDOW_DAYS = 3;
 
@@ -172,12 +173,36 @@ export async function GET(request: Request) {
       }
     }
 
+    // ─── STEP 3 ─ Clean up unverified accounts older than 7 days ───
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const unverifiedUsersCount = await prisma.user.count({
+      where: {
+        emailVerified: null,
+        createdAt: { lt: sevenDaysAgo },
+      },
+    });
+
+    if (unverifiedUsersCount > 0) {
+      await prisma.user.deleteMany({
+        where: {
+          emailVerified: null,
+          createdAt: { lt: sevenDaysAgo },
+        },
+      });
+
+      await logActivity({
+        action: "UNVERIFIED_USERS_CLEANED",
+        changes: { count: unverifiedUsersCount, thresholdDate: sevenDaysAgo },
+      });
+    }
+
     return NextResponse.json({
       success: true,
       remindersSent,
       expiredCount,
       expiredEmailsSent,
       expiredIds: expiredAbonnements.map((a) => a.id),
+      unverifiedUsersCleanedCount: unverifiedUsersCount,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

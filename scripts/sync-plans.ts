@@ -11,14 +11,13 @@
  *   - Never deletes existing plans (to preserve foreign keys on abonnements).
  */
 import { PrismaClient } from "@prisma/client";
-import { PLAN_LIST, getStripePriceIds } from "../src/lib/plan-limits";
+import { PLAN_LIST } from "../src/lib/plan-limits";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🔄 Syncing plans with canonical definitions...");
   for (const def of PLAN_LIST) {
-    const stripeIds = getStripePriceIds(def.code);
     const existing = await prisma.plan.findFirst({
       where: { codePlan: def.code },
     });
@@ -31,8 +30,6 @@ async function main() {
       maxProduits: def.maxProduits,
       maxMembres: def.maxMembres,
       codePlan: def.code,
-      stripePriceIdMonthly: stripeIds.monthly,
-      stripePriceIdAnnual: stripeIds.annual,
       features: def.features,
       actif: true,
     };

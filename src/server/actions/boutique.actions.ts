@@ -251,7 +251,7 @@ export const deleteBoutiquePermanent = vendeurActionClient
     if (billingOn) {
       const [activeSub, ownedCount] = await Promise.all([
         prisma.abonnement.findFirst({
-          where: { vendeurId, statut: "ACTIF", cancelAtPeriodEnd: false },
+          where: { vendeurId, statut: "ACTIF" },
           include: { plan: true },
         }),
         prisma.boutique.count({

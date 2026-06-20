@@ -34,8 +34,26 @@ model User {
   activityLogs ActivityLog[]
   aiGenerations AiGeneration[]
   aiUsages      AiUsage[]
+  notifications Notification[]
 
   @@map("users")
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String
+  title      String
+  message    String
+  link       String?
+  read       Boolean  @default(false)
+  boutiqueId String?  @map("boutique_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }
 
 model Account {
@@ -105,7 +123,6 @@ model Vendeur {
   adresse          String?
   photo            String?
   statut           StatutVendeur  @default(ACTIF)
-  stripeCustomerId String?        @map("stripe_customer_id")
   nomAffiche       String?        @map("nom_affiche")
   pays             String?
   ville            String?
@@ -218,8 +235,6 @@ model Plan {
   maxBoutiques          Int          @default(1) @map("max_boutiques")
   maxProduits           Int          @default(100) @map("max_produits")
   maxMembres            Int          @default(1) @map("max_membres")
-  stripePriceIdMonthly  String?      @map("stripe_price_id_monthly")
-  stripePriceIdAnnual   String?      @map("stripe_price_id_annual")
   codePlan              String?      @map("code_plan")
   features              Json         @default("[]")
   actif                 Boolean      @default(true)
@@ -249,9 +264,6 @@ model Abonnement {
   statut                StatutAbonnement  @default(ESSAI)
   moyenPaiement         String?           @map("moyen_paiement")
   montant               Float
-  stripeSubscriptionId  String?           @map("stripe_subscription_id")
-  cancelAtPeriodEnd     Boolean           @default(false) @map("cancel_at_period_end")
-  paydunyaToken         String?           @map("paydunya_token")
   lastReminderAt        DateTime?         @map("last_reminder_at")
   createdAt             DateTime          @default(now()) @map("created_at")
   updatedAt             DateTime          @updatedAt @map("updated_at")
@@ -277,7 +289,6 @@ model Paiement {
   methode               String
   statut                StatutPaiement  @default(EN_ATTENTE)
   transactionRef        String?         @map("transaction_ref")
-  paydunyaToken         String?         @map("paydunya_token")
   metadata              Json?           @map("metadata")
   createdAt             DateTime        @default(now()) @map("created_at")
 

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { AddToCartButton } from "./_components/add-to-cart-button";
+import { getProductWhatsAppLink } from "@/lib/whatsapp";
 
 type Props = {
   params: Promise<{ slug: string; id: string }>;
@@ -43,25 +44,14 @@ export default async function ProduitPublicPage({ params }: Props) {
   if (!produit) notFound();
 
   const cleanPhone = boutique.telephone ? boutique.telephone.replace(/\s+/g, "") : "";
-  const whatsappNumber = (boutique.whatsapp || boutique.telephone || "").replace(/\s+/g, "");
   const boutiqueLogo = boutique.logo || boutique.vendeur?.photo || null;
 
-  // Standard contact whatsapp message
-  const whatsappUrl = whatsappNumber
-    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-        `Bonjour, je suis intéressé par le produit *${produit.nom}* (${formatCurrency(produit.prixUnitaire)}) dans votre boutique *${boutique.nom}*. Est-il disponible ?`
-      )}`
-    : "#";
-
-  // Requirement 3: Floating WhatsApp button with specific text format
-  const whatsappUrlFlottant = whatsappNumber
-    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-        `Bonjour, je suis intéressé par ce produit : ${produit.nom}`
-      )}`
-    : "#";
+  // Context-aware WhatsApp contact message using centralized helper
+  const whatsappUrl = getProductWhatsAppLink(boutique.whatsapp || boutique.telephone, produit.nom, boutique.nom);
+  const whatsappUrlFlottant = whatsappUrl || "#";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-12 sm:pt-20 pb-28 lg:pb-20 relative">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0a0a0a] pt-24 pb-28 sm:pt-28 lg:pt-32 lg:pb-20 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
         
         {/* Back Link */}
@@ -109,12 +99,12 @@ export default async function ProduitPublicPage({ params }: Props) {
           {/* Product Info Section */}
           <div className="flex flex-col space-y-8 min-w-0">
             <div className="space-y-4 min-w-0">
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-800 dark:text-zinc-100 leading-tight break-words">
+              <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-slate-800 dark:text-zinc-100 leading-tight break-words">
                 {produit.nom}
               </h1>
               
               <div className="flex flex-wrap items-center gap-4">
-                <p className="text-3xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
+                <p className="text-fluid-h1 font-black text-orange-600 dark:text-orange-400 tracking-tight">
                   {formatCurrency(produit.prixUnitaire)}
                 </p>
                 
@@ -178,7 +168,7 @@ export default async function ProduitPublicPage({ params }: Props) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* WhatsApp Action */}
-                    {whatsappNumber && (
+                    {whatsappUrl && (
                       <Button asChild size="lg" className="h-14 rounded-2xl font-black text-sm bg-[#25D366] hover:bg-[#20ba5a] text-white border-none shadow-lg shadow-emerald-500/10 hover:-translate-y-0.5 transition-all">
                         <a href={whatsappUrlFlottant} target="_blank" rel="noopener noreferrer">
                           <WhatsAppIcon className="mr-2 h-5 w-5" />
@@ -234,9 +224,9 @@ export default async function ProduitPublicPage({ params }: Props) {
               </div>
 
               {/* Contacts boutique */}
-              {(boutique.telephone || whatsappNumber) && (
+              {(boutique.telephone || whatsappUrl) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
-                  {whatsappNumber && (
+                  {whatsappUrl && (
                     <Button asChild variant="outline" className="h-11 rounded-2xl font-bold border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10">
                       <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                         <WhatsAppIcon className="mr-2 h-4 w-4" />
@@ -255,9 +245,9 @@ export default async function ProduitPublicPage({ params }: Props) {
                 </div>
               )}
 
-              <Button asChild className="w-full h-12 mt-3 rounded-2xl font-black text-sm bg-brand text-white border-none shadow-md shadow-brand/10 hover:-translate-y-0.5 transition-all">
-                <Link href={`/s/${slug}`}>
-                  <Store className="mr-2 h-4 w-4" />
+              <Button asChild className="w-full h-14 mt-3 rounded-2xl font-black text-sm bg-brand text-white border-none shadow-md shadow-brand/10 hover:-translate-y-0.5 transition-all inline-flex items-center justify-center">
+                <Link href={`/s/${slug}`} className="inline-flex items-center justify-center gap-2">
+                  <Store className="h-4 w-4 shrink-0" />
                   Voir tous les produits de cette boutique
                 </Link>
               </Button>
@@ -270,7 +260,7 @@ export default async function ProduitPublicPage({ params }: Props) {
       </div>
 
       {/* Floating WhatsApp FAB — remonté au-dessus de la barre sticky sur mobile */}
-      {whatsappNumber && (
+      {whatsappUrl && (
         <div className="fixed bottom-24 right-6 z-50 lg:bottom-6 animate-pulse hover:animate-none">
           <a
             href={whatsappUrlFlottant}

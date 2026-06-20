@@ -14,7 +14,7 @@ export const initiatePlanSubscription = vendeurActionClient
   .schema(
     z.object({
       planId: z.string().min(1),
-      method: z.enum(["WAVE", "ORANGE_MONEY", "PAYPAL", "STRIPE"]),
+      method: z.enum(["WAVE", "ORANGE_MONEY"]),
     })
   )
   .action(async ({ parsedInput, ctx }) => {
@@ -109,7 +109,7 @@ export const getPlansAction = vendeurActionClient
 export const renewCurrentSubscription = vendeurActionClient
   .schema(
     z.object({
-      method: z.enum(["WAVE", "ORANGE_MONEY", "STRIPE"]),
+      method: z.enum(["WAVE", "ORANGE_MONEY"]),
     })
   )
   .action(async ({ parsedInput, ctx }) => {
@@ -188,51 +188,5 @@ export const renewCurrentSubscription = vendeurActionClient
       success: true,
       paymentUrl: paymentResult.paymentUrl,
       transactionRef: paymentResult.transactionRef,
-    };
-  });
-
-/**
- * Génère un lien vers le portail de facturation Stripe pour gérer son abonnement.
- */
-export const createStripePortalSession = vendeurActionClient
-  .action(async ({ ctx }) => {
-    const { vendeurId, user } = ctx;
-
-    const vendeur = await prisma.vendeur.findUnique({
-      where: { id: vendeurId },
-    });
-
-    const stripeCustomerId = vendeur?.stripeCustomerId ?? undefined;
-
-    if (!vendeur || !stripeCustomerId) {
-      throw new Error("Vous n'avez pas encore de compte client Stripe actif.");
-    }
-
-    const stripe = (await import("@/lib/stripe")).getStripe();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-    // Resolve or find the first boutique to redirect back to
-    const boutique = await prisma.boutique.findFirst({
-      where: { vendeurId }
-    });
-    const returnUrl = boutique
-      ? `${appUrl}/boutiques/${boutique.id}/facturation`
-      : `${appUrl}/boutiques`;
-
-    const session = await stripe.billingPortal.sessions.create({
-      customer: stripeCustomerId,
-      return_url: returnUrl,
-    });
-
-    await logActivity({
-      userId: user.id,
-      action: `CREATED_STRIPE_PORTAL_SESSION`,
-      subjectType: "Vendeur",
-      subjectId: vendeurId,
-    });
-
-    return {
-      success: true,
-      url: session.url,
     };
   });

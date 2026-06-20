@@ -84,10 +84,10 @@ async function DashboardContent() {
           </div>
           <div>
             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
-              {stats.totalUsers}
+              {stats.verifiedUsers} <span className="text-xl font-bold text-slate-300 dark:text-slate-600">/ {stats.totalUsers}</span>
             </h2>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-bold">
-              Comptes enregistrés
+              Vérifiés / Total enregistrés
             </p>
           </div>
         </div>

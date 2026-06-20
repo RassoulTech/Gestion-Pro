@@ -4,11 +4,11 @@ import {
   sendSubscriptionAlertToAdmin 
 } from "@/lib/mail";
 
-export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "PAYPAL" | "CASH_ON_DELIVERY" | "STRIPE";
+export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "CASH_ON_DELIVERY";
 
 export interface PaymentInitiationResult {
   success: boolean;
-  paymentUrl?: string; // Redirect URL for Wave, Orange Money, PayPal, or Stripe checkout
+  paymentUrl?: string; // Redirect URL for Wave or Orange Money mobile money checkout
   transactionRef?: string;
   error?: string;
 }
@@ -16,7 +16,7 @@ export interface PaymentInitiationResult {
 /**
  * Service centralisé pour la gestion des paiements dans GestionPro.
  * Ce module fournit la structure nécessaire pour intégrer les passerelles de paiement
- * locales (Wave, Orange Money via PayDunya) et internationales (PayPal, Stripe).
+ * locales (Wave, Orange Money via PayTech).
  */
 export class PaymentService {
   /**
@@ -71,100 +71,6 @@ export class PaymentService {
         },
       });
 
-      // ─── INTEGRATION STRIPE CHECKOUT ──────────────────────────────
-      if (method === "STRIPE") {
-        const stripeEnabled = process.env.STRIPE_ENABLED === "true";
-        const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
-        const stripeConfigured =
-          stripeEnabled &&
-          stripeSecret.length > 0 &&
-          !stripeSecret.includes("mock");
-
-        if (!stripeConfigured) {
-          return {
-            success: false,
-            error: "Le paiement par carte bancaire (Stripe) n'est pas configuré sur ce serveur.",
-          };
-        }
-
-        const stripe = (await import("@/lib/stripe")).getStripe();
-
-        // Resolve/Create Stripe Customer
-        const vendeurRow = await prisma.vendeur.findUnique({
-          where: { id: vendeurId },
-        });
-        let stripeCustomerId: string | undefined = vendeurRow?.stripeCustomerId ?? undefined;
-
-        if (!stripeCustomerId) {
-          const user = await prisma.user.findFirst({
-            where: { vendeur: { id: vendeurId } },
-          });
-
-          if (user) {
-            const customer = await stripe.customers.create({
-              email: user.email || undefined,
-              name: user.name || undefined,
-              metadata: { vendeurId },
-            });
-            stripeCustomerId = customer.id;
-            await prisma.vendeur.update({
-              where: { id: vendeurId },
-              data: { stripeCustomerId },
-            });
-          }
-        }
-
-        // Find price id based on plan or default monthly
-        const plan = abonnement.plan;
-        let priceId: string | undefined = plan.stripePriceIdMonthly ?? undefined;
-        if (!priceId) {
-          if (plan.codePlan === "PRO") {
-            priceId = process.env.STRIPE_PRICE_PRO_MONTHLY || "";
-          } else if (plan.codePlan === "ENTERPRISE") {
-            priceId = process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || "";
-          }
-        }
-
-        // Refuser tout price ID factice ou manquant — Stripe rejetterait sinon.
-        if (!priceId || priceId.includes("mock")) {
-          return {
-            success: false,
-            error:
-              "Configuration Stripe incomplète : aucun price ID valide n'est défini pour ce plan. Contactez l'administrateur.",
-          };
-        }
-
-        const session = await stripe.checkout.sessions.create({
-          customer: stripeCustomerId || undefined,
-          line_items: [{ price: priceId, quantity: 1 }],
-          mode: "subscription",
-          success_url: `${appUrl}${facturationPath}?session_id={CHECKOUT_SESSION_ID}&success=true`,
-          cancel_url: `${appUrl}${facturationPath}?success=false`,
-          subscription_data: {
-            metadata: {
-              vendeurId,
-              abonnementId: abonnement.id,
-              planId: abonnement.plan.id,
-            },
-          },
-          metadata: {
-            vendeurId,
-            abonnementId: abonnement.id,
-            planId: abonnement.plan.id,
-          },
-        });
-
-        await prisma.paiement.update({
-          where: { id: paiement.id },
-          data: { transactionRef: session.id },
-        });
-
-        return {
-          success: true,
-          paymentUrl: session.url || undefined,
-          transactionRef: session.id,
-        };
-      }
 
       // 1. SI WAVE / ORANGE MONEY (Intégration réelle PayTech si activé, sinon Mock de test) :
       if (method === "WAVE" || method === "ORANGE_MONEY") {
@@ -213,26 +119,16 @@ export class PaymentService {
                }
              }
 
-             if (data && (data.success === 1 || data.success === true)) {
-               const redirectUrl = data.redirectUrl || data.redirect_url;
-               if (redirectUrl && data.token) {
-                 await prisma.abonnement.update({
-                   where: { id: abonnementId },
-                   data: { paydunyaToken: data.token },
-                 });
-
-                 await prisma.paiement.update({
-                   where: { id: paiement.id },
-                   data: { paydunyaToken: data.token },
-                 });
-
-                 return {
-                   success: true,
-                   paymentUrl: redirectUrl,
-                   transactionRef: paiement.transactionRef || undefined,
-                 };
-               }
-             }
+              if (data && (data.success === 1 || data.success === true)) {
+                const redirectUrl = data.redirectUrl || data.redirect_url;
+                if (redirectUrl && data.token) {
+                  return {
+                    success: true,
+                    paymentUrl: redirectUrl,
+                    transactionRef: paiement.transactionRef || undefined,
+                  };
+                }
+              }
 
              console.error("PayTech subscription API failure response :", data || "No response data");
              return {
@@ -254,12 +150,7 @@ export class PaymentService {
         };
       }
 
-      if (method === "PAYPAL") {
-        return {
-          success: false,
-          error: "PayPal n'est pas encore intégré dans cette version.",
-        };
-      }
+
 
       return { success: false, error: "Méthode de paiement non supportée." };
     } catch (e) {

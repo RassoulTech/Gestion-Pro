@@ -76,7 +76,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
 
       {/* Content */}
       <div className="p-4 sm:p-5 flex flex-col flex-1 space-y-2">
-        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 min-h-[2.5rem] text-sm leading-tight">
+        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 min-h-[2.5rem] text-fluid-body leading-snug">
           {produit.nom}
         </h3>
 
@@ -86,7 +86,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
           </p>
         )}
 
-        <p className="text-base sm:text-lg font-black text-orange-600 dark:text-orange-400 tracking-tight tabular-nums pt-0.5">
+        <p className="text-fluid-body font-black text-orange-600 dark:text-orange-400 tracking-tight tabular-nums pt-0.5">
           {formatCurrency(produit.prixUnitaire)}
         </p>
 
@@ -122,13 +122,13 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
         {/* Footer actions — à 375px (2 colonnes), le bouton prend toute la
             largeur et le libellé « Voir détails » (redondant, la carte est
             cliquable) n'apparaît qu'à partir de sm. */}
-        <div className="pt-3 mt-auto flex items-center justify-between gap-2 border-t border-slate-100/60 dark:border-zinc-800/50">
+        <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-slate-100/60 dark:border-zinc-800/50">
           <span className="hidden sm:inline text-[10px] font-extrabold text-orange-500 uppercase tracking-widest">
             Voir détails
           </span>
           <Button
             size="sm"
-            className="rounded-xl px-3 h-10 sm:h-9 flex-1 sm:flex-none font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300"
+            className="w-full min-[380px]:w-auto rounded-xl px-3 h-9 font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300 flex items-center justify-center shrink-0"
             onClick={handleAddToCart}
             disabled={!enStock}
             aria-label={`Ajouter ${produit.nom} au panier`}

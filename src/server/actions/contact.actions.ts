@@ -5,10 +5,12 @@ import { headers } from "next/headers";
 import { actionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { ratelimit } from "@/lib/ratelimit";
+import { logActivity } from "@/lib/activity-log";
 import {
   sendContactNotificationEmail,
   sendContactAutoReplyEmail,
 } from "@/lib/mail";
+import { notifyAdmins } from "@/server/services/notifications";
 
 const contactSchema = z.object({
   nom: z.string().min(2, "Le nom est trop court"),
@@ -31,14 +33,23 @@ export const sendContactMessage = actionClient
 
     const { nom, email, sujet, message } = parsedInput;
 
+    await logActivity({
+      action: "CONTACT_MESSAGE_SENT",
+      changes: { email, nom, sujet },
+    });
+
     await prisma.contactMessage.create({
       data: { nom, email, sujet, message },
     });
 
-    // Notify the team and send an acknowledgement to the visitor in parallel.
-    // Email failures don't lose the message — it's already persisted in DB — but
-    // we surface them so the visitor doesn't think a successful email went out
-    // when the SMTP credentials are actually broken / revoked / missing.
+    // Envoyer une notification interne aux admins
+    await notifyAdmins({
+      type: "MESSAGE_CONTACT",
+      title: "Nouveau message de contact",
+      message: `${nom} : ${sujet}`,
+      link: "/admin/dashboard",
+    });
+
     const [adminMail, autoReplyMail] = await Promise.all([
       sendContactNotificationEmail({ nom, email, sujet, message }),
       sendContactAutoReplyEmail({ nom, email, sujet, message }),
@@ -52,17 +63,30 @@ export const sendContactMessage = actionClient
         "| autoReply:",
         autoReplyMail.error
       );
-      return {
-        success:
-          "Votre message est bien enregistré côté serveur, mais notre passerelle email est temporairement indisponible. Nous vous recontacterons dès que possible.",
-        emailFailed: true as const,
-      };
+      await logActivity({
+        action: "CONTACT_ADMIN_EMAIL_FAILED",
+        changes: { email, error: adminMail.error },
+      });
+      await logActivity({
+        action: "CONTACT_AUTOREPLY_EMAIL_FAILED",
+        changes: { email, error: autoReplyMail.error },
+      });
+      throw new Error("L'envoi des e-mails a échoué. Notre service de messagerie est temporairement indisponible.");
     }
+
     if (!adminMail.sent) {
       console.warn("[contact] admin notification failed:", adminMail.error);
+      await logActivity({
+        action: "CONTACT_ADMIN_EMAIL_FAILED",
+        changes: { email, error: adminMail.error },
+      });
     }
     if (!autoReplyMail.sent) {
       console.warn("[contact] visitor auto-reply failed:", autoReplyMail.error);
+      await logActivity({
+        action: "CONTACT_AUTOREPLY_EMAIL_FAILED",
+        changes: { email, error: autoReplyMail.error },
+      });
     }
 
     return {

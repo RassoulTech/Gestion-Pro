@@ -72,7 +72,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
       </div>
 
       <div className="p-5 flex flex-col flex-1 space-y-2">
-        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors truncate text-sm">
+        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 text-fluid-body leading-snug min-h-[2.5rem] flex items-center">
           {produit.nom}
         </h3>
         
@@ -88,14 +88,14 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
           </p>
         )}
 
-        <div className="pt-3 mt-auto flex items-center justify-between gap-2 border-t border-slate-100/50 dark:border-zinc-800/50">
-          <p className="text-base font-black text-orange-600 dark:text-orange-400 tracking-tight">
+        <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-slate-100/50 dark:border-zinc-800/50">
+          <p className="text-fluid-body font-black text-orange-600 dark:text-orange-400 tracking-tight whitespace-nowrap">
             {formatCurrency(produit.prixUnitaire)}
           </p>
           
           <Button
             size="sm"
-            className="rounded-xl px-3 h-9 font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300"
+            className="w-full min-[380px]:w-auto rounded-xl px-3 h-9 font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300 flex items-center justify-center shrink-0"
             onClick={handleAddToCart}
             disabled={produit.quantite <= 0}
           >

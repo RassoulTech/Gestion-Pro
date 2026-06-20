@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import { WhatsAppIcon, XIcon, GitHubIcon } from "@/components/icons/brand-icons";
 import { FloatingNavbar } from "@/components/marketing/floating-navbar";
 import { BrandLogo } from "@/components/brand-logo";
+import { getAdminWhatsAppLink } from "@/lib/whatsapp";
 
 const footerColumns: Array<{
   title: string;
@@ -46,18 +47,17 @@ const footerColumns: Array<{
   },
 ];
 
-const socials: Array<{ href: string; label: string; icon: React.ComponentType<React.ComponentProps<"svg">> }> = [
-  { href: "https://wa.me/221773831364", label: "WhatsApp", icon: WhatsAppIcon },
-  { href: "mailto:contact@gestionpro.app", label: "Email", icon: Mail as never },
-  { href: "https://x.com", label: "X", icon: XIcon },
-  { href: "https://github.com", label: "GitHub", icon: GitHubIcon },
-];
-
 export default function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const socials: Array<{ href: string; label: string; icon: React.ComponentType<React.ComponentProps<"svg">> }> = [
+    { href: getAdminWhatsAppLink(), label: "WhatsApp", icon: WhatsAppIcon },
+    { href: "mailto:contact@gestionpro.app", label: "Email", icon: Mail as never },
+    { href: "https://x.com", label: "X", icon: XIcon },
+    { href: "https://github.com", label: "GitHub", icon: GitHubIcon },
+  ];
   return (
     <div className="flex min-h-screen flex-col relative">
       {/* Global Background Pattern */}

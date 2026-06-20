@@ -37,6 +37,8 @@ import { AiInsightsCard } from "./_components/ai-insights-card";
 import { parseDateFilter } from "@/lib/date-filters";
 import { PeriodQuickFilter } from "@/components/dashboard/period-quick-filter";
 import { Fab } from "@/components/ui/fab";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { env } from "@/env.mjs";
 
 interface BoutiquePageProps {
   params: Promise<{ id: string }>;
@@ -377,9 +379,10 @@ export default async function BoutiqueDashboardPage({
         {isEnterprise && (
           <div className="relative z-10 mt-5 border-t border-border/60 pt-4">
             <a
-              href={`https://wa.me/221773831364?text=${encodeURIComponent(
+              href={buildWhatsAppLink(
+                env.NEXT_PUBLIC_WHATSAPP_ADMIN_NUMBER || "221773831364",
                 `Bonjour Rassoul, je suis le gérant de la boutique ${boutique.nom}. J'ai besoin d'une assistance prioritaire concernant mon compte Enterprise.`
-              )}`}
+              ) ?? "#"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-xs font-black text-white shadow-md shadow-amber-500/20 transition-transform hover:scale-[1.02] active:scale-[0.98]"

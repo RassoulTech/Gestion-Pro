@@ -11,30 +11,85 @@ import { createVendeurProfileSchema } from "@/schemas/vendeur.schema";
 
 import { z } from "zod";
 import { generateVerificationToken, generatePasswordResetToken, hashToken } from "@/lib/tokens";
-import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/mail";
+import { sendVerificationEmail, sendPasswordResetEmail, sendAlreadyRegisteredEmail } from "@/lib/mail";
 import { DUMMY_PASSWORD_HASH } from "@/lib/password";
+import { notifyAdmins } from "@/server/services/notifications";
 
 export const registerUser = actionClient
   .schema(registerSchema)
   .action(async ({ parsedInput }) => {
     const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
-    const { success } = await authRatelimit.limit(ip);
+    const { success: rateLimitSuccess } = await authRatelimit.limit(ip);
 
-    if (!success) {
+    if (!rateLimitSuccess) {
       throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
     }
 
     const { name, email, password } = parsedInput;
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      throw new Error("Un compte avec cet email existe déjà.");
-    }
+    await logActivity({
+      action: "SIGNUP_REQUESTED",
+      changes: { email, name },
+    });
 
+    const existing = await prisma.user.findUnique({ where: { email } });
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // ⚠️ SECURITY: emailVerified is null initially
-    await prisma.user.create({
+    if (existing) {
+      if (existing.emailVerified) {
+        // Envoi asynchrone (best-effort) de l'email informant que le compte existe déjà
+        await sendAlreadyRegisteredEmail(email).catch(console.error);
+        await logActivity({
+          action: "SIGNUP_ALREADY_REGISTERED",
+          changes: { email },
+        });
+        // Success fictif anti-énumération
+        return {
+          success: "Compte créé ! Email de vérification envoyé.",
+        };
+      } else {
+        // Le compte existe mais n'est pas vérifié. On met à jour ses infos de connexion
+        // et on renvoie le lien de vérification.
+        await prisma.user.update({
+          where: { id: existing.id },
+          data: {
+            name,
+            password: hashedPassword,
+          },
+        });
+
+        const verificationToken = await generateVerificationToken(email);
+        const mail = await sendVerificationEmail(
+          verificationToken.identifier,
+          verificationToken.token
+        );
+
+        if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+          console.error("[register] verification email failed for unverified existing user:", mail.error);
+          await logActivity({
+            action: "VERIFICATION_EMAIL_FAILED",
+            changes: { email, error: mail.error },
+          });
+          throw new Error("L'envoi de l'e-mail de vérification a échoué. Veuillez réessayer.");
+        }
+
+        await logActivity({
+          action: "VERIFICATION_EMAIL_SENT",
+          changes: { email },
+        });
+
+        return {
+          success: mail.sent
+            ? "Compte créé ! Email de vérification envoyé."
+            : "Compte créé. Email de vérification disponible via le lien de dev ci-dessous.",
+          devLink: mail.devLink,
+          emailFailed: !mail.sent && !mail.devLink,
+        };
+      }
+    }
+
+    // Inscription d'un nouvel utilisateur
+    const user = await prisma.user.create({
       data: {
         name,
         email,
@@ -43,27 +98,46 @@ export const registerUser = actionClient
       },
     });
 
-    const verificationToken = await generateVerificationToken(email);
-    const mail = await sendVerificationEmail(
-      verificationToken.identifier,
-      verificationToken.token
-    );
+    try {
+      const verificationToken = await generateVerificationToken(email);
+      const mail = await sendVerificationEmail(
+        verificationToken.identifier,
+        verificationToken.token
+      );
 
-    if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
-      console.error("[register] verification email failed:", mail.error);
+      if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+        throw new Error(mail.error || "Impossible d'envoyer l'e-mail de vérification.");
+      }
+
+      await logActivity({
+        action: "VERIFICATION_EMAIL_SENT",
+        changes: { email },
+      });
+
+      await notifyAdmins({
+        type: "NOUVEL_UTILISATEUR",
+        title: "Nouvelle inscription",
+        message: `${name} (${email}) a créé un compte`,
+        link: "/admin/utilisateurs",
+      });
+
       return {
-        success: "Votre compte est créé, mais l'envoi de l'email a échoué.",
-        emailFailed: true,
+        success: mail.sent
+          ? "Compte créé ! Email de vérification envoyé."
+          : "Compte créé. Email de vérification disponible via le lien de dev ci-dessous.",
+        devLink: mail.devLink,
+        emailFailed: !mail.sent && !mail.devLink,
       };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("[register] failed to generate/send token, rolling back user creation:", msg);
+      await prisma.user.delete({ where: { id: user.id } }).catch(console.error);
+      await logActivity({
+        action: "VERIFICATION_EMAIL_FAILED",
+        changes: { email, error: msg },
+      });
+      throw new Error("L'envoi de l'e-mail de vérification a échoué. Veuillez réessayer.");
     }
-
-    return {
-      success: mail.sent
-        ? "Compte créé ! Email de vérification envoyé."
-        : "Compte créé. Email de vérification disponible via le lien de dev ci-dessous.",
-      devLink: mail.devLink,
-      emailFailed: !mail.sent && !mail.devLink,
-    };
   });
 
 export const resendVerificationEmail = actionClient
@@ -97,11 +171,17 @@ export const resendVerificationEmail = actionClient
 
     if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
       console.error("[resend] verification email failed:", mail.error);
-      return {
-        success: "Le serveur d'email est indisponible. Veuillez réessayer plus tard.",
-        emailFailed: true,
-      };
+      await logActivity({
+        action: "VERIFICATION_EMAIL_FAILED",
+        changes: { email, error: mail.error },
+      });
+      throw new Error("Le serveur d'email est indisponible. Veuillez réessayer plus tard.");
     }
+
+    await logActivity({
+      action: "VERIFICATION_EMAIL_SENT",
+      changes: { email },
+    });
 
     return {
       success: "Si un compte non vérifié existe avec cet email, un nouveau lien vient d'être envoyé.",
@@ -232,6 +312,11 @@ export const verifyEmail = actionClient
   .action(async ({ parsedInput }) => {
     const { token } = parsedInput;
 
+    await logActivity({
+      action: "VERIFICATION_LINK_CLICKED",
+      changes: { token: hashToken(token) },
+    });
+
     const existingToken = await prisma.verificationToken.findFirst({
       where: { token: hashToken(token) },
     });
@@ -270,6 +355,12 @@ export const verifyEmail = actionClient
       },
     });
 
+    await logActivity({
+      userId: existingUser.id,
+      action: "ACCOUNT_ACTIVATED",
+      changes: { email: existingUser.email },
+    });
+
     return { success: "Email vérifié avec succès !" };
   });
 
@@ -288,6 +379,11 @@ export const forgotPassword = actionClient
       throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
     }
 
+    await logActivity({
+      action: "PASSWORD_RESET_REQUESTED",
+      changes: { email },
+    });
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -302,6 +398,23 @@ export const forgotPassword = actionClient
       passwordResetToken.identifier,
       passwordResetToken.token
     );
+
+    if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+      console.error("[forgot-password] reset email failed:", mail.error);
+      await logActivity({
+        action: "PASSWORD_RESET_EMAIL_FAILED",
+        changes: { email, error: mail.error },
+      });
+      return {
+        success: "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.",
+        emailFailed: true,
+      };
+    }
+
+    await logActivity({
+      action: "PASSWORD_RESET_EMAIL_SENT",
+      changes: { email },
+    });
 
     return {
       success: "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.",
@@ -349,6 +462,12 @@ export const resetPassword = actionClient
           token: existingToken.token,
         },
       },
+    });
+
+    await logActivity({
+      userId: existingUser.id,
+      action: "PASSWORD_RESET_COMPLETED",
+      changes: { email: existingUser.email },
     });
 
     return { success: "Mot de passe réinitialisé avec succès !" };

@@ -18,6 +18,8 @@ import QRCode from "qrcode";
 import { toast } from "sonner";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { BrandLogo } from "@/components/brand-logo";
+import { getAdminWhatsAppLink } from "@/lib/whatsapp";
+import { env } from "@/env.mjs";
 
 export default function FlyerPage() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://mongestionpro.com";
@@ -305,7 +307,7 @@ export default function FlyerPage() {
                   {/* Left Side: WhatsApp & E-mail with neutral Mail icon */}
                   <div className="xs:col-span-7 space-y-3 text-xs font-bold text-left">
                     <a 
-                      href="https://wa.me/221773831364" 
+                      href={getAdminWhatsAppLink()} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="flex items-center gap-2.5 hover:text-orange-600 transition-colors"
@@ -313,7 +315,9 @@ export default function FlyerPage() {
                       <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-sm">
                         <WhatsAppIcon className="h-4 w-4" />
                       </span>
-                      <span className="tracking-wide text-zinc-800">+221 77 383 13 64</span>
+                      <span className="tracking-wide text-zinc-800">
+                        {env.NEXT_PUBLIC_WHATSAPP_ADMIN_NUMBER ? `+${env.NEXT_PUBLIC_WHATSAPP_ADMIN_NUMBER}` : "+221 77 383 13 64"}
+                      </span>
                     </a>
 
                     <a 

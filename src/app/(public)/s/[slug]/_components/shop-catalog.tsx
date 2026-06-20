@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
+import { getShopWhatsAppLink } from "@/lib/whatsapp";
 
 const PAGE_SIZE = 12;
 
@@ -72,10 +73,7 @@ export function ShopCatalog({
     setPage(1);
   }
 
-  const waNumber = (whatsapp || telephone || "").replace(/[^0-9]/g, "");
-  const waUrl = waNumber
-    ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`Bonjour ${boutiqueNom}, je suis intéressé(e) par vos produits.`)}`
-    : null;
+  const waUrl = getShopWhatsAppLink(whatsapp || telephone, boutiqueNom);
 
   return (
     <div className="space-y-6">
@@ -114,7 +112,7 @@ export function ShopCatalog({
           <p className="text-xs text-slate-500 dark:text-zinc-400">Essayez une autre recherche ou catégorie.</p>
         </div>
       ) : (
-        <div className="grid gap-3 sm:gap-6 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 min-[370px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {pageItems.map((p) => (
             <ProductCard
               key={p.id}

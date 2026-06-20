@@ -9,6 +9,7 @@ export async function getAdminStats() {
   noStore();
   const [
     totalUsers,
+    verifiedUsers,
     totalVendeurs,
     totalVendeursActifs,
     totalBoutiques,
@@ -23,6 +24,7 @@ export async function getAdminStats() {
     logsRecents,
   ] = await Promise.all([
     prisma.user.count(),
+    prisma.user.count({ where: { emailVerified: { not: null } } }),
     prisma.vendeur.count(),
     prisma.vendeur.count({ where: { statut: "ACTIF" } }),
     prisma.boutique.count(),
@@ -69,6 +71,7 @@ export async function getAdminStats() {
 
   return {
     totalUsers,
+    verifiedUsers,
     totalVendeurs,
     totalVendeursActifs,
     totalBoutiques,
@@ -163,6 +166,7 @@ export async function getAllUsersWithoutShop(params?: {
         email: true,
         role: true,
         createdAt: true,
+        emailVerified: true,
         vendeur: {
           select: {
             id: true,
