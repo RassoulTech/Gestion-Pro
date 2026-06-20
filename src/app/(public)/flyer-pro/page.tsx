@@ -75,7 +75,7 @@ export default function FlyerProPage() {
   const benefits = [
     "Suivez vos ventes et bénéfices en temps réel",
     "Maîtrisez stocks, marges et dépenses",
-    "Fonctionne même sans connexion internet",
+    "Facturation express et reçus WhatsApp",
   ];
 
   const features = [
