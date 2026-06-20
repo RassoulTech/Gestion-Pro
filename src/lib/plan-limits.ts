@@ -55,7 +55,6 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
       { text: "Support prioritaire", included: false },
       { text: "Produits illimités", included: false },
       { text: "Membres illimités", included: false },
-      { text: "Assistant IA illimité", included: false },
     ],
   },
   PRO: {
@@ -80,7 +79,6 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
       { text: "Boutiques illimitées", included: false },
       { text: "Produits illimités", included: false },
       { text: "Membres illimités", included: false },
-      { text: "Assistant IA illimité", included: false },
     ],
   },
   ENTERPRISE: {
@@ -97,7 +95,6 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
       { text: "Produits illimités", included: true },
       { text: "Toutes les fonctionnalités du plan Pro", included: true },
       { text: "Membres ou équipe illimités", included: true },
-      { text: "Assistant IA illimité", included: true },
       { text: "Rapports & Analyses consolidés", included: true },
       { text: "Export complet PDF / Excel", included: true },
       { text: "Marketplace optimisée", included: true },
