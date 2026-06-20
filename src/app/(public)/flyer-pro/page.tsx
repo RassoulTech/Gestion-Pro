@@ -10,7 +10,7 @@ import {
   Receipt,
   TrendingUp,
   Users,
-  WifiOff,
+  Zap,
   Check,
   Globe,
   Mail,
@@ -208,15 +208,15 @@ export default function FlyerProPage() {
               ))}
             </ul>
 
-            {/* Offline highlight */}
+            {/* Realtime sync highlight */}
             <div className="inline-flex items-center gap-3 rounded-2xl border border-zinc-100 bg-zinc-50 px-4 py-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 text-orange-600 border border-orange-100">
-                <WifiOff className="h-4 w-4" strokeWidth={2.5} />
+                <Zap className="h-4 w-4" strokeWidth={2.5} />
               </span>
               <div className="leading-tight">
-                <p className="text-xs font-black text-zinc-900">Mode hors-ligne natif</p>
+                <p className="text-xs font-black text-zinc-900">Synchronisation temps réel</p>
                 <p className="text-[10px] font-semibold text-zinc-500">
-                  Vos données se synchronisent au retour du réseau
+                  Données de stock et ventes instantanément à jour
                 </p>
               </div>
             </div>

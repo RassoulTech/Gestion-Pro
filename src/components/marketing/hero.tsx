@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles, WifiOff, Zap, Store } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Store } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
  
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -117,7 +117,6 @@ export function Hero() {
             className="mt-12 flex flex-wrap items-center justify-center gap-2.5"
           >
             {[
-              { icon: WifiOff, label: "Fonctionne hors-ligne" },
               { icon: Zap, label: "Synchronisation temps réel" },
               { icon: Store, label: "Multi-boutiques" },
               { icon: WhatsAppIcon, label: "Reçus par WhatsApp" },

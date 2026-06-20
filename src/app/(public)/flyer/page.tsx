@@ -150,7 +150,7 @@ export default function FlyerPage() {
             <ul className="space-y-3 pt-2">
               {[
                 "Multi-boutique : Pilotez tous vos points de vente en un seul endroit.",
-                "Mode hors-ligne : Continuez à enregistrer des ventes même sans connexion internet.",
+                "Facturation Express : Enregistrez vos ventes et encaissez vos clients en un clin d'œil.",
                 "Zéro configuration complexe : Installez et commencez à facturer en 2 minutes.",
                 "Marketplace intégrée : Augmentez votre visibilité et vendez vos articles en ligne."
               ].map((text, idx) => (

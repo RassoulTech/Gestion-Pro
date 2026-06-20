@@ -29,7 +29,7 @@ const faqs: QA[] = [
   {
     question: "GestionPro fonctionne-t-il avec une connexion lente ?",
     answer:
-      "Oui. L'application est optimisée pour les réseaux 3G/4G instables : envoi différé des actions, cache local, et POS qui reste fonctionnel quelques minutes hors-ligne. Vos données se synchronisent dès que la connexion revient.",
+      "Oui. L'application est optimisée pour les réseaux 3G/4G instables grâce à un chargement fluide des données et une compression des échanges réseau. Vos données restent sécurisées et accessibles.",
   },
   {
     question: "Puis-je l'utiliser sur mon téléphone ?",

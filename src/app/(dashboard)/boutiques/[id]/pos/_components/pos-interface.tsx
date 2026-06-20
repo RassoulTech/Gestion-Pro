@@ -13,6 +13,8 @@ import {
   Package,
   CloudOff,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/brand-icons";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 import { createCommandeClient } from "@/server/actions/commande.actions";
 import { formatCurrency, generateCode } from "@/lib/utils";
@@ -36,6 +38,37 @@ import {
 } from "@/components/ui/dialog";
 import { TicketImprimable, type TicketProps } from "@/components/pos/ticket-imprimable";
 import { useReactToPrint } from "react-to-print";
+
+// ─── TYPES ────────────────────────────────────────────────────
+
+function getWhatsAppReceiptLink(phone: string, ticket: TicketProps) {
+  const linesText = ticket.lignes
+    .map((l) => `- ${l.quantite}x ${l.nom} : ${formatCurrency(l.quantite * l.prixUnitaire)}`)
+    .join("\n");
+  
+  const dateStr = new Date(ticket.date).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const timeStr = new Date(ticket.date).toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const message = `🧾 *REÇU DE CAISSE — ${ticket.boutique.nom.toUpperCase()}*\n\n` +
+    `*Code Commande* : ${ticket.commandeCode}\n` +
+    `*Date* : ${dateStr} à ${timeStr}\n` +
+    `*Caissier* : ${ticket.vendeurNom}\n` +
+    `---------------------------------\n` +
+    `*Articles* :\n${linesText}\n` +
+    `---------------------------------\n` +
+    (ticket.remise > 0 ? `*Remise* : -${formatCurrency(ticket.remise)}\n` : "") +
+    `*TOTAL À PAYER* : *${formatCurrency(ticket.total)}*\n\n` +
+    `Merci de votre visite et de votre confiance ! 🙏`;
+
+  return buildWhatsAppLink(phone, message);
+}
 
 // ─── TYPES ────────────────────────────────────────────────────
 
@@ -84,6 +117,7 @@ export default function PosInterface({
   const [loading, setLoading] = useState(false);
   // Ventes hors-ligne en attente de synchronisation.
   const [pendingCount, setPendingCount] = useState(0);
+  const [clientPhone, setClientPhone] = useState("");
 
   // ─── ETAT IMPRESSION ─────────────────────────────────────────
   const [ticketData, setTicketData] = useState<TicketProps | null>(null);
@@ -158,6 +192,7 @@ export default function PosInterface({
     setNotes("");
     setShowTicketModal(false);
     setTicketData(null);
+    setClientPhone("");
   };
 
   // ─── VALIDATION COMMANDE ────────────────────────────────────
@@ -225,16 +260,16 @@ export default function PosInterface({
       vendeurNom,
     };
 
-    // Hors-ligne : on enregistre localement et on imprime quand même le ticket.
+    // Connexion perdue : on enregistre localement et on imprime quand même le ticket.
     if (typeof navigator !== "undefined" && !navigator.onLine) {
       try {
         await enqueueSale({ code, boutiqueId: boutique.id, data, createdAt: Date.now() });
         setPendingCount((n) => n + 1);
-        toast.success("Hors-ligne : vente enregistrée localement, synchronisation automatique au retour du réseau.");
+        toast.success("Connexion perdue : vente enregistrée localement, elle sera synchronisée dès le retour du réseau.");
         setTicketData(ticket);
         setShowTicketModal(true);
       } catch {
-        toast.error("Stockage hors-ligne indisponible. Vérifiez votre connexion.");
+        toast.error("Stockage local temporaire indisponible. Vérifiez votre connexion.");
       }
       return;
     }
@@ -451,17 +486,51 @@ export default function PosInterface({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex justify-center bg-zinc-50 p-4 rounded-xl border border-zinc-100 max-h-[50vh] overflow-y-auto">
+          <div className="flex justify-center bg-zinc-50 p-4 rounded-xl border border-zinc-100 max-h-[40vh] overflow-y-auto">
             {ticketData && (
               <TicketImprimable ref={printRef} {...ticketData} />
             )}
           </div>
 
+          {/* Partage de reçu par WhatsApp */}
+          <div className="space-y-2 pt-3 border-t border-zinc-150 dark:border-zinc-800">
+            <Label className="text-[11px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Partager le reçu par WhatsApp (optionnel)</Label>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Numéro WhatsApp du client (ex: 771234567)"
+                value={clientPhone}
+                onChange={(e) => setClientPhone(e.target.value)}
+                className="h-10 rounded-xl font-bold"
+              />
+              <Button
+                variant="outline"
+                className="h-10 px-4 rounded-xl border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/5 shrink-0 font-bold"
+                onClick={() => {
+                  if (!clientPhone.trim()) {
+                    toast.error("Veuillez saisir le numéro de téléphone du client.");
+                    return;
+                  }
+                  if (ticketData) {
+                    const url = getWhatsAppReceiptLink(clientPhone, ticketData);
+                    if (url) {
+                      window.open(url, "_blank", "noopener,noreferrer");
+                    } else {
+                      toast.error("Numéro de téléphone invalide.");
+                    }
+                  }
+                }}
+              >
+                <WhatsAppIcon className="h-4 w-4 mr-1.5 text-emerald-600" />
+                Partager
+              </Button>
+            </div>
+          </div>
+
           <div className="flex gap-3 mt-4">
-            <Button variant="outline" className="flex-1" onClick={resetPos}>
+            <Button variant="outline" className="flex-1 rounded-xl font-bold" onClick={resetPos}>
               Nouvelle vente
             </Button>
-            <Button variant="brand" className="flex-1" onClick={() => handlePrint()}>
+            <Button variant="brand" className="flex-1 rounded-xl font-black" onClick={() => handlePrint()}>
               <Printer className="mr-2 h-4 w-4" /> Imprimer Ticket
             </Button>
           </div>

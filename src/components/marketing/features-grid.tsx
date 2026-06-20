@@ -1,4 +1,4 @@
-﻿ 
+ 
 "use client";
 
 import {
@@ -38,7 +38,7 @@ export function FeaturesGrid() {
           className="md:col-span-4 md:row-span-1"
           icon={<Zap className="w-6 h-6 text-orange-600 dark:text-orange-400" />}
           title="POS Caisses Ultra-Rapide"
-          description="Enregistrez vos ventes en un éclair. Synchronisation instantanée avec votre stock et votre comptabilité, même hors-ligne."
+          description="Enregistrez vos ventes en un éclair. Synchronisation instantanée avec votre stock et votre comptabilité."
           visual={<POSVisual />}
           accentColor="rgba(37, 99, 235, 0.15)"
         />
