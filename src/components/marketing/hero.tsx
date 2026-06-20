@@ -1,135 +1,252 @@
- 
 "use client";
 
 import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Sparkles, Zap, Store } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
- 
-import { motion, useScroll, useTransform } from "framer-motion";
+
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
- 
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const WORDS = [
+  "Gérez votre commerce.",
+  "Développez votre activité.",
+  "Automatisez vos ventes.",
+  "Pilotez votre stock.",
+  "Centralisez vos boutiques.",
+  "Faites grandir votre entreprise.",
+];
 
 export function Hero() {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  
+  const [wordIdx, setWordIdx] = React.useState(0);
+
+  // Cycle through phrases
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIdx((prev) => (prev + 1) % WORDS.length);
+    }, 3800);
+    return () => clearInterval(interval);
+  }, []);
+
   // Parallax effects
-  const y1 = useTransform(scrollY, [0, 500], [0, -100]);
-  const y2 = useTransform(scrollY, [0, 500], [0, -50]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
- 
-  const scale = useTransform(scrollY, [0, 300], [1, 0.95]);
+  const y1 = useTransform(scrollY, [0, 500], [0, -80]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -40]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative isolate min-h-[90vh] flex flex-col items-center justify-center pt-32 pb-20 overflow-hidden"
+    <section
+      ref={containerRef}
+      className="relative isolate min-h-[95vh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden bg-background"
     >
-      {/* Dynamic Background Elements */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <motion.div 
+      {/* ─── Premium Background Elements ─── */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none">
+        {/* Subtle grid with radial mask */}
+        <svg
+          className="absolute inset-0 w-full h-full stroke-zinc-200/40 dark:stroke-zinc-800/30 [mask-image:radial-gradient(80%_80%_at_50%_40%,white,transparent)]"
+          aria-hidden="true"
+        >
+          <defs>
+            <pattern
+              id="hero-grid"
+              width="50"
+              height="50"
+              patternUnits="userSpaceOnUse"
+              x="50%"
+            >
+              <path d="M.5 50V.5H50" fill="none" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hero-grid)" />
+        </svg>
+
+        {/* Ambient Blur Blobs with Slow Random Motion */}
+        <motion.div
           style={{ y: y1, opacity }}
-          className="absolute left-1/2 top-0 -translate-x-1/2 w-[1000px] h-[600px] bg-brand/10 blur-[120px] rounded-full dark:bg-brand/5" 
+          animate={{
+            x: [0, 30, -30, 0],
+            y: [0, -40, 20, 0],
+            scale: [1, 1.05, 0.95, 1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute left-1/2 top-[-10%] -translate-x-1/2 w-[600px] sm:w-[800px] h-[500px] bg-brand/10 dark:bg-brand/5 blur-[120px] rounded-full"
         />
-        <motion.div 
+        
+        <motion.div
           style={{ y: y2, opacity }}
-          className="absolute right-0 top-1/4 w-[400px] h-[400px] bg-info/10 blur-[100px] rounded-full dark:bg-info/5" 
+          animate={{
+            x: [0, -40, 40, 0],
+            y: [0, 30, -30, 0],
+            scale: [1, 0.95, 1.05, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute right-[5%] top-[20%] w-[300px] sm:w-[500px] h-[400px] bg-blue-500/10 dark:bg-blue-500/5 blur-[110px] rounded-full"
+        />
+
+        {/* Subtly superimpose base64 SVG grain noise */}
+        <div
+          className="absolute inset-0 opacity-[0.012] dark:opacity-[0.022] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
         />
       </div>
 
-      <div className="container-app relative z-10">
-        <div className="mx-auto max-w-5xl text-center">
-          {/* Eyebrow */}
+      {/* ─── Hero Content ─── */}
+      <div className="container-app relative z-10 w-full">
+        <div className="mx-auto max-w-5xl text-center flex flex-col items-center">
+          {/* Eyebrow Banner */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: EASE }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-5 py-2 text-xs font-bold text-brand backdrop-blur-md uppercase tracking-wider shadow-sm"
+            className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 dark:border-brand/10 dark:bg-brand/5 px-4 py-1.5 text-xs font-semibold text-brand backdrop-blur-md shadow-xs transition-all hover:border-brand/35 cursor-default group"
           >
-            <Sparkles className="h-4 w-4 animate-pulse" />
-            <span>L&apos;EXCELLENCE COMMERCIALE SANS COMPROMIS</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-zinc-500 dark:text-zinc-400 font-medium">Nouveau :</span>
+            <span className="font-semibold text-brand">🇸🇳 Conçu pour les entreprises d&apos;Afrique</span>
+            <ArrowRight className="h-3 w-3 text-brand/70 group-hover:translate-x-0.5 transition-transform" />
           </motion.div>
 
-          {/* Headline */}
-          <h1 className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-foreground font-extrabold leading-[1.05] select-none">
+          {/* Headline with animated rotation & reveal */}
+          <h1 className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl tracking-tight text-foreground font-black leading-[1.05] select-none text-center">
             <span className="block overflow-hidden pb-1">
               <motion.span
-                initial={{ opacity: 0, y: "100%" }}
+                initial={{ opacity: 0, y: "80%" }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: EASE, delay: 0.1 }}
-                className="block"
+                className="block text-zinc-950 dark:text-white"
               >
                 L&apos;intelligence commerciale
               </motion.span>
             </span>
-            <span className="block overflow-hidden py-1">
-              <motion.span
-                initial={{ opacity: 0, y: "100%" }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: EASE, delay: 0.25 }}
-                className="block text-shimmer"
-              >
-                redéfinie pour l&apos;Afrique.
-              </motion.span>
+            <span className="block min-h-[1.25em] py-1 overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={wordIdx}
+                  initial={{ opacity: 0, y: 35 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -35 }}
+                  transition={{ duration: 0.55, ease: EASE }}
+                  className="block text-shimmer bg-clip-text text-transparent"
+                >
+                  {WORDS[wordIdx]}
+                </motion.span>
+              </AnimatePresence>
             </span>
           </h1>
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
-            className="mx-auto mt-8 max-w-3xl text-lg md:text-xl text-muted-foreground/90 leading-relaxed font-normal"
-          >
-            GestionPro unifie la gestion de stock en temps réel, la facturation certifiée, le suivi financier de pointe et la synchronisation multi-boutiques. 
-            Une plateforme ultra-rapide, moderne et sécurisée, conçue pour propulser l&apos;élite des entrepreneurs.
-          </motion.p>
-
-          {/* Actions */}
-          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.55 }}
-            className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"
+            transition={{ duration: 0.9, ease: EASE, delay: 0.35 }}
+            className="mx-auto mt-8 max-w-3xl text-base sm:text-lg md:text-xl text-muted-foreground/90 leading-relaxed font-medium"
           >
-            <Button asChild size="xl" variant="brand" className="group relative overflow-hidden px-8 h-14 text-lg">
+            GestionPro unifie la gestion de stock en temps réel, la facturation intelligente, le suivi financier et le pilotage multi-boutiques. Une plateforme moderne, ultra-rapide et sécurisée pour propulser votre entreprise.
+          </motion.p>
+
+          {/* Call to Actions with glow effects */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
+            className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
+          >
+            <Button
+              asChild
+              size="xl"
+              variant="brand"
+              className="group relative overflow-hidden px-8 h-14 text-lg rounded-2xl w-full sm:w-auto shadow-[0_0_20px_rgba(234,88,12,0.12)] hover:shadow-[0_0_35px_rgba(234,88,12,0.35)] transition-all duration-300 active:scale-[0.98] active-press cursor-pointer"
+            >
               <Link href="/register">
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2 font-black">
                   Démarrer gratuitement
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </span>
                 <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity animate-shimmer-bg" />
               </Link>
             </Button>
-            <Button asChild size="xl" variant="outline" className="px-8 h-14 text-lg glass">
+            
+            <Button
+              asChild
+              size="xl"
+              variant="outline"
+              className="px-8 h-14 text-lg rounded-2xl w-full sm:w-auto glass hover:bg-zinc-100 dark:hover:bg-zinc-900/50 hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] transition-all duration-300 active:scale-[0.98] active-press cursor-pointer font-bold"
+            >
               <Link href="/marketplace">Voir la démo</Link>
             </Button>
           </motion.div>
 
-          {/* Trust strip — signaux concrets (sans chiffres inventés) */}
-          <motion.ul
+          {/* Premium Trust Cards Grid */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.7 }}
-            className="mt-12 flex flex-wrap items-center justify-center gap-2.5"
+            transition={{ duration: 0.8, ease: EASE, delay: 0.65 }}
+            className="mt-24 w-full max-w-4xl"
           >
-            {[
-              { icon: Zap, label: "Synchronisation temps réel" },
-              { icon: Store, label: "Multi-boutiques" },
-              { icon: WhatsAppIcon, label: "Reçus par WhatsApp" },
-            ].map(({ icon: Icon, label }) => (
-              <li
-                key={label}
-                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/40 px-4 py-2 text-xs font-bold text-muted-foreground backdrop-blur-md shadow-sm transition-colors hover:text-foreground hover:border-brand/30"
-              >
-                <Icon className="h-4 w-4 text-brand" />
-                {label}
-              </li>
-            ))}
-          </motion.ul>
+            <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-6 text-center">
+              Plateforme commerciale de confiance
+            </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 text-left">
+              {[
+                {
+                  icon: Zap,
+                  label: "Synchronisation temps réel",
+                  desc: "Mises à jour instantanées de vos stocks, commandes et flux financiers.",
+                  color: "group-hover:text-amber-500",
+                  bg: "group-hover:bg-amber-500/5",
+                  border: "group-hover:border-amber-500/20",
+                },
+                {
+                  icon: Store,
+                  label: "Multi-boutiques",
+                  desc: "Pilotez et centralisez plusieurs points de vente depuis une seule interface.",
+                  color: "group-hover:text-blue-500",
+                  bg: "group-hover:bg-blue-500/5",
+                  border: "group-hover:border-blue-500/20",
+                },
+                {
+                  icon: WhatsAppIcon,
+                  label: "Reçus par WhatsApp",
+                  desc: "Générez et envoyez instantanément des reçus de caisse certifiés à vos clients.",
+                  color: "group-hover:text-emerald-500",
+                  bg: "group-hover:bg-emerald-500/5",
+                  border: "group-hover:border-emerald-500/20",
+                },
+              ].map(({ icon: Icon, label, desc, color, bg, border }) => (
+                <div
+                  key={label}
+                  className="group flex flex-col p-6 rounded-2xl border border-border/40 bg-card/40 dark:bg-card/25 backdrop-blur-md shadow-xs hover:bg-card/80 dark:hover:bg-card/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-sm"
+                >
+                  <span className={`flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border text-muted-foreground mb-4 transition-all duration-300 ${bg} ${border} ${color}`}>
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="text-sm font-black text-foreground mb-1.5 transition-colors group-hover:text-zinc-950 dark:group-hover:text-white">
+                    {label}
+                  </h3>
+                  <p className="text-xs text-muted-foreground/80 font-medium leading-relaxed">
+                    {desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
