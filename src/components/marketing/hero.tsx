@@ -106,20 +106,19 @@ export function Hero() {
       {/* ─── Hero Content ─── */}
       <div className="container-app relative z-10 w-full">
         <div className="mx-auto max-w-5xl text-center flex flex-col items-center">
-          {/* Eyebrow Banner */}
           <motion.div
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: EASE }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 dark:border-brand/10 dark:bg-brand/5 px-4 py-1.5 text-xs font-semibold text-brand backdrop-blur-md shadow-xs transition-all hover:border-brand/35 cursor-default group"
+            className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 p-1.5 pr-4 text-xs font-semibold backdrop-blur-md shadow-md shadow-black/[0.02] transition-all hover:border-orange-500/30 hover:shadow-lg cursor-default group"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-sm shadow-orange-500/10">
+              Nouveau
             </span>
-            <span className="text-zinc-500 dark:text-zinc-400 font-medium">Nouveau :</span>
-            <span className="font-semibold text-brand">🇸🇳 Conçu pour les entreprises d&apos;Afrique</span>
-            <ArrowRight className="h-3 w-3 text-brand/70 group-hover:translate-x-0.5 transition-transform" />
+            <span className="text-zinc-700 dark:text-zinc-300 font-bold px-0.5">
+              Conçu pour les entreprises d&apos;Afrique
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
           </motion.div>
 
           {/* Headline with animated rotation & reveal */}
