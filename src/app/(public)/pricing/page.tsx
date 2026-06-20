@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Sparkles, Loader2 } from "lucide-react";
+import { Check, Sparkles, Loader2, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ type PlanType = {
   dureeEssaiJours: number;
   maxBoutiques: number;
   maxProduits: number;
-  features: string[];
+  features: any[];
 };
 
 export default function PricingPage() {
@@ -267,12 +267,39 @@ export default function PricingPage() {
                   </div>
 
                   <ul className="space-y-3 flex-1 border-t border-zinc-800 pt-6">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-3 text-xs text-zinc-300 font-bold">
-                        <Check className="h-4.5 w-4.5 text-emerald-500 shrink-0" strokeWidth={3} />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                    {plan.features.map((feature, idx) => {
+                      const isObj = feature && typeof feature === "object" && "text" in feature;
+                      const text = isObj ? (feature as any).text : String(feature);
+                      const isIncluded = isObj ? !!(feature as any).included : true;
+
+                      return (
+                        <li
+                          key={idx}
+                          className={cn(
+                            "flex items-start gap-3 text-xs font-bold transition-all duration-300",
+                            isIncluded
+                              ? "text-zinc-300"
+                              : "text-zinc-500/50 line-through decoration-zinc-800"
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "mt-0.5 w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300",
+                              isIncluded
+                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                                : "bg-rose-500/5 border-rose-500/10 text-rose-500/30"
+                            )}
+                          >
+                            {isIncluded ? (
+                              <Check className="h-3 w-3" strokeWidth={3} />
+                            ) : (
+                              <X className="h-2.5 w-2.5" strokeWidth={3} />
+                            )}
+                          </div>
+                          <span className={cn(!isIncluded && "opacity-75")}>{text}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
 
                   <Button

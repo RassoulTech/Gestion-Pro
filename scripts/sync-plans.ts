@@ -30,7 +30,7 @@ async function main() {
       maxProduits: def.maxProduits,
       maxMembres: def.maxMembres,
       codePlan: def.code,
-      features: def.features,
+      features: def.features as any,
       actif: true,
     };
 

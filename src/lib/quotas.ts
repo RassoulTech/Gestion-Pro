@@ -15,6 +15,22 @@ export interface PlanQuotas {
   statut: "EN_ATTENTE" | "ESSAI" | "ACTIF" | "EXPIRE" | "ANNULE";
 }
 
+function parseFeatures(featuresJson: any): string[] {
+  if (!featuresJson) return [];
+  if (Array.isArray(featuresJson)) {
+    return featuresJson
+      .map((f: any) => {
+        if (f && typeof f === "object" && "text" in f) {
+          return f.included ? f.text : null;
+        }
+        if (typeof f === "string") return f;
+        return null;
+      })
+      .filter(Boolean) as string[];
+  }
+  return [];
+}
+
 // Simple memory cache for 5 minutes (300,000 ms)
 type CacheEntry = {
   data: PlanQuotas;
@@ -58,7 +74,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
       maxBoutiques: starterPlan?.maxBoutiques ?? starterDef.maxBoutiques,
       maxProduits: starterPlan?.maxProduits ?? starterDef.maxProduits,
       maxMembres: starterPlan?.maxMembres ?? starterDef.maxMembres,
-      features: (starterPlan?.features as string[]) || starterDef.features,
+      features: parseFeatures(starterPlan?.features || starterDef.features),
       isActive: false, // No active paying subscription
       essaiFin: null,
       dateFin: null,
@@ -100,7 +116,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
         maxBoutiques: starterPlan?.maxBoutiques ?? starterDef.maxBoutiques,
         maxProduits: starterPlan?.maxProduits ?? starterDef.maxProduits,
         maxMembres: starterPlan?.maxMembres ?? starterDef.maxMembres,
-        features: (starterPlan?.features as string[]) || starterDef.features,
+        features: parseFeatures(starterPlan?.features || starterDef.features),
         isActive: false,
         essaiFin: null,
         dateFin: null,
@@ -113,7 +129,7 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
         maxBoutiques: activeSubscription.plan.maxBoutiques,
         maxProduits: activeSubscription.plan.maxProduits,
         maxMembres: activeSubscription.plan.maxMembres,
-        features: (activeSubscription.plan.features as string[]) || [],
+        features: parseFeatures(activeSubscription.plan.features) || [],
         isActive: true,
         essaiFin: activeSubscription.essaiFin,
         dateFin: activeSubscription.dateFin,
@@ -246,7 +262,7 @@ export async function getBoutiqueOwnerQuotas(
       maxBoutiques: starterDef.maxBoutiques,
       maxProduits: starterDef.maxProduits,
       maxMembres: starterDef.maxMembres,
-      features: starterDef.features,
+      features: parseFeatures(starterDef.features),
       isActive: false,
       essaiFin: null,
       dateFin: null,

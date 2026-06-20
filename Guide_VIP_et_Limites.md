@@ -6,7 +6,7 @@ Ce document récapitule ton rôle exact en tant que CEO de GestionPro face aux c
 
 ## 1. Le Scénario VIP : Ton Rôle de Consultant Technologique
 
-Quand un client paie **19 900 F CFA / mois** pour le forfait **Enterprise**, il ne paie pas seulement pour des lignes de code. Il paie pour de la *tranquillité d'esprit* et un accompagnement humain. Le bouton "Contacter le fondateur (VIP)" sur son tableau de bord le met directement en relation avec toi sur WhatsApp.
+Quand un client paie **14 900 F CFA / mois** pour le forfait **Enterprise**, il ne paie pas seulement pour des lignes de code. Il paie pour de la *tranquillité d'esprit* et un accompagnement humain. Le bouton "Contacter le fondateur (VIP)" sur son tableau de bord le met directement en relation avec toi sur WhatsApp.
 
 Dès que tu reçois son message, voici concrètement ton rôle :
 
@@ -37,19 +37,19 @@ GestionPro utilise un système de blocage automatique pour encourager les client
 ### Forfait Starter (Gratuit ou d'essai)
 C'est le forfait pour découvrir l'application ou pour les très petits vendeurs.
 - **Boutiques max :** 1 seule boutique autorisée.
-- **Produits max :** 50 produits (S'il essaie d'ajouter un 51ème produit, un cadenas apparaît pour l'inciter à payer).
+- **Produits max :** 15 produits.
 - **Membres (Employés) max :** 1 seul membre (lui-même). Impossible d'ajouter un caissier supplémentaire.
 - **Fonctionnalités bloquées :** Pas de Caisse Tactile (POS), pas d'impression de tickets, pas d'export PDF/Excel, pas de Marché Public.
 
-### Forfait Pro (9 900 F CFA / mois)
+### Forfait Pro (6 900 F CFA / mois)
 C'est le forfait standard pour une PME qui tourne bien.
-- **Boutiques max :** 3 boutiques autorisées (idéal pour un commerçant avec quelques succursales).
-- **Produits max :** 1 000 produits.
-- **Membres (Employés) max :** 5 membres (pour gérer ses différents caissiers).
+- **Boutiques max :** 3 boutiques autorisées.
+- **Produits max :** 40 produits.
+- **Membres (Employés) max :** 5 membres.
 - **Fonctionnalités débloquées :** Accès à la Caisse Tactile rapide, gestion des remises, impression des tickets thermiques, exports PDF/Excel, Ventes Flash.
 - **Ce qui lui manque :** L'accès VIP direct à toi. S'il a un problème, il passe par le support email classique.
 
-### Forfait Enterprise (19 900 F CFA / mois)
+### Forfait Enterprise (14 900 F CFA / mois)
 C'est le forfait illimité pour les grands réseaux de distribution et les clients exigeants.
 - **Boutiques max :** Illimité.
 - **Produits max :** Illimité.

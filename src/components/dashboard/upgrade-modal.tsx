@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Check, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { Check, Sparkles, Loader2, ArrowRight, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
@@ -23,7 +23,7 @@ type PlanType = {
   dureeEssaiJours: number;
   maxBoutiques: number;
   maxProduits: number;
-  features: string[];
+  features: any[];
 };
 
 export function UpgradeModal({
@@ -153,12 +153,39 @@ export function UpgradeModal({
                         </div>
 
                         <ul className="space-y-2 mt-0 sm:mt-4 flex-1 w-1/2 sm:w-full">
-                          {(plan.features as string[]).slice(0, 4).map((feat, index) => (
-                            <li key={index} className="flex items-center gap-2 text-[10px] text-zinc-300 font-medium">
-                              <Check className="h-3 w-3 text-emerald-500 shrink-0" strokeWidth={3} />
-                              <span className="truncate">{feat}</span>
-                            </li>
-                          ))}
+                          {plan.features.map((feature, index) => {
+                            const isObj = feature && typeof feature === "object" && "text" in feature;
+                            const text = isObj ? (feature as any).text : String(feature);
+                            const isIncluded = isObj ? !!(feature as any).included : true;
+
+                            return (
+                              <li
+                                key={index}
+                                className={cn(
+                                  "flex items-start gap-2 text-[10px] font-medium leading-tight transition-all duration-300",
+                                  isIncluded
+                                    ? "text-zinc-300"
+                                    : "text-zinc-500/50 line-through decoration-zinc-800"
+                                )}
+                              >
+                                <div
+                                  className={cn(
+                                    "mt-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300",
+                                    isIncluded
+                                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                                      : "bg-rose-500/5 border-rose-500/10 text-rose-500/30"
+                                  )}
+                                >
+                                  {isIncluded ? (
+                                    <Check className="h-2 w-2" strokeWidth={3} />
+                                  ) : (
+                                    <X className="h-1.5 w-1.5" strokeWidth={3} />
+                                  )}
+                                </div>
+                                <span className={cn("truncate", !isIncluded && "opacity-75")}>{text}</span>
+                              </li>
+                            );
+                          })}
                         </ul>
 
                         {/* Mobile explicit select button */}

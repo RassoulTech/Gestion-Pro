@@ -129,7 +129,11 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                     <Check className="h-3.5 w-3.5" />
                   </div>
                   <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                    {plan.maxBoutiques} {plan.maxBoutiques > 1 ? "boutiques autorisées" : "boutique autorisée"}
+                    {plan.maxBoutiques >= 999999 ? (
+                      "Boutiques illimitées"
+                    ) : (
+                      `${plan.maxBoutiques} ${plan.maxBoutiques > 1 ? "boutiques autorisées" : "boutique autorisée"}`
+                    )}
                   </span>
                 </div>
 
@@ -138,7 +142,13 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                     <Check className="h-3.5 w-3.5" />
                   </div>
                   <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                    Jusqu&apos;à <span className="font-extrabold text-slate-950 dark:text-slate-50">{plan.maxProduits}</span> produits
+                    {plan.maxProduits >= 999999 ? (
+                      "Produits illimités"
+                    ) : (
+                      <>
+                        Jusqu&apos;à <span className="font-extrabold text-slate-950 dark:text-slate-50">{plan.maxProduits}</span> produits
+                      </>
+                    )}
                   </span>
                 </div>
 

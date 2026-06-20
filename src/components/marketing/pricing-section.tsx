@@ -2,12 +2,12 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeader } from "./section";
 import { cn } from "@/lib/utils";
 import { formatPrice, type Currency } from "@/lib/format";
-import { PLAN_LIST } from "@/lib/plan-limits";
+import { PLAN_LIST, type FeatureItem } from "@/lib/plan-limits";
 
 import { motion } from "framer-motion";
 
@@ -15,7 +15,7 @@ type Plan = {
   name: string;
   monthlyXOF: number | null;
   description: string;
-  features: string[];
+  features: FeatureItem[];
   cta: { label: string; href: string };
   highlight?: boolean;
 };
@@ -215,19 +215,38 @@ export function PricingSection() {
               </div>
 
               <ul className="flex-1 space-y-4 mb-8 relative z-10">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                    <div className={cn(
-                      "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 border",
-                      isHighlight
-                        ? "bg-orange-600/10 border-orange-500/20 text-orange-600 dark:text-orange-400"
-                        : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-                    )}>
-                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                    </div>
-                    <span>{f}</span>
-                  </li>
-                ))}
+                {plan.features.map((f) => {
+                  const isIncluded = f.included;
+                  return (
+                    <li
+                      key={f.text}
+                      className={cn(
+                        "flex items-start gap-3 text-sm font-semibold transition-all duration-300",
+                        isIncluded
+                          ? "text-zinc-700 dark:text-zinc-300"
+                          : "text-zinc-400/50 dark:text-zinc-650/40 line-through decoration-zinc-400/30"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300",
+                          !isIncluded
+                            ? "bg-rose-500/5 border-rose-500/10 text-rose-500/30"
+                            : isHighlight
+                            ? "bg-orange-600/10 border-orange-500/20 text-orange-600 dark:text-orange-400"
+                            : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                        )}
+                      >
+                        {isIncluded ? (
+                          <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                        ) : (
+                          <X className="w-3 h-3" strokeWidth={3} />
+                        )}
+                      </div>
+                      <span className={cn(!isIncluded && "opacity-75")}>{f.text}</span>
+                    </li>
+                  );
+                })}
               </ul>
 
               <Button

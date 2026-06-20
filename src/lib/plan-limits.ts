@@ -14,6 +14,11 @@ export const UNLIMITED = 999_999;
 
 export type PlanCode = "STARTER" | "PRO" | "ENTERPRISE";
 
+export interface FeatureItem {
+  text: string;
+  included: boolean;
+}
+
 export interface PlanDefinition {
   code: PlanCode;
   nom: string;
@@ -23,7 +28,7 @@ export interface PlanDefinition {
   maxProduits: number;
   maxMembres: number;
   shortDescription: string;
-  features: string[];
+  features: FeatureItem[];
 }
 
 export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
@@ -37,57 +42,62 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     maxMembres: 1,
     shortDescription: "Pour démarrer et tester sans engagement.",
     features: [
-      "1 boutique maximum",
-      "15 produits maximum",
-      "Gestion de stock basique",
-      "POS simple",
-      "Marketplace public",
-      "Support email",
+      { text: "1 boutique", included: true },
+      { text: "15 produits maximum", included: true },
+      { text: "Marketplace publique", included: true },
+      { text: "Support email", included: true },
+      { text: "Multi-boutiques", included: false },
+      { text: "Rapports avancés", included: false },
+      { text: "Export PDF / Excel", included: false },
+      { text: "API & intégrations", included: false },
+      { text: "QR Code Boutique", included: false },
+      { text: "Personnalisation avancée", included: false },
+      { text: "Support prioritaire", included: false },
     ],
   },
   PRO: {
     code: "PRO",
     nom: "Pro",
-    prix: 9_900,
+    prix: 6_900,
     dureeEssaiJours: 90,
     maxBoutiques: 3,
     maxProduits: 40,
     maxMembres: 5,
     shortDescription: "Pour les commerces en pleine croissance.",
     features: [
-      "3 boutiques maximum",
-      "40 produits maximum",
-      "POS avancé",
-      "Gestion avancée du stock",
-      "Mouvements de stock",
-      "Rapports détaillés",
-      "Export PDF / Excel",
-      "QR Code Boutique",
-      "Marketplace optimisé",
-      "Support prioritaire",
+      { text: "Jusqu'à 3 boutiques", included: true },
+      { text: "Jusqu'à 40 produits", included: true },
+      { text: "POS avancé", included: true },
+      { text: "Rapports détaillés", included: true },
+      { text: "Export PDF / Excel", included: true },
+      { text: "QR Code Boutique", included: true },
+      { text: "Marketplace optimisée", included: true },
+      { text: "Support prioritaire", included: true },
+      { text: "API avancée", included: false },
+      { text: "Équipes illimitées", included: false },
+      { text: "Boutiques illimitées", included: false },
     ],
   },
   ENTERPRISE: {
     code: "ENTERPRISE",
     nom: "Enterprise",
-    prix: 19_900,
+    prix: 14_900,
     dureeEssaiJours: 30,
     maxBoutiques: UNLIMITED,
     maxProduits: UNLIMITED,
     maxMembres: UNLIMITED,
     shortDescription: "Pour les réseaux de boutiques et multi-équipes.",
     features: [
-      "Boutiques illimitées",
-      "Produits illimités",
-      "Toutes les fonctionnalités Pro",
-      "Multi-boutiques avancé",
-      "Membres et équipes illimités",
-      "Rapports exécutifs",
-      "API & intégrations",
-      "Personnalisation avancée",
-      "Marketplace premium",
-      "Support prioritaire",
-      "Onboarding dédié",
+      { text: "Boutiques illimitées", included: true },
+      { text: "Produits illimités", included: true },
+      { text: "Toutes les fonctionnalités Pro", included: true },
+      { text: "Multi-boutiques avancé", included: true },
+      { text: "Membres et équipes illimités", included: true },
+      { text: "API et intégrations", included: true },
+      { text: "Personnalisation avancée", included: true },
+      { text: "Marketplace premium", included: true },
+      { text: "Support prioritaire", included: true },
+      { text: "Onboarding dédié", included: true },
     ],
   },
 };
