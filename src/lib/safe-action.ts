@@ -18,9 +18,15 @@ export const actionClient = createSafeActionClient({
       return KNOWN_ERROR_CODES[e.message];
     }
 
-    // Les messages explicitement levés par les actions (ex. "Trop de tentatives...",
-    // "Un compte avec cet email existe déjà.") sont sûrs à exposer tels quels.
-    if (e.message && e.message.length < 200) {
+    // ⚠️ SECURITY : ne JAMAIS exposer les erreurs techniques (Prisma, runtime) —
+    // elles peuvent divulguer le schéma de données ou des détails internes.
+    const isTechnicalError = /^(PrismaClient|TypeError|ReferenceError|SyntaxError|RangeError)/.test(
+      (e as { name?: string }).name ?? ""
+    );
+
+    // Les messages métier explicitement levés par les actions (ex. "Trop de
+    // tentatives...", "Un compte avec cet email existe déjà.") sont sûrs.
+    if (!isTechnicalError && e.message && e.message.length < 200) {
       return e.message;
     }
 

@@ -54,6 +54,19 @@ export const authConfig = {
     }),
   ],
   callbacks: {
+    // ⚠️ SECURITY : n'accepter une connexion Google que si l'email est RÉELLEMENT
+    // vérifié par Google. Sans ce garde-fou, allowDangerousEmailAccountLinking
+    // permettrait de relier une identité OAuth à un compte existant (créé
+    // manuellement) sans preuve d'email vérifiée → contournement de vérification
+    // / prise de contrôle de compte. Les autres providers passent inchangés.
+    signIn: async ({ account, profile }) => {
+      if (account?.provider === "google") {
+        const emailVerified = (profile as { email_verified?: boolean } | undefined)
+          ?.email_verified;
+        if (emailVerified !== true) return false;
+      }
+      return true;
+    },
     jwt: async ({ token, user, trigger, session }) => {
       if (user) {
         token.id = user.id!;

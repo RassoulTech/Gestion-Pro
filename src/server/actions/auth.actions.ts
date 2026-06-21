@@ -14,6 +14,7 @@ import { generateVerificationToken, generatePasswordResetToken, hashToken } from
 import { sendVerificationEmail, sendPasswordResetEmail, sendAlreadyRegisteredEmail } from "@/lib/mail";
 import { DUMMY_PASSWORD_HASH } from "@/lib/password";
 import { notifyAdmins } from "@/server/services/notifications";
+import { verifyEmailToken } from "@/server/services/email-verification";
 
 export const registerUser = actionClient
   .schema(registerSchema)
@@ -244,6 +245,24 @@ export const createVendeurProfile = authActionClient
   .action(async ({ parsedInput, ctx }) => {
     const { user } = ctx;
 
+    // ⚠️ SECURITY (défense en profondeur) : interdire la création d'un profil
+    // vendeur tant que l'email n'est pas vérifié. Les comptes manuels non vérifiés
+    // n'ont pas de session ; ce garde couvre toute régression de garde amont.
+    // Les comptes OAuth (Google) sont autorisés (preuve d'email apportée par Google).
+    const account = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        emailVerified: true,
+        accounts: { select: { provider: true }, take: 1 },
+      },
+    });
+    const isOAuth = (account?.accounts?.length ?? 0) > 0;
+    if (!account?.emailVerified && !isOAuth) {
+      throw new Error(
+        "Veuillez vérifier votre adresse email avant de créer un profil vendeur."
+      );
+    }
+
     const existing = await prisma.vendeur.findUnique({
       where: { userId: user.id },
       select: { id: true },
@@ -310,56 +329,15 @@ export const createVendeurProfile = authActionClient
 export const verifyEmail = actionClient
   .schema(z.object({ token: z.string().min(1, "Jeton requis") }))
   .action(async ({ parsedInput }) => {
-    const { token } = parsedInput;
+    // Logique mutualisée avec la route GET /api/verify-email.
+    const result = await verifyEmailToken(parsedInput.token);
 
-    await logActivity({
-      action: "VERIFICATION_LINK_CLICKED",
-      changes: { token: hashToken(token) },
-    });
-
-    const existingToken = await prisma.verificationToken.findFirst({
-      where: { token: hashToken(token) },
-    });
-
-    if (!existingToken) {
+    if (result.status === "invalid") {
       throw new Error("Jeton de vérification invalide.");
     }
-
-    const hasExpired = new Date(existingToken.expires) < new Date();
-    if (hasExpired) {
+    if (result.status === "expired") {
       throw new Error("Le jeton de vérification a expiré.");
     }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email: existingToken.identifier },
-    });
-
-    if (!existingUser) {
-      throw new Error("Utilisateur non trouvé.");
-    }
-
-    await prisma.user.update({
-      where: { id: existingUser.id },
-      data: {
-        emailVerified: new Date(),
-        email: existingToken.identifier, // Fallback if email changed
-      },
-    });
-
-    await prisma.verificationToken.delete({
-      where: {
-        identifier_token: {
-          identifier: existingToken.identifier,
-          token: existingToken.token,
-        },
-      },
-    });
-
-    await logActivity({
-      userId: existingUser.id,
-      action: "ACCOUNT_ACTIVATED",
-      changes: { email: existingUser.email },
-    });
 
     return { success: "Email vérifié avec succès !" };
   });

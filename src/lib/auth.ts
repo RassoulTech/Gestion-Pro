@@ -130,6 +130,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return baseToken;
     },
   },
+  events: {
+    // ⚠️ SECURITY : Auth.js crée les comptes OAuth avec emailVerified=null.
+    // On aligne l'état "vérifié" en base sur la preuve apportée par Google
+    // (Cas 1 : vérifié d'office). Couvre la création comme la liaison de compte,
+    // et garantit la cohérence des stats admin / des gardes basées sur emailVerified.
+    linkAccount: async ({ user, account }) => {
+      if (account.provider === "google" && user.id) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { emailVerified: new Date() },
+        });
+      }
+    },
+  },
 });
 
 export async function getCurrentUser() {

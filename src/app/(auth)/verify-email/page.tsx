@@ -16,12 +16,34 @@ function VerifyEmailInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
+  const status = searchParams.get("status");
   const calledRef = useRef(false);
 
   useEffect(() => {
     if (calledRef.current) return;
     calledRef.current = true;
 
+    // Flux principal : la route serveur /api/verify-email a déjà validé le token
+    // et nous redirige avec ?status=success|expired|invalid|error.
+    if (status) {
+      if (status === "success") {
+        setSuccess("Email vérifié avec succès !");
+        setTimeout(() => router.push("/login"), 3000);
+      } else if (status === "expired") {
+        setError(
+          "Ce lien de vérification a expiré. Connectez-vous pour en recevoir un nouveau."
+        );
+      } else if (status === "invalid") {
+        setError(
+          "Lien de vérification invalide ou déjà utilisé. Si votre compte est déjà vérifié, connectez-vous."
+        );
+      } else {
+        setError("Une erreur est survenue pendant la vérification. Veuillez réessayer.");
+      }
+      return;
+    }
+
+    // Flux hérité : un token brut est présent dans l'URL (anciens e-mails).
     if (!token) {
       setError("Jeton de vérification manquant.");
       return;
@@ -40,7 +62,7 @@ function VerifyEmailInner() {
         setError("Une erreur est survenue.");
       }
     })();
-  }, [token, router]);
+  }, [token, status, router]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8 text-center">

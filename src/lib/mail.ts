@@ -2,7 +2,12 @@ import { Resend } from "resend";
 import { env } from "@/env.mjs";
 import { logActivity } from "@/lib/activity-log";
 
-const domain = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+// URL de base RÉELLE de l'environnement déployé (jamais codée en dur). On retire
+// un éventuel slash final pour ne pas produire de `//chemin` dans les liens.
+// `NEXT_PUBLIC_APP_URL` est requis (cf. env.mjs) : sur Vercel il DOIT valoir le
+// domaine personnalisé vérifié (ex. https://mongestionpro.com), cohérent avec le
+// domaine de l'expéditeur Resend.
+const domain = (env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/+$/, "");
 
 export type MailResult = { sent: boolean; devLink?: string; error?: string };
 
@@ -10,12 +15,50 @@ interface SendOpts {
   to: string | string[];
   subject: string;
   html: string;
+  /** Version texte brut (délivrabilité). À défaut, dérivée du HTML. */
+  text?: string;
   replyTo?: string;
   attachments?: { filename: string; content: Buffer }[];
 }
 
+/**
+ * Dérive une version texte lisible depuis le HTML quand aucune n'est fournie.
+ * Un e-mail multipart (HTML + texte) réduit fortement le score anti-spam.
+ */
+function htmlToText(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<head[\s\S]*?<\/head>/gi, "")
+    .replace(/<\/(p|div|tr|h1|h2|h3|li)>/gi, "\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n\s*\n\s*\n+/g, "\n\n")
+    .trim();
+}
+
 const resendKey = env.AUTH_RESEND_KEY;
 const resendFrom = env.AUTH_EMAIL_FROM || "onboarding@resend.dev";
+
+// ⚠️ DÉLIVRABILITÉ : en production, l'adresse de test partagée `onboarding@resend.dev`
+// n'est PAS authentifiée pour votre domaine (SPF/DKIM) → les e-mails partent en SPAM
+// et le domaine de l'expéditeur ne correspond pas à celui des liens. Définir
+// AUTH_EMAIL_FROM sur le domaine vérifié dans Resend (ex. "GestionPro <no-reply@mongestionpro.com>").
+if (
+  process.env.NODE_ENV === "production" &&
+  /@resend\.dev>?\s*$/i.test(resendFrom)
+) {
+  console.error(
+    "[mail] AUTH_EMAIL_FROM utilise l'adresse de test resend.dev en PRODUCTION : " +
+      "les e-mails iront en spam. Configurez un expéditeur sur votre domaine vérifié Resend."
+  );
+}
 
 const resend = resendKey ? new Resend(resendKey) : null;
 
@@ -46,6 +89,8 @@ async function sendEmail(opts: SendOpts): Promise<MailResult> {
       to,
       subject: opts.subject,
       html: opts.html,
+      // Toujours fournir une alternative texte (multipart) → meilleure délivrabilité.
+      text: opts.text ?? htmlToText(opts.html),
       replyTo: opts.replyTo,
       attachments: opts.attachments?.map((att) => ({
         filename: att.filename,
@@ -159,7 +204,8 @@ export const sendVerificationEmail = async (
   email: string,
   token: string
 ): Promise<MailResult> => {
-  const confirmLink = `${domain}/verify-email?token=${token}`;
+  // Cible la route serveur GET (valide le token côté serveur, sans JS requis).
+  const confirmLink = `${domain}/api/verify-email?token=${token}`;
 
   if (!isMailConfigured()) {
     console.warn("[mail] Resend not configured. Email skipped.");
@@ -189,10 +235,24 @@ export const sendVerificationEmail = async (
     </div>
   `;
 
+  const text = [
+    "Activez votre compte GestionPro",
+    "",
+    "Bienvenue ! Pour finaliser la création de votre compte et pouvoir vous",
+    "connecter, confirmez votre adresse email en ouvrant ce lien :",
+    confirmLink,
+    "",
+    "Ce lien expire dans 1 heure.",
+    "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.",
+    "",
+    "— L'équipe GestionPro",
+  ].join("\n");
+
   return sendEmail({
     to: email,
     subject: "Vérifiez votre adresse email — GestionPro",
     html: getEmailWrapper("Vérifiez votre adresse email", htmlContent),
+    text,
   });
 };
 
@@ -474,10 +534,24 @@ export const sendPasswordResetEmail = async (
     </div>
   `;
 
+  const text = [
+    "Réinitialisation de mot de passe — GestionPro",
+    "",
+    "Vous avez demandé à réinitialiser votre mot de passe. Ouvrez ce lien pour",
+    "en choisir un nouveau :",
+    resetLink,
+    "",
+    "Ce lien expire dans 1 heure.",
+    "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.",
+    "",
+    "— L'équipe GestionPro",
+  ].join("\n");
+
   return sendEmail({
     to: email,
     subject: "Réinitialisez votre mot de passe — GestionPro",
     html: getEmailWrapper("Réinitialisation de mot de passe", htmlContent),
+    text,
   });
 };
 
