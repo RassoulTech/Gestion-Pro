@@ -34,6 +34,7 @@ import { QuotaIndicator } from "@/components/dashboard/quota-indicators";
 import Link from "next/link";
 import { RenewSubscriptionButton } from "./_components/renew-subscription-button";
 import { PaymentFeedbackToast } from "./_components/payment-feedback-toast";
+import { PaytechSandboxBadge } from "@/components/payments/paytech-sandbox-badge";
 import { Suspense } from "react";
 
 interface FacturationPageProps {
@@ -118,6 +119,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
       <Suspense fallback={null}>
         <PaymentFeedbackToast />
       </Suspense>
+      <PaytechSandboxBadge />
       {/* Dynamic Header */}
       <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 sm:p-12 text-white shadow-2xl border border-zinc-800">
         <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-brand/20 blur-[100px] pointer-events-none" />

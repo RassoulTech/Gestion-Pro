@@ -448,7 +448,7 @@ export const sendSubscriptionRenewalReminderEmail = async (
         Modes de paiement acceptés
       </p>
       <p style="margin: 0; font-size: 13px; color: #475569; font-weight: 600;">
-        Wave, Orange Money (via PayDunya) ou carte bancaire (Stripe).
+        Wave ou Orange Money (via PayTech).
       </p>
     </div>
   `;

@@ -1,32 +1,33 @@
 import { prisma } from "@/lib/prisma";
-import { 
-  sendSubscriptionActivatedEmailToClient, 
-  sendSubscriptionAlertToAdmin 
+import {
+  sendSubscriptionActivatedEmailToClient,
+  sendSubscriptionAlertToAdmin,
 } from "@/lib/mail";
+import { getPaytechConfig, createPaytechCheckout } from "@/lib/paytech";
 
 export type PaymentMethod = "WAVE" | "ORANGE_MONEY" | "CASH_ON_DELIVERY";
 
 export interface PaymentInitiationResult {
   success: boolean;
-  paymentUrl?: string; // Redirect URL for Wave or Orange Money mobile money checkout
+  paymentUrl?: string; // URL de redirection vers la page de paiement PayTech
   transactionRef?: string;
   error?: string;
 }
 
 /**
- * Service centralisé pour la gestion des paiements dans GestionPro.
- * Ce module fournit la structure nécessaire pour intégrer les passerelles de paiement
- * locales (Wave, Orange Money via PayTech).
+ * Service de paiement centralisé de GestionPro.
+ * Unique passerelle : PayTech (Wave / Orange Money via Mobile Money), en sandbox
+ * comme en live. Toute la logique d'appel passe par `@/lib/paytech`.
  */
 export class PaymentService {
   /**
-   * Initialise un paiement pour l'abonnement SaaS d'un vendeur (Orange Money, Wave, PayPal, Stripe).
-   * 
+   * Initialise un paiement PayTech pour l'abonnement SaaS d'un vendeur.
+   *
    * @param abonnementId L'ID de l'abonnement en cours d'activation
-   * @param amount Le montant en FCFA ou USD
-   * @param method La méthode sélectionnée
+   * @param amount Le montant en FCFA (XOF)
+   * @param method La méthode Mobile Money sélectionnée
    * @param vendeurId L'ID du vendeur
-   * @returns Un lien de redirection vers la passerelle sécurisée
+   * @returns Un lien de redirection vers la page de paiement PayTech
    */
   static async initiateSubscriptionPayment(
     abonnementId: string,
@@ -44,9 +45,8 @@ export class PaymentService {
         return { success: false, error: "Abonnement introuvable." };
       }
 
-      // A vendor must own at least one boutique before subscribing —
-      // success/cancel URLs redirect back to /boutiques/[id]/facturation.
-      // Without a boutique we'd hit /boutiques (no id) which doesn't exist.
+      // Un vendeur doit posséder au moins une boutique avant de s'abonner — les
+      // URLs success/cancel renvoient vers /boutiques/[id]/facturation.
       const firstBoutique = await prisma.boutique.findFirst({
         where: { vendeurId },
         select: { id: true },
@@ -57,102 +57,76 @@ export class PaymentService {
           error: "Vous devez créer une boutique avant de souscrire à un plan.",
         };
       }
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-      const facturationPath = `/boutiques/${firstBoutique.id}/facturation`;
 
-      // Création de l'enregistrement de paiement en attente dans la base de données
+      const config = getPaytechConfig();
+      if (!config.enabled || !config.apiKey || !config.apiSecret) {
+        return {
+          success: false,
+          error:
+            "Le paiement Mobile Money (PayTech) n'est pas activé ou configuré sur ce serveur.",
+        };
+      }
+
+      const facturationUrl = `${config.appUrl}/boutiques/${firstBoutique.id}/facturation`;
+      const transactionRef = `SUB-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(7)
+        .toUpperCase()}`;
+
+      // Audit : on trace dès la création le fournisseur, le mode et la devise.
+      const auditBase = {
+        provider: "paytech",
+        mode: config.sandbox ? "sandbox" : "live",
+        currency: config.currency,
+      } as const;
+
+      // Enregistrement du paiement EN_ATTENTE (aucune activation avant confirmation).
       const paiement = await prisma.paiement.create({
         data: {
           abonnementId: abonnement.id,
           montant: amount,
           methode: method,
           statut: "EN_ATTENTE",
-          transactionRef: `SUB-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+          transactionRef,
+          metadata: { ...auditBase },
         },
       });
 
+      const checkout = await createPaytechCheckout({
+        itemName: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
+        amount,
+        refCommand: transactionRef,
+        commandName: "Abonnement sur GestionPro",
+        successUrl: `${facturationUrl}?success=true`,
+        cancelUrl: `${facturationUrl}?success=false`,
+        customField: {
+          kind: "subscription",
+          abonnementId: abonnement.id,
+          vendeurId,
+          transactionRef,
+        },
+      });
 
-      // 1. SI WAVE / ORANGE MONEY (Intégration réelle PayTech si activé, sinon Mock de test) :
-      if (method === "WAVE" || method === "ORANGE_MONEY") {
-        const paytechConfigured =
-          process.env.PAYTECH_ENABLED === "true" &&
-          process.env.PAYTECH_API_KEY &&
-          process.env.PAYTECH_API_SECRET;
-
-        if (paytechConfigured) {
-          try {
-            const paytechUrl = "https://paytech.sn/api/payment/request-payment";
-            const requestBody = {
-              item_name: `Abonnement GestionPro - Plan ${abonnement.plan.nom}`,
-              item_price: amount,
-              ref_command: paiement.transactionRef || `SUB-${Date.now()}`,
-              command_name: `Abonnement sur GestionPro`,
-              currency: "XOF",
-              env: process.env.PAYTECH_ENV === "live" || process.env.PAYTECH_ENV === "prod" ? "prod" : "test",
-              ipn_url: `${appUrl}/api/paytech/ipn`,
-              success_url: `${appUrl}${facturationPath}?success=true`,
-              cancel_url: `${appUrl}${facturationPath}?success=false`,
-              custom_field: JSON.stringify({
-                kind: "subscription",
-                abonnementId: abonnement.id,
-                vendeurId,
-                transactionRef: paiement.transactionRef || undefined,
-              })
-            };
-
-            const response = await fetch(paytechUrl, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "API_KEY": process.env.PAYTECH_API_KEY || "",
-                "API_SECRET": process.env.PAYTECH_API_SECRET || ""
-              },
-              body: JSON.stringify(requestBody)
-            });
-
-             let data: any = null;
-             if (response.ok) {
-               try {
-                 data = await response.json();
-               } catch (parseError) {
-                 console.error("Failed to parse PayTech response JSON :", parseError);
-               }
-             }
-
-              if (data && (data.success === 1 || data.success === true)) {
-                const redirectUrl = data.redirectUrl || data.redirect_url;
-                if (redirectUrl && data.token) {
-                  return {
-                    success: true,
-                    paymentUrl: redirectUrl,
-                    transactionRef: paiement.transactionRef || undefined,
-                  };
-                }
-              }
-
-             console.error("PayTech subscription API failure response :", data || "No response data");
-             return {
-               success: false,
-               error: data?.message || "Impossible d'initier le paiement Mobile Money via PayTech.",
-             };
-          } catch (error: any) {
-            console.error("PayTech subscription integration error :", error);
-            return {
-              success: false,
-              error: error.message || "Erreur lors de l'appel à PayTech.",
-            };
-          }
-        }
-
+      if (!checkout.success || !checkout.redirectUrl) {
         return {
           success: false,
-          error: "Le paiement par Mobile Money (PayTech) n'est pas activé ou configuré sur ce serveur.",
+          error:
+            checkout.error ||
+            "Impossible d'initier le paiement Mobile Money via PayTech.",
         };
       }
 
+      // Trace du token PayTech (payload d'audit) sur le paiement créé.
+      await prisma.paiement.update({
+        where: { id: paiement.id },
+        data: { metadata: { ...auditBase, token: checkout.token } },
+      });
 
-
-      return { success: false, error: "Méthode de paiement non supportée." };
+      return {
+        success: true,
+        paymentUrl: checkout.redirectUrl,
+        transactionRef,
+      };
     } catch (e) {
       const message = e instanceof Error ? e.message : "Erreur interne.";
       console.error("Erreur d'initialisation de paiement :", e);
@@ -161,9 +135,9 @@ export class PaymentService {
   }
 
   /**
-   * Traite le retour du Webhook après confirmation de la transaction par la passerelle.
-   * 
-   * @param transactionRef La référence de transaction unique
+   * Traite la confirmation d'un paiement d'abonnement reçue via l'IPN PayTech.
+   *
+   * @param transactionRef La référence de transaction unique (ref_command)
    * @param status Le statut retourné par la passerelle
    * @returns Le statut mis à jour en base de données
    */
@@ -173,15 +147,15 @@ export class PaymentService {
   ) {
     const paiement = await prisma.paiement.findFirst({
       where: { transactionRef },
-      include: { 
+      include: {
         abonnement: {
           include: {
             plan: true,
             vendeur: {
-              include: { boutiques: true }
-            }
-          }
-        } 
+              include: { boutiques: true },
+            },
+          },
+        },
       },
     });
 
@@ -189,9 +163,9 @@ export class PaymentService {
       throw new Error(`Paiement introuvable pour la référence ${transactionRef}`);
     }
 
-    // Idempotence: webhooks may be replayed by the gateway. Never re-mutate
-    // a payment that is already in a terminal state, and never let a FAILED
-    // event downgrade a previously confirmed payment.
+    // Idempotence : l'IPN peut être rejoué par la passerelle. On ne re-mute jamais
+    // un paiement déjà dans un état terminal, et un événement FAILED ne dégrade
+    // jamais un paiement déjà confirmé.
     if (paiement.statut === "CONFIRME") {
       return { success: true, message: "Paiement déjà confirmé (idempotent)." };
     }
@@ -201,8 +175,8 @@ export class PaymentService {
 
     if (status === "SUCCESS") {
       const now = new Date();
-      // Extend from the current dateFin if the subscription is still running,
-      // so an early renewal cumulates instead of shrinking the remaining time.
+      // Prolonge depuis la dateFin courante si l'abonnement tourne encore, pour
+      // qu'un renouvellement anticipé cumule au lieu de rogner le temps restant.
       const SUBSCRIPTION_PERIOD_MS = 30 * 24 * 60 * 60 * 1000;
       const currentEnd = paiement.abonnement.dateFin;
       const base =
@@ -223,20 +197,23 @@ export class PaymentService {
         },
       });
 
-      // --- SEND EMAILS ---
+      // --- ENVOI DES EMAILS ---
       const vendeur = paiement.abonnement.vendeur;
       const plan = paiement.abonnement.plan;
       const firstBoutique = vendeur?.boutiques[0];
 
-      if (vendeur && plan && (plan.nom.toLowerCase().includes("pro") || plan.nom.toLowerCase().includes("enterprise"))) {
-        // Envoi au client
+      if (
+        vendeur &&
+        plan &&
+        (plan.nom.toLowerCase().includes("pro") ||
+          plan.nom.toLowerCase().includes("enterprise"))
+      ) {
         await sendSubscriptionActivatedEmailToClient(
           vendeur.email,
           vendeur.prenom || vendeur.nom || "Cher client",
           plan.nom,
           newDateFin
         );
-        // Envoi à l'Admin
         await sendSubscriptionAlertToAdmin(
           firstBoutique?.nom || "Aucune boutique",
           plan.nom,

@@ -103,8 +103,8 @@ export const getPlansAction = vendeurActionClient
 
 /**
  * Renouvelle l'abonnement courant (ou le dernier en date) avec la méthode choisie.
- * Utile pour PayDunya en one-shot : crée un nouvel Abonnement ESSAI lié au même plan
- * et redirige le vendeur vers l'invoice de paiement.
+ * Réutilise un Abonnement EN_ATTENTE non payé pour le même plan puis redirige le
+ * vendeur vers la page de paiement PayTech.
  */
 export const renewCurrentSubscription = vendeurActionClient
   .schema(

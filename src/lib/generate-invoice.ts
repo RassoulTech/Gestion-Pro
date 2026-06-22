@@ -92,7 +92,7 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
     y + 12
   );
 
-  // Stripe-style top-right "FACTURE" indicator
+  // Top-right "FACTURE" indicator
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
   doc.setTextColor(BRAND_COLOR[0], BRAND_COLOR[1], BRAND_COLOR[2]);

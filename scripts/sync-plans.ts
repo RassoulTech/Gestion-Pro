@@ -7,7 +7,7 @@
  *
  * What it does:
  *   - For each plan in PLAN_LIST, upsert by `codePlan`.
- *   - Update price, limits, trial duration, features, Stripe IDs.
+ *   - Update price, limits, trial duration, features.
  *   - Never deletes existing plans (to preserve foreign keys on abonnements).
  */
 import { PrismaClient } from "@prisma/client";

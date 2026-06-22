@@ -5,11 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";
 import { auth } from "@/lib/auth";
 import { generateCode } from "@/lib/utils";
-import {
-  generateAndSendOrderInvoice,
-  confirmMarketplaceOrders,
-} from "@/server/services/order-fulfillment";
+import { generateAndSendOrderInvoice } from "@/server/services/order-fulfillment";
 import { notifyBoutiqueOwner, notifyAdmins } from "@/server/services/notifications";
+import { getPaytechConfig, createPaytechCheckout } from "@/lib/paytech";
 
 const checkoutItemSchema = z.object({
   produitId: z.string().min(1),
@@ -74,6 +72,9 @@ export const createMarketplaceCommande = actionClient
     // de la passerelle (IPN) avant de toucher au stock ou d'émettre la facture :
     // un paiement abandonné ne laisse ainsi ni stock fantôme ni fausse facture.
     const isInstant = paymentMethod === "CASH_ON_DELIVERY";
+
+    // Config PayTech centralisée (mode sandbox/live, devise, URLs).
+    const paytechConfig = getPaytechConfig();
 
     // 2. Group items by boutique
     const itemsWithBoutique = await Promise.all(
@@ -175,6 +176,14 @@ export const createMarketplaceCommande = actionClient
             modePaiement: paymentMethod,
             statutPaiement: "EN_ATTENTE",
             etat: "EN_ATTENTE",
+            // Audit du paiement en ligne (fournisseur, mode sandbox/live, devise).
+            metadata: isInstant
+              ? undefined
+              : {
+                  provider: "paytech",
+                  mode: paytechConfig.sandbox ? "sandbox" : "live",
+                  currency: paytechConfig.currency,
+                },
           },
         });
 
@@ -253,84 +262,63 @@ export const createMarketplaceCommande = actionClient
       console.error("[notifications] nouvelle commande:", err);
     }
 
-    // 4. Initiate payment processing based on selected method
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-
+    // 4. Paiement en ligne via PayTech (Wave / Orange Money). Le paiement à la
+    // livraison (CASH_ON_DELIVERY) a déjà été honoré plus haut. Toute la logique
+    // d'appel passe par le service central `@/lib/paytech` (aucune duplication).
     if (paymentMethod === "WAVE" || paymentMethod === "ORANGE_MONEY") {
-      const transactionRef = `CMD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`;
-
-      const paytechConfigured =
-        process.env.PAYTECH_ENABLED === "true" &&
-        process.env.PAYTECH_API_KEY &&
-        process.env.PAYTECH_API_SECRET;
-
-      if (!paytechConfigured) {
+      if (
+        !paytechConfig.enabled ||
+        !paytechConfig.apiKey ||
+        !paytechConfig.apiSecret
+      ) {
         throw new Error(
           "Le paiement Mobile Money n'est pas activé ou configuré sur ce serveur."
         );
       }
 
-      try {
-        const paytechUrl = "https://paytech.sn/api/payment/request-payment";
-        const requestBody = {
-          item_name: `Commande GestionPro - ${createdCommandeIds.length} boutique${createdCommandeIds.length > 1 ? "s" : ""}`,
-          item_price: totalAmount,
-          ref_command: transactionRef,
-          command_name: `Achat sur la marketplace GestionPro`,
-          currency: "XOF",
-          env: process.env.PAYTECH_ENV === "live" || process.env.PAYTECH_ENV === "prod" ? "prod" : "test",
-          ipn_url: `${appUrl}/api/paytech/ipn`,
-          success_url: `${appUrl}/checkout/success?success=true&method=paytech&ids=${createdCommandeIds.join(",")}`,
-          cancel_url: `${appUrl}/panier`,
-          custom_field: JSON.stringify({
-            kind: "marketplace_order",
-            commandeIds: createdCommandeIds.join(",")
-          })
-        };
+      const transactionRef = `CMD-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(7)
+        .toUpperCase()}`;
 
-        const response = await fetch(paytechUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "API_KEY": process.env.PAYTECH_API_KEY || "",
-            "API_SECRET": process.env.PAYTECH_API_SECRET || ""
-          },
-          body: JSON.stringify(requestBody)
-        });
+      const checkout = await createPaytechCheckout({
+        itemName: `Commande GestionPro - ${createdCommandeIds.length} boutique${
+          createdCommandeIds.length > 1 ? "s" : ""
+        }`,
+        amount: totalAmount,
+        refCommand: transactionRef,
+        commandName: "Achat sur la marketplace GestionPro",
+        successUrl: `${paytechConfig.appUrl}/checkout/success?method=paytech&ids=${createdCommandeIds.join(",")}`,
+        cancelUrl: `${paytechConfig.appUrl}/checkout/cancel?ids=${createdCommandeIds.join(",")}`,
+        customField: {
+          kind: "marketplace_order",
+          commandeIds: createdCommandeIds.join(","),
+        },
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success === 1 || data.success === true) {
-            const redirectUrl = data.redirectUrl || data.redirect_url;
-            if (redirectUrl && data.token) {
-              await prisma.commandeClient.updateMany({
-                where: { id: { in: createdCommandeIds } },
-                data: { paymentToken: data.token },
-              });
-
-              return {
-                success: true,
-                paymentUrl: redirectUrl,
-                accountCreatedEmail: undefined,
-              };
-            }
-          }
-        }
-
-        throw new Error("Réponse PayTech invalide.");
-      } catch (error) {
-        console.error("PayTech marketplace API error :", error);
+      if (!checkout.success || !checkout.redirectUrl) {
         throw new Error(
           "Le paiement Mobile Money est temporairement indisponible. Réessayez ou choisissez le paiement à la livraison."
         );
       }
+
+      // Trace du token PayTech sur les commandes (réconciliation à l'IPN).
+      await prisma.commandeClient.updateMany({
+        where: { id: { in: createdCommandeIds } },
+        data: { paymentToken: checkout.token },
+      });
+
+      return {
+        success: true,
+        paymentUrl: checkout.redirectUrl,
+        accountCreatedEmail: undefined,
+      };
     }
 
-    // Cash on Delivery
+    // Paiement à la livraison
     return {
       success: true,
-      paymentUrl: `/checkout/success?success=true&method=cod&ids=${createdCommandeIds.join(",")}`,
+      paymentUrl: `/checkout/success?method=cod&ids=${createdCommandeIds.join(",")}`,
       accountCreatedEmail: undefined,
     };
   });

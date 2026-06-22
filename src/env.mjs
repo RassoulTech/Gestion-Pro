@@ -24,6 +24,8 @@ export const env = createEnv({
     PAYTECH_API_KEY: z.string().optional(),
     PAYTECH_API_SECRET: z.string().optional(),
     PAYTECH_ENV: z.string().optional(),
+    // "true" (défaut) = sandbox PayTech ; "false" = live. Bascule live = clés + ce flag.
+    PAYTECH_SANDBOX: z.string().optional(),
     CRON_SECRET: z.string().optional(),
   },
   client: {
@@ -54,6 +56,7 @@ export const env = createEnv({
     PAYTECH_API_KEY: process.env.PAYTECH_API_KEY,
     PAYTECH_API_SECRET: process.env.PAYTECH_API_SECRET,
     PAYTECH_ENV: process.env.PAYTECH_ENV,
+    PAYTECH_SANDBOX: process.env.PAYTECH_SANDBOX,
     CRON_SECRET: process.env.CRON_SECRET,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

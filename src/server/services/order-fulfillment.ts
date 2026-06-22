@@ -100,8 +100,8 @@ interface ConfirmOptions {
 /**
  * Confirme des commandes marketplace après un paiement en ligne réussi.
  *
- * Point d'entrée UNIQUE pour toutes les passerelles (PayTech IPN, simulateur,
- * webhooks Stripe/PayDunya). Pour chaque commande non encore CONFIRME :
+ * Point d'entrée UNIQUE pour la confirmation de paiement (IPN PayTech).
+ * Pour chaque commande non encore CONFIRME :
  *   1. décrémente le stock et journalise le mouvement (SORTIE) ;
  *   2. passe la commande en CONFIRME / VALIDEE ;
  *   3. génère la facture et envoie les emails.
