@@ -45,6 +45,12 @@ interface FilterPanelProps {
   searchPlaceholder?: string;
   /** Affiche les presets de période (défaut: true). */
   showPeriod?: boolean;
+  /**
+   * Période appliquée par défaut côté serveur quand aucun `range` n'est dans
+   * l'URL (ex. "30days"). Sert à refléter le bon preset actif et à garder l'URL
+   * propre (sélectionner le défaut retire le param au lieu de l'ajouter).
+   */
+  defaultRange?: string;
   /** Filtres à choix (statut, type, source…) rendus en pills inline. */
   selects?: FilterSelectConfig[];
 }
@@ -55,6 +61,7 @@ const PILL_BASE =
 export function FilterPanel({
   searchPlaceholder,
   showPeriod = true,
+  defaultRange,
   selects = [],
 }: FilterPanelProps) {
   const router = useRouter();
@@ -87,20 +94,20 @@ export function FilterPanel({
 
   // ── Brouillon des filtres structurels (période + selects) ─────────────────
   const [open, setOpen] = useState(false);
-  const [draftRange, setDraftRange] = useState(urlRange);
+  const [draftRange, setDraftRange] = useState(urlRange || defaultRange || "");
   const [draftFrom, setDraftFrom] = useState(urlFrom);
   const [draftTo, setDraftTo] = useState(urlTo);
   const [draftSelects, setDraftSelects] = useState<Record<string, string>>({});
 
   // (Ré)initialise le brouillon depuis l'URL à chaque ouverture
   const syncDraftFromUrl = useCallback(() => {
-    setDraftRange(urlRange);
+    setDraftRange(urlRange || defaultRange || "");
     setDraftFrom(urlFrom);
     setDraftTo(urlTo);
     const next: Record<string, string> = {};
     for (const s of selects) next[s.param] = searchParams.get(s.param) || "";
     setDraftSelects(next);
-  }, [urlRange, urlFrom, urlTo, selects, searchParams]);
+  }, [urlRange, urlFrom, urlTo, defaultRange, selects, searchParams]);
 
   const handleOpenChange = (v: boolean) => {
     if (v) syncDraftFromUrl();
@@ -115,7 +122,7 @@ export function FilterPanel({
     else params.delete("q");
 
     if (showPeriod) {
-      if (draftRange && draftRange !== "custom") {
+      if (draftRange && draftRange !== "custom" && draftRange !== defaultRange) {
         params.set("range", draftRange);
         params.delete("from");
         params.delete("to");

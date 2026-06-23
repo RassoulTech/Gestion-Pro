@@ -12,7 +12,7 @@ import {
 } from "./_components/commandes-client-table";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 
 interface CommandesPageProps {
   params: Promise<{ id: string }>;
@@ -106,7 +106,7 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
           <p className="text-sm text-muted-foreground">Gérez vos ventes et livraisons</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <PeriodFilterSelect />
+          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl font-bold shadow-lg shadow-brand/20 h-11">
             <Link href={`/boutiques/${id}/commandes/new`}>
               <Plus className="mr-2 h-4 w-4" />

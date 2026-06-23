@@ -8,7 +8,7 @@ import { getBoutiqueProduits } from "@/server/queries/produit.queries";
 import { AjustementStockModal } from "./_components/ajustement-modal";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import type { ComponentProps } from "react";
@@ -99,7 +99,7 @@ export default async function StockPage({ params, searchParams }: StockPageProps
           <p className="text-sm text-muted-foreground font-medium">Historique complet des entrées et sorties de marchandises</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <PeriodFilterSelect />
+          <FilterPanel defaultRange="30days" />
           <AjustementStockModal boutiqueId={id} produits={produits} />
         </div>
       </div>

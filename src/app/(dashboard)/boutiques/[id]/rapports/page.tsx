@@ -13,7 +13,7 @@ import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { parseDateFilter } from "@/lib/date-filters";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 
 export const metadata: Metadata = { title: "Rapports" };
 
@@ -122,7 +122,7 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
           <p className="text-sm text-muted-foreground font-medium">Analysez les performances de votre boutique</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <PeriodFilterSelect />
+          <FilterPanel defaultRange="30days" />
         </div>
       </div>
 

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DepensesClient } from "./_components/depenses-client";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 
 interface DepensesPageProps {
   params: Promise<{ id: string }>;
@@ -84,7 +84,7 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
           <p className="text-muted-foreground font-medium">Suivez vos couts operationnels et charges fixes.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <PeriodFilterSelect />
+          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${boutiqueId}/depenses/new`}>
               <Plus className="mr-2 h-5 w-5" />

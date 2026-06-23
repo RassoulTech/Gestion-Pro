@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 
 export const metadata: Metadata = { title: "Commandes fournisseur" };
 
@@ -55,7 +55,7 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
           <p className="text-muted-foreground font-medium">Gérez vos commandes fournisseur</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <PeriodFilterSelect />
+          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${id}/commandes-fournisseur/new`}>
               <Plus className="mr-2 h-5 w-5" />

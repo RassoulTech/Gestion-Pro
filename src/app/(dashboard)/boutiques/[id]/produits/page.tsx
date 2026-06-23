@@ -26,7 +26,7 @@ import { ProduitActions } from "./_components/produit-actions";
 import { ExcelImportButton } from "./_components/excel-import-button";
 import { parseDateFilter } from "@/lib/date-filters";
 import { SimplePagination } from "@/components/ui/simple-pagination";
-import { PeriodFilterSelect } from "@/components/dashboard/period-filter-select";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 
 interface ProduitsPageProps {
   params: Promise<{ id: string }>;
@@ -166,7 +166,7 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         </div>
 
         <div className="flex flex-wrap items-center gap-3 self-stretch md:self-auto sm:justify-end">
-          <PeriodFilterSelect />
+          <FilterPanel defaultRange="30days" />
           <Button asChild variant="outline" className="flex-1 sm:flex-initial h-12 rounded-xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm">
             <Link href={`/boutiques/${boutiqueId}/stock`}>
               <ArrowRightLeft className="mr-2 h-4 w-4 text-slate-500" />
