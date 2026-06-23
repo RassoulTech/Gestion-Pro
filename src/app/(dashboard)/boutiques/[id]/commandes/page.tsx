@@ -106,7 +106,6 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
           <p className="text-sm text-muted-foreground">Gérez vos ventes et livraisons</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl font-bold shadow-lg shadow-brand/20 h-11">
             <Link href={`/boutiques/${id}/commandes/new`}>
               <Plus className="mr-2 h-4 w-4" />
@@ -115,6 +114,25 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
           </Button>
         </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + statut + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher par code ou client…"
+        selects={[
+          {
+            param: "status",
+            label: "Statut",
+            allLabel: "Tous",
+            options: [
+              { value: "EN_ATTENTE", label: "En attente" },
+              { value: "VALIDEE", label: "Validée" },
+              { value: "LIVREE", label: "Livrée" },
+              { value: "ANNULEE", label: "Annulée" },
+            ],
+          },
+        ]}
+      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

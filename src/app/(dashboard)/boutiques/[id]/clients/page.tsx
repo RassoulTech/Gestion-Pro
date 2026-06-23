@@ -88,7 +88,6 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
           <p className="text-muted-foreground font-medium">Gérez votre base de clients et leur historique.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${boutiqueId}/clients/new`}>
               <Plus className="mr-2 h-5 w-5" />
@@ -97,6 +96,12 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
           </Button>
         </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher un client (nom, téléphone, email)…"
+      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

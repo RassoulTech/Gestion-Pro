@@ -143,6 +143,12 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
 
   if (!boutique) notFound();
 
+  const categories = await prisma.categorie.findMany({
+    where: { boutiqueId },
+    select: { id: true, nom: true },
+    orderBy: { nom: "asc" },
+  });
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 sm:space-y-12 py-4 sm:py-6 px-4 sm:px-6">
       
@@ -166,7 +172,6 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
         </div>
 
         <div className="flex flex-wrap items-center gap-3 self-stretch md:self-auto sm:justify-end">
-          <FilterPanel defaultRange="30days" />
           <Button asChild variant="outline" className="flex-1 sm:flex-initial h-12 rounded-xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm">
             <Link href={`/boutiques/${boutiqueId}/stock`}>
               <ArrowRightLeft className="mr-2 h-4 w-4 text-slate-500" />
@@ -182,6 +187,30 @@ export default async function ProduitsPage({ params, searchParams }: ProduitsPag
           </Button>
         </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + statut stock + catégorie + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher un produit, un code…"
+        selects={[
+          {
+            param: "status",
+            label: "Stock",
+            allLabel: "Tous",
+            options: [
+              { value: "instock", label: "En stock" },
+              { value: "alert", label: "Stock critique" },
+              { value: "outofstock", label: "Rupture" },
+            ],
+          },
+          {
+            param: "category",
+            label: "Catégorie",
+            allLabel: "Toutes",
+            options: categories.map((c) => ({ value: c.id, label: c.nom })),
+          },
+        ]}
+      />
 
       {/* Contenu principal */}
       <div className="space-y-8">
