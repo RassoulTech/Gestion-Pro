@@ -8,15 +8,17 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { CartBadge } from "@/components/marketing/cart-badge";
+import { useTranslations } from "next-intl";
 import { BrandLogo } from "@/components/brand-logo";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
-const navLinks: Array<{ href: string; label: string }> = [
-  { href: "/#fonctionnalites", label: "Fonctionnalités" },
-  { href: "/#pour-qui", label: "Pour qui" },
-  { href: "/#tarifs", label: "Tarifs" },
-  { href: "/marketplace", label: "Marketplace" },
-];
+const NAV_ITEMS = [
+  { href: "/#fonctionnalites", key: "features" },
+  { href: "/#pour-qui", key: "forWho" },
+  { href: "/#tarifs", key: "pricing" },
+  { href: "/marketplace", key: "marketplace" },
+] as const;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -25,6 +27,8 @@ export function FloatingNavbar() {
   const [open, setOpen] = React.useState(false);
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
+  const t = useTranslations("common");
+  const tn = useTranslations("nav");
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -68,13 +72,13 @@ export function FloatingNavbar() {
           {/* Nav Links Desktop */}
           <div className="hidden flex-1 items-center justify-center lg:flex">
             <ul className="flex items-center gap-1 rounded-full bg-foreground/5 p-1 backdrop-blur-md">
-              {navLinks.map((l) => (
+              {NAV_ITEMS.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
                     className="relative whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground transition-all hover:text-foreground group"
                   >
-                    {l.label}
+                    {tn(l.key)}
                     <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-brand rounded-full transition-all group-hover:w-4" />
                   </Link>
                 </li>
@@ -84,6 +88,7 @@ export function FloatingNavbar() {
 
           {/* Actions Desktop */}
           <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <LocaleSwitcher className="h-9 w-9 rounded-xl" />
             <ThemeToggle className="h-9 w-9 rounded-xl" />
             <CartBadge className="h-9 w-9 rounded-xl" />
             {isLoggedIn ? (
@@ -91,12 +96,12 @@ export function FloatingNavbar() {
                 <Button asChild variant="ghost" className="h-9 rounded-xl font-medium gap-1.5">
                   <Link href="/mes-commandes">
                     <Package className="h-4 w-4" />
-                    Mes commandes
+                    {t("myOrders")}
                   </Link>
                 </Button>
                 <Button asChild variant="brand" className="h-9 rounded-xl px-5 font-semibold shadow-lg shadow-brand/10 hover:shadow-brand/20 active-press">
                   <Link href="/boutiques">
-                    Mon espace
+                    {t("mySpace")}
                     <ArrowRight className="ml-1.5 h-4 w-4" />
                   </Link>
                 </Button>
@@ -104,7 +109,7 @@ export function FloatingNavbar() {
             ) : (
               <>
                 <Button asChild variant="ghost" className="h-9 rounded-xl font-medium">
-                  <Link href="/login">Connexion</Link>
+                  <Link href="/login">{t("login")}</Link>
                 </Button>
                 <Button
                   asChild
@@ -112,7 +117,7 @@ export function FloatingNavbar() {
                   className="h-9 rounded-xl px-5 font-semibold shadow-lg shadow-brand/10 hover:shadow-brand/20 active-press"
                 >
                   <Link href="/register">
-                    Essai gratuit
+                    {t("freeTrial")}
                     <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </Button>
@@ -123,6 +128,7 @@ export function FloatingNavbar() {
           {/* Mobile UI */}
           <div className="ml-auto flex items-center gap-2 lg:hidden">
             <CartBadge />
+            <LocaleSwitcher className="h-9 w-9 rounded-xl" />
             <ThemeToggle className="h-9 w-9 rounded-xl" />
             <button
               onClick={() => setOpen(!open)}
@@ -152,14 +158,14 @@ export function FloatingNavbar() {
               className="fixed inset-x-4 top-20 z-50 overflow-hidden rounded-3xl border border-white/10 bg-card p-6 shadow-2xl lg:hidden"
             >
               <ul className="space-y-2">
-                {navLinks.map((l) => (
+                {NAV_ITEMS.map((l) => (
                   <li key={l.href}>
                     <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
                       className="block rounded-xl px-4 py-3 text-lg font-semibold text-foreground hover:bg-foreground/5"
                     >
-                      {l.label}
+                      {tn(l.key)}
                     </Link>
                   </li>
                 ))}
@@ -171,7 +177,7 @@ export function FloatingNavbar() {
                       className="flex items-center gap-2 rounded-xl px-4 py-3 text-lg font-semibold text-foreground hover:bg-foreground/5"
                     >
                       <Package className="h-4 w-4" />
-                      Mes commandes
+                      {t("myOrders")}
                     </Link>
                   </li>
                 )}
@@ -179,15 +185,15 @@ export function FloatingNavbar() {
               <div className="mt-6 grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
                 {isLoggedIn ? (
                   <Button asChild variant="brand" size="lg" className="rounded-2xl h-12 col-span-2">
-                    <Link href="/boutiques" onClick={() => setOpen(false)}>Mon espace</Link>
+                    <Link href="/boutiques" onClick={() => setOpen(false)}>{t("mySpace")}</Link>
                   </Button>
                 ) : (
                   <>
                     <Button asChild variant="outline" size="lg" className="rounded-2xl h-12">
-                      <Link href="/login" onClick={() => setOpen(false)}>Connexion</Link>
+                      <Link href="/login" onClick={() => setOpen(false)}>{t("login")}</Link>
                     </Button>
                     <Button asChild variant="brand" size="lg" className="rounded-2xl h-12">
-                      <Link href="/register" onClick={() => setOpen(false)}>S&apos;inscrire</Link>
+                      <Link href="/register" onClick={() => setOpen(false)}>{t("register")}</Link>
                     </Button>
                   </>
                 )}

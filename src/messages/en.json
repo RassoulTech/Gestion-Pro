@@ -1,0 +1,58 @@
+{
+  "common": {
+    "login": "Sign in",
+    "register": "Sign up",
+    "freeTrial": "Free trial",
+    "mySpace": "My workspace",
+    "myOrders": "My orders",
+    "logout": "Sign out",
+    "loading": "Loading…",
+    "search": "Search",
+    "cancel": "Cancel",
+    "save": "Save",
+    "apply": "Apply",
+    "reset": "Reset"
+  },
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "forWho": "Who it's for",
+    "pricing": "Pricing",
+    "marketplace": "Marketplace"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "select": "Choose language"
+  },
+  "header": {
+    "myShops": "My shops",
+    "profile": "Profile",
+    "logout": "Sign out",
+    "toggleTheme": "Toggle theme",
+    "userMenu": "User menu",
+    "adminTitle": "Admin Control Center"
+  },
+  "filters": {
+    "filters": "Filters",
+    "period": "Period",
+    "from": "From",
+    "to": "To",
+    "apply": "Apply",
+    "reset": "Reset",
+    "clearAll": "Clear all",
+    "all": "All",
+    "periodChip": "Period: {value}",
+    "presets": {
+      "today": "Today",
+      "3days": "Last 3 days",
+      "7days": "Last 7 days",
+      "15days": "Last 15 days",
+      "30days": "Last 30 days",
+      "thismonth": "This month",
+      "3months": "Last 3 months",
+      "thisyear": "This year",
+      "all": "All data",
+      "custom": "Custom"
+    }
+  }
+}

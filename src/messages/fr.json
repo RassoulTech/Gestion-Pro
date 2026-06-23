@@ -1,0 +1,58 @@
+{
+  "common": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "freeTrial": "Essai gratuit",
+    "mySpace": "Mon espace",
+    "myOrders": "Mes commandes",
+    "logout": "Déconnexion",
+    "loading": "Chargement…",
+    "search": "Rechercher",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser"
+  },
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "forWho": "Pour qui",
+    "pricing": "Tarifs",
+    "marketplace": "Marketplace"
+  },
+  "localeSwitcher": {
+    "label": "Langue",
+    "select": "Choisir la langue"
+  },
+  "header": {
+    "myShops": "Mes boutiques",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "toggleTheme": "Basculer le thème",
+    "userMenu": "Menu utilisateur",
+    "adminTitle": "Centre de Contrôle Admin"
+  },
+  "filters": {
+    "filters": "Filtres",
+    "period": "Période",
+    "from": "Du",
+    "to": "Au",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser",
+    "clearAll": "Tout effacer",
+    "all": "Tous",
+    "periodChip": "Période : {value}",
+    "presets": {
+      "today": "Aujourd'hui",
+      "3days": "3 derniers jours",
+      "7days": "7 derniers jours",
+      "15days": "15 derniers jours",
+      "30days": "30 derniers jours",
+      "thismonth": "Ce mois",
+      "3months": "3 derniers mois",
+      "thisyear": "Cette année",
+      "all": "Toutes les données",
+      "custom": "Personnalisé"
+    }
+  }
+}

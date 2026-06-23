@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Search, SlidersHorizontal, X, Loader2, RotateCcw, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,19 +20,23 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-/** Presets de période — les valeurs correspondent aux clés de parseDateFilter. */
-const PERIOD_PRESETS: { value: string; label: string }[] = [
-  { value: "today", label: "Aujourd'hui" },
-  { value: "3days", label: "3 derniers jours" },
-  { value: "7days", label: "7 derniers jours" },
-  { value: "15days", label: "15 derniers jours" },
-  { value: "30days", label: "30 derniers jours" },
-  { value: "thismonth", label: "Ce mois" },
-  { value: "3months", label: "3 derniers mois" },
-  { value: "thisyear", label: "Cette année" },
-  { value: "all", label: "Toutes les données" },
-  { value: "custom", label: "Personnalisé" },
-];
+/**
+ * Presets de période — les valeurs correspondent aux clés de parseDateFilter
+ * ET aux clés de traduction `filters.presets.*` (les libellés sont résolus via
+ * next-intl à l'exécution).
+ */
+const PERIOD_VALUES = [
+  "today",
+  "3days",
+  "7days",
+  "15days",
+  "30days",
+  "thismonth",
+  "3months",
+  "thisyear",
+  "all",
+  "custom",
+] as const;
 
 export interface FilterSelectConfig {
   param: string;
@@ -67,6 +72,7 @@ export function FilterPanel({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations("filters");
   const [isPending, startTransition] = useTransition();
 
   const urlRange = searchParams.get("range") || "";
@@ -169,14 +175,16 @@ export function FilterPanel({
   const activeChips = useMemo(() => {
     const chips: { key: string; label: string; onRemove: () => void }[] = [];
     if (showPeriod && urlRange) {
-      const preset = PERIOD_PRESETS.find((p) => p.value === urlRange);
+      const isKnownPreset = (PERIOD_VALUES as readonly string[]).includes(urlRange);
       const label =
         urlRange === "custom" && urlFrom && urlTo
           ? `${urlFrom.split("-").reverse().join("/")} → ${urlTo.split("-").reverse().join("/")}`
-          : preset?.label ?? urlRange;
+          : isKnownPreset
+            ? t(`presets.${urlRange}`)
+            : urlRange;
       chips.push({
         key: "period",
-        label: `Période : ${label}`,
+        label: t("periodChip", { value: label }),
         onRemove: () => removeParams(["range", "from", "to"]),
       });
     }
@@ -203,16 +211,16 @@ export function FilterPanel({
       {showPeriod && (
         <div className="space-y-2.5">
           <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">
-            Période
+            {t("period")}
           </p>
           <div className="grid grid-cols-2 gap-2">
-            {PERIOD_PRESETS.map((p) => {
-              const active = draftRange === p.value;
+            {PERIOD_VALUES.map((p) => {
+              const active = draftRange === p;
               return (
                 <button
-                  key={p.value}
+                  key={p}
                   type="button"
-                  onClick={() => setDraftRange(p.value)}
+                  onClick={() => setDraftRange(p)}
                   className={cn(
                     PILL_BASE,
                     active
@@ -220,7 +228,7 @@ export function FilterPanel({
                       : "border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/60"
                   )}
                 >
-                  {p.label}
+                  {t(`presets.${p}`)}
                 </button>
               );
             })}
@@ -229,7 +237,7 @@ export function FilterPanel({
             <div className="grid grid-cols-2 gap-2.5 pt-1">
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Du
+                  {t("from")}
                 </label>
                 <Input
                   type="date"
@@ -240,7 +248,7 @@ export function FilterPanel({
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Au
+                  {t("to")}
                 </label>
                 <Input
                   type="date"
@@ -273,7 +281,7 @@ export function FilterPanel({
                     : "border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/60"
                 )}
               >
-                {s.allLabel ?? "Tous"}
+                {s.allLabel ?? t("all")}
               </button>
               {s.options.map((o) => {
                 const active = current === o.value;
@@ -309,7 +317,7 @@ export function FilterPanel({
         className="flex-1 h-11 rounded-xl font-bold border-slate-200 dark:border-zinc-800"
       >
         <RotateCcw className="mr-2 h-4 w-4 text-slate-400" />
-        Réinitialiser
+        {t("reset")}
       </Button>
       <Button
         type="button"
@@ -317,7 +325,7 @@ export function FilterPanel({
         className="flex-1 h-11 rounded-xl font-black bg-brand text-white shadow-md shadow-brand/10"
       >
         <Check className="mr-2 h-4 w-4" />
-        Appliquer
+        {t("apply")}
       </Button>
     </div>
   );
@@ -328,7 +336,7 @@ export function FilterPanel({
       className="h-11 sm:h-12 rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 gap-2 shrink-0"
     >
       <SlidersHorizontal className="h-4 w-4 text-orange-500" />
-      Filtres
+      {t("filters")}
       {activeCount > 0 && (
         <span className="ml-0.5 h-5 min-w-5 px-1.5 rounded-full bg-brand text-white text-[10px] font-black flex items-center justify-center">
           {activeCount}
@@ -382,7 +390,7 @@ export function FilterPanel({
               <SheetHeader className="text-left pb-2">
                 <SheetTitle className="flex items-center gap-2 font-black">
                   <SlidersHorizontal className="h-5 w-5 text-orange-500" />
-                  Filtres
+                  {t("filters")}
                 </SheetTitle>
               </SheetHeader>
               <div className="flex-1">{panelFields}</div>
@@ -413,7 +421,7 @@ export function FilterPanel({
             onClick={resetAll}
             className="text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 underline underline-offset-2"
           >
-            Tout effacer
+            {t("clearAll")}
           </button>
         </div>
       )}

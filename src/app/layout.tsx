@@ -7,6 +7,8 @@ import {
   Plus_Jakarta_Sans,
 } from "next/font/google";
 import { Toaster } from "sonner";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "@/components/providers";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import { auth } from "@/lib/auth";
@@ -62,16 +64,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${inter.variable} font-sans`}
       >
-        <Providers session={session}>
-          {children}
-          <Toaster richColors position="top-right" />
-        </Providers>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers session={session}>
+            {children}
+            <Toaster richColors position="top-right" />
+          </Providers>
+        </NextIntlClientProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

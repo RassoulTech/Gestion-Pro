@@ -9,7 +9,9 @@ import { signOut, useSession } from "next-auth/react";
 import { Sun, Moon, Store, User, LogOut } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import {
   Avatar,
   AvatarFallback,
@@ -40,13 +42,14 @@ type HeaderProps = {
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations("header");
 
   return (
     <Button
       variant="ghost"
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label="Basculer le thème"
+      aria-label={t("toggleTheme")}
       className="h-9 w-9 text-muted-foreground hover:text-foreground"
     >
       <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
@@ -67,6 +70,7 @@ function UserMenu({
   userImage?: string | null;
 }) {
   const { data: session } = useSession();
+  const t = useTranslations("header");
 
   // Prefer session data once loaded, fall back to server-passed props
   const name = session?.user?.name ?? userName ?? "Utilisateur";
@@ -81,7 +85,7 @@ function UserMenu({
         <Button
           variant="ghost"
           className="relative h-9 w-9 rounded-full p-0 focus-visible:ring-1"
-          aria-label="Menu utilisateur"
+          aria-label={t("userMenu")}
         >
           <Avatar className="h-8 w-8">
             {image && <AvatarImage src={image} alt={name} />}
@@ -112,13 +116,13 @@ function UserMenu({
           <DropdownMenuItem asChild>
             <Link href="/boutiques" className="cursor-pointer">
               <Store className="mr-2 h-4 w-4" />
-              Mes boutiques
+              {t("myShops")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/profil" className="cursor-pointer">
               <User className="mr-2 h-4 w-4" />
-              Profil
+              {t("profile")}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -130,7 +134,7 @@ function UserMenu({
           onSelect={() => signOut({ callbackUrl: "/login" })}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Déconnexion
+          {t("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -146,8 +150,9 @@ export function Header({
   userImage,
 }: HeaderProps) {
   const pathname = usePathname();
+  const t = useTranslations("header");
   const isAdmin = pathname?.startsWith("/admin") ?? false;
-  const defaultTitle = isAdmin ? "Centre de Contrôle Admin" : <span className="tracking-tight">Gestion<span className="text-brand">Pro</span></span>;
+  const defaultTitle = isAdmin ? t("adminTitle") : <span className="tracking-tight">Gestion<span className="text-brand">Pro</span></span>;
 
   let boutiqueLogo: string | null = null;
   try {
@@ -187,6 +192,7 @@ export function Header({
       {/* Right-side controls */}
       <div className="ml-auto flex items-center gap-1">
         <NotificationBell />
+        <LocaleSwitcher />
         <ThemeToggle />
         <UserMenu
           userName={userName}
