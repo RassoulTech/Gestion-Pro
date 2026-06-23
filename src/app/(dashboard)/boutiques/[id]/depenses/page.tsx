@@ -76,6 +76,17 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
 
   const totalDepenses = totalAmountResult._sum.montant || 0;
 
+  // Catégories réellement présentes → options de filtre fiables
+  const categorieRows = await prisma.depense.findMany({
+    where: { boutiqueId },
+    select: { categorie: true },
+    distinct: ["categorie"],
+  });
+  const availableCategories = categorieRows
+    .map((r) => r.categorie)
+    .filter((c): c is string => !!c)
+    .sort((a, b) => a.localeCompare(b));
+
   return (
     <div className="space-y-8 pb-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -84,7 +95,6 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
           <p className="text-muted-foreground font-medium">Suivez vos couts operationnels et charges fixes.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${boutiqueId}/depenses/new`}>
               <Plus className="mr-2 h-5 w-5" />
@@ -93,6 +103,24 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
           </Button>
         </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + catégorie + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher (libellé, catégorie)…"
+        selects={
+          availableCategories.length
+            ? [
+                {
+                  param: "category",
+                  label: "Catégorie",
+                  allLabel: "Toutes",
+                  options: availableCategories.map((c) => ({ value: c, label: c })),
+                },
+              ]
+            : []
+        }
+      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

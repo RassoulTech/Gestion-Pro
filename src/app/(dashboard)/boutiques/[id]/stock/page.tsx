@@ -99,10 +99,36 @@ export default async function StockPage({ params, searchParams }: StockPageProps
           <p className="text-sm text-muted-foreground font-medium">Historique complet des entrées et sorties de marchandises</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
           <AjustementStockModal boutiqueId={id} produits={produits} />
         </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + type + source + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher (produit, code, source)…"
+        selects={[
+          {
+            param: "type",
+            label: "Type",
+            allLabel: "Tous",
+            options: [
+              { value: "ENTREE", label: "Entrées" },
+              { value: "SORTIE", label: "Sorties" },
+            ],
+          },
+          ...(availableSources.length
+            ? [
+                {
+                  param: "source",
+                  label: "Source",
+                  allLabel: "Toutes",
+                  options: availableSources.map((s) => ({ value: s, label: s })),
+                },
+              ]
+            : []),
+        ]}
+      />
       
       <PremiumGuard
         currentPlanName={quotas.nom}

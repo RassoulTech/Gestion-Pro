@@ -3,6 +3,7 @@ import { Truck, FileText, Plus } from "lucide-react";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
 import { getBoutiqueCommandesFournisseur } from "@/server/queries/commande.queries";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -39,13 +40,20 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
   const dateFilter = parseDateFilter(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
 
-  const { data: commandes, total } = await getBoutiqueCommandesFournisseur(id, {
-    search: q,
-    page,
-    perPage: limit,
-    dateFilter: filterParam,
-    supplierId,
-  });
+  const [{ data: commandes, total }, fournisseurs] = await Promise.all([
+    getBoutiqueCommandesFournisseur(id, {
+      search: q,
+      page,
+      perPage: limit,
+      dateFilter: filterParam,
+      supplierId,
+    }),
+    prisma.fournisseur.findMany({
+      where: { boutiqueId: id },
+      select: { id: true, nom: true },
+      orderBy: { nom: "asc" },
+    }),
+  ]);
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">
@@ -55,7 +63,6 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
           <p className="text-muted-foreground font-medium">Gérez vos commandes fournisseur</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">
             <Link href={`/boutiques/${id}/commandes-fournisseur/new`}>
               <Plus className="mr-2 h-5 w-5" />
@@ -64,6 +71,24 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
           </Button>
         </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + fournisseur + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher un achat (code)…"
+        selects={
+          fournisseurs.length
+            ? [
+                {
+                  param: "supplierId",
+                  label: "Fournisseur",
+                  allLabel: "Tous",
+                  options: fournisseurs.map((f) => ({ value: f.id, label: f.nom })),
+                },
+              ]
+            : []
+        }
+      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

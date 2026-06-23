@@ -72,10 +72,13 @@ export default async function CategoriesPage({
             Organisez vos produits par catégorie
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
-        </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher une catégorie…"
+      />
 
       {/* Contenu principal */}
       <div className="space-y-6">

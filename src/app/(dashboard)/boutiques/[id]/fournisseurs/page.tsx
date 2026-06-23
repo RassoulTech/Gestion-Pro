@@ -46,10 +46,13 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
           <h1 className="text-3xl font-black tracking-tight">Fournisseurs</h1>
           <p className="text-muted-foreground font-medium">Gérez vos fournisseurs et vos achats</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <FilterPanel defaultRange="30days" />
-        </div>
       </div>
+
+      {/* Barre de filtres unifiée (recherche + période) */}
+      <FilterPanel
+        defaultRange="30days"
+        searchPlaceholder="Rechercher un fournisseur…"
+      />
 
       {/* Contenu principal */}
       <div className="space-y-6">
