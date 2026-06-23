@@ -33,13 +33,15 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useBoutique } from "@/components/layouts/boutique-provider";
 
 type PlanCode = "STARTER" | "PRO" | "ENTERPRISE";
 
 type NavItem = {
-  label: string;
+  /** Clé de traduction sous `sidebar.items.*`. */
+  labelKey: string;
   href: string;
   icon: React.ElementType;
   requires?: PlanCode;
@@ -49,7 +51,8 @@ type NavItem = {
 type BottomNavItem = NavItem;
 
 type QuickAction = {
-  label: string;
+  /** Clé de traduction sous `bottomNav.quick.*`. */
+  labelKey: string;
   href: string;
   icon: React.ElementType;
   color: string;
@@ -69,21 +72,21 @@ function isLocked(item: NavItem, currentPlan?: PlanCode): boolean {
 function getBottomNavItems(boutiqueId?: string, isAdmin?: boolean): BottomNavItem[] {
   if (isAdmin) {
     return [
-      { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-      { label: "Vendeurs", href: "/admin/vendeurs", icon: Users },
-      { label: "Boutiques", href: "/admin/boutiques", icon: Store },
-      { label: "Plans", href: "/admin/plans", icon: Tag },
+      { labelKey: "dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+      { labelKey: "sellers", href: "/admin/vendeurs", icon: Users },
+      { labelKey: "shops", href: "/admin/boutiques", icon: Store },
+      { labelKey: "plans", href: "/admin/plans", icon: Tag },
     ];
   }
   if (!boutiqueId) {
-    return [{ label: "Boutiques", href: "/boutiques", icon: Store }];
+    return [{ labelKey: "myShops", href: "/boutiques", icon: Store }];
   }
   const base = `/boutiques/${boutiqueId}`;
   return [
-    { label: "Dashboard", href: base, icon: LayoutDashboard },
-    { label: "Commandes", href: `${base}/commandes`, icon: ShoppingCart },
-    { label: "Produits", href: `${base}/produits`, icon: Package },
-    { label: "Stock", href: `${base}/stock`, icon: Layers, requires: "PRO" },
+    { labelKey: "dashboard", href: base, icon: LayoutDashboard },
+    { labelKey: "orders", href: `${base}/commandes`, icon: ShoppingCart },
+    { labelKey: "products", href: `${base}/produits`, icon: Package },
+    { labelKey: "stock", href: `${base}/stock`, icon: Layers, requires: "PRO" },
   ];
 }
 
@@ -91,56 +94,57 @@ function getQuickActions(boutiqueId?: string): QuickAction[] {
   if (!boutiqueId) return [];
   const base = `/boutiques/${boutiqueId}`;
   return [
-    { label: "Nouvelle commande", href: `${base}/commandes/new`, icon: ShoppingCart, color: "bg-brand text-white" },
-    { label: "Ajouter produit", href: `${base}/produits/new`, icon: Package, color: "bg-emerald-500 text-white" },
-    { label: "Ajouter client", href: `${base}/clients/new`, icon: Users, color: "bg-blue-500 text-white" },
-    { label: "Ajouter dépense", href: `${base}/depenses/new`, icon: Wallet, color: "bg-rose-500 text-white" },
+    { labelKey: "newOrder", href: `${base}/commandes/new`, icon: ShoppingCart, color: "bg-brand text-white" },
+    { labelKey: "addProduct", href: `${base}/produits/new`, icon: Package, color: "bg-emerald-500 text-white" },
+    { labelKey: "addClient", href: `${base}/clients/new`, icon: Users, color: "bg-blue-500 text-white" },
+    { labelKey: "addExpense", href: `${base}/depenses/new`, icon: Wallet, color: "bg-rose-500 text-white" },
   ];
 }
 
 function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean, boutiqueSlug?: string): NavItem[] {
   if (isAdmin) {
     return [
-      { label: "Utilisateurs", href: "/admin/utilisateurs", icon: User },
-      { label: "Abonnements", href: "/admin/abonnements", icon: Wallet },
-      { label: "Revenus", href: "/admin/revenus", icon: BarChart3 },
-      { label: "Logs", href: "/admin/logs", icon: FileText },
+      { labelKey: "users", href: "/admin/utilisateurs", icon: User },
+      { labelKey: "subscriptions", href: "/admin/abonnements", icon: Wallet },
+      { labelKey: "revenue", href: "/admin/revenus", icon: BarChart3 },
+      { labelKey: "logs", href: "/admin/logs", icon: FileText },
     ];
   }
   if (!boutiqueId) return [];
   const base = `/boutiques/${boutiqueId}`;
   return [
     // Gestion commerciale (rest)
-    { label: "Clients", href: `${base}/clients`, icon: Users },
-    { label: "Catégories", href: `${base}/categories`, icon: Tag },
-    { label: "Caisse", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
-    { label: "Ventes Flash", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
+    { labelKey: "clients", href: `${base}/clients`, icon: Users },
+    { labelKey: "categories", href: `${base}/categories`, icon: Tag },
+    { labelKey: "pos", href: `${base}/pos`, icon: Calculator, requires: "PRO" },
+    { labelKey: "flashSales", href: `${base}/ventes-flash`, icon: Zap, requires: "PRO" },
     // Fournisseurs
-    { label: "Fournisseurs", href: `${base}/fournisseurs`, icon: Truck },
+    { labelKey: "suppliers", href: `${base}/fournisseurs`, icon: Truck },
     // Gestion financière
-    { label: "Factures", href: `${base}/factures`, icon: FileText, requires: "PRO" },
-    { label: "Dépenses", href: `${base}/depenses`, icon: Wallet },
-    { label: "Achats Fourn.", href: `${base}/commandes-fournisseur`, icon: Truck },
-    { label: "Rapports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
+    { labelKey: "invoices", href: `${base}/factures`, icon: FileText, requires: "PRO" },
+    { labelKey: "expenses", href: `${base}/depenses`, icon: Wallet },
+    { labelKey: "supplierPurchases", href: `${base}/commandes-fournisseur`, icon: Truck },
+    { labelKey: "reports", href: `${base}/rapports`, icon: BarChart3, requires: "PRO" },
     // Marketing & Visibilité
     {
-      label: "Ma Boutique",
+      labelKey: "myShop",
       href: boutiqueSlug ? `/s/${boutiqueSlug}` : `${base}/parametres?tab=boutique`,
       icon: Store,
       external: !!boutiqueSlug,
     },
-    { label: "QR Code", href: `${base}/qrcode`, icon: QrCode },
-    { label: "Marketplace", href: "/marketplace", icon: Megaphone, external: true },
+    { labelKey: "qrcode", href: `${base}/qrcode`, icon: QrCode },
+    { labelKey: "marketplace", href: "/marketplace", icon: Megaphone, external: true },
     // Compte
-    { label: "Membres", href: `${base}/membres`, icon: Users2, requires: "PRO" },
-    { label: "Facturation", href: `${base}/facturation`, icon: CreditCard },
-    { label: "Paramètres", href: `${base}/parametres`, icon: Settings },
-    { label: "Mes Boutiques", href: "/boutiques", icon: Store },
+    { labelKey: "members", href: `${base}/membres`, icon: Users2, requires: "PRO" },
+    { labelKey: "billing", href: `${base}/facturation`, icon: CreditCard },
+    { labelKey: "settings", href: `${base}/parametres`, icon: Settings },
+    { labelKey: "myShops", href: "/boutiques", icon: Store },
   ];
 }
 
 function SheetFooter({ onClose }: { onClose: () => void }) {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations("header");
   return (
     <div className="flex items-center gap-2 px-3">
       <Link
@@ -151,12 +155,12 @@ function SheetFooter({ onClose }: { onClose: () => void }) {
         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 shrink-0">
           <User className="h-5 w-5" />
         </span>
-        <span>Profil</span>
+        <span>{t("profile")}</span>
       </Link>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-zinc-400 transition-colors hover:bg-white/20 hover:text-white active:scale-90 shrink-0 relative"
-        aria-label="Changer le thème"
+        aria-label={t("toggleTheme")}
       >
         <Sun className="h-5 w-5 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
         <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
@@ -164,7 +168,7 @@ function SheetFooter({ onClose }: { onClose: () => void }) {
       <button
         onClick={() => signOut({ callbackUrl: "/login" })}
         className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 transition-colors hover:bg-rose-500/20 hover:text-rose-300 active:scale-90 shrink-0"
-        aria-label="Déconnexion"
+        aria-label={t("logout")}
       >
         <LogOut className="h-5 w-5" />
       </button>
@@ -177,6 +181,8 @@ export function BottomNav() {
   const params = useParams();
   const boutiqueId = params?.id as string | undefined;
   const isAdmin = pathname.startsWith("/admin");
+  const tNav = useTranslations("sidebar");
+  const tb = useTranslations("bottomNav");
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -286,7 +292,7 @@ export function BottomNav() {
           {/* Header */}
           <div className="flex items-center justify-between px-5 pb-3 pt-1">
             <h3 className="text-sm font-black uppercase tracking-widest text-white/60">
-              Navigation
+              {tb("navigation")}
             </h3>
             <button
               onClick={close}
@@ -302,7 +308,7 @@ export function BottomNav() {
             {quickActions.length > 0 && (
               <div className="mb-3">
                 <p className="px-2 pb-2 text-[10px] font-black uppercase tracking-widest text-white/40">
-                  Actions rapides
+                  {tb("quickActions")}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {quickActions.map((qa) => {
@@ -319,10 +325,10 @@ export function BottomNav() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[11px] font-black leading-tight text-white truncate">
-                            {qa.label}
+                            {tb(`quick.${qa.labelKey}`)}
                           </p>
                           <p className="text-[9px] font-bold text-white/40 flex items-center gap-1">
-                            <Plus className="h-2.5 w-2.5" /> Créer
+                            <Plus className="h-2.5 w-2.5" /> {tb("create")}
                           </p>
                         </div>
                       </Link>
@@ -336,7 +342,7 @@ export function BottomNav() {
             {moreItems.length > 0 && (
               <>
                 <p className="px-2 pt-1 pb-2 text-[10px] font-black uppercase tracking-widest text-white/40">
-                  Toutes les sections
+                  {tb("allSections")}
                 </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
                   {moreItems.map((item, index) => {
@@ -374,10 +380,10 @@ export function BottomNav() {
                           <Icon className="h-5 w-5" />
                         </span>
                         <span className="text-[10px] font-bold leading-tight">
-                          {item.label}
+                          {tNav(`items.${item.labelKey}`)}
                         </span>
                         {locked && (
-                          <Lock className="absolute top-1.5 right-1.5 h-3 w-3 text-amber-500" aria-label="Plan supérieur requis" />
+                          <Lock className="absolute top-1.5 right-1.5 h-3 w-3 text-amber-500" aria-label={tNav("planRequired")} />
                         )}
                       </Link>
                     );
@@ -437,12 +443,12 @@ export function BottomNav() {
                       )}
                     />
                   </span>
-                  <span className="relative z-10 truncate max-w-[60px]">{item.label}</span>
+                  <span className="relative z-10 truncate max-w-[60px]">{tNav(`items.${item.labelKey}`)}</span>
                   {isActive && (
                     <span className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-brand" />
                   )}
                   {locked && (
-                    <Lock className="absolute top-0 right-1 h-2.5 w-2.5 text-amber-500" aria-label="Plan supérieur requis" />
+                    <Lock className="absolute top-0 right-1 h-2.5 w-2.5 text-amber-500" aria-label={tNav("planRequired")} />
                   )}
                 </Link>
               );
@@ -458,7 +464,7 @@ export function BottomNav() {
                     ? "text-white"
                     : "text-zinc-500 hover:text-zinc-300"
                 )}
-                aria-label="Plus de navigation"
+                aria-label={tb("moreNav")}
                 aria-expanded={sheetOpen}
               >
                 {(sheetOpen || isMoreActive) && (
@@ -472,7 +478,7 @@ export function BottomNav() {
                     )}
                   />
                 </span>
-                <span className="relative z-10">Plus</span>
+                <span className="relative z-10">{tb("more")}</span>
                 {isMoreActive && !sheetOpen && (
                   <span className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-brand" />
                 )}

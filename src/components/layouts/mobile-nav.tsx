@@ -3,10 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("common");
+  const tn = useTranslations("nav");
 
   return (
     <div className="md:hidden">
@@ -14,7 +17,7 @@ export function MobileNav() {
         type="button"
         onClick={() => setOpen(!open)}
         className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-        aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+        aria-label={open ? t("close") : t("openMenu")}
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
@@ -32,14 +35,14 @@ export function MobileNav() {
             onClick={() => setOpen(false)}
             className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
           >
-            Marketplace
+            {tn("marketplace")}
           </Link>
           <Link
             href="#tarifs"
             onClick={() => setOpen(false)}
             className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
           >
-            Tarifs
+            {tn("pricing")}
           </Link>
           <div className="my-2 border-t border-border" />
           <Link
@@ -47,14 +50,14 @@ export function MobileNav() {
             onClick={() => setOpen(false)}
             className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
           >
-            Connexion
+            {t("login")}
           </Link>
           <Link
             href="/register"
             onClick={() => setOpen(false)}
             className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Inscription
+            {t("register")}
           </Link>
         </nav>
       </div>

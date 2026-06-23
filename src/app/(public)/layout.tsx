@@ -1,57 +1,59 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { WhatsAppIcon, XIcon, GitHubIcon } from "@/components/icons/brand-icons";
 import { FloatingNavbar } from "@/components/marketing/floating-navbar";
 import { BrandLogo } from "@/components/brand-logo";
 import { getAdminWhatsAppLink } from "@/lib/whatsapp";
 
 const footerColumns: Array<{
-  title: string;
-  links: Array<{ href: string; label: string }>;
+  titleKey: string;
+  links: Array<{ href: string; labelKey: string }>;
 }> = [
   {
-    title: "Produit",
+    titleKey: "product",
     links: [
-      { href: "/#fonctionnalites", label: "Fonctionnalités" },
-      { href: "/#tarifs", label: "Tarifs" },
-      { href: "/marketplace", label: "Marketplace" },
-      { href: "/#faq", label: "FAQ" },
+      { href: "/#fonctionnalites", labelKey: "features" },
+      { href: "/#tarifs", labelKey: "pricing" },
+      { href: "/marketplace", labelKey: "marketplace" },
+      { href: "/#faq", labelKey: "faq" },
     ],
   },
   {
-    title: "Entreprise",
+    titleKey: "company",
     links: [
-      { href: "/a-propos", label: "À propos" },
-      { href: "/blog", label: "Blog" },
-      { href: "/contact", label: "Contact" },
-      { href: "mailto:partenariats@gestionpro.app", label: "Partenariats" },
+      { href: "/a-propos", labelKey: "about" },
+      { href: "/blog", labelKey: "blog" },
+      { href: "/contact", labelKey: "contact" },
+      { href: "mailto:partenariats@gestionpro.app", labelKey: "partnerships" },
     ],
   },
   {
-    title: "Légal",
+    titleKey: "legal",
     links: [
-      { href: "/cgu", label: "CGU" },
-      { href: "/cgv", label: "CGV" },
-      { href: "/confidentialite", label: "Confidentialité" },
-      { href: "/mentions-legales", label: "Mentions légales" },
+      { href: "/cgu", labelKey: "cgu" },
+      { href: "/cgv", labelKey: "cgv" },
+      { href: "/confidentialite", labelKey: "privacy" },
+      { href: "/mentions-legales", labelKey: "legalNotice" },
     ],
   },
   {
-    title: "Compte",
+    titleKey: "account",
     links: [
-      { href: "/login", label: "Connexion" },
-      { href: "/register", label: "Inscription" },
-      { href: "/support", label: "Support" },
-      { href: "/status", label: "Statut" },
+      { href: "/login", labelKey: "login" },
+      { href: "/register", labelKey: "register" },
+      { href: "/support", labelKey: "support" },
+      { href: "/status", labelKey: "status" },
     ],
   },
 ];
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = await getTranslations("footer");
   const socials: Array<{ href: string; label: string; icon: React.ComponentType<React.ComponentProps<"svg">> }> = [
     { href: getAdminWhatsAppLink(), label: "WhatsApp", icon: WhatsAppIcon },
     { href: "mailto:contact@gestionpro.app", label: "Email", icon: Mail as never },
@@ -89,7 +91,7 @@ export default function PublicLayout({
                 </span>
               </Link>
               <p className="max-w-sm text-sm font-semibold leading-relaxed text-zinc-500 dark:text-zinc-400">
-                La solution ultime de commerce et gestion pour digitaliser votre commerce en Afrique de l&apos;Ouest. Simplicité, fiabilité, croissance.
+                {t("tagline")}
               </p>
 
               {/* High-End Social Icons */}
@@ -119,9 +121,9 @@ export default function PublicLayout({
             {/* Links Columns Grid */}
             <div className="grid grid-cols-2 gap-8 md:col-span-8 md:grid-cols-4">
               {footerColumns.map((col) => (
-                <div key={col.title} className="space-y-5">
+                <div key={col.titleKey} className="space-y-5">
                   <h3 className="text-xs font-black uppercase tracking-[0.25em] text-zinc-900 dark:text-zinc-50">
-                    {col.title}
+                    {t(`columns.${col.titleKey}`)}
                   </h3>
                   <ul className="space-y-3.5">
                     {col.links.map((l) => {
@@ -131,7 +133,7 @@ export default function PublicLayout({
                         return (
                           <li key={l.href}>
                             <a href={l.href} className={linkClass}>
-                              {l.label}
+                              {t(`links.${l.labelKey}`)}
                             </a>
                           </li>
                         );
@@ -139,7 +141,7 @@ export default function PublicLayout({
                       return (
                         <li key={l.href}>
                           <Link href={l.href} className={linkClass}>
-                            {l.label}
+                            {t(`links.${l.labelKey}`)}
                           </Link>
                         </li>
                       );
@@ -153,7 +155,7 @@ export default function PublicLayout({
           {/* Divider */}
           <div className="mt-16 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <p className="text-xs text-zinc-400 font-semibold">
-              © {new Date().getFullYear()} GestionPro. Fabriqué avec passion pour l&apos;Afrique. Tous droits réservés.
+              {t("rights", { year: new Date().getFullYear() })}
             </p>
             
             {/* Operational Status Pulse */}
@@ -163,7 +165,7 @@ export default function PublicLayout({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
-                Opérationnel
+                {t("operational")}
               </span>
             </div>
           </div>

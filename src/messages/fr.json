@@ -89,6 +89,95 @@
       "backToLogin": "Retour à la connexion"
     }
   },
+  "sidebar": {
+    "groups": {
+      "commercial": "Gestion commerciale",
+      "financial": "Gestion financière",
+      "suppliers": "Fournisseurs",
+      "marketing": "Marketing & Visibilité",
+      "account": "Compte",
+      "users": "Utilisateurs",
+      "billing": "Facturation",
+      "audit": "Audit"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "myShops": "Mes Boutiques",
+      "orders": "Commandes",
+      "products": "Produits",
+      "stock": "Stock",
+      "clients": "Clients",
+      "categories": "Catégories",
+      "pos": "Caisse",
+      "flashSales": "Ventes Flash",
+      "invoices": "Factures",
+      "expenses": "Dépenses",
+      "supplierPurchases": "Achats Fournisseurs",
+      "reports": "Rapports",
+      "suppliers": "Fournisseurs",
+      "myShop": "Ma Boutique",
+      "qrcode": "QR Code Boutique",
+      "marketplace": "Marketplace",
+      "members": "Membres",
+      "billing": "Facturation",
+      "settings": "Paramètres",
+      "globalDashboard": "Dashboard Global",
+      "sellers": "Vendeurs",
+      "users": "Utilisateurs",
+      "shops": "Boutiques",
+      "subscriptions": "Abonnements",
+      "plans": "Plans",
+      "revenue": "Revenus",
+      "logs": "Logs & Activités"
+    },
+    "externalLink": "Lien externe",
+    "planRequired": "Plan supérieur requis",
+    "expand": "Déployer le menu",
+    "collapse": "Réduire le menu"
+  },
+  "bottomNav": {
+    "navigation": "Navigation",
+    "quickActions": "Actions rapides",
+    "allSections": "Toutes les sections",
+    "more": "Plus",
+    "create": "Créer",
+    "moreNav": "Plus de navigation",
+    "quick": {
+      "newOrder": "Nouvelle commande",
+      "addProduct": "Ajouter produit",
+      "addClient": "Ajouter client",
+      "addExpense": "Ajouter dépense"
+    }
+  },
+  "footer": {
+    "tagline": "La solution ultime de commerce et gestion pour digitaliser votre commerce en Afrique de l'Ouest. Simplicité, fiabilité, croissance.",
+    "operational": "Opérationnel",
+    "rights": "© {year} GestionPro. Fabriqué avec passion pour l'Afrique. Tous droits réservés.",
+    "columns": {
+      "product": "Produit",
+      "company": "Entreprise",
+      "legal": "Légal",
+      "account": "Compte"
+    },
+    "links": {
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "marketplace": "Marketplace",
+      "faq": "FAQ",
+      "about": "À propos",
+      "blog": "Blog",
+      "contact": "Contact",
+      "partnerships": "Partenariats",
+      "cgu": "CGU",
+      "cgv": "CGV",
+      "privacy": "Confidentialité",
+      "legalNotice": "Mentions légales",
+      "login": "Connexion",
+      "register": "Inscription",
+      "support": "Support",
+      "status": "Statut"
+    }
+  },
   "common": {
     "login": "Connexion",
     "register": "S'inscrire",
@@ -101,7 +190,9 @@
     "cancel": "Annuler",
     "save": "Enregistrer",
     "apply": "Appliquer",
-    "reset": "Réinitialiser"
+    "reset": "Réinitialiser",
+    "close": "Fermer le menu",
+    "openMenu": "Ouvrir le menu"
   },
   "nav": {
     "home": "Accueil",

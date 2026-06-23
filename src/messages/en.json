@@ -89,6 +89,95 @@
       "backToLogin": "Back to sign-in"
     }
   },
+  "sidebar": {
+    "groups": {
+      "commercial": "Commercial management",
+      "financial": "Financial management",
+      "suppliers": "Suppliers",
+      "marketing": "Marketing & Visibility",
+      "account": "Account",
+      "users": "Users",
+      "billing": "Billing",
+      "audit": "Audit"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "myShops": "My shops",
+      "orders": "Orders",
+      "products": "Products",
+      "stock": "Stock",
+      "clients": "Customers",
+      "categories": "Categories",
+      "pos": "POS",
+      "flashSales": "Flash sales",
+      "invoices": "Invoices",
+      "expenses": "Expenses",
+      "supplierPurchases": "Supplier purchases",
+      "reports": "Reports",
+      "suppliers": "Suppliers",
+      "myShop": "My shop",
+      "qrcode": "Shop QR code",
+      "marketplace": "Marketplace",
+      "members": "Members",
+      "billing": "Billing",
+      "settings": "Settings",
+      "globalDashboard": "Global dashboard",
+      "sellers": "Sellers",
+      "users": "Users",
+      "shops": "Shops",
+      "subscriptions": "Subscriptions",
+      "plans": "Plans",
+      "revenue": "Revenue",
+      "logs": "Logs & Activity"
+    },
+    "externalLink": "External link",
+    "planRequired": "Higher plan required",
+    "expand": "Expand menu",
+    "collapse": "Collapse menu"
+  },
+  "bottomNav": {
+    "navigation": "Navigation",
+    "quickActions": "Quick actions",
+    "allSections": "All sections",
+    "more": "More",
+    "create": "Create",
+    "moreNav": "More navigation",
+    "quick": {
+      "newOrder": "New order",
+      "addProduct": "Add product",
+      "addClient": "Add customer",
+      "addExpense": "Add expense"
+    }
+  },
+  "footer": {
+    "tagline": "The ultimate commerce and management solution to digitalize your business in West Africa. Simplicity, reliability, growth.",
+    "operational": "Operational",
+    "rights": "© {year} GestionPro. Crafted with passion for Africa. All rights reserved.",
+    "columns": {
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "account": "Account"
+    },
+    "links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "marketplace": "Marketplace",
+      "faq": "FAQ",
+      "about": "About",
+      "blog": "Blog",
+      "contact": "Contact",
+      "partnerships": "Partnerships",
+      "cgu": "Terms",
+      "cgv": "Sales terms",
+      "privacy": "Privacy",
+      "legalNotice": "Legal notice",
+      "login": "Sign in",
+      "register": "Sign up",
+      "support": "Support",
+      "status": "Status"
+    }
+  },
   "common": {
     "login": "Sign in",
     "register": "Sign up",
@@ -101,7 +190,9 @@
     "cancel": "Cancel",
     "save": "Save",
     "apply": "Apply",
-    "reset": "Reset"
+    "reset": "Reset",
+    "close": "Close menu",
+    "openMenu": "Open menu"
   },
   "nav": {
     "home": "Home",
