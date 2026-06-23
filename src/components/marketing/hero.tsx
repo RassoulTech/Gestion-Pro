@@ -6,20 +6,14 @@ import { ArrowRight, Sparkles, Zap, Store } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const WORDS = [
-  "Gérez votre commerce.",
-  "Développez votre activité.",
-  "Automatisez vos ventes.",
-  "Pilotez votre stock.",
-  "Centralisez vos boutiques.",
-  "Faites grandir votre entreprise.",
-];
-
 export function Hero() {
+  const t = useTranslations("hero");
+  const words = React.useMemo(() => t.raw("words") as string[], [t]);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const [wordIdx, setWordIdx] = React.useState(0);
@@ -27,10 +21,10 @@ export function Hero() {
   // Cycle through phrases
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setWordIdx((prev) => (prev + 1) % WORDS.length);
+      setWordIdx((prev) => (prev + 1) % words.length);
     }, 3800);
     return () => clearInterval(interval);
-  }, []);
+  }, [words.length]);
 
   // Parallax effects
   const y1 = useTransform(scrollY, [0, 500], [0, -80]);
@@ -113,10 +107,10 @@ export function Hero() {
             className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 p-1.5 pr-4 text-xs font-semibold backdrop-blur-md shadow-md shadow-black/[0.02] transition-all hover:border-orange-500/30 hover:shadow-lg cursor-default group"
           >
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-sm shadow-orange-500/10">
-              Nouveau
+              {t("badge")}
             </span>
             <span className="text-zinc-700 dark:text-zinc-300 font-bold px-0.5">
-              Conçu pour les entreprises d&apos;Afrique
+              {t("eyebrow")}
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
           </motion.div>
@@ -130,7 +124,7 @@ export function Hero() {
                 transition={{ duration: 1, ease: EASE, delay: 0.1 }}
                 className="block text-zinc-950 dark:text-white"
               >
-                L&apos;intelligence commerciale
+                {t("headline")}
               </motion.span>
             </span>
             <span className="block min-h-[1.25em] py-1 overflow-hidden">
@@ -143,7 +137,7 @@ export function Hero() {
                   transition={{ duration: 0.55, ease: EASE }}
                   className="block text-shimmer bg-clip-text text-transparent"
                 >
-                  {WORDS[wordIdx]}
+                  {words[wordIdx]}
                 </motion.span>
               </AnimatePresence>
             </span>
@@ -156,7 +150,7 @@ export function Hero() {
             transition={{ duration: 0.9, ease: EASE, delay: 0.35 }}
             className="mx-auto mt-8 max-w-3xl text-base sm:text-lg md:text-xl text-muted-foreground/90 leading-relaxed font-medium"
           >
-            GestionPro unifie la gestion de stock en temps réel, la facturation intelligente, le suivi financier et le pilotage multi-boutiques. Une plateforme moderne, ultra-rapide et sécurisée pour propulser votre entreprise.
+            {t("subtitle")}
           </motion.p>
 
           {/* Call to Actions with glow effects */}
@@ -174,7 +168,7 @@ export function Hero() {
             >
               <Link href="/register">
                 <span className="relative z-10 flex items-center justify-center gap-2 font-black">
-                  Démarrer gratuitement
+                  {t("ctaPrimary")}
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </span>
                 <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity animate-shimmer-bg" />
@@ -187,7 +181,7 @@ export function Hero() {
               variant="outline"
               className="px-8 h-14 text-lg rounded-2xl w-full sm:w-auto glass hover:bg-zinc-100 dark:hover:bg-zinc-900/50 hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] transition-all duration-300 active:scale-[0.98] active-press cursor-pointer font-bold"
             >
-              <Link href="/marketplace">Voir la démo</Link>
+              <Link href="/marketplace">{t("ctaSecondary")}</Link>
             </Button>
           </motion.div>
 
@@ -199,31 +193,31 @@ export function Hero() {
             className="mt-24 w-full max-w-4xl"
           >
             <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-6 text-center">
-              Plateforme commerciale de confiance
+              {t("trustTitle")}
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 text-left">
               {[
                 {
                   icon: Zap,
-                  label: "Synchronisation temps réel",
-                  desc: "Mises à jour instantanées de vos stocks, commandes et flux financiers.",
+                  label: t("trust.realtimeLabel"),
+                  desc: t("trust.realtimeDesc"),
                   color: "group-hover:text-amber-500",
                   bg: "group-hover:bg-amber-500/5",
                   border: "group-hover:border-amber-500/20",
                 },
                 {
                   icon: Store,
-                  label: "Multi-boutiques",
-                  desc: "Pilotez et centralisez plusieurs points de vente depuis une seule interface.",
+                  label: t("trust.multishopLabel"),
+                  desc: t("trust.multishopDesc"),
                   color: "group-hover:text-blue-500",
                   bg: "group-hover:bg-blue-500/5",
                   border: "group-hover:border-blue-500/20",
                 },
                 {
                   icon: WhatsAppIcon,
-                  label: "Reçus par WhatsApp",
-                  desc: "Générez et envoyez instantanément des reçus de caisse certifiés à vos clients.",
+                  label: t("trust.whatsappLabel"),
+                  desc: t("trust.whatsappDesc"),
                   color: "group-hover:text-emerald-500",
                   bg: "group-hover:bg-emerald-500/5",
                   border: "group-hover:border-emerald-500/20",

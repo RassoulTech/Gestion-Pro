@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, MailCheck } from "lucide-react";
 
 import { registerSchema, type RegisterInput } from "@/schemas/auth.schema";
@@ -28,19 +29,8 @@ import { BrandLogo } from "@/components/brand-logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const OAUTH_ERROR_MESSAGES: Record<string, string> = {
-  OAuthSignin: "Impossible de démarrer l'inscription Google. Réessayez.",
-  OAuthCallback: "Échec du retour Google. Vérifiez votre connexion et réessayez.",
-  OAuthCreateAccount: "Impossible de créer le compte Google. Contactez le support.",
-  OAuthAccountNotLinked:
-    "Cette adresse est déjà utilisée avec une autre méthode de connexion.",
-  Callback: "Erreur de callback. Veuillez réessayer.",
-  AccessDenied: "Accès refusé par Google.",
-  Configuration:
-    "Inscription Google indisponible : configuration côté serveur incomplète.",
-};
-
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   const [loading, setLoading] = useState(false);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
@@ -49,13 +39,18 @@ export default function RegisterPage() {
 
   useEffect(() => {
     const oauthError = searchParams.get("error");
-    if (oauthError) {
-      toast.error(
-        OAUTH_ERROR_MESSAGES[oauthError] ??
-          "Une erreur est survenue lors de l'inscription."
-      );
-    }
-  }, [searchParams]);
+    if (!oauthError) return;
+    const map: Record<string, string> = {
+      OAuthSignin: t("oauth.registerSignin"),
+      OAuthCallback: t("oauth.callback"),
+      OAuthCreateAccount: t("oauth.createAccount"),
+      OAuthAccountNotLinked: t("oauth.accountNotLinked"),
+      Callback: t("oauth.callbackGeneric"),
+      AccessDenied: t("oauth.accessDenied"),
+      Configuration: t("oauth.registerConfiguration"),
+    };
+    toast.error(map[oauthError] ?? t("oauth.registerFallback"));
+  }, [searchParams, t]);
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -89,7 +84,7 @@ export default function RegisterPage() {
         form.reset();
       }
     } catch {
-      toast.error("Une erreur est survenue.");
+      toast.error(t("genericError"));
     } finally {
       setLoading(false);
     }
@@ -109,25 +104,25 @@ export default function RegisterPage() {
 
         <div className="space-y-3">
           <h1 className="text-3xl font-black tracking-tight text-foreground">
-            {emailFailed ? "Compte créé !" : "Vérifiez votre boîte mail"}
+            {emailFailed ? t("register.successTitleFailed") : t("register.successTitle")}
           </h1>
           <p className="text-base font-medium text-muted-foreground leading-relaxed">
-            {emailFailed ? (
-              <>
-                Votre compte a bien été créé, mais <span className="font-bold text-destructive">notre serveur d&apos;email est indisponible</span> pour le moment.
-                <br />Vous pourrez demander un nouveau lien de vérification plus tard.
-              </>
-            ) : (
-              <>
-                Nous venons d&apos;envoyer un lien d&apos;activation à{" "}
-                <span className="font-bold text-foreground">{sentEmail}</span>.
-                Cliquez dessus pour activer votre compte et vous connecter.
-              </>
-            )}
+            {emailFailed
+              ? t.rich("register.successTextFailed", {
+                  b: (chunks) => (
+                    <span className="font-bold text-destructive">{chunks}</span>
+                  ),
+                })
+              : t.rich("register.successText", {
+                  email: sentEmail,
+                  b: (chunks) => (
+                    <span className="font-bold text-foreground">{chunks}</span>
+                  ),
+                })}
           </p>
           {!emailFailed && (
             <p className="text-xs font-medium text-muted-foreground/80 italic">
-              Pensez à vérifier vos spams.
+              {t("register.checkSpam")}
             </p>
           )}
         </div>
@@ -135,11 +130,10 @@ export default function RegisterPage() {
         {devLink && (
           <div className="rounded-2xl border border-warning/30 bg-warning/10 p-4 text-left space-y-2">
             <p className="text-xs font-black uppercase tracking-widest text-warning">
-              Mode développement
+              {t("devModeTitle")}
             </p>
             <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-              Aucun service email n&apos;est configuré (AUTH_RESEND_KEY vide).
-              Cliquez sur le lien ci-dessous pour vérifier votre compte :
+              {t("register.devModeText")}
             </p>
             <Link
               href={devLink}
@@ -151,7 +145,7 @@ export default function RegisterPage() {
         )}
 
         <p className="text-sm font-bold text-muted-foreground">
-          Pas reçu ?{" "}
+          {t("register.notReceived")}{" "}
           <button
             type="button"
             onClick={async () => {
@@ -168,7 +162,7 @@ export default function RegisterPage() {
             }}
             className="text-brand hover:underline underline-offset-4"
           >
-            Renvoyer le lien
+            {t("resendLink")}
           </button>
         </p>
 
@@ -177,7 +171,7 @@ export default function RegisterPage() {
           className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour à la connexion
+          {t("register.backToLogin")}
         </Link>
       </motion.div>
     );
@@ -193,19 +187,19 @@ export default function RegisterPage() {
       <div className="space-y-3 flex flex-col items-center text-center">
         <BrandLogo size={64} className="mb-4 shadow-xl shadow-brand/20 rounded-2xl" />
         <h1 className="text-4xl font-black tracking-tight text-foreground">
-          Bienvenue.
+          {t("register.title")}
         </h1>
         <p className="text-base font-medium text-muted-foreground">
-          Propulsez votre commerce vers de nouveaux sommets dès aujourd&apos;hui.
+          {t("register.subtitle")}
         </p>
       </div>
 
-      <GoogleButton label="S'inscrire avec Google" enabled={true} />
+      <GoogleButton label={t("register.googleLabel")} enabled={true} />
 
       <div className="relative">
         <Separator className="opacity-50" />
         <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card/10 backdrop-blur-md px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground border border-white/5">
-          ou via email
+          {t("orEmail")}
         </span>
       </div>
 
@@ -216,10 +210,10 @@ export default function RegisterPage() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nom complet</FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.nameLabel")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Votre nom"
+                    placeholder={t("register.namePlaceholder")}
                     autoComplete="name"
                     className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
                     {...field}
@@ -235,11 +229,11 @@ export default function RegisterPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email</FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.emailLabel")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder={t("register.emailPlaceholder")}
                     autoComplete="email"
                     className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
                     {...field}
@@ -255,11 +249,11 @@ export default function RegisterPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Mot de passe</FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.passwordLabel")}</FormLabel>
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
-                    placeholder="8 caractères minimum"
+                    placeholder={t("register.passwordPlaceholder")}
                     className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
                     {...field}
                   />
@@ -274,11 +268,11 @@ export default function RegisterPage() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Confirmer</FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.confirmLabel")}</FormLabel>
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
-                    placeholder="Retapez le mot de passe"
+                    placeholder={t("register.confirmPlaceholder")}
                     className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
                     {...field}
                   />
@@ -295,25 +289,29 @@ export default function RegisterPage() {
             className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-brand/20 active-press"
             loading={loading}
           >
-            {loading ? "Création…" : "Créer mon compte"}
+            {loading ? t("register.submitting") : t("register.submit")}
           </Button>
 
           <p className="text-center text-[10px] font-bold leading-relaxed text-muted-foreground uppercase tracking-wider">
-            En continuant, vous acceptez nos{" "}
-            <Link href="/cgu" className="text-brand hover:underline">CGU</Link>
-            {" "}et notre{" "}
-            <Link href="/confidentialite" className="text-brand hover:underline">politique de confidentialité</Link>.
+            {t.rich("register.terms", {
+              cgu: (chunks) => (
+                <Link href="/cgu" className="text-brand hover:underline">{chunks}</Link>
+              ),
+              privacy: (chunks) => (
+                <Link href="/confidentialite" className="text-brand hover:underline">{chunks}</Link>
+              ),
+            })}
           </p>
         </form>
       </Form>
 
       <p className="text-center text-sm font-bold text-muted-foreground">
-        Déjà inscrit ?{" "}
+        {t("register.alreadyMember")}{" "}
         <Link
           href="/login"
           className="text-brand hover:underline underline-offset-4"
         >
-          Se connecter
+          {t("register.signin")}
         </Link>
       </p>
     </motion.div>

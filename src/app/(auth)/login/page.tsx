@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { loginSchema, type LoginInput } from "@/schemas/auth.schema";
 import { loginPrecheck, resendVerificationEmail } from "@/server/actions/auth.actions";
@@ -29,20 +30,8 @@ import { BrandLogo } from "@/components/brand-logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const OAUTH_ERROR_MESSAGES: Record<string, string> = {
-  OAuthSignin: "Impossible de démarrer la connexion Google. Réessayez.",
-  OAuthCallback: "Échec du retour Google. Vérifiez votre connexion et réessayez.",
-  OAuthCreateAccount: "Impossible de créer le compte Google. Contactez le support.",
-  OAuthAccountNotLinked:
-    "Cette adresse est déjà utilisée avec une autre méthode de connexion.",
-  Callback: "Erreur de callback. Veuillez réessayer.",
-  AccessDenied: "Accès refusé par Google.",
-  Configuration:
-    "Connexion Google indisponible : configuration côté serveur incomplète.",
-  Verification: "Lien de vérification invalide ou expiré.",
-};
-
 export default function LoginPage() {
+  const t = useTranslations("auth");
   const [loading, setLoading] = useState(false);
   const [needsVerification, setNeedsVerification] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
@@ -51,13 +40,19 @@ export default function LoginPage() {
 
   useEffect(() => {
     const oauthError = searchParams.get("error");
-    if (oauthError) {
-      toast.error(
-        OAUTH_ERROR_MESSAGES[oauthError] ??
-          "Une erreur est survenue lors de la connexion."
-      );
-    }
-  }, [searchParams]);
+    if (!oauthError) return;
+    const map: Record<string, string> = {
+      OAuthSignin: t("oauth.loginSignin"),
+      OAuthCallback: t("oauth.callback"),
+      OAuthCreateAccount: t("oauth.createAccount"),
+      OAuthAccountNotLinked: t("oauth.accountNotLinked"),
+      Callback: t("oauth.callbackGeneric"),
+      AccessDenied: t("oauth.accessDenied"),
+      Configuration: t("oauth.loginConfiguration"),
+      Verification: t("oauth.verification"),
+    };
+    toast.error(map[oauthError] ?? t("oauth.loginFallback"));
+  }, [searchParams, t]);
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -82,7 +77,7 @@ export default function LoginPage() {
       const status = precheck?.data?.status;
 
       if (status === "invalid_credentials") {
-        toast.error("Email ou mot de passe incorrect.");
+        toast.error(t("login.toastInvalid"));
         return;
       }
 
@@ -90,9 +85,9 @@ export default function LoginPage() {
         setNeedsVerification(data.email);
         setDevLink(precheck?.data?.devLink ?? null);
         if (precheck?.data?.emailFailed) {
-          toast.warning("Email non vérifié. Le serveur d'email est actuellement indisponible.");
+          toast.warning(t("login.toastUnverifiedDown"));
         } else {
-          toast.info("Email non vérifié. Un nouveau lien vient d'être envoyé.");
+          toast.info(t("login.toastUnverifiedResent"));
         }
         return;
       }
@@ -104,14 +99,14 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        toast.error("Email ou mot de passe incorrect.");
+        toast.error(t("login.toastInvalid"));
         return;
       }
 
       router.push("/boutiques");
       router.refresh();
     } catch {
-      toast.error("Une erreur est survenue.");
+      toast.error(t("genericError"));
     } finally {
       setLoading(false);
     }
@@ -127,10 +122,10 @@ export default function LoginPage() {
       <div className="space-y-3 flex flex-col items-center text-center">
         <BrandLogo size={64} className="mb-4 shadow-xl shadow-brand/20 rounded-2xl" />
         <h1 className="text-4xl font-black tracking-tight text-foreground">
-          Bon retour.
+          {t("login.title")}
         </h1>
         <p className="text-base font-medium text-muted-foreground">
-          Connectez-vous pour accéder à vos boutiques et gérer votre activité.
+          {t("login.subtitle")}
         </p>
       </div>
 
@@ -140,21 +135,25 @@ export default function LoginPage() {
             <MailWarning className="h-5 w-5 shrink-0 text-warning mt-0.5" />
             <div className="space-y-1">
               <p className="text-sm font-black text-foreground">
-                Email non vérifié
+                {t("login.unverifiedTitle")}
               </p>
               <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                Avant de vous connecter, confirmez votre adresse via le lien
-                envoyé à <span className="font-bold text-foreground">{needsVerification}</span>.
+                {t.rich("login.unverifiedText", {
+                  email: needsVerification,
+                  b: (chunks) => (
+                    <span className="font-bold text-foreground">{chunks}</span>
+                  ),
+                })}
               </p>
             </div>
           </div>
           {devLink && (
             <div className="w-full space-y-2 rounded-xl bg-foreground/5 p-3">
               <p className="text-[10px] font-black uppercase tracking-widest text-warning">
-                Mode développement
+                {t("devModeTitle")}
               </p>
               <p className="text-xs font-medium text-muted-foreground">
-                Pas de service email configuré — utilisez ce lien :
+                {t("login.devModeText")}
               </p>
               <Link
                 href={devLink}
@@ -179,7 +178,7 @@ export default function LoginPage() {
             }}
             className="text-xs font-bold text-brand hover:underline underline-offset-4"
           >
-            Renvoyer le lien
+            {t("resendLink")}
           </button>
         </div>
       )}
@@ -189,7 +188,7 @@ export default function LoginPage() {
       <div className="relative">
         <Separator className="opacity-50" />
         <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card/10 backdrop-blur-md px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground border border-white/5">
-          ou via email
+          {t("orEmail")}
         </span>
       </div>
 
@@ -200,11 +199,11 @@ export default function LoginPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email</FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("login.emailLabel")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder={t("login.emailPlaceholder")}
                     autoComplete="email"
                     className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
                     {...field}
@@ -222,19 +221,19 @@ export default function LoginPage() {
               <FormItem>
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                    Mot de passe
+                    {t("login.passwordLabel")}
                   </FormLabel>
                   <Link
                     href="/forgot-password"
                     className="text-xs font-bold text-brand transition-colors hover:opacity-80"
                   >
-                    Oublié ?
+                    {t("login.forgot")}
                   </Link>
                 </div>
                 <FormControl>
                   <PasswordInput
                     autoComplete="current-password"
-                    placeholder="Votre mot de passe"
+                    placeholder={t("login.passwordPlaceholder")}
                     className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
                     {...field}
                   />
@@ -251,18 +250,18 @@ export default function LoginPage() {
             className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-brand/20 active-press"
             loading={loading}
           >
-            {loading ? "Connexion…" : "Se connecter"}
+            {loading ? t("login.submitting") : t("login.submit")}
           </Button>
         </form>
       </Form>
 
       <p className="text-center text-sm font-bold text-muted-foreground">
-        Nouveau sur GestionPro ?{" "}
+        {t("login.noAccount")}{" "}
         <Link
           href="/register"
           className="text-brand hover:underline underline-offset-4"
         >
-          Créer un compte
+          {t("login.createAccount")}
         </Link>
       </p>
     </motion.div>
