@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { verifyEmail } from "@/server/actions/auth.actions";
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 function VerifyEmailInner() {
+  const t = useTranslations("auth");
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const searchParams = useSearchParams();
@@ -27,25 +29,21 @@ function VerifyEmailInner() {
     // et nous redirige avec ?status=success|expired|invalid|error.
     if (status) {
       if (status === "success") {
-        setSuccess("Email vérifié avec succès !");
+        setSuccess(t("verify.statusSuccess"));
         setTimeout(() => router.push("/login"), 3000);
       } else if (status === "expired") {
-        setError(
-          "Ce lien de vérification a expiré. Connectez-vous pour en recevoir un nouveau."
-        );
+        setError(t("verify.statusExpired"));
       } else if (status === "invalid") {
-        setError(
-          "Lien de vérification invalide ou déjà utilisé. Si votre compte est déjà vérifié, connectez-vous."
-        );
+        setError(t("verify.statusInvalid"));
       } else {
-        setError("Une erreur est survenue pendant la vérification. Veuillez réessayer.");
+        setError(t("verify.statusError"));
       }
       return;
     }
 
     // Flux hérité : un token brut est présent dans l'URL (anciens e-mails).
     if (!token) {
-      setError("Jeton de vérification manquant.");
+      setError(t("verify.tokenMissing"));
       return;
     }
 
@@ -59,10 +57,10 @@ function VerifyEmailInner() {
           setTimeout(() => router.push("/login"), 3000);
         }
       } catch {
-        setError("Une erreur est survenue.");
+        setError(t("genericError"));
       }
     })();
-  }, [token, status, router]);
+  }, [token, status, router, t]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8 text-center">
@@ -78,8 +76,8 @@ function VerifyEmailInner() {
               <Loader2 className="h-8 w-8 animate-spin text-orange-600 dark:text-orange-400" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-50">Vérification de votre email...</h1>
-              <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">Un court instant s&apos;il vous plaît pendant que nous validons vos informations.</p>
+              <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-50">{t("verify.verifying")}</h1>
+              <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">{t("verify.verifyingDesc")}</p>
             </div>
           </div>
         )}
@@ -90,12 +88,12 @@ function VerifyEmailInner() {
               <CheckCircle2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl font-black text-emerald-600 dark:text-emerald-400">Email vérifié !</h1>
+              <h1 className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{t("verify.successTitle")}</h1>
               <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-300 leading-relaxed">{success}</p>
-              <p className="text-xs text-zinc-400 font-semibold italic">Redirection vers la page de connexion...</p>
+              <p className="text-xs text-zinc-400 font-semibold italic">{t("verify.redirecting")}</p>
             </div>
             <Button asChild variant="brand" className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all active-press mt-2">
-              <Link href="/login">Se connecter maintenant</Link>
+              <Link href="/login">{t("verify.signinNow")}</Link>
             </Button>
           </div>
         )}
@@ -106,11 +104,11 @@ function VerifyEmailInner() {
               <XCircle className="h-8 w-8 text-destructive" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl font-black text-destructive">Oups !</h1>
+              <h1 className="text-2xl font-black text-destructive">{t("verify.errorTitle")}</h1>
               <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-300 leading-relaxed">{error}</p>
             </div>
             <Button asChild variant="outline" className="w-full h-14 rounded-2xl font-black text-base border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-all active-press mt-2">
-              <Link href="/register">Retour à l&apos;inscription</Link>
+              <Link href="/register">{t("verify.backToRegister")}</Link>
             </Button>
           </div>
         )}
@@ -120,10 +118,11 @@ function VerifyEmailInner() {
 }
 
 function VerifyEmailFallback() {
+  const t = useTranslations("auth");
   return (
     <div className="flex flex-col items-center justify-center space-y-4 text-center">
       <Loader2 className="h-12 w-12 animate-spin text-brand mx-auto" />
-      <h1 className="text-2xl font-bold">Vérification de votre email...</h1>
+      <h1 className="text-2xl font-bold">{t("verify.verifying")}</h1>
     </div>
   );
 }

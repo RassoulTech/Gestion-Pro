@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, Mail } from "lucide-react";
 
 import {
@@ -27,6 +28,7 @@ import { Button } from "@/components/ui/button";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("auth");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [devLink, setDevLink] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export default function ForgotPasswordPage() {
         toast.success(result.data.success);
       }
     } catch {
-      toast.error("Une erreur est survenue.");
+      toast.error(t("genericError"));
     } finally {
       setLoading(false);
     }
@@ -71,20 +73,20 @@ export default function ForgotPasswordPage() {
 
         <div className="space-y-3">
           <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-            Email envoyé !
+            {t("forgot.sentTitle")}
           </h1>
           <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Si un compte existe avec cette adresse, vous recevrez un lien de réinitialisation dans quelques instants.
+            {t("forgot.sentText")}
           </p>
         </div>
 
         {devLink && (
           <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 text-left space-y-3 shadow-md">
             <p className="text-xs font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">
-              Mode développement
+              {t("devModeTitle")}
             </p>
             <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Aucun service email n&apos;est configuré. Utilisez ce lien pour réinitialiser :
+              {t("forgot.devModeText")}
             </p>
             <Link
               href={devLink}
@@ -96,7 +98,7 @@ export default function ForgotPasswordPage() {
         )}
 
         <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400">
-          Vous n&apos;avez rien reçu ?{" "}
+          {t("forgot.notReceived")}{" "}
           <button
             onClick={() => {
               setSent(false);
@@ -104,7 +106,7 @@ export default function ForgotPasswordPage() {
             }}
             className="text-orange-600 dark:text-orange-400 hover:underline underline-offset-4"
           >
-            Renvoyer
+            {t("forgot.resend")}
           </button>
         </p>
 
@@ -114,7 +116,7 @@ export default function ForgotPasswordPage() {
             className="inline-flex items-center gap-2 text-sm font-bold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
           >
             <ArrowLeft className="h-4 w-4" />
-            Retour à la connexion
+            {t("backToLogin")}
           </Link>
         </div>
       </motion.div>
@@ -130,10 +132,10 @@ export default function ForgotPasswordPage() {
     >
       <div className="space-y-3">
         <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
-          Mot de passe oublié ?
+          {t("forgot.title")}
         </h1>
         <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-          Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+          {t("forgot.subtitle")}
         </p>
       </div>
 
@@ -145,12 +147,12 @@ export default function ForgotPasswordPage() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                  Adresse email
+                  {t("forgot.emailLabel")}
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder={t("forgot.emailPlaceholder")}
                     autoComplete="email"
                     className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
                     {...field}
@@ -168,7 +170,7 @@ export default function ForgotPasswordPage() {
             className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all active-press"
             loading={loading}
           >
-            {loading ? "Envoi en cours…" : "Envoyer le lien"}
+            {loading ? t("forgot.submitting") : t("forgot.submit")}
           </Button>
         </form>
       </Form>

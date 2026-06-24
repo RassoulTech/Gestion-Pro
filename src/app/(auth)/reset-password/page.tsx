@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 
 import {
@@ -28,6 +29,7 @@ import { PasswordInput } from "@/components/auth/password-input";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 function ResetPasswordInner() {
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [loading, setLoading] = useState(false);
@@ -57,7 +59,7 @@ function ResetPasswordInner() {
         toast.success(result.data.success);
       }
     } catch {
-      toast.error("Une erreur est survenue.");
+      toast.error(t("genericError"));
     } finally {
       setLoading(false);
     }
@@ -78,10 +80,10 @@ function ResetPasswordInner() {
 
         <div className="space-y-3">
           <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-            Lien invalide
+            {t("reset.invalidTitle")}
           </h1>
           <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Ce lien de réinitialisation est invalide ou a expiré. Veuillez en demander un nouveau.
+            {t("reset.invalidText")}
           </p>
         </div>
 
@@ -89,7 +91,7 @@ function ResetPasswordInner() {
           href="/forgot-password"
           className="inline-flex items-center gap-2 rounded-2xl bg-orange-600 px-6 py-3.5 text-sm font-black text-white hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20"
         >
-          Demander un nouveau lien
+          {t("reset.requestNew")}
         </Link>
       </motion.div>
     );
@@ -110,10 +112,10 @@ function ResetPasswordInner() {
 
         <div className="space-y-3">
           <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-            Mot de passe modifié !
+            {t("reset.successTitle")}
           </h1>
           <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
+            {t("reset.successText")}
           </p>
         </div>
 
@@ -121,7 +123,7 @@ function ResetPasswordInner() {
           href="/login"
           className="inline-flex items-center gap-2 rounded-2xl bg-orange-600 px-6 py-3.5 text-sm font-black text-white hover:bg-orange-700 transition-all shadow-xl shadow-orange-600/20"
         >
-          Se connecter
+          {t("reset.signin")}
         </Link>
       </motion.div>
     );
@@ -136,10 +138,10 @@ function ResetPasswordInner() {
     >
       <div className="space-y-3">
         <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-4xl">
-          Nouveau mot de passe
+          {t("reset.title")}
         </h1>
         <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 leading-relaxed">
-          Choisissez un nouveau mot de passe sécurisé pour votre compte.
+          {t("reset.subtitle")}
         </p>
       </div>
 
@@ -151,12 +153,12 @@ function ResetPasswordInner() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                  Nouveau mot de passe
+                  {t("reset.newPasswordLabel")}
                 </FormLabel>
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
-                    placeholder="8 caractères minimum"
+                    placeholder={t("reset.passwordPlaceholder")}
                     className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
                     {...field}
                   />
@@ -172,12 +174,12 @@ function ResetPasswordInner() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                  Confirmer le mot de passe
+                  {t("reset.confirmLabel")}
                 </FormLabel>
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
-                    placeholder="Retapez le mot de passe"
+                    placeholder={t("reset.confirmPlaceholder")}
                     className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
                     {...field}
                   />
@@ -194,7 +196,7 @@ function ResetPasswordInner() {
             className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all active-press"
             loading={loading}
           >
-            {loading ? "Réinitialisation…" : "Réinitialiser le mot de passe"}
+            {loading ? t("reset.submitting") : t("reset.submit")}
           </Button>
         </form>
       </Form>
@@ -205,7 +207,7 @@ function ResetPasswordInner() {
           className="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline underline-offset-4"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour à la connexion
+          {t("backToLogin")}
         </Link>
       </p>
     </motion.div>
