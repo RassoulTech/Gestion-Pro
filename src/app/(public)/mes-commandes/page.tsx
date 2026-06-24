@@ -12,25 +12,31 @@ import {
   Calendar,
   Package,
 } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDateTime, cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Mes commandes — GestionPro" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("myOrders");
+  return { title: t("metaTitle") };
+}
 
 const ETAT_META: Record<
   string,
-  { label: string; icon: typeof Clock; color: string }
+  { icon: typeof Clock; color: string }
 > = {
-  EN_ATTENTE: { label: "En attente", icon: Clock, color: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-  VALIDEE: { label: "Validée", icon: CheckCircle2, color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
-  LIVREE: { label: "Livrée", icon: Truck, color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
-  ANNULEE: { label: "Annulée", icon: XCircle, color: "bg-rose-500/10 text-rose-400 border-rose-500/20" },
+  EN_ATTENTE: { icon: Clock, color: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
+  VALIDEE: { icon: CheckCircle2, color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
+  LIVREE: { icon: Truck, color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
+  ANNULEE: { icon: XCircle, color: "bg-rose-500/10 text-rose-400 border-rose-500/20" },
 };
 
 export default async function MesCommandesPage() {
   const session = await auth();
+  const t = await getTranslations("myOrders");
+  const tStatus = await getTranslations("orderStatus");
 
   if (!session?.user) {
     redirect("/login?callbackUrl=/mes-commandes");
@@ -60,11 +66,11 @@ export default async function MesCommandesPage() {
         {/* Header */}
         <div className="space-y-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest">
-            <Package className="h-3 w-3" /> Historique d&apos;achats
+            <Package className="h-3 w-3" /> {t("eyebrow")}
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight">Mes commandes</h1>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight">{t("title")}</h1>
           <p className="text-zinc-400 font-semibold text-sm sm:text-base">
-            Suivez toutes vos commandes passées sur le marketplace GestionPro.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -72,15 +78,15 @@ export default async function MesCommandesPage() {
         {commandes.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Total commandes</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{t("totalOrders")}</p>
               <p className="text-2xl sm:text-3xl font-black mt-1">{commandes.length}</p>
             </div>
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Montant total dépensé</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{t("totalSpent")}</p>
               <p className="text-2xl sm:text-3xl font-black mt-1 text-emerald-400">{formatCurrency(totalSpent)}</p>
             </div>
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-5 col-span-2 sm:col-span-1">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Boutiques fréquentées</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{t("shopsVisited")}</p>
               <p className="text-2xl sm:text-3xl font-black mt-1">
                 {new Set(commandes.map((c) => c.boutiqueId)).size}
               </p>
@@ -95,13 +101,13 @@ export default async function MesCommandesPage() {
               <ShoppingBag className="h-10 w-10 text-zinc-500" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-xl sm:text-2xl font-black">Aucune commande pour l&apos;instant</h2>
+              <h2 className="text-xl sm:text-2xl font-black">{t("emptyTitle")}</h2>
               <p className="text-zinc-400 text-sm font-semibold max-w-md mx-auto">
-                Explorez le marketplace pour découvrir des boutiques et passer votre première commande.
+                {t("emptyDesc")}
               </p>
             </div>
             <Button asChild className="rounded-2xl h-13 px-8 font-black bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-none">
-              <Link href="/marketplace">Explorer le marketplace</Link>
+              <Link href="/marketplace">{t("exploreMarketplace")}</Link>
             </Button>
           </div>
         ) : (
@@ -109,6 +115,7 @@ export default async function MesCommandesPage() {
             {commandes.map((commande) => {
               const meta = ETAT_META[commande.etat] || ETAT_META.EN_ATTENTE!;
               const Icon = meta.icon;
+              const statusLabel = tStatus(commande.etat as "EN_ATTENTE" | "VALIDEE" | "LIVREE" | "ANNULEE");
 
               return (
                 <div
@@ -129,7 +136,7 @@ export default async function MesCommandesPage() {
                           {commande.boutique.nom}
                         </Link>
                         <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mt-0.5">
-                          Commande {commande.code}
+                          {t("orderCode", { code: commande.code })}
                         </p>
                         <p className="text-[11px] text-zinc-400 font-bold mt-1.5 flex items-center gap-1.5">
                           <Calendar className="h-3 w-3" />
@@ -141,7 +148,7 @@ export default async function MesCommandesPage() {
                     {/* Right: total + status */}
                     <div className="flex items-center sm:flex-col sm:items-end justify-between gap-3 shrink-0">
                       <div className="text-right">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Total</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{t("total")}</p>
                         <p className="text-lg sm:text-xl font-black text-emerald-400 mt-0.5">
                           {formatCurrency(commande.total)}
                         </p>
@@ -153,7 +160,7 @@ export default async function MesCommandesPage() {
                         )}
                       >
                         <Icon className="h-3 w-3" />
-                        {meta.label}
+                        {statusLabel}
                       </span>
                     </div>
                   </div>
@@ -170,7 +177,7 @@ export default async function MesCommandesPage() {
                     ))}
                     {commande._count.lignes > 4 && (
                       <span className="inline-flex items-center rounded-full bg-zinc-950/60 border border-zinc-800 px-3 py-1 text-[11px] font-bold text-zinc-500">
-                        +{commande._count.lignes - 4} autres
+                        {t("moreItems", { count: commande._count.lignes - 4 })}
                       </span>
                     )}
                   </div>
@@ -181,7 +188,7 @@ export default async function MesCommandesPage() {
                       href={`/s/${commande.boutique.slug}`}
                       className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-400 hover:text-emerald-300 transition-colors"
                     >
-                      Revoir la boutique
+                      {t("reviewShop")}
                       <ArrowRight className="h-3 w-3" />
                     </Link>
                   </div>

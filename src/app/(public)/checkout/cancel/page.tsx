@@ -1,12 +1,17 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { XCircle, ArrowLeft, Package } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { PaytechSandboxBadge } from "@/components/payments/paytech-sandbox-badge";
 
-export const metadata: Metadata = { title: "Paiement annulé — GestionPro" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("checkout");
+  return { title: t("cancelMetaTitle") };
+}
 
-export default function CheckoutCancelPage() {
+export default async function CheckoutCancelPage() {
+  const t = await getTranslations("checkout");
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-16 sm:py-24 bg-[#F8FAFC] dark:bg-[#0a0a0a]">
       <PaytechSandboxBadge />
@@ -19,25 +24,28 @@ export default function CheckoutCancelPage() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-zinc-100 mb-4 tracking-tight">
-            Paiement annulé
+            {t("cancelTitle")}
           </h1>
 
           <p className="text-slate-500 dark:text-zinc-400 mb-10 text-base sm:text-lg leading-relaxed">
-            Votre paiement a été annulé et <span className="font-bold text-slate-700 dark:text-zinc-200">aucun montant n&apos;a été débité</span>.
-            Vous pouvez réessayer votre achat quand vous le souhaitez.
+            {t.rich("cancelText", {
+              b: (chunks) => (
+                <span className="font-bold text-slate-700 dark:text-zinc-200">{chunks}</span>
+              ),
+            })}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button asChild variant="brand" className="w-full sm:w-auto rounded-2xl h-14 px-8 font-black shadow-lg shadow-orange-500/20">
               <Link href="/marketplace">
                 <ArrowLeft className="mr-2 h-5 w-5" />
-                Réessayer mes achats
+                {t("retry")}
               </Link>
             </Button>
             <Button asChild variant="outline" className="w-full sm:w-auto rounded-2xl h-14 px-8 font-bold border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800">
               <Link href="/mes-commandes">
                 <Package className="mr-2 h-5 w-5" />
-                Mes commandes
+                {t("myOrders")}
               </Link>
             </Button>
           </div>

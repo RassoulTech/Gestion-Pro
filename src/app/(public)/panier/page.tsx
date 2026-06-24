@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { CartClient } from "./_components/cart-client";
 
-export const metadata: Metadata = { title: "Panier — GestionPro" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("cart");
+  return { title: t("metaTitle") };
+}
 
 export default function PanierPage() {
   return <CartClient />;

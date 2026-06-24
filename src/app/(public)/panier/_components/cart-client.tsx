@@ -3,11 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, Package, ShoppingBag, CreditCard, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/utils";
 
 export function CartClient() {
+  const t = useTranslations("cart");
   const { items, removeItem, updateQuantity, totalItems, totalPrice } = useCart();
 
   if (items.length === 0) {
@@ -23,15 +25,15 @@ export function CartClient() {
                 <ShoppingCart className="h-10 w-10 animate-bounce" />
               </div>
               <div className="space-y-2">
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">Votre panier est vide</h1>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{t("emptyTitle")}</h1>
                 <p className="text-sm sm:text-base text-slate-500 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
-                  Explorez le marketplace de GestionPro pour découvrir des boutiques de confiance et ajouter des articles.
+                  {t("emptyDesc")}
                 </p>
               </div>
               <Button asChild variant="brand" className="rounded-2xl px-8 h-13 font-black shadow-lg shadow-orange-500/20 w-full sm:w-auto">
                 <Link href="/marketplace">
                   <ShoppingBag className="mr-2.5 h-5 w-5" />
-                  Explorer le marketplace
+                  {t("exploreMarketplace")}
                 </Link>
               </Button>
             </div>
@@ -50,15 +52,15 @@ export function CartClient() {
           <Button asChild variant="ghost" className="rounded-2xl font-bold group mb-6 px-4 py-2 hover:bg-slate-100/50 dark:hover:bg-zinc-800/50">
             <Link href="/marketplace" className="inline-flex items-center">
               <ArrowLeft className="mr-2 h-4.5 w-4.5 transition-transform group-hover:-translate-x-1" />
-              Retour au marketplace
+              {t("backToMarketplace")}
             </Link>
           </Button>
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
             <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-slate-900 dark:text-white">
-              Votre panier
+              {t("title")}
             </h1>
             <p className="text-slate-500 dark:text-zinc-400 font-bold text-fluid-caption sm:text-fluid-body bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 px-4 py-1.5 rounded-full shadow-sm w-fit">
-              {totalItems} article{totalItems > 1 ? "s" : ""} sélectionné{totalItems > 1 ? "s" : ""}
+              {t("itemsSelected", { count: totalItems })}
             </p>
           </div>
         </div>
@@ -99,7 +101,7 @@ export function CartClient() {
                       <button
                         onClick={() => removeItem(item.produitId)}
                         className="flex-shrink-0 h-9 w-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-500/20"
-                        aria-label="Supprimer"
+                        aria-label={t("remove")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -113,7 +115,7 @@ export function CartClient() {
                         onClick={() => updateQuantity(item.produitId, Math.max(1, item.quantite - 1))}
                         disabled={item.quantite <= 1}
                         className="h-10 w-10 sm:h-8 sm:w-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 border border-transparent active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all shadow-sm"
-                        aria-label="Diminuer"
+                        aria-label={t("decrease")}
                       >
                         <Minus className="h-3.5 w-3.5" />
                       </button>
@@ -123,7 +125,7 @@ export function CartClient() {
                       <button
                         onClick={() => updateQuantity(item.produitId, item.quantite + 1)}
                         className="h-10 w-10 sm:h-8 sm:w-8 rounded-xl flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 border border-transparent active:scale-95 transition-all shadow-sm"
-                        aria-label="Augmenter"
+                        aria-label={t("increase")}
                       >
                         <Plus className="h-3.5 w-3.5" />
                       </button>
@@ -131,7 +133,7 @@ export function CartClient() {
 
                     {/* Subtotal */}
                     <div className="text-right">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-0.5">Sous-total</span>
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-0.5">{t("subtotal")}</span>
                       <p className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
                         {formatCurrency(item.prixUnitaire * item.quantite)}
                       </p>
@@ -149,7 +151,7 @@ export function CartClient() {
 
               <h2 className="text-xl font-black text-slate-800 dark:text-zinc-100 mb-6 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-orange-500" />
-                Résumé de commande
+                {t("summary")}
               </h2>
 
               <div className="space-y-4 mb-6 max-h-48 overflow-y-auto pr-1">
@@ -168,8 +170,8 @@ export function CartClient() {
               <div className="border-t border-slate-100 dark:border-zinc-800/80 pt-5 mb-8">
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-sm font-bold text-slate-400 uppercase tracking-wider block">Total TTC</span>
-                    <span className="text-xs text-slate-400">Taxes incluses</span>
+                    <span className="text-sm font-bold text-slate-400 uppercase tracking-wider block">{t("totalTTC")}</span>
+                    <span className="text-xs text-slate-400">{t("taxesIncluded")}</span>
                   </div>
                   <span className="text-3xl font-black text-orange-600 dark:text-orange-400 tracking-tight">
                     {formatCurrency(totalPrice)}
@@ -186,7 +188,7 @@ export function CartClient() {
                 >
                   <Link href="/checkout" className="inline-flex items-center justify-center">
                     <ShoppingBag className="mr-2 h-5 w-5" />
-                    Finaliser la commande
+                    {t("checkout")}
                   </Link>
                 </Button>
                 <Button
@@ -196,7 +198,7 @@ export function CartClient() {
                   className="w-full h-14 rounded-2xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-100/50 dark:bg-zinc-800/20 inline-flex items-center justify-center"
                 >
                   <Link href="/marketplace" className="inline-flex items-center justify-center">
-                    Continuer mes achats
+                    {t("continueShopping")}
                     <ChevronRight className="ml-1 w-4 h-4" />
                   </Link>
                 </Button>
