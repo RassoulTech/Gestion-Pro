@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { AnimatedCounter } from "./animated-counter";
 
 type Stat = {
@@ -8,31 +9,31 @@ type Stat = {
   label: string;
 };
 
-const stats: Stat[] = [
-  {
-    display: <AnimatedCounter value={500} suffix="+" duration={2} />,
-    label: "Commerçants",
-  },
-  {
-    display: <AnimatedCounter value={3} duration={1} />,
-    label: "Pays d'Afrique",
-  },
-  {
-    display: <AnimatedCounter value={99.9} decimals={1} suffix="%" duration={2} />,
-    label: "Uptime",
-  },
-  {
-    display: <span>2min</span>,
-    label: "Onboarding",
-  },
-];
-
 export function SocialProof() {
+  const t = useTranslations("landing.socialProof");
+  const stats: Stat[] = [
+    {
+      display: <AnimatedCounter value={500} suffix="+" duration={2} />,
+      label: t("merchants"),
+    },
+    {
+      display: <AnimatedCounter value={3} duration={1} />,
+      label: t("countries"),
+    },
+    {
+      display: <AnimatedCounter value={99.9} decimals={1} suffix="%" duration={2} />,
+      label: t("uptime"),
+    },
+    {
+      display: <span>2min</span>,
+      label: t("onboarding"),
+    },
+  ];
   return (
     <div className="relative overflow-hidden border-y border-border/50 bg-background/50 backdrop-blur-md">
       <div className="container-app py-12 md:py-16">
         <p className="text-label-upper text-center mb-10 opacity-60">
-          La confiance des entrepreneurs d&apos;Afrique de l&apos;Ouest
+          {t("trust")}
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">

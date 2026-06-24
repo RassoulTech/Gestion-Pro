@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
- 
+import { useTranslations } from "next-intl";
+
 import { motion } from "framer-motion";
- 
+
 import { Mail, Send } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { toast } from "sonner";
@@ -27,19 +28,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const contactSchema = z.object({
-  nom: z.string().min(2, "Le nom est trop court"),
-  email: z.string().email("Email invalide"),
-  sujet: z.string().min(5, "Le sujet est trop court"),
-  message: z.string().min(10, "Le message est trop court"),
-});
-
-type ContactFormValues = z.infer<typeof contactSchema>;
+type ContactFormValues = {
+  nom: string;
+  email: string;
+  sujet: string;
+  message: string;
+};
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function ContactSection() {
+  const t = useTranslations("landing.contact");
   const [loading, setLoading] = useState(false);
+
+  const contactSchema = useMemo(
+    () =>
+      z.object({
+        nom: z.string().min(2, t("validName")),
+        email: z.string().email(t("validEmail")),
+        sujet: z.string().min(5, t("validSubject")),
+        message: z.string().min(10, t("validMessage")),
+      }),
+    [t],
+  );
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
@@ -63,7 +74,7 @@ export function ContactSection() {
         form.reset();
       }
     } catch {
-      toast.error("Une erreur est survenue lors de l'envoi.");
+      toast.error(t("toastError"));
     } finally {
       setLoading(false);
     }
@@ -78,13 +89,13 @@ export function ContactSection() {
       <div className="mx-auto max-w-5xl z-10 relative">
         <div className="mb-16 text-center max-w-2xl mx-auto">
           <span className="inline-flex items-center gap-2 rounded-full bg-orange-500/10 px-4.5 py-1.5 text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-4">
-            Une question ?
+            {t("eyebrow")}
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Contactez <span className="text-shimmer">notre équipe.</span>
+            {t("titleLead")} <span className="text-shimmer">{t("titleHighlight")}</span>
           </h2>
           <p className="mt-3 text-sm font-medium text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Besoin d&apos;un conseil, d&apos;une démonstration personnalisée ou d&apos;un accompagnement ? Nos experts sont là pour propulser votre commerce.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -95,17 +106,17 @@ export function ContactSection() {
               {
                 icon: <Mail className="h-6 w-6" />,
                 iconWrap: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
-                title: "Email direct",
+                title: t("emailTitle"),
                 value: "dionemhd1@gmail.com",
-                desc: "Réponse en moins de 24 heures",
+                desc: t("emailDesc"),
                 href: "mailto:dionemhd1@gmail.com"
               },
               {
                 icon: <WhatsAppIcon className="h-7 w-7" />,
                 iconWrap: "bg-[#25D366] text-white shadow-sm shadow-[#25D366]/30",
-                title: "Support WhatsApp",
+                title: t("whatsappTitle"),
                 value: "+221 77 383 13 64",
-                desc: "Conseillers disponibles 7j/7",
+                desc: t("whatsappDesc"),
                 href: getAdminWhatsAppLink()
               }
             ].map((card, idx) => (
@@ -156,10 +167,10 @@ export function ContactSection() {
                     name="nom"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Nom complet</FormLabel>
+                        <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{t("nameLabel")}</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="Votre nom" 
+                          <Input
+                            placeholder={t("namePlaceholder")}
                             {...field} 
                             className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50" 
                           />
@@ -173,10 +184,10 @@ export function ContactSection() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Email</FormLabel>
+                        <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{t("emailLabel")}</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="votre@email.com" 
+                          <Input
+                            placeholder={t("emailPlaceholder")}
                             {...field} 
                             className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50" 
                           />
@@ -191,10 +202,10 @@ export function ContactSection() {
                   name="sujet"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Sujet</FormLabel>
+                      <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{t("subjectLabel")}</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="De quoi s'agit-il ?" 
+                        <Input
+                          placeholder={t("subjectPlaceholder")}
                           {...field} 
                           className="h-12 rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 px-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50" 
                         />
@@ -208,10 +219,10 @@ export function ContactSection() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Message</FormLabel>
+                      <FormLabel className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">{t("messageLabel")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Dites-nous tout..."
+                          placeholder={t("messagePlaceholder")}
                           className="min-h-[140px] rounded-2xl border-none bg-zinc-100/50 dark:bg-zinc-950/40 p-5 text-sm font-bold transition-all focus:bg-white dark:focus:bg-zinc-950 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 resize-none"
                           {...field}
                         />
@@ -226,7 +237,7 @@ export function ContactSection() {
                   className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all duration-300" 
                   loading={loading}
                 >
-                  Envoyer le message
+                  {t("submit")}
                   <Send className="ml-2 h-4.5 w-4.5" />
                 </Button>
               </form>

@@ -24,6 +24,165 @@
       "whatsappDesc": "Instantly generate and send certified sales receipts to your customers."
     }
   },
+  "landing": {
+    "features": {
+      "eyebrow": "Power & Simplicity",
+      "titleLead": "A platform built for",
+      "titleHighlight": "growth.",
+      "subtitle": "Forget spreadsheets and notebooks. Step up with professional-grade tools.",
+      "posTitle": "Ultra-Fast POS",
+      "posDesc": "Record your sales in a flash. Instant sync with your stock and your accounting.",
+      "stockTitle": "Inventory Management",
+      "stockDesc": "Automatic stock-out alerts, accurate inventories and full traceability of goods movements.",
+      "multishopTitle": "Multi-shop",
+      "multishopDesc": "Run and centralize all your physical points of sale and warehouses from a unified dashboard.",
+      "marketplaceTitle": "Built-in Marketplace",
+      "marketplaceDesc": "Launch your online storefront in one click. Local customers order directly, you cash in and deliver.",
+      "demoCart": "Cart",
+      "demoTotal": "Total",
+      "demoActive": "Active",
+      "demoItem1": "Fragrant Rice 5kg",
+      "demoItem2": "Palm Oil 1L",
+      "demoProduct1": "Air Run Sneaker",
+      "demoProduct2": "Chrono Watch"
+    },
+    "cta": {
+      "badge": "Now's the moment",
+      "titleLead": "Ready to transform",
+      "titleMid": "your",
+      "titleHighlight": "business?",
+      "subtitle": "Join hundreds of merchants who have already digitalized their business with GestionPro. No credit card, no commitment.",
+      "ctaPrimary": "Start for free",
+      "ctaSecondary": "Explore the demo",
+      "trust1": "Quick setup",
+      "trust2": "7/7 support"
+    },
+    "personas": {
+      "eyebrow": "Who it's for",
+      "titleLead": "Built for",
+      "titleHighlight": "every merchant.",
+      "subtitle": "Whether you're a digital expert or a traditional merchant, our solution adapts to your expertise.",
+      "badge": "Tailored Solution",
+      "techTitle": "The tech-savvy entrepreneur",
+      "techBaseline": "25-35 years · runs 1 to 3 shops · digital native",
+      "techBullets": [
+        "Smooth mobile-first experience",
+        "Marketplace to reach new customers",
+        "Automated data analytics",
+        "Multi-user with precise roles"
+      ],
+      "tradTitle": "The traditional merchant",
+      "tradBaseline": "35-55 years · 1 physical shop · trade expert",
+      "tradBullets": [
+        "Ultra-simplified POS interface",
+        "Intuitive customer & loyalty management",
+        "Visual inventory without jargon",
+        "Dedicated support and local guidance"
+      ]
+    },
+    "faq": {
+      "eyebrow": "Frequently asked questions",
+      "title": "Everything you want to know.",
+      "subtitle": "A question that's not here? Write to support@gestionpro.app, we reply within 24 hours.",
+      "items": [
+        {
+          "q": "How long is the free trial?",
+          "a": "The Starter plan is free forever for 1 shop. The Pro plan includes a free trial with no credit card — you only pay if you decide to continue."
+        },
+        {
+          "q": "Does GestionPro work with a slow connection?",
+          "a": "Yes. The app is optimized for unstable 3G/4G networks with smooth data loading and compressed network exchanges. Your data stays secure and accessible."
+        },
+        {
+          "q": "Can I use it on my phone?",
+          "a": "The dashboard and POS are fully mobile. Touch targets ≥ 44 px, side drawers, sticky actions — designed first for smartphone, then adapted to desktop."
+        },
+        {
+          "q": "Which currencies are supported?",
+          "a": "CFA Franc (XOF) by default, Euro (EUR) and US Dollar (USD) as needed. You can set the currency per shop, and consolidated reports are available in the currency of your choice."
+        },
+        {
+          "q": "Is my data safe?",
+          "a": "TLS encryption for all communications, automatic daily backups, strict isolation per shop and per account. No third-party access to your data. GDPR compliance for European users."
+        },
+        {
+          "q": "Can I change plans later?",
+          "a": "Yes, anytime, at no cost. Upgrades are immediate; downgrades apply at the next billing cycle. No data loss when switching."
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "A question?",
+      "titleLead": "Contact",
+      "titleHighlight": "our team.",
+      "subtitle": "Need advice, a personalized demo or guidance? Our experts are here to power your business.",
+      "emailTitle": "Direct email",
+      "emailDesc": "Reply within 24 hours",
+      "whatsappTitle": "WhatsApp support",
+      "whatsappDesc": "Advisors available 7/7",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "What's it about?",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Tell us everything...",
+      "submit": "Send message",
+      "toastError": "An error occurred while sending.",
+      "validName": "Name is too short",
+      "validEmail": "Invalid email",
+      "validSubject": "Subject is too short",
+      "validMessage": "Message is too short"
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "titleLead": "An investment,",
+      "titleHighlight": "not an expense.",
+      "subtitle": "Choose the plan that matches the size of your ambition. No commitment.",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "save": "Save up to {amount} / year!",
+      "recommended": "Recommended",
+      "onQuote": "On quote",
+      "free": "Free",
+      "perMonth": "/ month",
+      "ctaTry": "Try for free",
+      "ctaChoose": "Choose {plan}"
+    },
+    "testimonials": {
+      "eyebrow": "Testimonials",
+      "title": "They save time every day.",
+      "subtitle": "Merchants like you, in very different contexts — the same daily tool.",
+      "items": [
+        {
+          "quote": "Before GestionPro, I lost 2 hours every evening recounting stock. Today, I close the shop and everything is already calculated.",
+          "name": "Awa Traoré",
+          "role": "Manager, Beauté d'Afrique",
+          "location": "Dakar, Senegal"
+        },
+        {
+          "quote": "The POS works even when the connection is weak. My cashiers were comfortable in less than a day.",
+          "name": "Amadou Diallo",
+          "role": "Owner, Diallo Électronique",
+          "location": "Thiès, Senegal"
+        },
+        {
+          "quote": "With 4 shops to track, I needed a clear overview. The reports save me back-and-forth all day long.",
+          "name": "Mariam Koné",
+          "role": "Director, MK Cosmétiques Network",
+          "location": "Abidjan, Côte d'Ivoire"
+        }
+      ]
+    },
+    "socialProof": {
+      "trust": "Trusted by West African entrepreneurs",
+      "merchants": "Merchants",
+      "countries": "African countries",
+      "uptime": "Uptime",
+      "onboarding": "Onboarding"
+    }
+  },
   "auth": {
     "orEmail": "or with email",
     "devModeTitle": "Development mode",

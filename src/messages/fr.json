@@ -24,6 +24,165 @@
       "whatsappDesc": "Générez et envoyez instantanément des reçus de caisse certifiés à vos clients."
     }
   },
+  "landing": {
+    "features": {
+      "eyebrow": "Puissance & Simplicité",
+      "titleLead": "Une plateforme conçue pour",
+      "titleHighlight": "la croissance.",
+      "subtitle": "Oubliez les fichiers Excel et les carnets. Passez au niveau supérieur avec des outils professionnels.",
+      "posTitle": "POS Caisses Ultra-Rapide",
+      "posDesc": "Enregistrez vos ventes en un éclair. Synchronisation instantanée avec votre stock et votre comptabilité.",
+      "stockTitle": "Gestion des Stocks",
+      "stockDesc": "Alertes automatiques de rupture, inventaires précis et traçabilité complète des mouvements de marchandises.",
+      "multishopTitle": "Multi-boutiques",
+      "multishopDesc": "Pilotez et centralisez tous vos points de vente physiques et dépôts depuis un tableau de bord unifié.",
+      "marketplaceTitle": "Marketplace Intégré",
+      "marketplaceDesc": "Déployez votre vitrine en ligne en un clic. Vos clients locaux commandent directement, vous encaissez et livrez.",
+      "demoCart": "Panier",
+      "demoTotal": "Total",
+      "demoActive": "Actif",
+      "demoItem1": "Riz Parfumé 5kg",
+      "demoItem2": "Huile de Palme 1L",
+      "demoProduct1": "Basket Air Run",
+      "demoProduct2": "Montre Chrono"
+    },
+    "cta": {
+      "badge": "C'est le moment",
+      "titleLead": "Prêt à transformer",
+      "titleMid": "votre",
+      "titleHighlight": "commerce ?",
+      "subtitle": "Rejoignez des centaines de commerçants qui ont déjà digitalisé leur activité avec GestionPro. Pas de carte bancaire, pas d'engagement.",
+      "ctaPrimary": "Démarrer gratuitement",
+      "ctaSecondary": "Explorer la démo",
+      "trust1": "Installation rapide",
+      "trust2": "Support 7j/7"
+    },
+    "personas": {
+      "eyebrow": "Pour qui",
+      "titleLead": "Pensé pour",
+      "titleHighlight": "tous les commerçants.",
+      "subtitle": "Que vous soyez un expert du digital ou un commerçant traditionnel, notre solution s'adapte à votre expertise.",
+      "badge": "Solution Sur-Mesure",
+      "techTitle": "L'entrepreneur tech-savvy",
+      "techBaseline": "25-35 ans · gère 1 à 3 boutiques · digital native",
+      "techBullets": [
+        "Expérience mobile-first fluide",
+        "Marketplace pour toucher de nouveaux clients",
+        "Analyses de données automatisées",
+        "Multi-utilisateurs et rôles précis"
+      ],
+      "tradTitle": "Le commerçant traditionnel",
+      "tradBaseline": "35-55 ans · 1 boutique physique · expert métier",
+      "tradBullets": [
+        "Interface POS ultra-simplifiée",
+        "Gestion clients et fidélité intuitive",
+        "Inventaire visuel sans jargon",
+        "Support dédié et accompagnement local"
+      ]
+    },
+    "faq": {
+      "eyebrow": "Questions fréquentes",
+      "title": "Tout ce que vous voulez savoir.",
+      "subtitle": "Une question qui n'y est pas ? Écrivez à support@gestionpro.app, on répond en moins de 24 h.",
+      "items": [
+        {
+          "q": "Combien de temps dure l'essai gratuit ?",
+          "a": "L'offre Starter est gratuite à vie pour 1 boutique. L'offre Pro inclut un essai gratuit sans carte bancaire — vous ne payez que si vous décidez de continuer."
+        },
+        {
+          "q": "GestionPro fonctionne-t-il avec une connexion lente ?",
+          "a": "Oui. L'application est optimisée pour les réseaux 3G/4G instables grâce à un chargement fluide des données et une compression des échanges réseau. Vos données restent sécurisées et accessibles."
+        },
+        {
+          "q": "Puis-je l'utiliser sur mon téléphone ?",
+          "a": "Le dashboard et le POS sont pleinement mobile. Cibles tactiles ≥ 44 px, drawers latéraux, sticky actions — le tout pensé d'abord pour smartphone, puis adapté au desktop."
+        },
+        {
+          "q": "Quelles devises sont supportées ?",
+          "a": "F CFA (XOF) par défaut, Euro (EUR) et Dollar US (USD) au besoin. Vous pouvez configurer la devise par boutique, et les rapports consolidés sont disponibles dans la devise de votre choix."
+        },
+        {
+          "q": "Mes données sont-elles en sécurité ?",
+          "a": "Chiffrement TLS pour toutes les communications, sauvegardes automatiques quotidiennes, isolation stricte par boutique et par compte. Aucun accès tiers à vos données. Conformité RGPD pour les utilisateurs européens."
+        },
+        {
+          "q": "Puis-je changer de plan plus tard ?",
+          "a": "Oui, à tout moment, sans frais. L'upgrade est immédiat ; le downgrade s'applique au prochain cycle de facturation. Aucune perte de données en cas de changement."
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "Une question ?",
+      "titleLead": "Contactez",
+      "titleHighlight": "notre équipe.",
+      "subtitle": "Besoin d'un conseil, d'une démonstration personnalisée ou d'un accompagnement ? Nos experts sont là pour propulser votre commerce.",
+      "emailTitle": "Email direct",
+      "emailDesc": "Réponse en moins de 24 heures",
+      "whatsappTitle": "Support WhatsApp",
+      "whatsappDesc": "Conseillers disponibles 7j/7",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Votre nom",
+      "emailLabel": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "subjectLabel": "Sujet",
+      "subjectPlaceholder": "De quoi s'agit-il ?",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Dites-nous tout...",
+      "submit": "Envoyer le message",
+      "toastError": "Une erreur est survenue lors de l'envoi.",
+      "validName": "Le nom est trop court",
+      "validEmail": "Email invalide",
+      "validSubject": "Le sujet est trop court",
+      "validMessage": "Le message est trop court"
+    },
+    "pricing": {
+      "eyebrow": "Tarification",
+      "titleLead": "Un investissement,",
+      "titleHighlight": "pas une dépense.",
+      "subtitle": "Choisissez le plan qui correspond à la taille de votre ambition. Sans engagement.",
+      "monthly": "Mensuel",
+      "yearly": "Annuel",
+      "save": "Économisez jusqu'à {amount} / an !",
+      "recommended": "Recommandé",
+      "onQuote": "Sur devis",
+      "free": "Gratuit",
+      "perMonth": "/ mois",
+      "ctaTry": "Essayer gratuitement",
+      "ctaChoose": "Choisir {plan}"
+    },
+    "testimonials": {
+      "eyebrow": "Témoignages",
+      "title": "Ils gagnent du temps chaque jour.",
+      "subtitle": "Des commerçants comme vous, dans des contextes très différents — un même outil au quotidien.",
+      "items": [
+        {
+          "quote": "Avant GestionPro, je perdais 2 heures chaque soir à recompter le stock. Aujourd'hui, je ferme la boutique et tout est déjà calculé.",
+          "name": "Awa Traoré",
+          "role": "Gérante, Beauté d'Afrique",
+          "location": "Dakar, Sénégal"
+        },
+        {
+          "quote": "Le POS marche même quand la connexion est faible. Mes caissières ont été à l'aise en moins d'une journée.",
+          "name": "Amadou Diallo",
+          "role": "Propriétaire, Diallo Électronique",
+          "location": "Thiès, Sénégal"
+        },
+        {
+          "quote": "Avec 4 boutiques à suivre, j'avais besoin d'une vue d'ensemble claire. Les rapports m'évitent des allers-retours toute la journée.",
+          "name": "Mariam Koné",
+          "role": "Directrice, Réseau MK Cosmétiques",
+          "location": "Abidjan, Côte d'Ivoire"
+        }
+      ]
+    },
+    "socialProof": {
+      "trust": "La confiance des entrepreneurs d'Afrique de l'Ouest",
+      "merchants": "Commerçants",
+      "countries": "Pays d'Afrique",
+      "uptime": "Uptime",
+      "onboarding": "Onboarding"
+    }
+  },
   "auth": {
     "orEmail": "ou via email",
     "devModeTitle": "Mode développement",

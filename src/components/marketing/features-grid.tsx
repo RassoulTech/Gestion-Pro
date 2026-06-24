@@ -9,12 +9,14 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Section, SectionHeader } from "./section";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function FeaturesGrid() {
+  const t = useTranslations("landing.features");
   return (
     <Section id="fonctionnalites" tone="default" size="xl" className="relative overflow-hidden">
       {/* Decorative Glow Spotlights */}
@@ -22,14 +24,14 @@ export function FeaturesGrid() {
       <div className="absolute bottom-1/3 right-0 w-96 h-96 bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
       <SectionHeader
-        eyebrow="Puissance & Simplicité"
+        eyebrow={t("eyebrow")}
         title={
           <>
-            Une plateforme conçue pour <br />
-            <span className="text-shimmer">la croissance.</span>
+            {t("titleLead")} <br />
+            <span className="text-shimmer">{t("titleHighlight")}</span>
           </>
         }
-        subtitle="Oubliez les fichiers Excel et les carnets. Passez au niveau supérieur avec des outils professionnels."
+        subtitle={t("subtitle")}
       />
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-6 md:grid-rows-2 gap-6">
@@ -37,8 +39,8 @@ export function FeaturesGrid() {
         <BentoCard
           className="md:col-span-4 md:row-span-1"
           icon={<Zap className="w-6 h-6 text-orange-600 dark:text-orange-400" />}
-          title="POS Caisses Ultra-Rapide"
-          description="Enregistrez vos ventes en un éclair. Synchronisation instantanée avec votre stock et votre comptabilité."
+          title={t("posTitle")}
+          description={t("posDesc")}
           visual={<POSVisual />}
           accentColor="rgba(37, 99, 235, 0.15)"
         />
@@ -47,8 +49,8 @@ export function FeaturesGrid() {
         <BentoCard
           className="md:col-span-2 md:row-span-1"
           icon={<Package className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />}
-          title="Gestion des Stocks"
-          description="Alertes automatiques de rupture, inventaires précis et traçabilité complète des mouvements de marchandises."
+          title={t("stockTitle")}
+          description={t("stockDesc")}
           visual={<StockVisual />}
           accentColor="rgba(16, 185, 129, 0.15)"
         />
@@ -57,8 +59,8 @@ export function FeaturesGrid() {
         <BentoCard
           className="md:col-span-2 md:row-span-1"
           icon={<Store className="w-6 h-6 text-orange-600 dark:text-orange-400" />}
-          title="Multi-boutiques"
-          description="Pilotez et centralisez tous vos points de vente physiques et dépôts depuis un tableau de bord unifié."
+          title={t("multishopTitle")}
+          description={t("multishopDesc")}
           visual={<MultiStoreVisual />}
           accentColor="rgba(14, 165, 233, 0.15)"
         />
@@ -67,8 +69,8 @@ export function FeaturesGrid() {
         <BentoCard
           className="md:col-span-4 md:row-span-1"
           icon={<Globe className="w-6 h-6 text-orange-600 dark:text-orange-400" />}
-          title="Marketplace Intégré"
-          description="Déployez votre vitrine en ligne en un clic. Vos clients locaux commandent directement, vous encaissez et livrez."
+          title={t("marketplaceTitle")}
+          description={t("marketplaceDesc")}
           visual={<MarketplaceVisual />}
           accentColor="rgba(37, 99, 235, 0.15)"
         />
@@ -137,18 +139,19 @@ function BentoCard({
 }
 
 function POSVisual() {
+  const t = useTranslations("landing.features");
   return (
     <div className="absolute inset-0 flex flex-col justify-end p-4">
       {/* Glassmorphic simulated POS interface */}
       <div className="w-full bg-white/70 dark:bg-zinc-900/80 backdrop-blur-md rounded-xl border border-zinc-200/40 dark:border-zinc-800/40 p-3 space-y-2.5 shadow-lg shadow-black/[0.02]">
         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800/50 pb-2">
           <div className="h-3.5 w-24 bg-orange-600/10 dark:bg-orange-400/10 rounded-md animate-pulse" />
-          <span className="text-[10px] font-black text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full">Panier</span>
+          <span className="text-[10px] font-black text-orange-600 dark:text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full">{t("demoCart")}</span>
         </div>
         <div className="space-y-1.5">
           {[
-            { label: "Riz Parfumé 5kg", qty: "1x", price: "4 500 F" },
-            { label: "Huile de Palme 1L", qty: "2x", price: "3 000 F" }
+            { label: t("demoItem1"), qty: "1x", price: "4 500 F" },
+            { label: t("demoItem2"), qty: "2x", price: "3 000 F" }
           ].map((item, idx) => (
             <motion.div 
               key={idx}
@@ -164,7 +167,7 @@ function POSVisual() {
           ))}
         </div>
         <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800/50 text-xs font-black">
-          <span className="text-zinc-500">Total</span>
+          <span className="text-zinc-500">{t("demoTotal")}</span>
           <span className="text-zinc-900 dark:text-zinc-50 text-sm">7 500 FCFA</span>
         </div>
       </div>
@@ -206,11 +209,12 @@ function StockVisual() {
 }
 
 function MultiStoreVisual() {
+  const t = useTranslations("landing.features");
   return (
     <div className="absolute inset-0 flex items-center justify-center gap-4 px-6">
       {[
-        { name: "Dakar", value: "Actif", bg: "bg-orange-500/10 border-orange-500/20 text-orange-600 dark:text-orange-400" },
-        { name: "Abidjan", value: "Actif", bg: "bg-orange-500/10 border-orange-500/20 text-orange-600 dark:text-orange-400" }
+        { name: "Dakar", value: t("demoActive"), bg: "bg-orange-500/10 border-orange-500/20 text-orange-600 dark:text-orange-400" },
+        { name: "Abidjan", value: t("demoActive"), bg: "bg-orange-500/10 border-orange-500/20 text-orange-600 dark:text-orange-400" }
       ].map((store, i) => (
         <motion.div
           key={store.name}
@@ -234,12 +238,13 @@ function MultiStoreVisual() {
 }
 
 function MarketplaceVisual() {
+  const t = useTranslations("landing.features");
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
       <div className="flex gap-4 rotate-6 scale-95 opacity-80">
         {[
-          { title: "Basket Air Run", price: "24 000 F", scale: "scale-100" },
-          { title: "Montre Chrono", price: "35 000 F", scale: "translate-y-4 scale-95" }
+          { title: t("demoProduct1"), price: "24 000 F", scale: "scale-100" },
+          { title: t("demoProduct2"), price: "35 000 F", scale: "translate-y-4 scale-95" }
         ].map((item, idx) => (
           <motion.div
             key={idx}

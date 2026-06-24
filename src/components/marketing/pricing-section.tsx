@@ -8,6 +8,7 @@ import { Section, SectionHeader } from "./section";
 import { cn } from "@/lib/utils";
 import { formatPrice, type Currency } from "@/lib/format";
 import { PLAN_LIST, type FeatureItem } from "@/lib/plan-limits";
+import { useTranslations } from "next-intl";
 
 import { motion } from "framer-motion";
 
@@ -22,33 +23,29 @@ type Plan = {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const plans: Plan[] = PLAN_LIST.map((p) => ({
-  name: p.nom,
-  monthlyXOF: p.prix,
-  description: p.shortDescription,
-  features: p.features,
-  cta: {
-    label:
-      p.code === "STARTER"
-        ? "Essayer gratuitement"
-        : `Choisir ${p.nom}`,
-    href: "/register",
-  },
-  highlight: p.code === "PRO",
-}));
-
-const XOF_PER_EUR = 655.957;
-
 export function PricingSection() {
+  const t = useTranslations("landing.pricing");
   const [currency, setCurrency] = React.useState<Currency>("XOF");
   const [billingInterval, setBillingInterval] = React.useState<"monthly" | "yearly">("monthly");
+
+  const plans: Plan[] = PLAN_LIST.map((p) => ({
+    name: p.nom,
+    monthlyXOF: p.prix,
+    description: p.shortDescription,
+    features: p.features,
+    cta: {
+      label: p.code === "STARTER" ? t("ctaTry") : t("ctaChoose", { plan: p.nom }),
+      href: "/register",
+    },
+    highlight: p.code === "PRO",
+  }));
 
   const XOF_PER_EUR = 655.957;
   const XOF_PER_USD = 600;
 
   function displayPrice(plan: Plan): { value: string; originalValue?: string; suffix: string } {
-    if (plan.monthlyXOF === null) return { value: "Sur devis", suffix: "" };
-    if (plan.monthlyXOF === 0) return { value: "Gratuit", suffix: "" };
+    if (plan.monthlyXOF === null) return { value: t("onQuote"), suffix: "" };
+    if (plan.monthlyXOF === 0) return { value: t("free"), suffix: "" };
 
     let priceVal = plan.monthlyXOF;
     if (currency === "EUR") {
@@ -62,13 +59,13 @@ export function PricingSection() {
       return {
         value: formatPrice(discounted, currency),
         originalValue: formatPrice(priceVal, currency),
-        suffix: "/ mois"
+        suffix: t("perMonth")
       };
     }
 
     return {
       value: formatPrice(priceVal, currency),
-      suffix: "/ mois"
+      suffix: t("perMonth")
     };
   }
 
@@ -79,14 +76,14 @@ export function PricingSection() {
       <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
       <SectionHeader
-        eyebrow="Tarification"
+        eyebrow={t("eyebrow")}
         title={
           <>
-            Un investissement, <br />
-            <span className="text-shimmer">pas une dépense.</span>
+            {t("titleLead")} <br />
+            <span className="text-shimmer">{t("titleHighlight")}</span>
           </>
         }
-        subtitle="Choisissez le plan qui correspond à la taille de votre ambition. Sans engagement."
+        subtitle={t("subtitle")}
       />
 
       {/* Switchers */}
@@ -122,7 +119,7 @@ export function PricingSection() {
                 : "text-zinc-400 hover:text-zinc-200"
             )}
           >
-            Mensuel
+            {t("monthly")}
           </button>
           <button
             type="button"
@@ -134,7 +131,7 @@ export function PricingSection() {
                 : "text-zinc-400 hover:text-zinc-200"
             )}
           >
-            <span>Annuel</span>
+            <span>{t("yearly")}</span>
             <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[9px] font-black border border-emerald-500/20">
               -20%
             </span>
@@ -148,7 +145,7 @@ export function PricingSection() {
             animate={{ opacity: 1, y: 0 }}
             className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5"
           >
-            <span>Économisez jusqu&apos;à {currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $"} / an !</span>
+            <span>{t("save", { amount: currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $" })}</span>
           </motion.div>
         )}
       </div>
@@ -176,7 +173,7 @@ export function PricingSection() {
               {isHighlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-600 to-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-4.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-orange-600/20">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Recommandé
+                  {t("recommended")}
                 </div>
               )}
 

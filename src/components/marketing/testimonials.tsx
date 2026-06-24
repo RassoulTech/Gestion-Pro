@@ -4,6 +4,7 @@ import { Section, SectionHeader } from "./section";
 import { cn, getInitials } from "@/lib/utils";
 import { Quote } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 type Testimonial = {
   quote: string;
@@ -12,48 +13,26 @@ type Testimonial = {
   location: string;
 };
 
-const testimonials: Testimonial[] = [
-  {
-    quote:
-      "Avant GestionPro, je perdais 2 heures chaque soir à recompter le stock. Aujourd'hui, je ferme la boutique et tout est déjà calculé.",
-    name: "Awa Traoré",
-    role: "Gérante, Beauté d'Afrique",
-    location: "Dakar, Sénégal",
-  },
-  {
-    quote:
-      "Le POS marche même quand la connexion est faible. Mes caissières ont été à l'aise en moins d'une journée.",
-    name: "Amadou Diallo",
-    role: "Propriétaire, Diallo Électronique",
-    location: "Thiès, Sénégal",
-  },
-  {
-    quote:
-      "Avec 4 boutiques à suivre, j'avais besoin d'une vue d'ensemble claire. Les rapports m'évitent des allers-retours toute la journée.",
-    name: "Mariam Koné",
-    role: "Directrice, Réseau MK Cosmétiques",
-    location: "Abidjan, Côte d'Ivoire",
-  },
-];
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Testimonials() {
+  const t = useTranslations("landing.testimonials");
+  const items = t.raw("items") as Testimonial[];
   return (
     <Section id="temoignages" tone="default" size="lg" className="relative overflow-hidden">
       {/* Decorative Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand/5 blur-[150px] rounded-full pointer-events-none" />
 
       <SectionHeader
-        eyebrow="Témoignages"
-        title="Ils gagnent du temps chaque jour."
-        subtitle="Des commerçants comme vous, dans des contextes très différents — un même outil au quotidien."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        subtitle={t("subtitle")}
       />
 
       <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 z-10 relative">
-        {testimonials.map((t, i) => (
+        {items.map((item, i) => (
           <motion.div
-            key={t.name}
+            key={item.name}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -77,7 +56,7 @@ export function Testimonials() {
 
             <blockquote className="flex-1">
               <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-300 font-semibold italic sm:text-[15px]">
-                &quot;{t.quote}&quot;
+                &quot;{item.quote}&quot;
               </p>
             </blockquote>
 
@@ -88,15 +67,15 @@ export function Testimonials() {
                   aria-hidden="true"
                   className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-950 text-xs font-black text-zinc-800 dark:text-zinc-200 border border-white/20"
                 >
-                  {getInitials(t.name)}
+                  {getInitials(item.name)}
                 </span>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="line-clamp-1 text-sm font-extrabold text-zinc-900 dark:text-zinc-50">
-                  {t.name}
+                  {item.name}
                 </p>
                 <p className="line-clamp-2 break-words text-xs text-zinc-500 dark:text-zinc-400 font-semibold sm:line-clamp-1">
-                  {t.role} · <span className="text-orange-600 dark:text-orange-400">{t.location}</span>
+                  {item.role} · <span className="text-orange-600 dark:text-orange-400">{item.location}</span>
                 </p>
               </div>
             </figcaption>

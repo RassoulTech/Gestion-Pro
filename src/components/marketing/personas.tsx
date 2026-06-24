@@ -2,8 +2,9 @@
 "use client";
 
 import { Smartphone, Store, Check, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Section, SectionHeader } from "./section";
- 
+
 import { motion } from "framer-motion";
 
 type Persona = {
@@ -13,42 +14,32 @@ type Persona = {
   bullets: string[];
 };
 
-const personas: Persona[] = [
-  {
-    icon: Smartphone,
-    title: "L'entrepreneur tech-savvy",
-    baseline: "25-35 ans · gère 1 à 3 boutiques · digital native",
-    bullets: [
-      "Expérience mobile-first fluide",
-      "Marketplace pour toucher de nouveaux clients",
-      "Analyses de données automatisées",
-      "Multi-utilisateurs et rôles précis",
-    ],
-  },
-  {
-    icon: Store,
-    title: "Le commerçant traditionnel",
-    baseline: "35-55 ans · 1 boutique physique · expert métier",
-    bullets: [
-      "Interface POS ultra-simplifiée",
-      "Gestion clients et fidélité intuitive",
-      "Inventaire visuel sans jargon",
-      "Support dédié et accompagnement local",
-    ],
-  },
-];
-
 export function Personas() {
+  const t = useTranslations("landing.personas");
+  const personas: Persona[] = [
+    {
+      icon: Smartphone,
+      title: t("techTitle"),
+      baseline: t("techBaseline"),
+      bullets: t.raw("techBullets") as string[],
+    },
+    {
+      icon: Store,
+      title: t("tradTitle"),
+      baseline: t("tradBaseline"),
+      bullets: t.raw("tradBullets") as string[],
+    },
+  ];
   return (
     <Section id="pour-qui" tone="default" size="lg">
       <SectionHeader
-        eyebrow="Pour qui"
+        eyebrow={t("eyebrow")}
         title={
           <>
-            Pensé pour <span className="text-shimmer">tous les commerçants.</span>
+            {t("titleLead")} <span className="text-shimmer">{t("titleHighlight")}</span>
           </>
         }
-        subtitle="Que vous soyez un expert du digital ou un commerçant traditionnel, notre solution s'adapte à votre expertise."
+        subtitle={t("subtitle")}
       />
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -94,7 +85,7 @@ export function Personas() {
               <div className="mt-10 pt-8 border-t border-border/50">
                 <div className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
                   <Sparkles className="w-4 h-4 text-brand" />
-                  Solution Sur-Mesure
+                  {t("badge")}
                 </div>
               </div>
             </motion.div>
