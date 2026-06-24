@@ -517,6 +517,57 @@
       ]
     }
   },
+  "marketplace": {
+    "metaTitle": "Marketplace — GestionPro",
+    "eyebrow": "Marketplace",
+    "titleLead": "Découvrez des milliers de",
+    "titleHighlight": "produits.",
+    "subtitle": "Parcourez le catalogue de toutes nos boutiques, comparez et commandez en toute simplicité.",
+    "emptyTitle": "Aucun produit trouvé",
+    "emptyDesc": "Ajustez votre recherche ou vos filtres pour découvrir d'autres produits.",
+    "searchPlaceholder": "Rechercher un produit, une boutique...",
+    "categoryPlaceholder": "Catégorie",
+    "allCategories": "Toutes les catégories",
+    "boutiquePlaceholder": "Boutique",
+    "allBoutiques": "Toutes les boutiques",
+    "dispoPlaceholder": "Disponibilité",
+    "allDispo": "Toute disponibilité",
+    "inStock": "En stock",
+    "outOfStock": "Rupture",
+    "prixMin": "Prix min",
+    "prixMax": "Prix max",
+    "sortPlaceholder": "Trier",
+    "filters": "Filtres",
+    "filterTitle": "Filtrer les produits",
+    "resetFilters": "Réinitialiser les filtres",
+    "reset": "Réinitialiser",
+    "secteurs": {
+      "all": "Tous",
+      "ALIMENTATION": "Alimentation",
+      "HABILLEMENT": "Habillement",
+      "ELECTRONIQUE": "Électronique",
+      "BEAUTE": "Beauté",
+      "SANTE": "Santé",
+      "SERVICES": "Services",
+      "QUINCAILLERIE": "Quincaillerie",
+      "LIBRAIRIE": "Librairie",
+      "AUTRE": "Autre"
+    },
+    "sorts": {
+      "recent": "Plus récents",
+      "popular": "Plus populaires",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant"
+    },
+    "card": {
+      "inStock": "En stock",
+      "soldOut": "Épuisé",
+      "viewDetails": "Voir détails",
+      "add": "Ajouter",
+      "addedToCart": "{name} ajouté au panier",
+      "addAria": "Ajouter {name} au panier"
+    }
+  },
   "common": {
     "login": "Connexion",
     "register": "S'inscrire",

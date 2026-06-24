@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import type { MarketplaceProduct } from "@/server/queries/marketplace.queries";
 
 export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduct }) {
+  const t = useTranslations("marketplace.card");
   const { addItem } = useCart();
   const boutiqueLogo = produit.boutique.logo || produit.boutique.vendeur?.photo || null;
   const href = `/s/${produit.boutique.slug}/produits/${produit.id}`;
@@ -27,7 +29,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
       prixUnitaire: produit.prixUnitaire,
       photo: produit.photo,
     });
-    toast.success(`${produit.nom} ajouté au panier`);
+    toast.success(t("addedToCart", { name: produit.nom }));
   }
 
   return (
@@ -69,7 +71,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
                 : "bg-rose-500 text-white shadow-lg shadow-rose-500/20"
             }`}
           >
-            {enStock ? "En stock" : "Épuisé"}
+            {enStock ? t("inStock") : t("soldOut")}
           </Badge>
         </div>
       </div>
@@ -124,17 +126,17 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
             cliquable) n'apparaît qu'à partir de sm. */}
         <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-slate-100/60 dark:border-zinc-800/50">
           <span className="hidden sm:inline text-[10px] font-extrabold text-orange-500 uppercase tracking-widest">
-            Voir détails
+            {t("viewDetails")}
           </span>
           <Button
             size="sm"
             className="w-full min-[380px]:w-auto rounded-xl px-3 h-9 font-extrabold text-[11px] bg-brand text-white border-none shadow-md shadow-brand/10 hover:shadow-brand/20 transition-all duration-300 flex items-center justify-center shrink-0"
             onClick={handleAddToCart}
             disabled={!enStock}
-            aria-label={`Ajouter ${produit.nom} au panier`}
+            aria-label={t("addAria", { name: produit.nom })}
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1" />
-            Ajouter
+            {t("add")}
           </Button>
         </div>
       </div>

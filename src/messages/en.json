@@ -517,6 +517,57 @@
       ]
     }
   },
+  "marketplace": {
+    "metaTitle": "Marketplace — GestionPro",
+    "eyebrow": "Marketplace",
+    "titleLead": "Discover thousands of",
+    "titleHighlight": "products.",
+    "subtitle": "Browse the catalog of all our shops, compare and order effortlessly.",
+    "emptyTitle": "No product found",
+    "emptyDesc": "Adjust your search or filters to discover other products.",
+    "searchPlaceholder": "Search a product, a shop...",
+    "categoryPlaceholder": "Category",
+    "allCategories": "All categories",
+    "boutiquePlaceholder": "Shop",
+    "allBoutiques": "All shops",
+    "dispoPlaceholder": "Availability",
+    "allDispo": "Any availability",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "prixMin": "Min price",
+    "prixMax": "Max price",
+    "sortPlaceholder": "Sort",
+    "filters": "Filters",
+    "filterTitle": "Filter products",
+    "resetFilters": "Reset filters",
+    "reset": "Reset",
+    "secteurs": {
+      "all": "All",
+      "ALIMENTATION": "Food",
+      "HABILLEMENT": "Clothing",
+      "ELECTRONIQUE": "Electronics",
+      "BEAUTE": "Beauty",
+      "SANTE": "Health",
+      "SERVICES": "Services",
+      "QUINCAILLERIE": "Hardware",
+      "LIBRAIRIE": "Bookstore",
+      "AUTRE": "Other"
+    },
+    "sorts": {
+      "recent": "Most recent",
+      "popular": "Most popular",
+      "price_asc": "Price ascending",
+      "price_desc": "Price descending"
+    },
+    "card": {
+      "inStock": "In stock",
+      "soldOut": "Sold out",
+      "viewDetails": "View details",
+      "add": "Add",
+      "addedToCart": "{name} added to cart",
+      "addAria": "Add {name} to cart"
+    }
+  },
   "common": {
     "login": "Sign in",
     "register": "Sign up",

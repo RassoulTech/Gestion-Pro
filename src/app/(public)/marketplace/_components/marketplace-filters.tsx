@@ -34,27 +34,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 const SECTEURS = [
-  { label: "Tous", value: "all", icon: Layers },
-  { label: "Alimentation", value: "ALIMENTATION", icon: Utensils },
-  { label: "Habillement", value: "HABILLEMENT", icon: Shirt },
-  { label: "Électronique", value: "ELECTRONIQUE", icon: Laptop },
-  { label: "Beauté", value: "BEAUTE", icon: Sparkles },
-  { label: "Santé", value: "SANTE", icon: HeartPulse },
-  { label: "Services", value: "SERVICES", icon: Briefcase },
-  { label: "Quincaillerie", value: "QUINCAILLERIE", icon: Hammer },
-  { label: "Librairie", value: "LIBRAIRIE", icon: BookOpen },
-  { label: "Autre", value: "AUTRE", icon: Store },
+  { value: "all", icon: Layers },
+  { value: "ALIMENTATION", icon: Utensils },
+  { value: "HABILLEMENT", icon: Shirt },
+  { value: "ELECTRONIQUE", icon: Laptop },
+  { value: "BEAUTE", icon: Sparkles },
+  { value: "SANTE", icon: HeartPulse },
+  { value: "SERVICES", icon: Briefcase },
+  { value: "QUINCAILLERIE", icon: Hammer },
+  { value: "LIBRAIRIE", icon: BookOpen },
+  { value: "AUTRE", icon: Store },
 ];
 
-const SORTS = [
-  { label: "Plus récents", value: "recent" },
-  { label: "Plus populaires", value: "popular" },
-  { label: "Prix croissant", value: "price_asc" },
-  { label: "Prix décroissant", value: "price_desc" },
-];
+const SORTS = ["recent", "popular", "price_asc", "price_desc"] as const;
 
 interface MarketplaceFiltersProps {
   categories: string[];
@@ -62,6 +58,7 @@ interface MarketplaceFiltersProps {
 }
 
 export function MarketplaceFilters({ categories, boutiques }: MarketplaceFiltersProps) {
+  const t = useTranslations("marketplace");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -145,10 +142,10 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
       {/* Catégorie produit */}
       <Select value={currentCategorie} onValueChange={(v) => setParam("categorie", v)}>
         <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
-          <SelectValue placeholder="Catégorie" />
+          <SelectValue placeholder={t("categoryPlaceholder")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Toutes les catégories</SelectItem>
+          <SelectItem value="all">{t("allCategories")}</SelectItem>
           {categories.map((c) => (
             <SelectItem key={c} value={c}>
               {c}
@@ -160,10 +157,10 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
       {/* Boutique */}
       <Select value={currentBoutique} onValueChange={(v) => setParam("boutique", v)}>
         <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
-          <SelectValue placeholder="Boutique" />
+          <SelectValue placeholder={t("boutiquePlaceholder")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Toutes les boutiques</SelectItem>
+          <SelectItem value="all">{t("allBoutiques")}</SelectItem>
           {boutiques.map((b) => (
             <SelectItem key={b.slug} value={b.slug}>
               {b.nom}
@@ -175,12 +172,12 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
       {/* Disponibilité */}
       <Select value={currentDispo} onValueChange={(v) => setParam("dispo", v)}>
         <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
-          <SelectValue placeholder="Disponibilité" />
+          <SelectValue placeholder={t("dispoPlaceholder")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Toute disponibilité</SelectItem>
-          <SelectItem value="stock">En stock</SelectItem>
-          <SelectItem value="rupture">Rupture</SelectItem>
+          <SelectItem value="all">{t("allDispo")}</SelectItem>
+          <SelectItem value="stock">{t("inStock")}</SelectItem>
+          <SelectItem value="rupture">{t("outOfStock")}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -190,7 +187,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
           type="number"
           inputMode="numeric"
           min={0}
-          placeholder="Prix min"
+          placeholder={t("prixMin")}
           value={prixMin}
           onChange={(e) => setPrixMin(e.target.value)}
           className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
@@ -200,7 +197,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
           type="number"
           inputMode="numeric"
           min={0}
-          placeholder="Prix max"
+          placeholder={t("prixMax")}
           value={prixMax}
           onChange={(e) => setPrixMax(e.target.value)}
           className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
@@ -219,7 +216,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
             <Search className="absolute left-4 sm:left-5 h-5 w-5 sm:h-6 sm:w-6 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
             <Input
               type="text"
-              placeholder="Rechercher un produit, une boutique..."
+              placeholder={t("searchPlaceholder")}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               className="h-12 sm:h-16 pl-12 sm:pl-14 pr-6 rounded-2xl bg-transparent border-none text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 text-base sm:text-lg font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -253,7 +250,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
               )}
             >
               <Icon className={cn("w-4 h-4", isActive ? "text-white" : "text-slate-400 dark:text-zinc-500")} />
-              {secteur.label}
+              {t(`secteurs.${secteur.value}`)}
             </button>
           );
         })}
@@ -266,12 +263,12 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
           <Select value={currentSort} onValueChange={(v) => setParam("sort", v, "recent")}>
             <SelectTrigger className="h-11 w-full sm:w-52 rounded-2xl font-bold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
               <ArrowDownUp className="h-4 w-4 text-slate-400 mr-1" />
-              <SelectValue placeholder="Trier" />
+              <SelectValue placeholder={t("sortPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
               {SORTS.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
+                <SelectItem key={s} value={s}>
+                  {t(`sorts.${s}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -290,7 +287,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
                 className="h-11 w-full rounded-2xl font-bold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 justify-center"
               >
                 <SlidersHorizontal className="h-4 w-4 mr-2 text-slate-400" />
-                Filtres
+                {t("filters")}
                 {activeFilterCount > 0 && (
                   <span className="ml-2 h-5 min-w-5 px-1.5 rounded-full bg-brand text-white text-[10px] font-black flex items-center justify-center">
                     {activeFilterCount}
@@ -302,7 +299,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-2 font-black">
                   <SlidersHorizontal className="h-5 w-5 text-orange-500" />
-                  Filtrer les produits
+                  {t("filterTitle")}
                 </SheetTitle>
               </SheetHeader>
               <div className="py-6">{AdvancedFilters}</div>
@@ -312,7 +309,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
                 className="w-full rounded-2xl font-bold text-slate-500"
               >
                 <X className="h-4 w-4 mr-1" />
-                Réinitialiser les filtres
+                {t("resetFilters")}
               </Button>
             </SheetContent>
           </Sheet>
@@ -326,7 +323,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
             className="hidden lg:flex h-11 rounded-2xl font-bold text-slate-500 shrink-0"
           >
             <X className="h-4 w-4 mr-1" />
-            Réinitialiser
+            {t("reset")}
           </Button>
         )}
       </div>

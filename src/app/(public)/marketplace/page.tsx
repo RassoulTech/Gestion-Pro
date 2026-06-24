@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { Sparkles, PackageSearch } from "lucide-react";
 import {
   getMarketplaceProducts,
@@ -14,7 +15,10 @@ import { MarketplaceFilters } from "./_components/marketplace-filters";
 import { MarketplaceProductCard } from "./_components/marketplace-product-card";
 import { MarketplacePagination } from "@/components/ui/marketplace-pagination";
 
-export const metadata: Metadata = { title: "Marketplace — GestionPro" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("marketplace");
+  return { title: t("metaTitle") };
+}
 
 function ProductGridSkeleton() {
   return (
@@ -69,12 +73,13 @@ async function ProductGrid({
   });
 
   if (data.length === 0) {
+    const t = await getTranslations("marketplace");
     return (
       <div className="py-20 bg-white dark:bg-zinc-900 border border-dashed border-slate-200 dark:border-zinc-800 rounded-[2rem] shadow-sm">
         <EmptyState
           icon={PackageSearch}
-          title="Aucun produit trouvé"
-          description="Ajustez votre recherche ou vos filtres pour découvrir d'autres produits."
+          title={t("emptyTitle")}
+          description={t("emptyDesc")}
         />
       </div>
     );
@@ -106,6 +111,7 @@ export default async function MarketplacePage({
   if (params.perPage === "60") perPage = 60;
 
   const { categories, boutiques } = await getMarketplaceFilterOptions();
+  const t = await getTranslations("marketplace");
 
   // Clé qui force le re-render du Suspense quand un filtre change
   const suspenseKey = JSON.stringify(params);
@@ -119,16 +125,16 @@ export default async function MarketplacePage({
 
           <div className="inline-flex items-center gap-2 rounded-full bg-orange-500/10 border border-orange-500/20 px-3.5 py-1 text-xs font-extrabold text-orange-500 uppercase tracking-widest relative z-10">
             <Sparkles className="w-3.5 h-3.5" />
-            Marketplace
+            {t("eyebrow")}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] relative z-10">
-            Découvrez des milliers de <br />
-            <span className="bg-gradient-to-r from-[#EA580C] to-orange-500 bg-clip-text text-transparent">produits.</span>
+            {t("titleLead")} <br />
+            <span className="bg-gradient-to-r from-[#EA580C] to-orange-500 bg-clip-text text-transparent">{t("titleHighlight")}</span>
           </h1>
 
           <p className="text-sm sm:text-base text-slate-500 dark:text-zinc-400 max-w-lg mx-auto leading-relaxed relative z-10 font-medium">
-            Parcourez le catalogue de toutes nos boutiques, comparez et commandez en toute simplicité.
+            {t("subtitle")}
           </p>
         </div>
 
