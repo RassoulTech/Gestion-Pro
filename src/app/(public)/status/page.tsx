@@ -1,54 +1,22 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { CheckCircle2, Server, Database, MessageSquare, CreditCard, Activity } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const services = [
-  {
-    name: "Portail Marchand (Dashboard SaaS)",
-    desc: "Interface d'administration pour les vendeurs",
-    status: "operational",
-    uptime: "99.98%",
-    latency: "124ms",
-    icon: Server,
-  },
-  {
-    name: "Générateur E-Boutique (Public Shops)",
-    desc: "Vitrine e-commerce hébergée pour les clients finaux",
-    status: "operational",
-    uptime: "99.99%",
-    latency: "86ms",
-    icon: Activity,
-  },
-  {
-    name: "Passerelle Notifications (SMS & WhatsApp)",
-    desc: "Envoi des alertes de stock et reçus clients",
-    status: "operational",
-    uptime: "99.85%",
-    latency: "320ms",
-    icon: MessageSquare,
-  },
-  {
-    name: "Passerelle de Paiement (Mobile Money / Cartes)",
-    desc: "Traitement des souscriptions d'abonnements",
-    status: "operational",
-    uptime: "100%",
-    latency: "190ms",
-    icon: CreditCard,
-  },
-  {
-    name: "Base de Données Principale (PostgreSQL)",
-    desc: "Hébergement sécurisé des catalogues et transactions",
-    status: "operational",
-    uptime: "99.99%",
-    latency: "12ms",
-    icon: Database,
-  },
+const serviceConfig = [
+  { uptime: "99.98%", latency: "124ms", icon: Server },
+  { uptime: "99.99%", latency: "86ms", icon: Activity },
+  { uptime: "99.85%", latency: "320ms", icon: MessageSquare },
+  { uptime: "100%", latency: "190ms", icon: CreditCard },
+  { uptime: "99.99%", latency: "12ms", icon: Database },
 ];
 
 export default function StatusPage() {
+  const t = useTranslations("public.status");
+  const serviceList = t.raw("services") as { name: string; desc: string }[];
   return (
     <div className="relative pt-32 pb-24 overflow-hidden">
       {/* Decorative Orbs */}
@@ -70,27 +38,28 @@ export default function StatusPage() {
             </div>
             <div>
               <h1 className="text-xl font-black text-zinc-900 dark:text-zinc-50">
-                Tous les systèmes sont opérationnels
+                {t("allOperational")}
               </h1>
               <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Mise à jour en temps réel • Dernière vérification automatique il y a 45 secondes
+                {t("lastCheck")}
               </p>
             </div>
           </div>
           <span className="px-4 py-2 rounded-xl bg-emerald-500 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/20">
-            100% Opérationnel
+            {t("operationalBadge")}
           </span>
         </motion.div>
 
         {/* --- Services Grid --- */}
         <div className="space-y-6">
           <h2 className="text-lg font-black text-zinc-900 dark:text-zinc-50 uppercase tracking-wider">
-            Statut individuel des services
+            {t("servicesTitle")}
           </h2>
 
           <div className="space-y-4">
-            {services.map((ser, idx) => {
+            {serviceConfig.map((ser, idx) => {
               const Icon = ser.icon;
+              const info = serviceList[idx] ?? { name: "", desc: "" };
               return (
                 <motion.div
                   key={idx}
@@ -105,10 +74,10 @@ export default function StatusPage() {
                     </div>
                     <div>
                       <h3 className="font-extrabold text-zinc-900 dark:text-zinc-50 text-sm">
-                        {ser.name}
+                        {info.name}
                       </h3>
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold mt-0.5">
-                        {ser.desc}
+                        {info.desc}
                       </p>
                     </div>
                   </div>
@@ -117,10 +86,10 @@ export default function StatusPage() {
                   <div className="flex items-center gap-6 w-full sm:w-auto shrink-0 justify-between sm:justify-end">
                     <div className="flex flex-col items-end text-right">
                       <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
-                        Opérationnel
+                        {t("operational")}
                       </span>
                       <span className="text-[10px] font-bold text-zinc-400 mt-0.5">
-                        Uptime : {ser.uptime} • Latence : {ser.latency}
+                        {t("uptimeLatency", { uptime: ser.uptime, latency: ser.latency })}
                       </span>
                     </div>
 
@@ -156,10 +125,10 @@ export default function StatusPage() {
           className="p-8 rounded-3xl bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-xl shadow-sm space-y-4"
         >
           <h3 className="text-sm font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
-            Historique des incidents
+            {t("incidentsTitle")}
           </h3>
           <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
-            Aucun incident majeur ou mineur signalé au cours des 90 derniers jours.
+            {t("noIncidents")}
           </p>
         </motion.div>
       </div>

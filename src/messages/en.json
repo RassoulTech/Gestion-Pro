@@ -381,6 +381,92 @@
       "status": "Status"
     }
   },
+  "public": {
+    "offline": {
+      "metaTitle": "Offline",
+      "title": "You are offline",
+      "text": "Unable to reach GestionPro right now. Check your connection — the page will reload as soon as the network is back.",
+      "retry": "Retry"
+    },
+    "pricingPage": {
+      "eyebrow": "Simple & Transparent Pricing",
+      "title": "Choose the ideal plan",
+      "subtitle": "No hidden fees. Upgrade, downgrade or cancel your subscription anytime directly from your personal space.",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "save": "Save up to {amount} / year!",
+      "loading": "Loading plans...",
+      "free": "Free",
+      "perMonth": "/ month",
+      "popular": "Most popular",
+      "descPro": "Ideal for fast-growing shops.",
+      "descEnterprise": "For large multi-shop businesses.",
+      "descStarter": "To test and launch your business.",
+      "ctaFree": "Start for free",
+      "ctaSubscribe": "Subscribe",
+      "step2Title": "Payment Method",
+      "step2Subtitle": "Select the payment method for {plan}",
+      "chosenPlan": "Chosen plan",
+      "totalYearly": "Yearly total",
+      "totalMonthly": "Monthly total",
+      "paymentMethod": "Payment method",
+      "back": "Back",
+      "confirm": "Confirm",
+      "toastPlansError": "Unable to retrieve the plans.",
+      "toastLogin": "Please sign in to subscribe.",
+      "toastVendor": "First create your seller profile to subscribe to a plan.",
+      "toastRedirect": "Redirecting to the payment gateway...",
+      "toastInitError": "An error occurred during initialization.",
+      "genericError": "Something went wrong."
+    },
+    "support": {
+      "eyebrow": "Help center",
+      "titleLead": "How can we",
+      "titleHighlight": "help you?",
+      "searchPlaceholder": "Search a question, a feature...",
+      "noResultsTitle": "No results found",
+      "noResultsText": "Try entering other keywords like \"VAT\", \"Premium\" or \"catalog\".",
+      "whatsappTitle": "Chat support (WhatsApp)",
+      "whatsappDesc": "Need live help? Talk to our local technicians directly on WhatsApp for step-by-step assistance.",
+      "whatsappCta": "Open WhatsApp",
+      "callTitle": "Call us directly",
+      "callDesc": "Our advisors based in Dakar and Abidjan answer your calls Monday to Friday from 8am to 6pm GMT.",
+      "callCta": "Call +221 77 383 13 64",
+      "categories": {
+        "getting-started": "Getting started",
+        "stock": "Inventory management",
+        "billing": "Billing & VAT",
+        "eboutique": "E-shop"
+      },
+      "faqs": [
+        { "category": "getting-started", "q": "How do I create my first shop on GestionPro?", "a": "After signing up, click 'Create a shop' from your central dashboard. Enter your shop name, choose your currency (CFA Franc by default for the WAEMU zone), then select your business sector from our extensive list. Your management workspace is set up instantly!" },
+        { "category": "getting-started", "q": "Can I manage several physical shops with a single account?", "a": "Yes! GestionPro's Premium plan lets you run up to 5 distinct shops from a single account. You can switch between shops in one click from the dropdown menu at the top of your dashboard, without signing in again." },
+        { "category": "stock", "q": "How does the low-stock alert system work?", "a": "For each product added to your catalog, you can set an 'Alert threshold'. As soon as the available stock quantity is at or below this threshold after sales, a red visual notification appears on your dashboard to help you avoid stock-outs." },
+        { "category": "stock", "q": "Can I import my product catalog from an Excel file?", "a": "Absolutely. From the 'Stock' module, click 'Import' and download our standard Excel/CSV file template. Fill in the columns (Name, Purchase price, Sale price, Quantity, Threshold) then import it to set up your entire catalog in seconds." },
+        { "category": "billing", "q": "How do I enable automatic WAEMU VAT calculation at 18%?", "a": "When creating your invoices or quotes, check the 'Apply VAT (18%)' option. Our algorithm instantly calculates the pre-tax amount, the VAT amount and the total incl. tax in CFA Francs, ensuring full compliance with current tax regulations." },
+        { "category": "billing", "q": "Can I export my invoices and expenses for my accountant?", "a": "Yes, all your sales journals, issued invoices and recorded expenses are exportable in one click in standard Excel/CSV or PDF format. These documents are structured to simplify your month-end bookkeeping." },
+        { "category": "eboutique", "q": "How is my online shop created?", "a": "As soon as you add products to your catalog and enable the 'Online shop' option, GestionPro automatically generates a public e-commerce website for your brand. Your local customers can browse your products, fill their cart and submit orders directly to your WhatsApp!" },
+        { "category": "eboutique", "q": "How do I link my own custom domain name?", "a": "Premium subscribers can connect their own domain name (e.g. myshop.com). Go to Settings > E-shop, enter your domain name then configure the indicated DNS records (CNAME and A). Our team handles the free SSL certificate setup within 24h." }
+      ]
+    },
+    "status": {
+      "allOperational": "All systems operational",
+      "lastCheck": "Real-time update • Last automatic check 45 seconds ago",
+      "operationalBadge": "100% Operational",
+      "servicesTitle": "Individual service status",
+      "operational": "Operational",
+      "uptimeLatency": "Uptime: {uptime} • Latency: {latency}",
+      "incidentsTitle": "Incident history",
+      "noIncidents": "No major or minor incident reported over the last 90 days.",
+      "services": [
+        { "name": "Merchant Portal (SaaS Dashboard)", "desc": "Administration interface for sellers" },
+        { "name": "E-Shop Generator (Public Shops)", "desc": "Hosted e-commerce storefront for end customers" },
+        { "name": "Notifications Gateway (SMS & WhatsApp)", "desc": "Sending stock alerts and customer receipts" },
+        { "name": "Payment Gateway (Mobile Money / Cards)", "desc": "Processing subscription payments" },
+        { "name": "Main Database (PostgreSQL)", "desc": "Secure hosting of catalogs and transactions" }
+      ]
+    }
+  },
   "common": {
     "login": "Sign in",
     "register": "Sign up",

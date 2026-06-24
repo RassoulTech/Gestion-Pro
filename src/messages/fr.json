@@ -381,6 +381,92 @@
       "status": "Statut"
     }
   },
+  "public": {
+    "offline": {
+      "metaTitle": "Hors ligne",
+      "title": "Vous êtes hors ligne",
+      "text": "Impossible de joindre GestionPro pour le moment. Vérifiez votre connexion — la page se rechargera dès le retour du réseau.",
+      "retry": "Réessayer"
+    },
+    "pricingPage": {
+      "eyebrow": "Tarifs Simples & Transparents",
+      "title": "Choisissez le plan idéal",
+      "subtitle": "Aucun frais caché. Mettez à niveau, rétrogradez ou annulez votre abonnement à tout moment directement depuis votre espace personnel.",
+      "monthly": "Mensuel",
+      "yearly": "Annuel",
+      "save": "Économisez jusqu'à {amount} / an !",
+      "loading": "Chargement des forfaits...",
+      "free": "Gratuit",
+      "perMonth": "/ mois",
+      "popular": "Le plus populaire",
+      "descPro": "Idéal pour les boutiques en forte croissance.",
+      "descEnterprise": "Pour les grandes entreprises multi-boutiques.",
+      "descStarter": "Pour tester et lancer votre activité.",
+      "ctaFree": "Commencer gratuitement",
+      "ctaSubscribe": "S'abonner",
+      "step2Title": "Mode de Règlement",
+      "step2Subtitle": "Sélectionnez le moyen de paiement pour {plan}",
+      "chosenPlan": "Plan choisi",
+      "totalYearly": "Total annuel",
+      "totalMonthly": "Total mensuel",
+      "paymentMethod": "Moyen de paiement",
+      "back": "Retour",
+      "confirm": "Confirmer",
+      "toastPlansError": "Impossible de récupérer les forfaits.",
+      "toastLogin": "Veuillez vous connecter pour vous abonner.",
+      "toastVendor": "Créez d'abord votre profil vendeur pour souscrire à un plan.",
+      "toastRedirect": "Redirection vers la passerelle de paiement...",
+      "toastInitError": "Une erreur est survenue lors de l'initialisation.",
+      "genericError": "Une erreur est survenue."
+    },
+    "support": {
+      "eyebrow": "Centre d'aide",
+      "titleLead": "Comment pouvons-nous",
+      "titleHighlight": "vous aider ?",
+      "searchPlaceholder": "Rechercher une question, une fonctionnalité...",
+      "noResultsTitle": "Aucun résultat trouvé",
+      "noResultsText": "Essayez de saisir d'autres mots clés comme « TVA », « Premium » ou « catalogue ».",
+      "whatsappTitle": "Support par Chat (WhatsApp)",
+      "whatsappDesc": "Besoin d'aide en direct ? Parlez à nos techniciens locaux directement sur WhatsApp pour une assistance pas-à-pas.",
+      "whatsappCta": "Ouvrir WhatsApp",
+      "callTitle": "Nous appeler directement",
+      "callDesc": "Nos conseillers basés à Dakar et Abidjan répondent à vos appels du lundi au vendredi de 8h à 18h GMT.",
+      "callCta": "Appeler le +221 77 383 13 64",
+      "categories": {
+        "getting-started": "Démarrage",
+        "stock": "Gestion de Stock",
+        "billing": "Facturation & TVA",
+        "eboutique": "E-Boutique"
+      },
+      "faqs": [
+        { "category": "getting-started", "q": "Comment créer ma première boutique sur GestionPro ?", "a": "Après votre inscription, cliquez sur 'Créer une boutique' depuis votre tableau de bord central. Saisissez le nom de votre boutique, choisissez votre devise (par défaut le FCFA pour la zone UEMOA), puis sélectionnez votre secteur d'activité parmi notre liste enrichie. Votre espace de gestion est instantanément configuré !" },
+        { "category": "getting-started", "q": "Puis-je gérer plusieurs boutiques physiques avec un seul compte ?", "a": "Oui ! La formule Premium de GestionPro vous permet de piloter jusqu'à 5 boutiques distinctes depuis un unique compte. Vous pouvez basculer d'une boutique à l'autre en un clic depuis le menu déroulant en haut de votre tableau de bord, sans avoir à vous reconnecter." },
+        { "category": "stock", "q": "Comment fonctionne le système d'alerte de stock bas ?", "a": "Pour chaque produit ajouté à votre catalogue, vous pouvez définir un 'Seuil d'alerte'. Dès que la quantité disponible en stock est inférieure ou égale à ce seuil suite à des ventes, une notification visuelle s'affiche en rouge sur votre tableau de bord pour vous éviter toute rupture de stock." },
+        { "category": "stock", "q": "Puis-je importer mon catalogue produit depuis un fichier Excel ?", "a": "Absolument. Depuis le module 'Stocks', cliquez sur 'Importer' et téléchargez notre modèle de fichier Excel/CSV standard. Remplissez les colonnes (Désignation, Prix d'achat, Prix de vente, Quantité, Seuil) puis importez-le pour configurer tout votre catalogue en quelques secondes." },
+        { "category": "billing", "q": "Comment activer le calcul automatique de la TVA UEMOA à 18% ?", "a": "Lors de la création de vos factures ou devis, cochez l'option 'Appliquer la TVA (18%)'. Notre algorithme calcule instantanément le montant HT, le montant de la TVA ainsi que le TTC total en Francs CFA, assurant une parfaite conformité avec la réglementation fiscale en vigueur." },
+        { "category": "billing", "q": "Puis-je exporter mes factures et dépenses pour mon comptable ?", "a": "Oui, tous vos journaux de ventes, de factures émises et de dépenses enregistrées sont exportables en un clic au format standard Excel/CSV ou PDF. Ces documents sont structurés de manière à simplifier la tenue de votre comptabilité de fin de mois." },
+        { "category": "eboutique", "q": "Comment ma boutique en ligne est-elle créée ?", "a": "Dès que vous ajoutez des produits dans votre catalogue et activez l'option 'Boutique en ligne', GestionPro génère automatiquement un site web e-commerce public pour votre marque. Vos clients locaux peuvent parcourir vos produits, remplir leur panier et soumettre leurs commandes directement vers votre WhatsApp !" },
+        { "category": "eboutique", "q": "Comment lier mon propre nom de domaine personnalisé ?", "a": "Les abonnés Premium peuvent associer leur propre nom de domaine (ex: maboutique.com). Rendez-vous dans Paramètres > E-Boutique, saisissez votre nom de domaine puis configurez les enregistrements DNS (CNAME et A) indiqués. Notre équipe s'occupe de l'installation du certificat SSL gratuit sous 24h." }
+      ]
+    },
+    "status": {
+      "allOperational": "Tous les systèmes sont opérationnels",
+      "lastCheck": "Mise à jour en temps réel • Dernière vérification automatique il y a 45 secondes",
+      "operationalBadge": "100% Opérationnel",
+      "servicesTitle": "Statut individuel des services",
+      "operational": "Opérationnel",
+      "uptimeLatency": "Uptime : {uptime} • Latence : {latency}",
+      "incidentsTitle": "Historique des incidents",
+      "noIncidents": "Aucun incident majeur ou mineur signalé au cours des 90 derniers jours.",
+      "services": [
+        { "name": "Portail Marchand (Dashboard SaaS)", "desc": "Interface d'administration pour les vendeurs" },
+        { "name": "Générateur E-Boutique (Public Shops)", "desc": "Vitrine e-commerce hébergée pour les clients finaux" },
+        { "name": "Passerelle Notifications (SMS & WhatsApp)", "desc": "Envoi des alertes de stock et reçus clients" },
+        { "name": "Passerelle de Paiement (Mobile Money / Cartes)", "desc": "Traitement des souscriptions d'abonnements" },
+        { "name": "Base de Données Principale (PostgreSQL)", "desc": "Hébergement sécurisé des catalogues et transactions" }
+      ]
+    }
+  },
   "common": {
     "login": "Connexion",
     "register": "S'inscrire",

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Sparkles, Loader2, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getPlansAction, initiatePlanSubscription } from "@/server/actions/subscription.actions";
@@ -21,6 +22,7 @@ type PlanType = {
 };
 
 export default function PricingPage() {
+  const t = useTranslations("public.pricingPage");
   const router = useRouter();
   const [plans, setPlans] = useState<PlanType[]>([]);
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,7 @@ export default function PricingPage() {
   }
 
   function displayPrice(prix: number): { value: string; originalValue?: string; suffix: string } {
-    if (prix === 0) return { value: "Gratuit", suffix: "" };
+    if (prix === 0) return { value: t("free"), suffix: "" };
 
     const priceVal = getPriceInCurrency(prix);
 
@@ -51,7 +53,7 @@ export default function PricingPage() {
       return {
         value: formatPrice(discounted, currency),
         originalValue: formatPrice(priceVal, currency),
-        suffix: "/ mois"
+        suffix: t("perMonth")
       };
     }
 
@@ -70,7 +72,7 @@ export default function PricingPage() {
         }
       })
       .catch(() => {
-        toast.error("Impossible de récupérer les forfaits.");
+        toast.error(t("toastPlansError"));
       })
       .finally(() => setLoading(false));
   }, []);
@@ -87,10 +89,10 @@ export default function PricingPage() {
 
       if (result?.serverError) {
         if (result.serverError.includes("connecté")) {
-          toast.error("Veuillez vous connecter pour vous abonner.");
+          toast.error(t("toastLogin"));
           router.push("/login?callbackUrl=/pricing");
         } else if (result.serverError.includes("permissions")) {
-          toast.info("Créez d'abord votre profil vendeur pour souscrire à un plan.");
+          toast.info(t("toastVendor"));
           router.push("/onboarding");
         } else {
           toast.error(result.serverError);
@@ -99,17 +101,17 @@ export default function PricingPage() {
       }
 
       if (result?.data?.paymentUrl) {
-        toast.success("Redirection vers la passerelle de paiement...");
+        toast.success(t("toastRedirect"));
         if (result.data.paymentUrl.startsWith("http://") || result.data.paymentUrl.startsWith("https://")) {
           window.location.href = result.data.paymentUrl;
         } else {
           router.push(result.data.paymentUrl);
         }
       } else {
-        toast.error("Une erreur est survenue lors de l'initialisation.");
+        toast.error(t("toastInitError"));
       }
     } catch {
-      toast.error("Une erreur est survenue.");
+      toast.error(t("genericError"));
     } finally {
       setLoading(false);
     }
@@ -125,13 +127,13 @@ export default function PricingPage() {
         {/* Title */}
         <div className="text-center space-y-4">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-black uppercase tracking-widest">
-            <Sparkles className="h-3 w-3" /> Tarifs Simples & Transparents
+            <Sparkles className="h-3 w-3" /> {t("eyebrow")}
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
-            Choisissez le plan idéal
+            {t("title")}
           </h1>
           <p className="text-zinc-400 max-w-xl mx-auto font-medium text-sm">
-            Aucun frais caché. Mettez à niveau, rétrogradez ou annulez votre abonnement à tout moment directement depuis votre espace personnel.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -169,7 +171,7 @@ export default function PricingPage() {
                     : "text-zinc-400 hover:text-zinc-200"
                 )}
               >
-                Mensuel
+                {t("monthly")}
               </button>
               <button
                 type="button"
@@ -181,7 +183,7 @@ export default function PricingPage() {
                     : "text-zinc-400 hover:text-zinc-200"
                 )}
               >
-                <span>Annuel</span>
+                <span>{t("yearly")}</span>
                 <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[9px] font-black border border-emerald-500/20">
                   -20%
                 </span>
@@ -195,7 +197,7 @@ export default function PricingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5"
               >
-                <span>Économisez jusqu&apos;à {currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $"} / an !</span>
+                <span>{t("save", { amount: currency === "XOF" ? "47 760 FCFA" : currency === "EUR" ? "72,80 €" : "79,60 $" })}</span>
               </motion.div>
             )}
           </div>
@@ -204,7 +206,7 @@ export default function PricingPage() {
         {loading && plans.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <Loader2 className="h-10 w-10 text-brand animate-spin" />
-            <p className="text-zinc-500 text-xs font-black uppercase tracking-wider">Chargement des forfaits...</p>
+            <p className="text-zinc-500 text-xs font-black uppercase tracking-wider">{t("loading")}</p>
           </div>
         ) : step === 1 ? (
           /* STEP 1: Comparison Cards Grid */
@@ -231,7 +233,7 @@ export default function PricingPage() {
                 >
                   {isPro && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full text-white shadow-lg">
-                      Le plus populaire
+                      {t("popular")}
                     </div>
                   )}
 
@@ -259,10 +261,10 @@ export default function PricingPage() {
                     </div>
                     <p className="text-xs text-zinc-400 font-medium">
                       {isPro
-                        ? "Idéal pour les boutiques en forte croissance."
+                        ? t("descPro")
                         : isEnterprise
-                        ? "Pour les grandes entreprises multi-boutiques."
-                        : "Pour tester et lancer votre activité."}
+                        ? t("descEnterprise")
+                        : t("descStarter")}
                     </p>
                   </div>
 
@@ -320,7 +322,7 @@ export default function PricingPage() {
                         : "bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
                     )}
                   >
-                    {plan.prix === 0 ? "Commencer gratuitement" : "S'abonner"}
+                    {plan.prix === 0 ? t("ctaFree") : t("ctaSubscribe")}
                   </Button>
                 </motion.div>
               );
@@ -334,22 +336,22 @@ export default function PricingPage() {
             className="max-w-md mx-auto bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-6 sm:p-8 space-y-6 shadow-2xl"
           >
             <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-black">Mode de Règlement</h2>
-              <p className="text-xs text-zinc-400 font-bold">Sélectionnez le moyen de paiement pour {selectedPlan?.nom}</p>
+              <h2 className="text-xl sm:text-2xl font-black">{t("step2Title")}</h2>
+              <p className="text-xs text-zinc-400 font-bold">{t("step2Subtitle", { plan: selectedPlan?.nom ?? "" })}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800 flex items-center justify-between">
               <div className="space-y-0.5">
-                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Plan choisi</p>
+                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">{t("chosenPlan")}</p>
                 <p className="text-sm font-black text-zinc-200">{selectedPlan?.nom}</p>
               </div>
               <div className="text-right">
                 <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">
-                  {billingInterval === "yearly" ? "Total annuel" : "Total mensuel"}
+                  {billingInterval === "yearly" ? t("totalYearly") : t("totalMonthly")}
                 </p>
                 <p className="text-lg font-black text-brand">
                   {selectedPlan ? (() => {
-                    if (selectedPlan.prix === 0) return "Gratuit";
+                    if (selectedPlan.prix === 0) return t("free");
                     const basePrice = getPriceInCurrency(selectedPlan.prix);
                     if (billingInterval === "yearly") {
                       return formatPrice((basePrice * 0.8) * 12, currency);
@@ -361,7 +363,7 @@ export default function PricingPage() {
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs font-black uppercase tracking-wider text-zinc-500">Moyen de paiement</p>
+              <p className="text-xs font-black uppercase tracking-wider text-zinc-500">{t("paymentMethod")}</p>
               
               <div className="grid grid-cols-2 gap-3">
                 {/* WAVE */}
@@ -419,7 +421,7 @@ export default function PricingPage() {
                 onClick={() => setStep(1)}
                 disabled={loading}
               >
-                Retour
+                {t("back")}
               </Button>
               <Button
                 onClick={handleSubscribe}
@@ -427,7 +429,7 @@ export default function PricingPage() {
                 className="flex-1 h-12 rounded-xl font-black text-xs sm:text-sm bg-brand hover:bg-brand/90 text-white shadow-xl shadow-brand/20"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Confirmer
+                {t("confirm")}
               </Button>
             </div>
           </motion.div>
