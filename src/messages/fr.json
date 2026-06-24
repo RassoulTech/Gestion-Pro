@@ -419,6 +419,56 @@
       "toastInitError": "Une erreur est survenue lors de l'initialisation.",
       "genericError": "Une erreur est survenue."
     },
+    "about": {
+      "eyebrow": "Notre Histoire",
+      "titleLead": "Digitaliser le commerce pour",
+      "titleHighlight": "libérer le potentiel",
+      "titleEnd": "africain.",
+      "subtitle": "GestionPro est né d'un constat simple : la gestion d'une boutique physique ou en ligne en Afrique de l'Ouest ne devrait pas être un casse-tête quotidien.",
+      "stats": [
+        { "value": "10K+", "label": "Boutiques digitalisées" },
+        { "value": "15M+", "label": "Ventes enregistrées" },
+        { "value": "99.9%", "label": "Taux de disponibilité" }
+      ],
+      "storyTitle": "Simplifier, connecter, automatiser.",
+      "storyP1": "Créé par des ingénieurs passionnés basés au Sénégal et en Côte d'Ivoire, GestionPro répond à la complexité de la gestion manuelle. Du suivi de stock au grand livre des dépenses, nous éliminons les erreurs pour libérer votre temps.",
+      "storyP2": "En intégrant un générateur de e-boutique en quelques clics et des outils de facturation professionnels adaptés à nos réalités fiscales, nous aidons les PME locales à se professionnaliser et à accroître leur rentabilité de façon exponentielle.",
+      "trustTitle": "Des milliers de marchands nous font confiance.",
+      "trustText": "Des boutiques de prêt-à-porter de Dakar aux grossistes d'Abidjan, GestionPro propulse l'économie locale.",
+      "valuesTitle": "Nos Valeurs Fondamentales",
+      "valuesSubtitle": "Ce qui nous guide au quotidien pour concevoir la meilleure plateforme de commerce d'Afrique.",
+      "values": [
+        { "title": "Notre Vision", "description": "Permettre à chaque commerçant d'Afrique de l'Ouest d'accéder à des outils de gestion modernes, intuitifs et puissants pour propulser leur croissance." },
+        { "title": "Fiabilité Absolue", "description": "Nous construisons des technologies ultra-robustes sur lesquelles les entreprises peuvent compter chaque jour pour sécuriser leurs transactions et stocks." },
+        { "title": "Proximité client", "description": "Nous sommes fiers de concevoir notre solution en pensant d'abord aux réalités et aux besoins des entrepreneurs locaux de la zone UEMOA." }
+      ],
+      "ctaTitle": "Prêt à propulser la croissance de votre boutique ?",
+      "ctaText": "Rejoignez des milliers de marchands africains qui font confiance à GestionPro pour digitaliser et piloter leurs activités en toute simplicité.",
+      "ctaCreate": "Créer mon compte",
+      "ctaExpert": "Parler à un expert"
+    },
+    "blog": {
+      "eyebrow": "Ressources & Conseils",
+      "titleLead": "Le Blog de",
+      "subtitle": "Des guides pratiques, des analyses sectorielles et des conseils d'experts pour propulser votre boutique en Afrique.",
+      "searchPlaceholder": "Rechercher un article...",
+      "readArticle": "Lire l'article",
+      "noResultsTitle": "Aucun article trouvé",
+      "noResultsText": "Essayez de modifier vos filtres ou d'ajuster les mots clés de votre recherche.",
+      "categories": {
+        "all": "Tous",
+        "stock": "Gestion de Stock",
+        "ecommerce": "E-Commerce",
+        "tax": "Fiscalité",
+        "tips": "Conseils Pro"
+      },
+      "articles": [
+        { "title": "Comment gérer ses stocks en période de fêtes de fin d'année au Sénégal", "excerpt": "La fin d'année est synonyme de forte demande. Découvrez nos stratégies incontournables pour anticiper vos approvisionnements et éviter les ruptures de stock.", "date": "15 Mai 2026", "readTime": "6 min" },
+        { "title": "Guide complet de la facturation et calcul de la TVA 18% en zone UEMOA", "excerpt": "Comprendre et appliquer correctement la TVA de 18% est crucial pour votre conformité fiscale. Suivez notre guide pas-à-pas pour éviter tout redressement.", "date": "12 Mai 2026", "readTime": "8 min" },
+        { "title": "5 astuces pour optimiser les livraisons de votre e-boutique à Abidjan", "excerpt": "La logistique du dernier kilomètre est le principal défi du e-commerce en Côte d'Ivoire. Voici comment réduire vos délais et satisfaire vos clients.", "date": "08 Mai 2026", "readTime": "5 min" },
+        { "title": "Pourquoi digitaliser les finances de votre commerce physique est urgent", "excerpt": "Le passage des carnets papier à un système de gestion automatisé multiplie par deux la rentabilité des commerçants. Découvrez pourquoi et comment sauter le pas.", "date": "02 Mai 2026", "readTime": "7 min" }
+      ]
+    },
     "support": {
       "eyebrow": "Centre d'aide",
       "titleLead": "Comment pouvons-nous",

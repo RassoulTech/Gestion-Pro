@@ -2,62 +2,35 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Calendar, Clock, ArrowRight, Search, BookOpen, Sparkles } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const categories = ["Tous", "Gestion de Stock", "E-Commerce", "Fiscalité", "Conseils Pro"];
+const CATEGORY_KEYS = ["all", "stock", "ecommerce", "tax", "tips"] as const;
 
-const articles = [
-  {
-    id: 1,
-    title: "Comment gérer ses stocks en période de fêtes de fin d'année au Sénégal",
-    excerpt: "La fin d'année est synonyme de forte demande. Découvrez nos stratégies incontournables pour anticiper vos approvisionnements et éviter les ruptures de stock.",
-    category: "Gestion de Stock",
-    date: "15 Mai 2026",
-    readTime: "6 min",
-    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600",
-    slug: "gestion-stock-fetes-senegal",
-  },
-  {
-    id: 2,
-    title: "Guide complet de la facturation et calcul de la TVA 18% en zone UEMOA",
-    excerpt: "Comprendre et appliquer correctement la TVA de 18% est crucial pour votre conformité fiscale. Suivez notre guide pas-à-pas pour éviter tout redressement.",
-    category: "Fiscalité",
-    date: "12 Mai 2026",
-    readTime: "8 min",
-    image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600",
-    slug: "guide-facturation-tva-uemoa",
-  },
-  {
-    id: 3,
-    title: "5 astuces pour optimiser les livraisons de votre e-boutique à Abidjan",
-    excerpt: "La logistique du dernier kilomètre est le principal défi du e-commerce en Côte d'Ivoire. Voici comment réduire vos délais et satisfaire vos clients.",
-    category: "E-Commerce",
-    date: "08 Mai 2026",
-    readTime: "5 min",
-    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=600",
-    slug: "astuces-livraison-eboutique-abidjan",
-  },
-  {
-    id: 4,
-    title: "Pourquoi digitaliser les finances de votre commerce physique est urgent",
-    excerpt: "Le passage des carnets papier à un système de gestion automatisé multiplie par deux la rentabilité des commerçants. Découvrez pourquoi et comment sauter le pas.",
-    category: "Conseils Pro",
-    date: "02 Mai 2026",
-    readTime: "7 min",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600",
-    slug: "pourquoi-digitaliser-finances-commerce",
-  },
+const ARTICLE_META = [
+  { id: 1, category: "stock", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600", slug: "gestion-stock-fetes-senegal" },
+  { id: 2, category: "tax", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600", slug: "guide-facturation-tva-uemoa" },
+  { id: 3, category: "ecommerce", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=600", slug: "astuces-livraison-eboutique-abidjan" },
+  { id: 4, category: "tips", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600", slug: "pourquoi-digitaliser-finances-commerce" },
 ];
 
+type ArticleContent = { title: string; excerpt: string; date: string; readTime: string };
+
 export default function BlogPage() {
-  const [selectedCategory, setSelectedCategory] = useState("Tous");
+  const t = useTranslations("public.blog");
+  const articleContent = t.raw("articles") as ArticleContent[];
+  const articles = ARTICLE_META.map((m, i) => ({
+    ...m,
+    ...(articleContent[i] ?? { title: "", excerpt: "", date: "", readTime: "" }),
+  }));
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredArticles = articles.filter((art) => {
-    const matchesCategory = selectedCategory === "Tous" || art.category === selectedCategory;
-    const matchesSearch = art.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesCategory = selectedCategory === "all" || art.category === selectedCategory;
+    const matchesSearch = art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           art.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -77,7 +50,7 @@ export default function BlogPage() {
             transition={{ duration: 0.6, ease: EASE }}
           >
             <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-widest border border-emerald-500/20">
-              <Sparkles className="h-3 w-3" /> Ressources & Conseils
+              <Sparkles className="h-3 w-3" /> {t("eyebrow")}
             </span>
           </motion.div>
 
@@ -87,7 +60,7 @@ export default function BlogPage() {
             transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
             className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50"
           >
-            Le Blog de <span className="bg-gradient-to-r from-orange-600 to-emerald-500 bg-clip-text text-transparent">GestionPro</span>
+            {t("titleLead")} <span className="bg-gradient-to-r from-orange-600 to-emerald-500 bg-clip-text text-transparent">GestionPro</span>
           </motion.h1>
 
           <motion.p
@@ -96,7 +69,7 @@ export default function BlogPage() {
             transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
             className="text-base font-semibold text-zinc-500 dark:text-zinc-400"
           >
-            Des guides pratiques, des analyses sectorielles et des conseils d&apos;experts pour propulser votre boutique en Afrique.
+            {t("subtitle")}
           </motion.p>
         </div>
 
@@ -104,7 +77,7 @@ export default function BlogPage() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 p-4 rounded-3xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/50 backdrop-blur-xl shadow-md">
           {/* Categories */}
           <div className="flex flex-wrap gap-2 justify-center md:justify-start w-full md:w-auto">
-            {categories.map((cat) => (
+            {CATEGORY_KEYS.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
@@ -114,7 +87,7 @@ export default function BlogPage() {
                     : "bg-white/50 dark:bg-zinc-950/30 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 border border-zinc-200/40 dark:border-zinc-800/40"
                 }`}
               >
-                {cat}
+                {t(`categories.${cat}`)}
               </button>
             ))}
           </div>
@@ -124,7 +97,7 @@ export default function BlogPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <input
               type="text"
-              placeholder="Rechercher un article..."
+              placeholder={t("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-11 pl-11 pr-5 rounded-2xl bg-white/50 dark:bg-zinc-950/30 border border-zinc-200/50 dark:border-zinc-800/50 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-sm font-semibold outline-none transition-all placeholder:text-zinc-400"
@@ -154,7 +127,7 @@ export default function BlogPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-4 left-4 inline-flex items-center px-3 py-1.5 rounded-xl bg-white/90 dark:bg-zinc-900/90 text-xs font-black uppercase tracking-wider text-orange-600 dark:text-orange-400 shadow-sm border border-zinc-200/20 dark:border-zinc-800/20">
-                      {art.category}
+                      {t(`categories.${art.category}`)}
                     </span>
                   </div>
 
@@ -179,7 +152,7 @@ export default function BlogPage() {
 
                     <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-orange-600 dark:text-orange-400">
-                        Lire l&apos;article <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                        {t("readArticle")} <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                       </span>
                     </div>
                   </div>
@@ -195,10 +168,10 @@ export default function BlogPage() {
                   <BookOpen className="h-8 w-8 text-zinc-400" />
                 </div>
                 <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-50">
-                  Aucun article trouvé
+                  {t("noResultsTitle")}
                 </h3>
                 <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
-                  Essayez de modifier vos filtres ou d&apos;ajuster les mots clés de votre recherche.
+                  {t("noResultsText")}
                 </p>
               </motion.div>
             )}

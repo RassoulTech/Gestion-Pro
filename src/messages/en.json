@@ -419,6 +419,56 @@
       "toastInitError": "An error occurred during initialization.",
       "genericError": "Something went wrong."
     },
+    "about": {
+      "eyebrow": "Our Story",
+      "titleLead": "Digitalizing commerce to",
+      "titleHighlight": "unlock the potential",
+      "titleEnd": "of Africa.",
+      "subtitle": "GestionPro was born from a simple observation: managing a physical or online shop in West Africa shouldn't be a daily headache.",
+      "stats": [
+        { "value": "10K+", "label": "Digitalized shops" },
+        { "value": "15M+", "label": "Recorded sales" },
+        { "value": "99.9%", "label": "Uptime rate" }
+      ],
+      "storyTitle": "Simplify, connect, automate.",
+      "storyP1": "Created by passionate engineers based in Senegal and Côte d'Ivoire, GestionPro tackles the complexity of manual management. From stock tracking to the expenses ledger, we eliminate errors to free up your time.",
+      "storyP2": "By integrating a one-click e-shop generator and professional invoicing tools tailored to our tax realities, we help local SMEs become more professional and grow their profitability exponentially.",
+      "trustTitle": "Thousands of merchants trust us.",
+      "trustText": "From ready-to-wear shops in Dakar to wholesalers in Abidjan, GestionPro powers the local economy.",
+      "valuesTitle": "Our Core Values",
+      "valuesSubtitle": "What guides us every day to build the best commerce platform in Africa.",
+      "values": [
+        { "title": "Our Vision", "description": "Enable every merchant in West Africa to access modern, intuitive and powerful management tools to drive their growth." },
+        { "title": "Absolute Reliability", "description": "We build ultra-robust technologies that businesses can rely on every day to secure their transactions and stock." },
+        { "title": "Customer Closeness", "description": "We are proud to design our solution thinking first about the realities and needs of local entrepreneurs in the WAEMU zone." }
+      ],
+      "ctaTitle": "Ready to power your shop's growth?",
+      "ctaText": "Join thousands of African merchants who trust GestionPro to digitalize and run their businesses effortlessly.",
+      "ctaCreate": "Create my account",
+      "ctaExpert": "Talk to an expert"
+    },
+    "blog": {
+      "eyebrow": "Resources & Tips",
+      "titleLead": "The Blog of",
+      "subtitle": "Practical guides, sector analyses and expert advice to power your shop in Africa.",
+      "searchPlaceholder": "Search an article...",
+      "readArticle": "Read article",
+      "noResultsTitle": "No article found",
+      "noResultsText": "Try changing your filters or adjusting your search keywords.",
+      "categories": {
+        "all": "All",
+        "stock": "Inventory Management",
+        "ecommerce": "E-Commerce",
+        "tax": "Taxation",
+        "tips": "Pro Tips"
+      },
+      "articles": [
+        { "title": "How to manage your stock during the year-end holiday season in Senegal", "excerpt": "Year-end means strong demand. Discover our essential strategies to anticipate your supply and avoid stock-outs.", "date": "May 15, 2026", "readTime": "6 min" },
+        { "title": "Complete guide to invoicing and 18% VAT calculation in the WAEMU zone", "excerpt": "Understanding and correctly applying the 18% VAT is crucial for your tax compliance. Follow our step-by-step guide to avoid any reassessment.", "date": "May 12, 2026", "readTime": "8 min" },
+        { "title": "5 tips to optimize deliveries for your e-shop in Abidjan", "excerpt": "Last-mile logistics is the main challenge of e-commerce in Côte d'Ivoire. Here's how to cut your delays and satisfy your customers.", "date": "May 08, 2026", "readTime": "5 min" },
+        { "title": "Why digitalizing your physical shop's finances is urgent", "excerpt": "Moving from paper notebooks to an automated management system doubles merchants' profitability. Find out why and how to take the leap.", "date": "May 02, 2026", "readTime": "7 min" }
+      ]
+    },
     "support": {
       "eyebrow": "Help center",
       "titleLead": "How can we",
