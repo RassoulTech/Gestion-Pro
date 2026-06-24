@@ -1,6 +1,7 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ interface AddToCartButtonProps {
 }
 
 export function AddToCartButton({ produit, boutiqueSlug, boutiqueNom, disabled, className }: AddToCartButtonProps) {
+  const t = useTranslations("shop");
   const { addItem } = useCart();
 
   function handleClick() {
@@ -32,7 +34,7 @@ export function AddToCartButton({ produit, boutiqueSlug, boutiqueNom, disabled, 
       prixUnitaire: produit.prixUnitaire,
       photo: produit.photo,
     });
-    toast.success(`${produit.nom} ajouté au panier`);
+    toast.success(t("addedToCart", { name: produit.nom }));
   }
 
   return (
@@ -46,7 +48,7 @@ export function AddToCartButton({ produit, boutiqueSlug, boutiqueNom, disabled, 
       disabled={disabled}
     >
       <ShoppingCart className="mr-3 h-5 w-5" />
-      Ajouter au panier
+      {t("addToCart")}
     </Button>
   );
 }

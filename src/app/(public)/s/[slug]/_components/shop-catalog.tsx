@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Search, PackageOpen, ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ export function ShopCatalog({
   whatsapp: string | null;
   telephone: string | null;
 }) {
+  const t = useTranslations("shop");
   const [search, setSearch] = useState("");
   const [cat, setCat] = useState<string>("all");
   const [page, setPage] = useState(1);
@@ -84,19 +86,19 @@ export function ShopCatalog({
           <Input
             value={search}
             onChange={(e) => changeSearch(e.target.value)}
-            placeholder="Rechercher un produit…"
+            placeholder={t("searchPlaceholder")}
             className="h-12 rounded-2xl border-slate-150 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-800/60 pl-11 font-semibold text-sm"
           />
         </div>
 
         {(chips.withCount.length > 0 || chips.uncat > 0) && (
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            <Chip active={cat === "all"} onClick={() => changeFilter("all")} label={`Tout (${produits.length})`} />
+            <Chip active={cat === "all"} onClick={() => changeFilter("all")} label={t("chipAll", { count: produits.length })} />
             {chips.withCount.map((c) => (
               <Chip key={c.id} active={cat === c.id} onClick={() => changeFilter(c.id)} label={`${c.nom} (${c.count})`} />
             ))}
             {chips.uncat > 0 && (
-              <Chip active={cat === "uncat"} onClick={() => changeFilter("uncat")} label={`Autres (${chips.uncat})`} />
+              <Chip active={cat === "uncat"} onClick={() => changeFilter("uncat")} label={t("chipOthers", { count: chips.uncat })} />
             )}
           </div>
         )}
@@ -108,8 +110,8 @@ export function ShopCatalog({
           <div className="mx-auto h-14 w-14 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-400">
             <PackageOpen className="h-7 w-7" />
           </div>
-          <p className="font-extrabold text-slate-700 dark:text-zinc-200">Aucun produit trouvé</p>
-          <p className="text-xs text-slate-500 dark:text-zinc-400">Essayez une autre recherche ou catégorie.</p>
+          <p className="font-extrabold text-slate-700 dark:text-zinc-200">{t("emptyTitle")}</p>
+          <p className="text-xs text-slate-500 dark:text-zinc-400">{t("emptyDesc")}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:gap-6 grid-cols-1 min-[370px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -131,18 +133,18 @@ export function ShopCatalog({
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
             className="h-10 w-10 rounded-xl border border-slate-150 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-slate-600 dark:text-zinc-300 disabled:opacity-40"
-            aria-label="Page précédente"
+            aria-label={t("prevPage")}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
           <span className="px-4 h-10 inline-flex items-center rounded-xl bg-white dark:bg-zinc-900 border border-slate-150 dark:border-zinc-800 text-xs font-black text-slate-600 dark:text-zinc-300">
-            Page {safePage} / {totalPages}
+            {t("pageOf", { current: safePage, total: totalPages })}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage === totalPages}
             className="h-10 w-10 rounded-xl border border-slate-150 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-slate-600 dark:text-zinc-300 disabled:opacity-40"
-            aria-label="Page suivante"
+            aria-label={t("nextPage")}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -156,10 +158,10 @@ export function ShopCatalog({
           target="_blank"
           rel="noopener noreferrer"
           className="fixed bottom-6 right-4 sm:right-6 z-40 inline-flex items-center gap-2 rounded-full bg-[#25D366] text-white pl-3 pr-4 sm:pl-4 sm:pr-5 py-3.5 font-black text-sm shadow-2xl shadow-[#25D366]/30 hover:scale-105 active:scale-95 transition-transform"
-          aria-label="Contacter sur WhatsApp"
+          aria-label={t("waAria")}
         >
           <WhatsAppIcon className="h-5 w-5" />
-          <span className="hidden sm:inline">Commander sur WhatsApp</span>
+          <span className="hidden sm:inline">{t("waOrder")}</span>
           <span className="sm:hidden">WhatsApp</span>
         </a>
       )}

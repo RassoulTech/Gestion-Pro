@@ -517,6 +517,23 @@
       ]
     }
   },
+  "shop": {
+    "searchPlaceholder": "Search a product…",
+    "chipAll": "All ({count})",
+    "chipOthers": "Others ({count})",
+    "emptyTitle": "No product found",
+    "emptyDesc": "Try another search or category.",
+    "pageOf": "Page {current} / {total}",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "waOrder": "Order on WhatsApp",
+    "waAria": "Contact on WhatsApp",
+    "addToCart": "Add to cart",
+    "addedToCart": "{name} added to cart",
+    "inStockShort": "Stock",
+    "soldOut": "Sold out",
+    "add": "Add"
+  },
   "marketplace": {
     "metaTitle": "Marketplace — GestionPro",
     "eyebrow": "Marketplace",

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface ProductCardProps {
   produit: {
@@ -24,6 +25,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardProps) {
+  const t = useTranslations("shop");
   const { addItem } = useCart();
 
   function handleAddToCart(e: React.MouseEvent) {
@@ -37,7 +39,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
       prixUnitaire: produit.prixUnitaire,
       photo: produit.photo,
     });
-    toast.success(`${produit.nom} ajouté au panier`);
+    toast.success(t("addedToCart", { name: produit.nom }));
   }
 
   return (
@@ -66,7 +68,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
                 : "bg-rose-500 text-white shadow-lg shadow-rose-500/20"
             }`}
           >
-            {produit.quantite > 0 ? "Stock" : "Épuisé"}
+            {produit.quantite > 0 ? t("inStockShort") : t("soldOut")}
           </Badge>
         </div>
       </div>
@@ -100,7 +102,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
             disabled={produit.quantite <= 0}
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1" />
-            Ajouter
+            {t("add")}
           </Button>
         </div>
       </div>

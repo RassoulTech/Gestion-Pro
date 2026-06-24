@@ -517,6 +517,23 @@
       ]
     }
   },
+  "shop": {
+    "searchPlaceholder": "Rechercher un produit…",
+    "chipAll": "Tout ({count})",
+    "chipOthers": "Autres ({count})",
+    "emptyTitle": "Aucun produit trouvé",
+    "emptyDesc": "Essayez une autre recherche ou catégorie.",
+    "pageOf": "Page {current} / {total}",
+    "prevPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "waOrder": "Commander sur WhatsApp",
+    "waAria": "Contacter sur WhatsApp",
+    "addToCart": "Ajouter au panier",
+    "addedToCart": "{name} ajouté au panier",
+    "inStockShort": "Stock",
+    "soldOut": "Épuisé",
+    "add": "Ajouter"
+  },
   "marketplace": {
     "metaTitle": "Marketplace — GestionPro",
     "eyebrow": "Marketplace",
