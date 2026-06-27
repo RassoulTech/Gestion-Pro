@@ -2,28 +2,31 @@
 
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 /**
  * Bouton "Continuer avec Google" — réutilisé sur login et register.
  *
+ * @param label Libellé optionnel ; par défaut « Continuer avec Google » traduit.
  * @param enabled Si false, le clic affiche un toast au lieu d'essayer signIn.
  *                Utile tant que AUTH_GOOGLE_ID/SECRET ne sont pas configurés.
  */
 export function GoogleButton({
   callbackUrl = "/boutiques",
-  label = "Continuer avec Google",
+  label,
   enabled = true,
 }: {
   callbackUrl?: string;
   label?: string;
   enabled?: boolean;
 }) {
+  const t = useTranslations("auth");
+
   function handleClick() {
     if (!enabled) {
-      toast.info("Google n'est pas encore configuré sur cette installation.", {
-        description:
-          "Connectez-vous avec email/mot de passe pour le moment.",
+      toast.info(t("googleNotConfigured"), {
+        description: t("googleNotConfiguredDesc"),
       });
       return;
     }
@@ -39,7 +42,7 @@ export function GoogleButton({
       onClick={handleClick}
     >
       <GoogleIcon className="mr-1 h-4 w-4" />
-      {label}
+      {label ?? t("googleContinue")}
     </Button>
   );
 }

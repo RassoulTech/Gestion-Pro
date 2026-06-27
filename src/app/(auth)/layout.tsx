@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -14,6 +15,7 @@ export default async function AuthLayout({
   if (session?.user) {
     redirect(session.user.role === "ADMIN" ? "/admin/dashboard" : "/boutiques");
   }
+  const t = await getTranslations("auth.panel");
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -51,24 +53,19 @@ export default async function AuthLayout({
             <div>
               <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold text-brand uppercase tracking-widest">
                 <Sparkles className="w-4 h-4" />
-                Plateforme Commerciale
+                {t("badge")}
               </div>
               <h2 className="text-display text-4xl lg:text-5xl tracking-tight text-foreground">
-                Maîtrisez votre <br />
-                <span className="text-shimmer">commerce.</span>
+                {t("titleLead")} <br />
+                <span className="text-shimmer">{t("titleHighlight")}</span>
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground font-medium">
-                Boutiques, stock, ventes, clients, marketplace — une seule
-                interface, pensée pour la croissance.
+                {t("subtitle")}
               </p>
             </div>
 
             <ul className="space-y-5">
-              {[
-                "Essai gratuit sans carte bancaire",
-                "Configuration en moins de 2 minutes",
-                "Données 100 % sécurisées et chiffrées",
-              ].map((item) => (
+              {[t("bullet1"), t("bullet2"), t("bullet3")].map((item) => (
                 <li key={item} className="flex items-start gap-3.5 group">
                   <div className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-success/10 text-success transition-transform group-hover:scale-110">
                     <Check className="h-3 w-3" strokeWidth={3} />
@@ -81,7 +78,7 @@ export default async function AuthLayout({
 
           {/* Pied panneau */}
           <p className="text-sm font-medium text-muted-foreground/60 italic mt-6">
-            Rejoignez l&apos;élite des commerçants africains.
+            {t("tagline")}
           </p>
         </aside>
 
@@ -104,7 +101,7 @@ export default async function AuthLayout({
               className="inline-flex items-center gap-2 rounded-xl bg-foreground/5 px-4 py-2 text-sm font-bold text-foreground transition-all hover:bg-foreground/10 hover:translate-x-1"
             >
               <ArrowLeft className="h-4 w-4" />
-              Retour
+              {t("back")}
             </Link>
           </div>
 

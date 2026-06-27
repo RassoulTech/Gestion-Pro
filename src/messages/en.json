@@ -189,6 +189,20 @@
     "resendLink": "Resend the link",
     "genericError": "Something went wrong.",
     "backToLogin": "Back to sign-in",
+    "googleContinue": "Continue with Google",
+    "googleNotConfigured": "Google is not yet configured on this installation.",
+    "googleNotConfiguredDesc": "Sign in with email/password for now.",
+    "panel": {
+      "badge": "Commercial Platform",
+      "titleLead": "Master your",
+      "titleHighlight": "business.",
+      "subtitle": "Shops, stock, sales, customers, marketplace — a single interface, built for growth.",
+      "bullet1": "Free trial, no credit card",
+      "bullet2": "Setup in under 2 minutes",
+      "bullet3": "100% secure and encrypted data",
+      "tagline": "Join the elite of African merchants.",
+      "back": "Back"
+    },
     "forgot": {
       "title": "Forgot your password?",
       "subtitle": "Enter your email and we'll send you a link to reset your password.",

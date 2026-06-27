@@ -189,6 +189,20 @@
     "resendLink": "Renvoyer le lien",
     "genericError": "Une erreur est survenue.",
     "backToLogin": "Retour à la connexion",
+    "googleContinue": "Continuer avec Google",
+    "googleNotConfigured": "Google n'est pas encore configuré sur cette installation.",
+    "googleNotConfiguredDesc": "Connectez-vous avec email/mot de passe pour le moment.",
+    "panel": {
+      "badge": "Plateforme Commerciale",
+      "titleLead": "Maîtrisez votre",
+      "titleHighlight": "commerce.",
+      "subtitle": "Boutiques, stock, ventes, clients, marketplace — une seule interface, pensée pour la croissance.",
+      "bullet1": "Essai gratuit sans carte bancaire",
+      "bullet2": "Configuration en moins de 2 minutes",
+      "bullet3": "Données 100 % sécurisées et chiffrées",
+      "tagline": "Rejoignez l'élite des commerçants africains.",
+      "back": "Retour"
+    },
     "forgot": {
       "title": "Mot de passe oublié ?",
       "subtitle": "Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
