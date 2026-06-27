@@ -687,6 +687,43 @@
       "addAria": "Ajouter {name} au panier"
     }
   },
+  "dashboard": {
+    "pages": {
+      "expensesTitle": "Dépenses",
+      "expensesSubtitle": "Suivez vos coûts opérationnels et charges fixes.",
+      "flashSalesTitle": "Ventes Flash",
+      "flashSalesSubtitle": "Ventes rapides au comptoir",
+      "suppliersTitle": "Fournisseurs",
+      "suppliersSubtitle": "Gérez vos fournisseurs et vos achats",
+      "clientsTitle": "Clients",
+      "clientsSubtitle": "Gérez votre base de clients et leur historique.",
+      "categoriesTitle": "Catégories",
+      "categoriesSubtitle": "Organisez vos produits par catégorie",
+      "invoicesTitle": "Factures",
+      "invoicesSubtitle": "Émettez des factures pour vos ventes physiques et services.",
+      "invoicesStatTotal": "Total factures",
+      "invoicesStatPaid": "Payées",
+      "invoicesStatUnpaid": "Impayées",
+      "invoicesStatCollected": "Encaissé",
+      "supplierPurchasesTitle": "Achats fournisseur",
+      "supplierPurchasesSubtitle": "Gérez vos commandes fournisseur",
+      "newExpenseTitle": "Nouvelle Dépense",
+      "newExpenseSubtitle": "Enregistrez un coût lié à votre activité.",
+      "newInvoiceTitle": "Nouvelle facture",
+      "newClientTitle": "Nouveau Client",
+      "newClientSubtitle": "Ajoutez un client à votre base de données.",
+      "stockTitle": "Mouvements de stock",
+      "stockSubtitle": "Historique complet des entrées et sorties de marchandises",
+      "reportsTitle": "Rapports",
+      "reportsSubtitle": "Analysez les performances de votre boutique",
+      "membersTitle": "Membres",
+      "membersSubtitle": "Gérez l'équipe de votre boutique",
+      "settingsTitle": "Paramètres",
+      "ordersTitle": "Commandes Clients",
+      "ordersSubtitle": "Gérez vos ventes et livraisons",
+      "editProductTitle": "Modifier le Produit"
+    }
+  },
   "common": {
     "login": "Connexion",
     "register": "S'inscrire",

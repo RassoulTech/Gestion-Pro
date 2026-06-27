@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText, Plus, CheckCircle2, Clock, FileEdit } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { getFacturesForBoutique, getFactureStats } from "@/server/queries/facture.queries";
 import { formatCurrency } from "@/lib/utils";
@@ -8,10 +9,14 @@ import { Button } from "@/components/ui/button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { FacturesClient } from "./_components/factures-client";
 
-export const metadata: Metadata = { title: "Factures" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.pages");
+  return { title: t("invoicesTitle") };
+}
 
 export default async function FacturesPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const t = await getTranslations("dashboard.pages");
   const [quotas, factures, stats] = await Promise.all([
     getBoutiqueOwnerQuotas(id),
     getFacturesForBoutique(id),
@@ -19,10 +24,10 @@ export default async function FacturesPage({ params }: { params: Promise<{ id: s
   ]);
 
   const cards = [
-    { label: "Total factures", value: String(stats.total), icon: FileText, tint: "text-brand bg-brand/10" },
-    { label: "Payées", value: String(stats.counts.PAYEE), icon: CheckCircle2, tint: "text-emerald-600 bg-emerald-500/10" },
-    { label: "Impayées", value: String(stats.counts.IMPAYEE), icon: Clock, tint: "text-amber-600 bg-amber-500/10" },
-    { label: "Encaissé", value: formatCurrency(stats.montantPaye), icon: FileEdit, tint: "text-slate-700 dark:text-slate-200 bg-slate-500/10" },
+    { label: t("invoicesStatTotal"), value: String(stats.total), icon: FileText, tint: "text-brand bg-brand/10" },
+    { label: t("invoicesStatPaid"), value: String(stats.counts.PAYEE), icon: CheckCircle2, tint: "text-emerald-600 bg-emerald-500/10" },
+    { label: t("invoicesStatUnpaid"), value: String(stats.counts.IMPAYEE), icon: Clock, tint: "text-amber-600 bg-amber-500/10" },
+    { label: t("invoicesStatCollected"), value: formatCurrency(stats.montantPaye), icon: FileEdit, tint: "text-slate-700 dark:text-slate-200 bg-slate-500/10" },
   ];
 
   return (
@@ -30,15 +35,15 @@ export default async function FacturesPage({ params }: { params: Promise<{ id: s
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
-            <FileText className="h-6 w-6 text-brand" /> Factures
+            <FileText className="h-6 w-6 text-brand" /> {t("invoicesTitle")}
           </h1>
           <p className="text-sm text-muted-foreground font-medium">
-            Émettez des factures pour vos ventes physiques et services.
+            {t("invoicesSubtitle")}
           </p>
         </div>
         <Button asChild variant="brand" className="w-full sm:w-auto rounded-xl h-11 sm:h-12 px-6 font-black shadow-lg shadow-brand/20">
           <Link href={`/boutiques/${id}/factures/new`}>
-            <Plus className="mr-2 h-4 w-4" /> Nouvelle facture
+            <Plus className="mr-2 h-4 w-4" /> {t("newInvoiceTitle")}
           </Link>
         </Button>
       </div>

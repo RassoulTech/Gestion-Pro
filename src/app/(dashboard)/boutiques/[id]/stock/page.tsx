@@ -7,6 +7,7 @@ import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { getBoutiqueProduits } from "@/server/queries/produit.queries";
 import { AjustementStockModal } from "./_components/ajustement-modal";
 import { parseDateFilter } from "@/lib/date-filters";
+import { getTranslations } from "next-intl/server";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 import { prisma } from "@/lib/prisma";
@@ -39,6 +40,7 @@ export default async function StockPage({ params, searchParams }: StockPageProps
 
   const quotas = await getBoutiqueOwnerQuotas(id);
   const { data: produits } = await getBoutiqueProduits(id, { perPage: 1000 });
+  const t = await getTranslations("dashboard.pages");
 
   const dateFilter = parseDateFilter(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
@@ -95,8 +97,8 @@ export default async function StockPage({ params, searchParams }: StockPageProps
     <div className="space-y-6 sm:space-y-8 pb-6 sm:pb-10">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Mouvements de stock</h1>
-          <p className="text-sm text-muted-foreground font-medium">Historique complet des entrées et sorties de marchandises</p>
+          <h1 className="text-3xl font-black tracking-tight">{t("stockTitle")}</h1>
+          <p className="text-sm text-muted-foreground font-medium">{t("stockSubtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <AjustementStockModal boutiqueId={id} produits={produits} />

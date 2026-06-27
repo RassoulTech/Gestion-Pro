@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { headers } from "next/headers";
 
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
   const { q, range, from, to, page: pageStr, category } = await searchParams;
   const session = await auth();
   if (!session?.user) redirect("/login");
+  const t = await getTranslations("dashboard.pages");
 
   const userAgent = (await headers()).get("user-agent") || "";
   const isMobile = /mobile/i.test(userAgent);
@@ -91,8 +93,8 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
     <div className="space-y-8 pb-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Depenses</h1>
-          <p className="text-muted-foreground font-medium">Suivez vos couts operationnels et charges fixes.</p>
+          <h1 className="text-3xl font-black tracking-tight">{t("expensesTitle")}</h1>
+          <p className="text-muted-foreground font-medium">{t("expensesSubtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">

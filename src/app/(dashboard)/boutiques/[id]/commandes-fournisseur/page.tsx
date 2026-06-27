@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Truck, FileText, Plus } from "lucide-react";
 import Link from "next/link";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { getBoutiqueCommandesFournisseur } from "@/server/queries/commande.queries";
@@ -39,6 +40,7 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
 
   const dateFilter = parseDateFilter(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
+  const t = await getTranslations("dashboard.pages");
 
   const [{ data: commandes, total }, fournisseurs] = await Promise.all([
     getBoutiqueCommandesFournisseur(id, {
@@ -59,8 +61,8 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Achats fournisseur</h1>
-          <p className="text-muted-foreground font-medium">Gérez vos commandes fournisseur</p>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{t("supplierPurchasesTitle")}</h1>
+          <p className="text-muted-foreground font-medium">{t("supplierPurchasesSubtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">

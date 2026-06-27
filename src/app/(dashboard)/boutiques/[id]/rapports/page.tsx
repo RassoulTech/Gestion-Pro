@@ -13,9 +13,13 @@ import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { parseDateFilter } from "@/lib/date-filters";
+import { getTranslations } from "next-intl/server";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 
-export const metadata: Metadata = { title: "Rapports" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.pages");
+  return { title: t("reportsTitle") };
+}
 
 async function RapportsContent({ 
   boutiqueId, 
@@ -111,6 +115,7 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
 
   const boutiqueName = boutique?.nom ?? "Boutique";
   const currentPlanName = quotas.nom;
+  const t = await getTranslations("dashboard.pages");
 
   const dateFilter = parseDateFilter(range, from, to);
 
@@ -118,8 +123,8 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Rapports</h1>
-          <p className="text-sm text-muted-foreground font-medium">Analysez les performances de votre boutique</p>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{t("reportsTitle")}</h1>
+          <p className="text-sm text-muted-foreground font-medium">{t("reportsSubtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <FilterPanel defaultRange="30days" />

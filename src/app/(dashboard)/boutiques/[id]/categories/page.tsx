@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { CategoriesClient } from "./_components/categories-client";
 import { parseDateFilter } from "@/lib/date-filters";
@@ -32,6 +33,7 @@ export default async function CategoriesPage({
   const limit = isMobile ? 20 : 30;
   const page = pageStr ? parseInt(pageStr, 10) : 1;
   const skip = (page - 1) * limit;
+  const t = await getTranslations("dashboard.pages");
 
   const dateFilter = parseDateFilter(range, from, to);
 
@@ -67,9 +69,9 @@ export default async function CategoriesPage({
       {/* Title */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Catégories</h1>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{t("categoriesTitle")}</h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-            Organisez vos produits par catégorie
+            {t("categoriesSubtitle")}
           </p>
         </div>
       </div>

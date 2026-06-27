@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { getBoutiqueFournisseurs } from "@/server/queries/fournisseur.queries";
 import { FournisseursClient } from "./_components/fournisseurs-client";
 import { parseDateFilter } from "@/lib/date-filters";
@@ -27,6 +28,7 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
   const isMobile = /mobile/i.test(userAgent);
   const limit = isMobile ? 20 : 30;
   const page = pageStr ? parseInt(pageStr, 10) : 1;
+  const t = await getTranslations("dashboard.pages");
 
   const dateFilter = parseDateFilter(range, from, to);
 
@@ -43,8 +45,8 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
     <div className="space-y-8 pb-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Fournisseurs</h1>
-          <p className="text-muted-foreground font-medium">Gérez vos fournisseurs et vos achats</p>
+          <h1 className="text-3xl font-black tracking-tight">{t("suppliersTitle")}</h1>
+          <p className="text-muted-foreground font-medium">{t("suppliersSubtitle")}</p>
         </div>
       </div>
 

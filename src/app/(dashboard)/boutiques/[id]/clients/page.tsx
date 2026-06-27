@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
 
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
@@ -39,6 +40,7 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
   
   const session = await auth();
   if (!session?.user) redirect("/login");
+  const t = await getTranslations("dashboard.pages");
 
   // Pagination setups based on mobile/desktop headers
   const userAgent = (await headers()).get("user-agent") || "";
@@ -84,8 +86,8 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Clients</h1>
-          <p className="text-muted-foreground font-medium">Gérez votre base de clients et leur historique.</p>
+          <h1 className="text-3xl font-black tracking-tight">{t("clientsTitle")}</h1>
+          <p className="text-muted-foreground font-medium">{t("clientsSubtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl h-12 px-6 font-black shadow-lg shadow-brand/20">

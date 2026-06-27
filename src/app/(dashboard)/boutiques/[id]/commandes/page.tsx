@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { headers } from "next/headers";
 
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
   
   const session = await auth();
   if (!session?.user) redirect("/login");
+  const t = await getTranslations("dashboard.pages");
 
   // Pagination setups based on mobile/desktop headers
   const userAgent = (await headers()).get("user-agent") || "";
@@ -102,8 +104,8 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
       {/* Header */}
       <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">Commandes Clients</h1>
-          <p className="text-sm text-muted-foreground">Gérez vos ventes et livraisons</p>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">{t("ordersTitle")}</h1>
+          <p className="text-sm text-muted-foreground">{t("ordersSubtitle")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <Button asChild variant="brand" className="flex-1 sm:flex-initial rounded-xl font-bold shadow-lg shadow-brand/20 h-11">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -8,7 +9,10 @@ import { Users } from "lucide-react";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
-export const metadata: Metadata = { title: "Membres" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.pages");
+  return { title: t("membersTitle") };
+}
 
 const avatarColors = [
   "bg-brand/10 text-brand",
@@ -21,6 +25,7 @@ const avatarColors = [
 
 export default async function MembresPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: boutiqueId } = await params;
+  const t = await getTranslations("dashboard.pages");
 
   const [membres, quotas] = await Promise.all([
     prisma.membreBoutique.findMany({
@@ -43,8 +48,8 @@ export default async function MembresPage({ params }: { params: Promise<{ id: st
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Membres</h1>
-        <p className="text-sm text-muted-foreground font-medium">Gérez l&apos;équipe de votre boutique</p>
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{t("membersTitle")}</h1>
+        <p className="text-sm text-muted-foreground font-medium">{t("membersSubtitle")}</p>
       </div>
 
       <PremiumGuard

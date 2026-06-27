@@ -687,6 +687,43 @@
       "addAria": "Add {name} to cart"
     }
   },
+  "dashboard": {
+    "pages": {
+      "expensesTitle": "Expenses",
+      "expensesSubtitle": "Track your operating costs and fixed charges.",
+      "flashSalesTitle": "Flash Sales",
+      "flashSalesSubtitle": "Quick over-the-counter sales",
+      "suppliersTitle": "Suppliers",
+      "suppliersSubtitle": "Manage your suppliers and purchases",
+      "clientsTitle": "Customers",
+      "clientsSubtitle": "Manage your customer base and their history.",
+      "categoriesTitle": "Categories",
+      "categoriesSubtitle": "Organize your products by category",
+      "invoicesTitle": "Invoices",
+      "invoicesSubtitle": "Issue invoices for your physical sales and services.",
+      "invoicesStatTotal": "Total invoices",
+      "invoicesStatPaid": "Paid",
+      "invoicesStatUnpaid": "Unpaid",
+      "invoicesStatCollected": "Collected",
+      "supplierPurchasesTitle": "Supplier purchases",
+      "supplierPurchasesSubtitle": "Manage your supplier orders",
+      "newExpenseTitle": "New Expense",
+      "newExpenseSubtitle": "Record a cost related to your activity.",
+      "newInvoiceTitle": "New invoice",
+      "newClientTitle": "New Customer",
+      "newClientSubtitle": "Add a customer to your database.",
+      "stockTitle": "Stock movements",
+      "stockSubtitle": "Complete history of goods received and dispatched",
+      "reportsTitle": "Reports",
+      "reportsSubtitle": "Analyze your shop's performance",
+      "membersTitle": "Members",
+      "membersSubtitle": "Manage your shop's team",
+      "settingsTitle": "Settings",
+      "ordersTitle": "Customer Orders",
+      "ordersSubtitle": "Manage your sales and deliveries",
+      "editProductTitle": "Edit Product"
+    }
+  },
   "common": {
     "login": "Sign in",
     "register": "Sign up",
