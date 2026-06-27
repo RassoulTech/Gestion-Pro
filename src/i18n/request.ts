@@ -10,13 +10,21 @@ type Dict = { [k: string]: string | Dict };
  * (langue active). Toute clé absente de la langue active retombe donc sur le FR
  * — jamais de clé brute affichée, jamais d'incohérence de langue.
  */
+function isPlainObject(v: unknown): v is Dict {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
 function deepMerge(base: Dict, override: Dict): Dict {
   const out: Dict = { ...base };
   for (const key of Object.keys(override)) {
     const o = override[key];
     const b = out[key];
-    if (o && typeof o === "object" && b && typeof b === "object") {
-      out[key] = deepMerge(b as Dict, o as Dict);
+    // On ne fusionne récursivement QUE les objets simples. Les tableaux (et
+    // toute valeur feuille) sont remplacés par la langue active — sinon la
+    // fusion indexerait les tableaux et les transformerait en objets
+    // `{0:…,1:…}`, cassant les `.map()` (ex. faq.items, testimonials).
+    if (isPlainObject(o) && isPlainObject(b)) {
+      out[key] = deepMerge(b, o);
     } else if (o !== undefined) {
       out[key] = o;
     }
