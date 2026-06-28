@@ -44,6 +44,77 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
+// ─── Inscription vendeur en 3 étapes (Compte → Identité → Boutique) ──────────
+
+const secteurActivite = z.enum([
+  "ALIMENTATION",
+  "HABILLEMENT",
+  "ELECTRONIQUE",
+  "BEAUTE",
+  "SANTE",
+  "SERVICES",
+  "QUINCAILLERIE",
+  "LIBRAIRIE",
+  "AUTRE",
+]);
+
+// Champs réutilisés entre la validation client (par étape) et la soumission
+// finale serveur, pour garantir des règles identiques des deux côtés.
+const identityShape = {
+  prenom: z.string().trim().min(2, "Le prénom doit faire au moins 2 caractères").max(60),
+  nom: z.string().trim().min(2, "Le nom doit faire au moins 2 caractères").max(60),
+  telephone: z.string().trim().max(20).optional().or(z.literal("")),
+};
+
+const boutiqueShape = {
+  boutiqueNom: z
+    .string()
+    .trim()
+    .min(2, "Le nom de la boutique doit faire au moins 2 caractères")
+    .max(100),
+  secteurActivite,
+  boutiqueAdresse: z.string().trim().max(200).optional().or(z.literal("")),
+  boutiqueTelephone: z.string().trim().max(20).optional().or(z.literal("")),
+};
+
+/** Étape 1 — Compte (validation client). */
+export const registerAccountSchema = z
+  .object({
+    email: realEmail,
+    password: strongPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Les mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  });
+
+/** Étape 2 — Identité (validation client). */
+export const registerIdentitySchema = z.object(identityShape);
+
+/** Étape 3 — Boutique (validation client). */
+export const registerBoutiqueSchema = z.object(boutiqueShape);
+
+/** Soumission finale (serveur) — tous les champs des 3 étapes. */
+export const submitVendorRegistrationSchema = z.object({
+  email: realEmail,
+  password: strongPassword,
+  ...identityShape,
+  ...boutiqueShape,
+});
+
+/** Complétion après connexion Google (User déjà créé) — identité + boutique. */
+export const completeOAuthRegistrationSchema = z.object({
+  ...identityShape,
+  ...boutiqueShape,
+});
+
+export type RegisterAccountInput = z.infer<typeof registerAccountSchema>;
+export type RegisterIdentityInput = z.infer<typeof registerIdentitySchema>;
+export type RegisterBoutiqueInput = z.infer<typeof registerBoutiqueSchema>;
+export type SubmitVendorRegistrationInput = z.infer<typeof submitVendorRegistrationSchema>;
+export type CompleteOAuthRegistrationInput = z.infer<typeof completeOAuthRegistrationSchema>;
+
 export const forgotPasswordSchema = z.object({
   email: normalizedEmail,
 });

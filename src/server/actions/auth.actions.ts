@@ -1,12 +1,20 @@
 "use server";
 
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 import { actionClient, authActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { authRatelimit } from "@/lib/ratelimit";
 import { logActivity } from "@/lib/activity-log";
-import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from "@/schemas/auth.schema";
+import {
+  loginSchema,
+  registerSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  submitVendorRegistrationSchema,
+  completeOAuthRegistrationSchema,
+} from "@/schemas/auth.schema";
 import { createVendeurProfileSchema } from "@/schemas/vendeur.schema";
 
 import { z } from "zod";
@@ -14,7 +22,168 @@ import { generateVerificationToken, generatePasswordResetToken, hashToken } from
 import { sendVerificationEmail, sendPasswordResetEmail, sendAlreadyRegisteredEmail } from "@/lib/mail";
 import { DUMMY_PASSWORD_HASH } from "@/lib/password";
 import { notifyAdmins } from "@/server/services/notifications";
-import { verifyEmailToken } from "@/server/services/email-verification";
+import {
+  verifyEmailToken,
+  provisionVendeurWorkspace,
+  buildUniqueSlug,
+} from "@/server/services/email-verification";
+
+/**
+ * Inscription vendeur en 3 étapes — SOUMISSION FINALE.
+ *
+ * ⚠️ CONTRAINTE CAPITALE : ne crée AUCUN User/Vendeur/Boutique ni notif admin.
+ * Les données sont stockées TEMPORAIREMENT dans `pending_registrations` (table
+ * de staging) avec un token de vérif haché. Le compte réel n'est créé qu'à la
+ * vérification e-mail (création atomique dans verifyEmailToken).
+ */
+export const submitVendorRegistration = actionClient
+  .schema(submitVendorRegistrationSchema)
+  .action(async ({ parsedInput }) => {
+    const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1";
+    const { success: rateLimitSuccess } = await authRatelimit.limit(ip);
+    if (!rateLimitSuccess) {
+      throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
+    }
+
+    const {
+      email,
+      password,
+      prenom,
+      nom,
+      telephone,
+      boutiqueNom,
+      secteurActivite,
+      boutiqueAdresse,
+      boutiqueTelephone,
+    } = parsedInput;
+
+    await logActivity({ action: "SIGNUP_REQUESTED", changes: { email } });
+
+    // Housekeeping : on purge les inscriptions en attente expirées.
+    await prisma.pendingRegistration
+      .deleteMany({ where: { expires: { lt: new Date() } } })
+      .catch(() => {});
+
+    // Email déjà rattaché à un compte VÉRIFIÉ → réponse générique (anti-énumération).
+    const existing = await prisma.user.findUnique({
+      where: { email },
+      select: { emailVerified: true },
+    });
+    if (existing?.emailVerified) {
+      await sendAlreadyRegisteredEmail(email).catch(console.error);
+      await logActivity({ action: "SIGNUP_ALREADY_REGISTERED", changes: { email } });
+      return { success: "Compte créé ! Email de vérification envoyé." };
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = hashToken(rawToken);
+    const expires = new Date(Date.now() + 24 * 3600 * 1000); // 24 h
+
+    const stagingData = {
+      passwordHash,
+      prenom,
+      nom,
+      telephone: telephone || null,
+      boutiqueNom,
+      secteurActivite,
+      boutiqueAdresse: boutiqueAdresse || null,
+      boutiqueTelephone: boutiqueTelephone || null,
+      tokenHash,
+      expires,
+    };
+
+    // Upsert par email : une re-soumission écrase la précédente (pas de doublon).
+    await prisma.pendingRegistration.upsert({
+      where: { email },
+      create: { email, ...stagingData },
+      update: stagingData,
+    });
+
+    const mail = await sendVerificationEmail(email, rawToken);
+    if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+      await logActivity({
+        action: "VERIFICATION_EMAIL_FAILED",
+        changes: { email, error: mail.error },
+      });
+      throw new Error("L'envoi de l'e-mail de vérification a échoué. Veuillez réessayer.");
+    }
+
+    await logActivity({ action: "VERIFICATION_EMAIL_SENT", changes: { email } });
+
+    return {
+      success: mail.sent
+        ? "Compte créé ! Email de vérification envoyé."
+        : "Compte créé. Email de vérification disponible via le lien de dev ci-dessous.",
+      devLink: mail.devLink,
+      emailFailed: !mail.sent && !mail.devLink,
+    };
+  });
+
+/**
+ * Complétion d'inscription après connexion Google (e-mail déjà vérifié par le
+ * fournisseur). Le User existe déjà ; on crée directement identité + boutique.
+ */
+export const completeOAuthRegistration = authActionClient
+  .schema(completeOAuthRegistrationSchema)
+  .action(async ({ parsedInput, ctx }) => {
+    const { user } = ctx;
+
+    const account = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        email: true,
+        emailVerified: true,
+        accounts: { select: { provider: true }, take: 1 },
+        vendeur: { select: { id: true } },
+      },
+    });
+    if (!account) throw new Error("Compte introuvable.");
+    if (account.vendeur) {
+      throw new Error("Un profil vendeur existe déjà pour ce compte.");
+    }
+    const isOAuth = (account.accounts?.length ?? 0) > 0;
+    if (!account.emailVerified && !isOAuth) {
+      throw new Error("Veuillez vérifier votre adresse email avant de continuer.");
+    }
+
+    const slug = await buildUniqueSlug(parsedInput.boutiqueNom);
+    const starterPlan = await prisma.plan.findFirst({ where: { nom: "Starter" } });
+
+    const { boutiqueId } = await prisma.$transaction((tx) =>
+      provisionVendeurWorkspace(
+        tx,
+        user.id,
+        {
+          nom: parsedInput.nom,
+          prenom: parsedInput.prenom,
+          email: account.email,
+          telephone: parsedInput.telephone || null,
+          boutiqueNom: parsedInput.boutiqueNom,
+          secteurActivite: parsedInput.secteurActivite,
+          boutiqueAdresse: parsedInput.boutiqueAdresse || null,
+          boutiqueTelephone: parsedInput.boutiqueTelephone || null,
+        },
+        slug,
+        starterPlan?.id ?? null,
+      ),
+    );
+
+    await logActivity({
+      userId: user.id,
+      action: "VENDEUR_PROFILE_CREATED",
+      subjectType: "Boutique",
+      subjectId: boutiqueId,
+    });
+    await notifyAdmins({
+      type: "NOUVEL_UTILISATEUR",
+      title: "Nouvelle inscription",
+      message: `${user.name ?? account.email} a créé un compte et sa boutique`,
+      link: "/admin/utilisateurs",
+    }).catch(() => {});
+
+    return { boutiqueId };
+  });
 
 export const registerUser = actionClient
   .schema(registerSchema)
@@ -155,6 +324,34 @@ export const resendVerificationEmail = actionClient
 
     if (!ipLimit.success || !emailLimit.success) {
       throw new Error("Trop de tentatives. Veuillez réessayer dans une minute.");
+    }
+
+    // Inscription vendeur EN ATTENTE → on régénère le token sur la ligne de
+    // staging et on renvoie le lien (aucun User n'existe encore).
+    const pending = await prisma.pendingRegistration.findUnique({ where: { email } });
+    if (pending) {
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      await prisma.pendingRegistration.update({
+        where: { email },
+        data: {
+          tokenHash: hashToken(rawToken),
+          expires: new Date(Date.now() + 24 * 3600 * 1000),
+        },
+      });
+      const mail = await sendVerificationEmail(email, rawToken);
+      if (!mail.sent && process.env.NODE_ENV === "production" && !mail.devLink) {
+        await logActivity({
+          action: "VERIFICATION_EMAIL_FAILED",
+          changes: { email, error: mail.error },
+        });
+        throw new Error("Le serveur d'email est indisponible. Veuillez réessayer plus tard.");
+      }
+      await logActivity({ action: "VERIFICATION_EMAIL_SENT", changes: { email } });
+      return {
+        success: "Si un compte non vérifié existe avec cet email, un nouveau lien vient d'être envoyé.",
+        devLink: mail.devLink,
+        emailFailed: !mail.sent && !mail.devLink,
+      };
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });

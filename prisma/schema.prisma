@@ -105,6 +105,32 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
+/// Inscription vendeur EN ATTENTE de vérification e-mail.
+/// ⚠️ Table de staging volontairement SÉPARÉE de `users` : tant que l'e-mail
+/// n'est pas vérifié, AUCUN User/Vendeur/Boutique n'existe et rien n'apparaît
+/// dans l'admin. À la vérification, tout est créé atomiquement puis cette ligne
+/// est supprimée. Les lignes expirées sont purgées (aucun compte fantôme).
+model PendingRegistration {
+  id                String          @id @default(cuid())
+  email             String          @unique
+  passwordHash      String          @map("password_hash")
+  // Identité (étape 2)
+  nom               String
+  prenom            String
+  telephone         String?
+  // Boutique (étape 3)
+  boutiqueNom       String          @map("boutique_nom")
+  secteurActivite   SecteurActivite @map("secteur_activite")
+  boutiqueAdresse   String?         @map("boutique_adresse")
+  boutiqueTelephone String?         @map("boutique_telephone")
+  // Vérification (token haché, usage unique, expirant)
+  tokenHash         String          @unique @map("token_hash")
+  expires           DateTime
+  createdAt         DateTime        @default(now()) @map("created_at")
+
+  @@map("pending_registrations")
+}
+
 // ─── VENDEUR ───────────────────────────────────────────────────
 
 enum StatutVendeur {

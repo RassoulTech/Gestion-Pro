@@ -1,87 +1,165 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, MailCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Lock, MailCheck, Store, User } from "lucide-react";
+import { z } from "zod";
 
-import { registerSchema, type RegisterInput } from "@/schemas/auth.schema";
-import { registerUser, resendVerificationEmail } from "@/server/actions/auth.actions";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  registerAccountSchema,
+  registerIdentitySchema,
+  registerBoutiqueSchema,
+} from "@/schemas/auth.schema";
+import {
+  submitVendorRegistration,
+  resendVerificationEmail,
+} from "@/server/actions/auth.actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PasswordInput } from "@/components/auth/password-input";
 import { GoogleButton } from "@/components/auth/google-button";
-import { BrandLogo } from "@/components/brand-logo";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+const OAUTH_ERROR_KEYS: Record<string, string> = {
+  OAuthSignin: "registerSignin",
+  OAuthCallback: "callback",
+  OAuthCreateAccount: "createAccount",
+  OAuthAccountNotLinked: "accountNotLinked",
+  Callback: "callbackGeneric",
+  AccessDenied: "accessDenied",
+  Configuration: "registerConfiguration",
+};
+
+const SECTEURS = [
+  "ALIMENTATION",
+  "HABILLEMENT",
+  "ELECTRONIQUE",
+  "BEAUTE",
+  "SANTE",
+  "SERVICES",
+  "QUINCAILLERIE",
+  "LIBRAIRIE",
+  "AUTRE",
+] as const;
+
+type Errors = Record<string, string>;
+
+function zodErrors(error: z.ZodError): Errors {
+  const out: Errors = {};
+  for (const issue of error.issues) {
+    const key = issue.path[0];
+    if (typeof key === "string" && !out[key]) out[key] = issue.message;
+  }
+  return out;
+}
+
 export default function RegisterPage() {
   const t = useTranslations("auth");
+  const tw = useTranslations("auth.wizard");
+  const tm = useTranslations("marketplace");
+  const searchParams = useSearchParams();
+
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
+
+  // Données conservées CÔTÉ CLIENT pendant tout le parcours (allers-retours sans
+  // perte) — rien n'est persisté en base tant que l'étape 3 n'est pas soumise.
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [prenom, setPrenom] = useState("");
+  const [nom, setNom] = useState("");
+  const [telephone, setTelephone] = useState("");
+  const [boutiqueNom, setBoutiqueNom] = useState("");
+  const [secteurActivite, setSecteurActivite] = useState("");
+  const [boutiqueAdresse, setBoutiqueAdresse] = useState("");
+  const [boutiqueTelephone, setBoutiqueTelephone] = useState("");
+
+  // Écran de confirmation (e-mail envoyé)
   const [sentEmail, setSentEmail] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
-  const [emailFailed, setEmailFailed] = useState<boolean>(false);
-  const searchParams = useSearchParams();
+  const [emailFailed, setEmailFailed] = useState(false);
 
   useEffect(() => {
     const oauthError = searchParams.get("error");
     if (!oauthError) return;
-    const map: Record<string, string> = {
-      OAuthSignin: t("oauth.registerSignin"),
-      OAuthCallback: t("oauth.callback"),
-      OAuthCreateAccount: t("oauth.createAccount"),
-      OAuthAccountNotLinked: t("oauth.accountNotLinked"),
-      Callback: t("oauth.callbackGeneric"),
-      AccessDenied: t("oauth.accessDenied"),
-      Configuration: t("oauth.registerConfiguration"),
-    };
-    toast.error(map[oauthError] ?? t("oauth.registerFallback"));
+    const key = OAUTH_ERROR_KEYS[oauthError];
+    toast.error(key ? t(`oauth.${key}`) : t("oauth.registerFallback"));
   }, [searchParams, t]);
 
-  const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
-  });
+  function goNext() {
+    let result: z.SafeParseReturnType<unknown, unknown>;
+    if (step === 1) {
+      result = registerAccountSchema.safeParse({ email, password, confirmPassword });
+    } else {
+      result = registerIdentitySchema.safeParse({ prenom, nom, telephone });
+    }
+    if (!result.success) {
+      setErrors(zodErrors(result.error));
+      return;
+    }
+    setErrors({});
+    setStep((s) => (s === 1 ? 2 : 3) as 1 | 2 | 3);
+  }
 
-  async function onSubmit(data: RegisterInput) {
+  function goBack() {
+    setErrors({});
+    setStep((s) => (s === 3 ? 2 : 1) as 1 | 2 | 3);
+  }
+
+  async function handleSubmit() {
+    if (!secteurActivite) {
+      setErrors({ secteurActivite: tw("sectorPlaceholder") });
+      return;
+    }
+    const result = registerBoutiqueSchema.safeParse({
+      boutiqueNom,
+      secteurActivite,
+      boutiqueAdresse,
+      boutiqueTelephone,
+    });
+    if (!result.success) {
+      setErrors(zodErrors(result.error));
+      return;
+    }
+    setErrors({});
     setLoading(true);
     try {
-      const result = await registerUser({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
+      const res = await submitVendorRegistration({
+        email,
+        password,
+        prenom,
+        nom,
+        telephone,
+        boutiqueNom,
+        secteurActivite: secteurActivite as (typeof SECTEURS)[number],
+        boutiqueAdresse,
+        boutiqueTelephone,
       });
-
-      if (result?.serverError) {
-        toast.error(result.serverError);
+      if (res?.serverError) {
+        toast.error(res.serverError);
         return;
       }
-
-      if (result?.data?.success) {
-        if (result.data.emailFailed) {
-          toast.warning(result.data.success);
-        } else {
-          toast.success(result.data.success);
-        }
-        setSentEmail(data.email);
-        setDevLink(result.data.devLink ?? null);
-        setEmailFailed(result.data.emailFailed ?? false);
-        form.reset();
+      if (res?.data?.success) {
+        if (res.data.emailFailed) toast.warning(res.data.success);
+        else toast.success(res.data.success);
+        setSentEmail(email);
+        setDevLink(res.data.devLink ?? null);
+        setEmailFailed(res.data.emailFailed ?? false);
       }
     } catch {
       toast.error(t("genericError"));
@@ -90,6 +168,11 @@ export default function RegisterPage() {
     }
   }
 
+  const fieldClass =
+    "h-12 rounded-2xl bg-foreground/5 border-none px-5 text-sm font-bold transition-all focus:bg-foreground/10";
+  const errClass = "text-xs font-semibold text-destructive mt-1";
+
+  // ─── Écran de confirmation ───────────────────────────────────────────────
   if (sentEmail) {
     return (
       <motion.div
@@ -101,7 +184,6 @@ export default function RegisterPage() {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success/10">
           <MailCheck className="h-8 w-8 text-success" />
         </div>
-
         <div className="space-y-3">
           <h1 className="text-3xl font-black tracking-tight text-foreground">
             {emailFailed ? t("register.successTitleFailed") : t("register.successTitle")}
@@ -109,15 +191,11 @@ export default function RegisterPage() {
           <p className="text-base font-medium text-muted-foreground leading-relaxed">
             {emailFailed
               ? t.rich("register.successTextFailed", {
-                  b: (chunks) => (
-                    <span className="font-bold text-destructive">{chunks}</span>
-                  ),
+                  b: (chunks) => <span className="font-bold text-destructive">{chunks}</span>,
                 })
               : t.rich("register.successText", {
                   email: sentEmail,
-                  b: (chunks) => (
-                    <span className="font-bold text-foreground">{chunks}</span>
-                  ),
+                  b: (chunks) => <span className="font-bold text-foreground">{chunks}</span>,
                 })}
           </p>
           {!emailFailed && (
@@ -151,9 +229,8 @@ export default function RegisterPage() {
             onClick={async () => {
               const r = await resendVerificationEmail({ email: sentEmail });
               if (r?.data?.success) {
-                if (r.data.emailFailed) {
-                  toast.warning(r.data.success);
-                } else {
+                if (r.data.emailFailed) toast.warning(r.data.success);
+                else {
                   toast.success(r.data.success);
                   setEmailFailed(false);
                 }
@@ -177,140 +254,321 @@ export default function RegisterPage() {
     );
   }
 
+  // ─── Barre de progression ────────────────────────────────────────────────
+  const STEPS = [
+    { n: 1, label: tw("stepAccount"), icon: Lock },
+    { n: 2, label: tw("stepIdentity"), icon: User },
+    { n: 3, label: tw("stepBoutique"), icon: Store },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.6, ease: EASE }}
-      className="space-y-10"
+      className="space-y-8"
     >
-      <div className="space-y-3 flex flex-col items-center text-center">
-        <BrandLogo size={64} className="mb-4 shadow-xl shadow-brand/20 rounded-2xl" />
-        <h1 className="text-4xl font-black tracking-tight text-foreground">
-          {t("register.title")}
-        </h1>
-        <p className="text-base font-medium text-muted-foreground">
-          {t("register.subtitle")}
-        </p>
+      {/* Indicateur d'étapes */}
+      <div className="flex items-center justify-center gap-1.5">
+        {STEPS.map((s, i) => {
+          const Icon = s.icon;
+          const done = step > s.n;
+          const active = step === s.n;
+          return (
+            <div key={s.n} className="flex items-center gap-1.5">
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className={`flex h-9 w-9 items-center justify-center rounded-full border-2 transition-colors ${
+                    done
+                      ? "border-success bg-success text-white"
+                      : active
+                        ? "border-brand text-brand"
+                        : "border-border text-muted-foreground"
+                  }`}
+                >
+                  {done ? <Check className="h-4 w-4" strokeWidth={3} /> : <Icon className="h-4 w-4" />}
+                </div>
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                    active ? "text-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {s.label}
+                </span>
+              </div>
+              {i < STEPS.length - 1 && (
+                <div className={`h-0.5 w-6 rounded ${step > s.n ? "bg-success" : "bg-border"}`} />
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      <GoogleButton label={t("register.googleLabel")} enabled={true} />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.35, ease: EASE }}
+          className="space-y-6"
+        >
+          {/* ── Étape 1 — Compte ── */}
+          {step === 1 && (
+            <>
+              <div className="space-y-1.5 text-center">
+                <h1 className="text-2xl font-black tracking-tight text-foreground">{tw("accountTitle")}</h1>
+                <p className="text-sm font-medium text-muted-foreground">{tw("accountSubtitle")}</p>
+              </div>
 
-      <div className="relative">
-        <Separator className="opacity-50" />
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card/10 backdrop-blur-md px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground border border-white/5">
-          {t("orEmail")}
-        </span>
-      </div>
+              <GoogleButton label={t("register.googleLabel")} enabled callbackUrl="/onboarding" />
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.nameLabel")}</FormLabel>
-                <FormControl>
+              <div className="relative">
+                <div className="h-px w-full bg-border" />
+                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {t("orEmail")}
+                </span>
+              </div>
+
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {t("register.emailLabel")}
+                </Label>
+                <Input
+                  type="email"
+                  autoComplete="email"
+                  placeholder={t("register.emailPlaceholder")}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.email && <p className={errClass}>{errors.email}</p>}
+              </div>
+
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {t("register.passwordLabel")}
+                </Label>
+                <PasswordInput
+                  autoComplete="new-password"
+                  placeholder={t("register.passwordPlaceholder")}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.password && <p className={errClass}>{errors.password}</p>}
+              </div>
+
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {t("register.confirmLabel")}
+                </Label>
+                <PasswordInput
+                  autoComplete="new-password"
+                  placeholder={t("register.confirmPlaceholder")}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.confirmPassword && <p className={errClass}>{errors.confirmPassword}</p>}
+              </div>
+
+              <Button
+                type="button"
+                variant="brand"
+                size="xl"
+                onClick={goNext}
+                className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-brand/20 active-press"
+              >
+                {tw("next")}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </>
+          )}
+
+          {/* ── Étape 2 — Identité ── */}
+          {step === 2 && (
+            <>
+              <div className="space-y-1.5 text-center">
+                <h1 className="text-2xl font-black tracking-tight text-foreground">{tw("identityTitle")}</h1>
+                <p className="text-sm font-medium text-muted-foreground">{tw("identitySubtitle")}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                    {tw("firstName")}
+                  </Label>
                   <Input
-                    placeholder={t("register.namePlaceholder")}
-                    autoComplete="name"
-                    className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
-                    {...field}
+                    placeholder={tw("firstNamePlaceholder")}
+                    value={prenom}
+                    onChange={(e) => setPrenom(e.target.value)}
+                    className={`mt-1.5 ${fieldClass}`}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.emailLabel")}</FormLabel>
-                <FormControl>
+                  {errors.prenom && <p className={errClass}>{errors.prenom}</p>}
+                </div>
+                <div>
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                    {tw("lastName")}
+                  </Label>
                   <Input
-                    type="email"
-                    placeholder={t("register.emailPlaceholder")}
-                    autoComplete="email"
-                    className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
-                    {...field}
+                    placeholder={tw("lastNamePlaceholder")}
+                    value={nom}
+                    onChange={(e) => setNom(e.target.value)}
+                    className={`mt-1.5 ${fieldClass}`}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  {errors.nom && <p className={errClass}>{errors.nom}</p>}
+                </div>
+              </div>
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.passwordLabel")}</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    autoComplete="new-password"
-                    placeholder={t("register.passwordPlaceholder")}
-                    className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("phone")}
+                </Label>
+                <Input
+                  type="tel"
+                  inputMode="tel"
+                  placeholder={tw("phonePlaceholder")}
+                  value={telephone}
+                  onChange={(e) => setTelephone(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.telephone && <p className={errClass}>{errors.telephone}</p>}
+              </div>
 
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">{t("register.confirmLabel")}</FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    autoComplete="new-password"
-                    placeholder={t("register.confirmPlaceholder")}
-                    className="h-14 rounded-2xl bg-foreground/5 border-none px-6 text-base font-bold transition-all focus:bg-foreground/10"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xl"
+                  onClick={goBack}
+                  className="h-14 rounded-2xl font-bold px-5"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="brand"
+                  size="xl"
+                  onClick={goNext}
+                  className="flex-1 h-14 rounded-2xl font-black text-base shadow-xl shadow-brand/20 active-press"
+                >
+                  {tw("next")}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+            </>
+          )}
 
-          <Button
-            type="submit"
-            variant="brand"
-            size="xl"
-            className="w-full h-14 rounded-2xl font-black text-lg shadow-xl shadow-brand/20 active-press"
-            loading={loading}
-          >
-            {loading ? t("register.submitting") : t("register.submit")}
-          </Button>
+          {/* ── Étape 3 — Boutique ── */}
+          {step === 3 && (
+            <>
+              <div className="space-y-1.5 text-center">
+                <h1 className="text-2xl font-black tracking-tight text-foreground">{tw("boutiqueTitle")}</h1>
+                <p className="text-sm font-medium text-muted-foreground">{tw("boutiqueSubtitle")}</p>
+              </div>
 
-          <p className="text-center text-[10px] font-bold leading-relaxed text-muted-foreground uppercase tracking-wider">
-            {t.rich("register.terms", {
-              cgu: (chunks) => (
-                <Link href="/cgu" className="text-brand hover:underline">{chunks}</Link>
-              ),
-              privacy: (chunks) => (
-                <Link href="/confidentialite" className="text-brand hover:underline">{chunks}</Link>
-              ),
-            })}
-          </p>
-        </form>
-      </Form>
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("boutiqueName")}
+                </Label>
+                <Input
+                  placeholder={tw("boutiqueNamePlaceholder")}
+                  value={boutiqueNom}
+                  onChange={(e) => setBoutiqueNom(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.boutiqueNom && <p className={errClass}>{errors.boutiqueNom}</p>}
+              </div>
+
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("sector")}
+                </Label>
+                <Select value={secteurActivite} onValueChange={setSecteurActivite}>
+                  <SelectTrigger className={`mt-1.5 ${fieldClass}`}>
+                    <SelectValue placeholder={tw("sectorPlaceholder")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SECTEURS.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {tm(`secteurs.${s}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.secteurActivite && <p className={errClass}>{errors.secteurActivite}</p>}
+              </div>
+
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("boutiqueAddress")}
+                </Label>
+                <Input
+                  placeholder={tw("boutiqueAddressPlaceholder")}
+                  value={boutiqueAdresse}
+                  onChange={(e) => setBoutiqueAdresse(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.boutiqueAdresse && <p className={errClass}>{errors.boutiqueAdresse}</p>}
+              </div>
+
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("boutiquePhone")}
+                </Label>
+                <Input
+                  type="tel"
+                  inputMode="tel"
+                  placeholder={tw("phonePlaceholder")}
+                  value={boutiqueTelephone}
+                  onChange={(e) => setBoutiqueTelephone(e.target.value)}
+                  className={`mt-1.5 ${fieldClass}`}
+                />
+                {errors.boutiqueTelephone && <p className={errClass}>{errors.boutiqueTelephone}</p>}
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xl"
+                  onClick={goBack}
+                  disabled={loading}
+                  className="h-14 rounded-2xl font-bold px-5"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="brand"
+                  size="xl"
+                  onClick={handleSubmit}
+                  loading={loading}
+                  className="flex-1 h-14 rounded-2xl font-black text-base shadow-xl shadow-brand/20 active-press"
+                >
+                  {loading ? tw("submitting") : tw("submit")}
+                </Button>
+              </div>
+
+              <p className="text-center text-[10px] font-bold leading-relaxed text-muted-foreground uppercase tracking-wider">
+                {t.rich("register.terms", {
+                  cgu: (chunks) => (
+                    <Link href="/cgu" className="text-brand hover:underline">{chunks}</Link>
+                  ),
+                  privacy: (chunks) => (
+                    <Link href="/confidentialite" className="text-brand hover:underline">{chunks}</Link>
+                  ),
+                })}
+              </p>
+            </>
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       <p className="text-center text-sm font-bold text-muted-foreground">
         {t("register.alreadyMember")}{" "}
-        <Link
-          href="/login"
-          className="text-brand hover:underline underline-offset-4"
-        >
+        <Link href="/login" className="text-brand hover:underline underline-offset-4">
           {t("register.signin")}
         </Link>
       </p>
