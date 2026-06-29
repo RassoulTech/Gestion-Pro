@@ -13,7 +13,9 @@ export const hashToken = (rawToken: string): string =>
 export const generateVerificationToken = async (email: string) => {
   const rawToken = crypto.randomBytes(32).toString("hex");
   const token = hashToken(rawToken);
-  const expires = new Date(Date.now() + 3600 * 1000); // 1 heure
+  // 24 h : aligné sur le flux d'inscription en attente (pending_registrations),
+  // pour que l'e-mail de vérification annonce la même durée sur TOUS les chemins.
+  const expires = new Date(Date.now() + 24 * 3600 * 1000); // 24 heures
 
   const existingToken = await prisma.verificationToken.findFirst({
     where: { identifier: email },

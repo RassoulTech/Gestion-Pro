@@ -242,7 +242,7 @@ export const sendVerificationEmail = async (
     "connecter, confirmez votre adresse email en ouvrant ce lien :",
     confirmLink,
     "",
-    "Ce lien expire dans 1 heure.",
+    "Ce lien expire dans 24 heures.",
     "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.",
     "",
     "— L'équipe GestionPro",
