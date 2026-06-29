@@ -46,6 +46,7 @@ function DashboardSkeleton() {
 import { DashboardShell } from "@/components/layouts/dashboard-shell";
 
 import { ImpersonationBanner } from "@/components/impersonation-banner";
+import { InstallPrompt } from "@/components/pwa/install-prompt";
 
 // ─── Layout ──────────────────────────────────────────────────
 
@@ -75,6 +76,7 @@ export default async function DashboardLayout({
           {children}
         </DashboardShell>
       </div>
+      <InstallPrompt />
     </Suspense>
   );
 }

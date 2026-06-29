@@ -803,6 +803,19 @@
     "label": "Langue",
     "select": "Choisir la langue"
   },
+  "pwa": {
+    "title": "Installer GestionPro",
+    "subtitle": "Accédez à l'app comme une vraie application, même hors-ligne.",
+    "install": "Installer",
+    "later": "Plus tard",
+    "close": "Fermer",
+    "iosTitle": "Installer sur iPhone / iPad",
+    "iosIntro": "En 3 étapes depuis Safari :",
+    "iosStep1": "Appuyez sur l'icône Partager en bas de Safari.",
+    "iosStep2": "Choisissez « Sur l'écran d'accueil ».",
+    "iosStep3": "Appuyez sur « Ajouter » en haut à droite.",
+    "iosGotIt": "J'ai compris"
+  },
   "header": {
     "myShops": "Mes boutiques",
     "profile": "Profil",

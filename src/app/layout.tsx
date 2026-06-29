@@ -56,6 +56,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   ),
+  // iOS : permet l'ouverture en plein écran depuis l'écran d'accueil + titre.
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "GestionPro",
+  },
 };
 
 export default async function RootLayout({

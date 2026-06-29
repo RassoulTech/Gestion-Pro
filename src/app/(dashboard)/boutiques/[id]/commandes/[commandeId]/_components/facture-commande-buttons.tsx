@@ -1,9 +1,11 @@
 "use client";
 
-import { Printer, Download } from "lucide-react";
+import { Printer, Download, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { generateInvoicePDF } from "@/lib/generate-invoice";
+import { buildInvoiceWhatsAppLink } from "@/lib/whatsapp";
+import { formatCurrency } from "@/lib/utils";
 
 type FactureBoutique = {
   nom: string;
@@ -44,14 +46,17 @@ export function FactureCommandeButtons({
   boutique: FactureBoutique;
   commande: FactureCommande;
 }) {
-  function buildPdf() {
-    const date = new Date(commande.date);
-    // Numérotation stable, alignée sur le marketplace : FAC-YYYYMMDD-<code>.
-    const dateSuffix = date.toISOString().slice(0, 10).replace(/-/g, "");
-    const invoiceNumber =
-      commande.invoiceNumber || `FAC-${dateSuffix}-${commande.code.replace(/^CMD-/, "")}`;
-    const paid = commande.statutPaiement === "CONFIRME";
+  const date = new Date(commande.date);
+  // Numérotation stable, alignée sur le marketplace : FAC-YYYYMMDD-<code>.
+  const dateSuffix = date.toISOString().slice(0, 10).replace(/-/g, "");
+  const invoiceNumber =
+    commande.invoiceNumber || `FAC-${dateSuffix}-${commande.code.replace(/^CMD-/, "")}`;
+  const paid = commande.statutPaiement === "CONFIRME";
+  const clientName = commande.client
+    ? [commande.client.prenom, commande.client.nom].filter(Boolean).join(" ").trim() || null
+    : null;
 
+  function buildPdf() {
     return generateInvoicePDF({
       invoiceNumber,
       date,
@@ -91,10 +96,39 @@ export function FactureCommandeButtons({
     }
   }
 
+  function sendWhatsApp() {
+    const link = buildInvoiceWhatsAppLink({
+      phone: commande.client?.telephone,
+      invoiceNumber,
+      totalLabel: formatCurrency(commande.total),
+      shopName: boutique.nom,
+      clientName,
+    });
+    if (!link) {
+      toast.error("Numéro WhatsApp du client manquant ou invalide.");
+      return;
+    }
+    // wa.me ne joint pas de fichier : on télécharge le PDF pour qu'il soit prêt à
+    // être joint dans la conversation, puis on ouvre WhatsApp avec le bon numéro.
+    try {
+      buildPdf().save(`Facture-${commande.code}.pdf`);
+    } catch {
+      /* le téléchargement est un confort ; on continue vers WhatsApp */
+    }
+    window.open(link, "_blank", "noopener,noreferrer");
+    toast.success("Facture téléchargée — joignez le PDF dans WhatsApp.");
+  }
+
   return (
-    <div className="flex items-center gap-2">
-      <Button variant="brand-outline" className="h-10 rounded-xl font-bold flex-1 sm:flex-none" onClick={printPdf}>
-        <Printer className="mr-2 h-4 w-4" /> Imprimer la facture
+    <div className="flex flex-wrap items-center gap-2">
+      <Button
+        className="h-10 flex-1 rounded-xl bg-[#25D366] font-bold text-white hover:bg-[#1ebe57] sm:flex-none"
+        onClick={sendWhatsApp}
+      >
+        <MessageCircle className="mr-2 h-4 w-4" /> Envoyer sur WhatsApp
+      </Button>
+      <Button variant="brand-outline" className="h-10 flex-1 rounded-xl font-bold sm:flex-none" onClick={printPdf}>
+        <Printer className="mr-2 h-4 w-4" /> Imprimer
       </Button>
       <Button
         variant="outline"

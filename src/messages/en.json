@@ -803,6 +803,19 @@
     "label": "Language",
     "select": "Choose language"
   },
+  "pwa": {
+    "title": "Install GestionPro",
+    "subtitle": "Get app-like access on your home screen, even offline.",
+    "install": "Install",
+    "later": "Later",
+    "close": "Close",
+    "iosTitle": "Install on iPhone / iPad",
+    "iosIntro": "In 3 steps from Safari:",
+    "iosStep1": "Tap the Share icon at the bottom of Safari.",
+    "iosStep2": "Choose “Add to Home Screen”.",
+    "iosStep3": "Tap “Add” in the top-right corner.",
+    "iosGotIt": "Got it"
+  },
   "header": {
     "myShops": "My shops",
     "profile": "Profile",

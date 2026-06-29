@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
-  Download, Printer, Trash2, Loader2, CheckCircle2, Clock, Ban, Package,
+  Download, Printer, Trash2, Loader2, CheckCircle2, Clock, Ban, Package, MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { FACTURE_STATUT_CONFIG } from "@/lib/facture-statut";
 import type { FactureStatut } from "@/schemas/facture.schema";
 import { generateInvoicePDF } from "@/lib/generate-invoice";
+import { buildInvoiceWhatsAppLink } from "@/lib/whatsapp";
 import { updateFactureStatut, deleteFacture } from "@/server/actions/facture.actions";
 
 interface FactureDetailData {
@@ -80,6 +81,29 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
     } catch {
       toast.error("Impression impossible.");
     }
+  }
+
+  function sendWhatsApp() {
+    const link = buildInvoiceWhatsAppLink({
+      phone: facture.clientTelephone,
+      invoiceNumber: facture.numero,
+      totalLabel: formatCurrency(facture.total),
+      shopName: facture.boutique.nom,
+      clientName: facture.clientNom,
+    });
+    if (!link) {
+      toast.error("Numéro WhatsApp du client manquant ou invalide.");
+      return;
+    }
+    // wa.me ne joint pas de fichier : on télécharge le PDF (prêt à joindre) puis
+    // on ouvre WhatsApp avec le bon numéro et un message clair.
+    try {
+      buildPdf().save(`${facture.numero}.pdf`);
+    } catch {
+      /* le téléchargement est un confort ; on continue vers WhatsApp */
+    }
+    window.open(link, "_blank", "noopener,noreferrer");
+    toast.success("Facture téléchargée — joignez le PDF dans WhatsApp.");
   }
 
   async function changeStatut(statut: FactureStatut) {
@@ -193,6 +217,12 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
           </Button>
           <Button onClick={printPdf} variant="outline" className="w-full h-11 rounded-xl font-bold">
             <Printer className="mr-2 h-4 w-4" /> Imprimer
+          </Button>
+          <Button
+            onClick={sendWhatsApp}
+            className="w-full h-11 rounded-xl bg-[#25D366] font-bold text-white hover:bg-[#1ebe57]"
+          >
+            <MessageCircle className="mr-2 h-4 w-4" /> Envoyer sur WhatsApp
           </Button>
 
           <h3 className="text-sm font-black uppercase tracking-wider text-zinc-400 pt-2">Statut</h3>

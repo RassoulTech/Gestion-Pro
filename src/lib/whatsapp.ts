@@ -13,6 +13,28 @@ export function normalizeWhatsAppNumber(phone: string | null | undefined): strin
 }
 
 /**
+ * Met un numéro au format international (E.164 sans « + ») pour wa.me.
+ * - Supprime tout sauf les chiffres ; gère le préfixe "00".
+ * - Si le numéro est local (≤ 9 chiffres, sans indicatif), préfixe l'indicatif
+ *   pays par défaut (Sénégal `221`). Sinon il est supposé déjà international.
+ * Retourne null si le résultat n'a pas une longueur plausible.
+ */
+export function internationalizeNumber(
+  phone: string | null | undefined,
+  defaultCountryCode = "221"
+): string | null {
+  if (!phone) return null;
+  let d = phone.replace(/[^\d]/g, "");
+  if (d.startsWith("00")) d = d.slice(2);
+  if (!d) return null;
+  if (!d.startsWith(defaultCountryCode) && d.length <= 9) {
+    d = defaultCountryCode + d;
+  }
+  if (d.length < 8 || d.length > 15) return null;
+  return d;
+}
+
+/**
  * Construit un lien WhatsApp sécurisé et encodé.
  * Retourne null en cas d'erreur de numéro ou si le numéro est vide.
  */
@@ -22,9 +44,34 @@ export function buildWhatsAppLink(
 ): string | null {
   const normalized = normalizeWhatsAppNumber(phone);
   if (!normalized) return null;
-  
+
   const encodedText = encodeURIComponent(message);
   return `https://wa.me/${normalized}?text=${encodedText}`;
+}
+
+/**
+ * Construit un lien WhatsApp pour ENVOYER UNE FACTURE à un client : numéro mis au
+ * format international + message clair (n° facture, total FCFA, boutique).
+ * Retourne null si le numéro est manquant/invalide (l'appelant affiche alors un
+ * message clair sans planter). wa.me ne peut pas joindre de fichier : le PDF est
+ * téléchargé à part et joint manuellement dans la conversation.
+ */
+export function buildInvoiceWhatsAppLink(params: {
+  phone: string | null | undefined;
+  invoiceNumber: string;
+  totalLabel: string;
+  shopName: string;
+  clientName?: string | null;
+}): string | null {
+  const intl = internationalizeNumber(params.phone);
+  if (!intl) return null;
+  const hi = params.clientName ? `Bonjour ${params.clientName} 👋` : "Bonjour 👋";
+  const message =
+    `${hi}\n` +
+    `Voici votre facture *${params.invoiceNumber}* de *${params.shopName}*.\n` +
+    `Montant total : *${params.totalLabel}*.\n` +
+    `Merci pour votre confiance !`;
+  return `https://wa.me/${intl}?text=${encodeURIComponent(message)}`;
 }
 
 /**
