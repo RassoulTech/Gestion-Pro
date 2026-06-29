@@ -17,27 +17,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/image-upload";
+import { SectorSelect } from "@/components/auth/sector-select";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-import { 
-  Utensils, Shirt, Smartphone, Sparkles, HeartPulse, Hammer, BookOpen, HelpCircle
-} from "lucide-react";
-
-const SECTEURS = [
-  { value: "ALIMENTATION", label: "Restauration & Alimentation", icon: Utensils },
-  { value: "HABILLEMENT", label: "Mode & Vêtements", icon: Shirt },
-  { value: "ELECTRONIQUE", label: "Technologie & Téléphonie", icon: Smartphone },
-  { value: "BEAUTE", label: "Beauté & Cosmétique", icon: Sparkles },
-  { value: "SANTE", label: "Santé & Bien-être", icon: HeartPulse },
-  { value: "SERVICES", label: "Commerce & Services", icon: Store },
-  { value: "QUINCAILLERIE", label: "Construction & Quincaillerie", icon: Hammer },
-  { value: "LIBRAIRIE", label: "Éducation & Librairie", icon: BookOpen },
-  { value: "AUTRE", label: "Autre activité", icon: HelpCircle },
-] as const;
 
 export default function NouvelleBoutiquePage() {
   const router = useRouter();
@@ -160,36 +144,14 @@ export default function NouvelleBoutiquePage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Secteur d&apos;activité *</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="h-12 rounded-xl bg-foreground/5 border-none px-4 font-bold text-sm focus:ring-2 focus:ring-brand">
-                              <span className="flex items-center gap-2">
-                                {field.value && (() => {
-                                  const current = SECTEURS.find(s => s.value === field.value);
-                                  if (current) {
-                                    const Icon = current.icon;
-                                    return <Icon className="h-4 w-4 text-brand shrink-0" />;
-                                  }
-                                  return null;
-                                })()}
-                                <SelectValue placeholder="Choisir un secteur" />
-                              </span>
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {SECTEURS.map((s) => {
-                              const Icon = s.icon;
-                              return (
-                                <SelectItem key={s.value} value={s.value}>
-                                  <span className="flex items-center gap-2">
-                                    <Icon className="h-4 w-4 text-zinc-400 shrink-0" />
-                                    <span>{s.label}</span>
-                                  </span>
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <SectorSelect
+                            value={field.value ?? ""}
+                            onValueChange={field.onChange}
+                            placeholder="Choisir un secteur"
+                            className="h-12"
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
