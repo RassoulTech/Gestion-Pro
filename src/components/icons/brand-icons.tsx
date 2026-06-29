@@ -71,11 +71,11 @@ export function GitHubIcon(props: SVGProps<SVGSVGElement>) {
  * Size with className (e.g. `h-5 w-auto`).
  */
 
-/** Wave — official asset /logos/wave.png if present, else a clean wave-motif SVG. */
+/** Wave — official asset /logos/wave.svg|png if present, else a clean brand badge. */
 export function WaveIcon({ className }: { className?: string }) {
   return (
     <PaymentLogo
-      src="/logos/wave.png"
+      src={["/logos/wave.svg", "/logos/wave.png"]}
       alt="Wave"
       className={className}
       fallback={
@@ -95,11 +95,11 @@ export function WaveIcon({ className }: { className?: string }) {
   );
 }
 
-/** Orange Money — official asset /logos/orange-money.png if present, else arrows SVG. */
+/** Orange Money — official asset /logos/orange-money.svg|png if present, else a brand badge. */
 export function OrangeMoneyIcon({ className }: { className?: string }) {
   return (
     <PaymentLogo
-      src="/logos/orange-money.png"
+      src={["/logos/orange-money.svg", "/logos/orange-money.png"]}
       alt="Orange Money"
       className={className}
       fallback={
