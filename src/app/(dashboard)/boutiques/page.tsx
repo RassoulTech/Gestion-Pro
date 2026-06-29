@@ -70,6 +70,14 @@ export default async function BoutiquesPage() {
   const maxBoutiques = currentPlan?.maxBoutiques ?? 1;
   const canCreate = boutiques.length < maxBoutiques;
 
+  // Vendeur mono-boutique ayant atteint sa limite (nouveau vendeur Starter) :
+  // après connexion, on l'amène DIRECTEMENT dans sa boutique plutôt que sur la
+  // liste. Les vendeurs pouvant encore créer des boutiques gardent la vue
+  // portefeuille (pour en ajouter).
+  if (boutiques.length === 1 && !canCreate) {
+    redirect(`/boutiques/${boutiques[0]!.id}`);
+  }
+
   // Global calculations for the portfolio header stats
   const totalBoutiques = boutiques.length;
   const totalProduits = boutiques.reduce((acc, b) => acc + b._count.produits, 0);
