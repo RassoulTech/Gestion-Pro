@@ -6,6 +6,7 @@ import { Search, Mail, Calendar, X, Filter, Users, Shield } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { DeleteAccountButton } from "../../_components/delete-account-button";
 
 interface User {
   id: string;
@@ -199,6 +200,7 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                       <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200">
                         <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-slate-400" /> Inscription</span>
                       </TableHead>
+                      <TableHead className="py-4 font-black text-slate-800 dark:text-slate-200 text-right pr-6">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -246,6 +248,11 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                           </TableCell>
                           <TableCell className="py-4 text-slate-500 dark:text-slate-400 text-xs font-bold">
                             {formatDate(u.createdAt)}
+                          </TableCell>
+                          <TableCell className="py-4 text-right pr-6">
+                            {u.role !== "ADMIN" && (
+                              <DeleteAccountButton userId={u.id} label={displayName} email={u.email} />
+                            )}
                           </TableCell>
                         </TableRow>
                       );
@@ -305,6 +312,12 @@ export function UsersClientTable({ initialUsers, total }: UsersClientTableProps)
                         <span className="font-semibold text-slate-500 dark:text-slate-400">{formatDate(u.createdAt)}</span>
                       </div>
                     </div>
+
+                    {u.role !== "ADMIN" && (
+                      <div className="mt-4 flex justify-end pt-3 border-t border-slate-100 dark:border-slate-800">
+                        <DeleteAccountButton userId={u.id} label={displayName} email={u.email} />
+                      </div>
+                    )}
                   </div>
                 );
               })}

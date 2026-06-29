@@ -7,6 +7,7 @@ import { formatDate } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { ToggleStatusButton } from "../../_components/toggle-status-button";
+import { DeleteAccountButton } from "../../_components/delete-account-button";
 import { ImpersonateButton } from "./impersonate-button";
 
 interface Vendeur {
@@ -194,8 +195,14 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
                       </div>
                     </div>
 
-                    <div className="mt-4 flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <div className="mt-4 flex flex-wrap justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                       <ToggleStatusButton id={v.id} currentStatut={v.statut} type="vendeur" />
+                      <DeleteAccountButton
+                        userId={v.userId}
+                        label={`${v.prenom} ${v.nom}`}
+                        email={v.email}
+                        boutiqueCount={v._count.boutiques}
+                      />
                     </div>
                   </div>
                 );
@@ -262,6 +269,12 @@ export function VendeursClientTable({ initialVendeurs, total }: VendeursClientTa
                             <div className="flex justify-end gap-2">
                               <ImpersonateButton userId={v.userId} />
                               <ToggleStatusButton id={v.id} currentStatut={v.statut} type="vendeur" />
+                              <DeleteAccountButton
+                                userId={v.userId}
+                                label={`${v.prenom} ${v.nom}`}
+                                email={v.email}
+                                boutiqueCount={v._count.boutiques}
+                              />
                             </div>
                           </TableCell>
                         </TableRow>
