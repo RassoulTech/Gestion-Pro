@@ -3,6 +3,24 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+// CSP en mode OBSERVATION (Report-Only), posée en en-tête STATIQUE — ne bloque RIEN
+// (zéro risque de planter le rendu ou le middleware). La variante stricte à nonce
+// via middleware a provoqué MIDDLEWARE_INVOCATION_FAILED sur l'Edge runtime Vercel ;
+// on reste donc sur cette version sûre. 'unsafe-inline' conservé (Next/React).
+const cspReportOnly = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "img-src 'self' data: blob: https:",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data: https:",
+  "connect-src 'self' https:",
+  "frame-src 'self' https:",
+].join("; ");
+
 const nextConfig: NextConfig = {
   experimental: {
     // typedRoutes: true,
@@ -36,9 +54,7 @@ const nextConfig: NextConfig = {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=()",
         },
-        // La Content-Security-Policy (stricte, basée sur un nonce par requête) est
-        // posée par le middleware (src/middleware.ts), pas ici : elle nécessite un
-        // nonce dynamique que des en-têtes statiques ne peuvent pas fournir.
+        { key: "Content-Security-Policy-Report-Only", value: cspReportOnly },
       ],
     },
   ],
