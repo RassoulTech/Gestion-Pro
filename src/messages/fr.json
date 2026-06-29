@@ -231,6 +231,12 @@
       "boutiqueNamePlaceholder": "Ma Boutique",
       "sector": "Secteur d'activité",
       "sectorPlaceholder": "Choisissez un secteur",
+      "sectorSearch": "Rechercher un secteur…",
+      "sectorNoResult": "Aucun secteur trouvé",
+      "logoLabel": "Logo de la boutique",
+      "logoOptional": "Optionnel",
+      "boutiqueEmail": "Email de la boutique",
+      "sameAsAccount": "Utiliser le même email que mon compte",
       "boutiqueAddress": "Adresse",
       "boutiqueAddressPlaceholder": "Ville, quartier…",
       "boutiquePhone": "Téléphone de la boutique"

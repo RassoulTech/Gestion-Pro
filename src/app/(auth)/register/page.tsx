@@ -21,13 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ImageUpload } from "@/components/image-upload";
+import { SectorSelect } from "@/components/auth/sector-select";
 import { PasswordInput } from "@/components/auth/password-input";
 import { GoogleButton } from "@/components/auth/google-button";
 
@@ -88,6 +83,9 @@ export default function RegisterPage() {
   const [secteurActivite, setSecteurActivite] = useState("");
   const [boutiqueAdresse, setBoutiqueAdresse] = useState("");
   const [boutiqueTelephone, setBoutiqueTelephone] = useState("");
+  const [logo, setLogo] = useState("");
+  const [boutiqueEmail, setBoutiqueEmail] = useState("");
+  const [sameAsAccount, setSameAsAccount] = useState(true);
 
   // Écran de confirmation (e-mail envoyé)
   const [sentEmail, setSentEmail] = useState<string | null>(null);
@@ -149,6 +147,10 @@ export default function RegisterPage() {
         secteurActivite: secteurActivite as (typeof SECTEURS)[number],
         boutiqueAdresse,
         boutiqueTelephone,
+        // Email boutique : si « même que le compte », on laisse vide → le serveur
+        // retombe sur l'email du compte à la création finale.
+        boutiqueEmail: sameAsAccount ? "" : boutiqueEmail,
+        logo,
       });
       if (res?.serverError) {
         toast.error(res.serverError);
@@ -468,6 +470,17 @@ export default function RegisterPage() {
                 <p className="text-sm font-medium text-muted-foreground">{tw("boutiqueSubtitle")}</p>
               </div>
 
+              {/* Logo (optionnel) — data URL en staging, rien d'externe avant vérif */}
+              <div className="flex flex-col items-center gap-2">
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("logoLabel")}{" "}
+                  <span className="text-[10px] font-bold normal-case text-muted-foreground/60">
+                    ({tw("logoOptional")})
+                  </span>
+                </Label>
+                <ImageUpload mode="dataUrl" value={logo} onChange={setLogo} />
+              </div>
+
               <div>
                 <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
                   {tw("boutiqueName")}
@@ -485,19 +498,41 @@ export default function RegisterPage() {
                 <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
                   {tw("sector")}
                 </Label>
-                <Select value={secteurActivite} onValueChange={setSecteurActivite}>
-                  <SelectTrigger className={`mt-1.5 ${fieldClass}`}>
-                    <SelectValue placeholder={tw("sectorPlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SECTEURS.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {tm(`secteurs.${s}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <SectorSelect
+                  value={secteurActivite}
+                  onValueChange={setSecteurActivite}
+                  className="mt-1.5 h-12"
+                />
                 {errors.secteurActivite && <p className={errClass}>{errors.secteurActivite}</p>}
+              </div>
+
+              {/* Email boutique : par défaut = email du compte, modifiable */}
+              <div>
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  {tw("boutiqueEmail")}
+                </Label>
+                <label className="mt-1.5 flex items-center gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={sameAsAccount}
+                    onChange={(e) => {
+                      setSameAsAccount(e.target.checked);
+                      if (!e.target.checked && !boutiqueEmail) setBoutiqueEmail(email);
+                    }}
+                    className="h-4 w-4 rounded accent-brand cursor-pointer"
+                  />
+                  <span className="text-xs font-bold text-muted-foreground">{tw("sameAsAccount")}</span>
+                </label>
+                <Input
+                  type="email"
+                  inputMode="email"
+                  placeholder={t("register.emailPlaceholder")}
+                  value={sameAsAccount ? email : boutiqueEmail}
+                  onChange={(e) => setBoutiqueEmail(e.target.value)}
+                  disabled={sameAsAccount}
+                  className={`mt-2 ${fieldClass} ${sameAsAccount ? "opacity-60" : ""}`}
+                />
+                {errors.boutiqueEmail && <p className={errClass}>{errors.boutiqueEmail}</p>}
               </div>
 
               <div>

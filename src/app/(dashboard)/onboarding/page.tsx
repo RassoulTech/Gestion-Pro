@@ -14,13 +14,8 @@ import { completeOAuthRegistration } from "@/server/actions/auth.actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ImageUpload } from "@/components/image-upload";
+import { SectorSelect } from "@/components/auth/sector-select";
 import { Card, CardContent } from "@/components/ui/card";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -71,6 +66,11 @@ export default function OnboardingPage() {
   const [secteurActivite, setSecteurActivite] = useState("");
   const [boutiqueAdresse, setBoutiqueAdresse] = useState("");
   const [boutiqueTelephone, setBoutiqueTelephone] = useState("");
+  const [logo, setLogo] = useState("");
+  const [boutiqueEmail, setBoutiqueEmail] = useState("");
+  const [sameAsAccount, setSameAsAccount] = useState(true);
+
+  const accountEmail = session?.user?.email ?? "";
 
   // Garde : admins et vendeurs déjà créés n'ont rien à faire ici.
   useEffect(() => {
@@ -126,6 +126,8 @@ export default function OnboardingPage() {
         secteurActivite: secteurActivite as (typeof SECTEURS)[number],
         boutiqueAdresse,
         boutiqueTelephone,
+        boutiqueEmail: sameAsAccount ? "" : boutiqueEmail,
+        logo,
       });
       if (res?.serverError) {
         toast.error(res.serverError);
@@ -277,6 +279,17 @@ export default function OnboardingPage() {
                 {step === 2 && (
                   <>
                     <h2 className="text-xl font-black tracking-tight text-foreground">{t("boutiqueTitle")}</h2>
+
+                    <div className="flex flex-col items-center gap-2">
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                        {t("logoLabel")}{" "}
+                        <span className="text-[10px] font-bold normal-case text-muted-foreground/60">
+                          ({t("logoOptional")})
+                        </span>
+                      </Label>
+                      <ImageUpload mode="dataUrl" value={logo} onChange={setLogo} />
+                    </div>
+
                     <div>
                       <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
                         {t("boutiqueName")}
@@ -293,19 +306,38 @@ export default function OnboardingPage() {
                       <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
                         {t("sector")}
                       </Label>
-                      <Select value={secteurActivite} onValueChange={setSecteurActivite}>
-                        <SelectTrigger className={`mt-1.5 ${fieldClass}`}>
-                          <SelectValue placeholder={t("sectorPlaceholder")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SECTEURS.map((s) => (
-                            <SelectItem key={s} value={s}>
-                              {tm(`secteurs.${s}`)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <SectorSelect
+                        value={secteurActivite}
+                        onValueChange={setSecteurActivite}
+                        className="mt-1.5 h-12"
+                      />
                       {errors.secteurActivite && <p className={errClass}>{errors.secteurActivite}</p>}
+                    </div>
+                    <div>
+                      <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                        {t("boutiqueEmail")}
+                      </Label>
+                      <label className="mt-1.5 flex items-center gap-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={sameAsAccount}
+                          onChange={(e) => {
+                            setSameAsAccount(e.target.checked);
+                            if (!e.target.checked && !boutiqueEmail) setBoutiqueEmail(accountEmail);
+                          }}
+                          className="h-4 w-4 rounded accent-brand cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-muted-foreground">{t("sameAsAccount")}</span>
+                      </label>
+                      <Input
+                        type="email"
+                        inputMode="email"
+                        placeholder="boutique@email.com"
+                        value={sameAsAccount ? accountEmail : boutiqueEmail}
+                        onChange={(e) => setBoutiqueEmail(e.target.value)}
+                        disabled={sameAsAccount}
+                        className={`mt-2 ${fieldClass} ${sameAsAccount ? "opacity-60" : ""}`}
+                      />
                     </div>
                     <div>
                       <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">

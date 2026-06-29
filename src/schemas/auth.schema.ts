@@ -75,6 +75,16 @@ const boutiqueShape = {
   secteurActivite,
   boutiqueAdresse: z.string().trim().max(200).optional().or(z.literal("")),
   boutiqueTelephone: z.string().trim().max(20).optional().or(z.literal("")),
+  // Email spécifique à la boutique (par défaut = email du compte, modifiable).
+  boutiqueEmail: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email("Email invalide")
+    .optional()
+    .or(z.literal("")),
+  // Logo : data URL base64 (staging) — borné pour éviter les abus.
+  logo: z.string().max(2_500_000, "Image trop lourde").optional().or(z.literal("")),
 };
 
 /** Étape 1 — Compte (validation client). */

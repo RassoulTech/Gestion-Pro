@@ -21,6 +21,8 @@ export type VendeurWorkspaceInput = {
   secteurActivite: SecteurActivite;
   boutiqueAdresse?: string | null;
   boutiqueTelephone?: string | null;
+  boutiqueEmail?: string | null;
+  logo?: string | null;
 };
 
 /** Slug unique pour une boutique (base slugifiée + suffixe court si collision). */
@@ -75,6 +77,9 @@ export async function provisionVendeurWorkspace(
       secteurActivite: data.secteurActivite,
       adresse: data.boutiqueAdresse || null,
       telephone: data.boutiqueTelephone || null,
+      // Email boutique : la valeur saisie, sinon repli sur l'email du compte.
+      email: data.boutiqueEmail || data.email || null,
+      logo: data.logo || null,
     },
   });
 
@@ -143,6 +148,8 @@ async function createAccountFromPending(pendingId: string): Promise<{
         secteurActivite: pending.secteurActivite,
         boutiqueAdresse: pending.boutiqueAdresse,
         boutiqueTelephone: pending.boutiqueTelephone,
+        boutiqueEmail: pending.boutiqueEmail,
+        logo: pending.logo,
       },
       slug,
       starterPlan?.id ?? null,

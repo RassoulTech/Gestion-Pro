@@ -55,6 +55,8 @@ export const submitVendorRegistration = actionClient
       secteurActivite,
       boutiqueAdresse,
       boutiqueTelephone,
+      boutiqueEmail,
+      logo,
     } = parsedInput;
 
     await logActivity({ action: "SIGNUP_REQUESTED", changes: { email } });
@@ -89,6 +91,8 @@ export const submitVendorRegistration = actionClient
       secteurActivite,
       boutiqueAdresse: boutiqueAdresse || null,
       boutiqueTelephone: boutiqueTelephone || null,
+      boutiqueEmail: boutiqueEmail || null,
+      logo: logo || null,
       tokenHash,
       expires,
     };
@@ -163,6 +167,8 @@ export const completeOAuthRegistration = authActionClient
           secteurActivite: parsedInput.secteurActivite,
           boutiqueAdresse: parsedInput.boutiqueAdresse || null,
           boutiqueTelephone: parsedInput.boutiqueTelephone || null,
+          boutiqueEmail: parsedInput.boutiqueEmail || null,
+          logo: parsedInput.logo || null,
         },
         slug,
         starterPlan?.id ?? null,

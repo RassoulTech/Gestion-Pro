@@ -9,9 +9,26 @@ interface ImageUploadProps {
   value?: string;
   onChange: (url: string) => void;
   className?: string;
+  /**
+   * "upload" (défaut) : envoie l'image au stockage (`/api/upload`) et renvoie son
+   * URL. "dataUrl" : produit une data URL base64 (aucun upload externe) — utilisé
+   * pendant l'inscription, où le logo reste en staging et n'est rattaché à la
+   * boutique qu'après la vérification e-mail.
+   */
+  mode?: "upload" | "dataUrl";
 }
 
-export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
+/** Convertit un Blob compressé en data URL base64 (pour le mode staging). */
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Lecture de l'image impossible"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+export function ImageUpload({ value, onChange, className, mode = "upload" }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [compressing, setCompressing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +127,27 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
       console.warn("La compression a échoué, envoi du fichier original:", err);
     } finally {
       setCompressing(false);
+    }
+
+    // ── Mode staging (inscription) : data URL base64, AUCUN upload externe ──
+    if (mode === "dataUrl") {
+      try {
+        const blob =
+          fileToUpload instanceof Blob ? fileToUpload : new Blob([fileToUpload]);
+        const dataUrl = await blobToDataUrl(blob);
+        // Garde-fou taille (le WebP 800px reste petit ; on borne tout de même).
+        if (dataUrl.length > 2_000_000) {
+          toast.error("Image trop lourde après compression. Choisissez-en une plus légère.");
+          return;
+        }
+        onChange(dataUrl);
+        toast.success("Logo prêt !");
+      } catch {
+        toast.error("Impossible de préparer l'image.");
+      } finally {
+        if (inputRef.current) inputRef.current.value = "";
+      }
+      return;
     }
 
      setUploading(true);

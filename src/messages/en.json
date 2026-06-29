@@ -231,6 +231,12 @@
       "boutiqueNamePlaceholder": "My Shop",
       "sector": "Business sector",
       "sectorPlaceholder": "Choose a sector",
+      "sectorSearch": "Search a sector…",
+      "sectorNoResult": "No sector found",
+      "logoLabel": "Shop logo",
+      "logoOptional": "Optional",
+      "boutiqueEmail": "Shop email",
+      "sameAsAccount": "Use the same email as my account",
       "boutiqueAddress": "Address",
       "boutiqueAddressPlaceholder": "City, district…",
       "boutiquePhone": "Shop phone"

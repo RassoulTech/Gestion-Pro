@@ -123,6 +123,8 @@ model PendingRegistration {
   secteurActivite   SecteurActivite @map("secteur_activite")
   boutiqueAdresse   String?         @map("boutique_adresse")
   boutiqueTelephone String?         @map("boutique_telephone")
+  boutiqueEmail     String?         @map("boutique_email")
+  logo              String?         @db.Text // data URL (base64) — rien d'externe avant vérif
   // Vérification (token haché, usage unique, expirant)
   tokenHash         String          @unique @map("token_hash")
   expires           DateTime
