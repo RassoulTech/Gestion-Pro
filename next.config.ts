@@ -3,11 +3,15 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-// CSP en mode OBSERVATION (Report-Only), posée en en-tête STATIQUE — ne bloque RIEN
-// (zéro risque de planter le rendu ou le middleware). La variante stricte à nonce
-// via middleware a provoqué MIDDLEWARE_INVOCATION_FAILED sur l'Edge runtime Vercel ;
-// on reste donc sur cette version sûre. 'unsafe-inline' conservé (Next/React).
-const cspReportOnly = [
+// CSP APPLIQUÉE (enforcing), posée en en-tête STATIQUE — pas de middleware, donc
+// AUCUN risque de MIDDLEWARE_INVOCATION_FAILED (cf. l'outage de la variante à nonce
+// sur l'Edge runtime Vercel). 'unsafe-inline' est conservé pour les scripts/styles :
+// indispensable aux scripts d'hydratation inline de Next/React (sinon écran blanc),
+// et l'app ne charge AUCUN script tiers. Ça bloque malgré tout : scripts externes
+// injectés (script-src n'autorise que 'self'), objets/plugins, framing (clickjacking),
+// détournement de <base> et de l'action des formulaires. connect/img/font/frame
+// tolérants (https:/wss:) pour ne casser aucune intégration.
+const cspPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
@@ -17,7 +21,7 @@ const cspReportOnly = [
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data: https:",
-  "connect-src 'self' https:",
+  "connect-src 'self' https: wss:",
   "frame-src 'self' https:",
 ].join("; ");
 
@@ -54,7 +58,7 @@ const nextConfig: NextConfig = {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=()",
         },
-        { key: "Content-Security-Policy-Report-Only", value: cspReportOnly },
+        { key: "Content-Security-Policy", value: cspPolicy },
       ],
     },
   ],
