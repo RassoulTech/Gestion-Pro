@@ -77,9 +77,9 @@ export function FactureCommandeButtons({
     });
   }
 
-  function printPdf() {
+  async function printPdf() {
     try {
-      const doc = buildPdf();
+      const doc = await buildPdf();
       doc.autoPrint();
       doc.output("dataurlnewwindow");
     } catch {
@@ -87,16 +87,16 @@ export function FactureCommandeButtons({
     }
   }
 
-  function downloadPdf() {
+  async function downloadPdf() {
     try {
-      const doc = buildPdf();
+      const doc = await buildPdf();
       doc.save(`Facture-${commande.code}.pdf`);
     } catch {
       toast.error("Échec de la génération du PDF.");
     }
   }
 
-  function sendWhatsApp() {
+  async function sendWhatsApp() {
     const link = buildInvoiceWhatsAppLink({
       phone: commande.client?.telephone,
       invoiceNumber,
@@ -111,7 +111,7 @@ export function FactureCommandeButtons({
     // wa.me ne joint pas de fichier : on télécharge le PDF pour qu'il soit prêt à
     // être joint dans la conversation, puis on ouvre WhatsApp avec le bon numéro.
     try {
-      buildPdf().save(`Facture-${commande.code}.pdf`);
+      (await buildPdf()).save(`Facture-${commande.code}.pdf`);
     } catch {
       /* le téléchargement est un confort ; on continue vers WhatsApp */
     }

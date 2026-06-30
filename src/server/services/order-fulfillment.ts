@@ -29,7 +29,7 @@ export async function generateAndSendOrderInvoice(orderId: string): Promise<void
   const dateSuffix = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   const invoiceNumber = `FAC-${dateSuffix}-${order.code.substring(4)}`;
 
-  const doc = generateInvoicePDF({
+  const doc = await generateInvoicePDF({
     invoiceNumber,
     date: new Date(),
     status: order.etat,

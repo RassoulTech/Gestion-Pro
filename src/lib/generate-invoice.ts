@@ -1,6 +1,9 @@
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import type jsPDF from "jspdf";
 import { GESTIONPRO_LOGO_BASE64 } from "./brand-logo-base64";
+
+// ⚡ Perf : `jspdf` + `jspdf-autotable` (~150 Ko) ne sont PAS chargés au rendu des
+// pages factures/commandes. Ils sont importés dynamiquement à l'appel (impression
+// ou téléchargement), ce qui allège fortement le bundle initial de ces pages.
 
 const BRAND_COLOR: [number, number, number] = [234, 88, 12]; // #ea580c (Orange brand)
 const DARK_COLOR: [number, number, number] = [15, 23, 42]; // Slate-900
@@ -53,8 +56,12 @@ function formatCurrencyCFA(amount: number): string {
   return new Intl.NumberFormat("fr-FR", { style: "decimal" }).format(amount) + " FCFA";
 }
 
-export function generateInvoicePDF(data: InvoiceData): jsPDF {
-  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
+  const [{ default: JsPDF }, { default: autoTable }] = await Promise.all([
+    import("jspdf"),
+    import("jspdf-autotable"),
+  ]);
+  const doc = new JsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;

@@ -11,7 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import * as XLSX from "xlsx";
+// ⚡ Perf : `xlsx` (~130 Ko) n'est PAS importé au chargement de la page produits.
+// Il est chargé dynamiquement uniquement quand l'utilisateur ouvre/traite un fichier.
 import { importProductsExcel } from "@/server/actions/produit.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -33,8 +34,9 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
     setFile(selected);
 
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       try {
+        const XLSX = await import("xlsx");
         const bstr = evt.target?.result;
         const wb = XLSX.read(bstr, { type: "binary" });
         const wsname = wb.SheetNames[0];
@@ -59,6 +61,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
       const reader = new FileReader();
       reader.onload = async (evt) => {
         try {
+          const XLSX = await import("xlsx");
           const bstr = evt.target?.result;
           const wb = XLSX.read(bstr, { type: "binary" });
           const wsname = wb.SheetNames[0];

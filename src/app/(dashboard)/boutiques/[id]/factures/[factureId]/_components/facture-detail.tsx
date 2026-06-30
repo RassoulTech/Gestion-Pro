@@ -66,16 +66,17 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
     });
   }
 
-  function downloadPdf() {
+  async function downloadPdf() {
     try {
-      buildPdf().save(`${facture.numero}.pdf`);
+      const doc = await buildPdf();
+      doc.save(`${facture.numero}.pdf`);
     } catch {
       toast.error("Échec de la génération du PDF.");
     }
   }
-  function printPdf() {
+  async function printPdf() {
     try {
-      const doc = buildPdf();
+      const doc = await buildPdf();
       doc.autoPrint();
       doc.output("dataurlnewwindow");
     } catch {
@@ -83,7 +84,7 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
     }
   }
 
-  function sendWhatsApp() {
+  async function sendWhatsApp() {
     const link = buildInvoiceWhatsAppLink({
       phone: facture.clientTelephone,
       invoiceNumber: facture.numero,
@@ -98,7 +99,7 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
     // wa.me ne joint pas de fichier : on télécharge le PDF (prêt à joindre) puis
     // on ouvre WhatsApp avec le bon numéro et un message clair.
     try {
-      buildPdf().save(`${facture.numero}.pdf`);
+      (await buildPdf()).save(`${facture.numero}.pdf`);
     } catch {
       /* le téléchargement est un confort ; on continue vers WhatsApp */
     }
