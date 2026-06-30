@@ -39,6 +39,27 @@ declare module "@auth/core/jwt" {
  * Edge → erreur "Configuration" trompeuse. Si les credentials manquent
  * vraiment au runtime, NextAuth jettera une erreur explicite au signin.
  */
+/**
+ * Empêche qu'une image (avatar) gonfle le JWT de session.
+ *
+ * 🔴 CAUSE de MIDDLEWARE_INVOCATION_FAILED (500 sur /boutiques) : une data URL
+ * base64 (avatar/logo uploadé) peut peser > 30 Ko. Stockée dans `token.picture`,
+ * elle fait dépasser au cookie de session la **limite de 32 Ko des en-têtes de
+ * réponse** du middleware Edge Vercel → à chaque rafraîchissement du cookie par le
+ * middleware, Vercel REJETTE la réponse (erreur réelle vue dans les logs :
+ * « These response headers exceed the maximum size of 32KB: set-cookie ... 33108 bytes »).
+ *
+ * On ne conserve donc dans le token QUE des URLs http(s) courtes ; jamais de data
+ * URL. L'image réelle reste en base (User.image / Vendeur.photo / Boutique.logo) et
+ * est rechargée à l'affichage si besoin.
+ */
+function safeJwtImage(image: unknown): string | null {
+  if (typeof image !== "string" || image.length === 0) return null;
+  if (image.startsWith("data:")) return null; // base64 → exclu du cookie
+  if (image.length > 1024) return null; // garde-fou de taille (URL anormalement longue)
+  return image;
+}
+
 export const authConfig = {
   session: { strategy: "jwt" },
   trustHost: true,
@@ -71,7 +92,7 @@ export const authConfig = {
       if (user) {
         token.id = user.id!;
         token.name = user.name;
-        token.picture = user.image;
+        token.picture = safeJwtImage(user.image);
         token.role = (user as { role: UserRole }).role;
         token.vendeurId = (user as { vendeurId: string | null }).vendeurId;
         token.originalUserId = user.id!;
@@ -80,10 +101,15 @@ export const authConfig = {
 
       if (trigger === "update" && session) {
         if (session.user?.name !== undefined) token.name = session.user.name;
-        if (session.user?.image !== undefined) token.picture = session.user.image;
+        if (session.user?.image !== undefined) token.picture = safeJwtImage(session.user.image);
         token.role = session.role ?? token.role;
         token.vendeurId = session.vendeurId ?? token.vendeurId;
       }
+
+      // Auto-réparation : toute session DÉJÀ gonflée (data URL stockée avant ce
+      // correctif) voit son image purgée au prochain passage → le cookie repasse
+      // sous 32 Ko et le middleware cesse de planter. S'exécute à chaque requête.
+      token.picture = safeJwtImage(token.picture);
 
       return token;
     },
