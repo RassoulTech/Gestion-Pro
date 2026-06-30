@@ -74,18 +74,16 @@
   --color-sidebar-ring: #a1a1aa;
 
   /* ── Familles typographiques ─────────────────────────────────────────── */
-  /* Cascade : Geist (si installé) → Inter (next/font actuel) → système */
-  /* Corps : police premium & professionnelle (Plus Jakarta Sans) */
+  /* Corps : police premium & professionnelle (Plus Jakarta Sans) → système */
   --font-sans:
-    var(--font-jakarta), var(--font-geist-sans), var(--font-inter),
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
   --font-mono:
     var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular,
     Menlo, monospace;
-  /* Titres : police éditoriale à fort caractère (Bricolage Grotesque) */
+  /* Titres : police éditoriale à fort caractère (Bricolage Grotesque) → système */
   --font-display:
-    var(--font-bricolage), var(--font-geist-sans), var(--font-inter),
-    ui-sans-serif, system-ui, sans-serif;
+    var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
 
   /* ── Échelle typographique (px → rem en base 16) ─────────────────────── */
   --text-xs: 0.75rem; /* 12 */

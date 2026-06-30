@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import {
-  Inter,
-  Geist,
   Geist_Mono,
   Bricolage_Grotesque,
   Plus_Jakarta_Sans,
@@ -14,22 +12,17 @@ import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import { auth } from "@/lib/auth";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist-sans",
-});
-
+// ⚡ Perf : Inter et Geist (sans) ont été retirées — elles n'étaient JAMAIS
+// affichées (simples fallbacks derrière Jakarta/Bricolage qui se chargent toujours)
+// mais étaient préchargées sur chaque page (2 familles de polices inutiles).
+// Mono : réservée au code / identifiants (absente de la landing et de la plupart
+// des pages). `preload: false` → elle n'est plus préchargée sur le chemin critique ;
+// elle se charge à la demande là où du texte mono est réellement affiché.
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-geist-mono",
+  preload: false,
 });
 
 // Police d'affichage à fort caractère pour les titres (éditoriale, premium).
@@ -76,7 +69,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${inter.variable} font-sans`}
+        className={`${jakarta.variable} ${geistMono.variable} ${bricolage.variable} font-sans`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers session={session}>
