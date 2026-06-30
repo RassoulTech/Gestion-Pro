@@ -111,7 +111,9 @@
       "Bash(node tmp-diag.mjs)",
       "Bash(node tmp-shot.mjs)",
       "Bash(taskkill //F //IM node.exe)",
-      "PowerShell(git push origin main)"
+      "PowerShell(git push origin main)",
+      "PowerShell(npm audit 2>&1)",
+      "PowerShell(npm outdated 2>&1)"
     ]
   }
 }

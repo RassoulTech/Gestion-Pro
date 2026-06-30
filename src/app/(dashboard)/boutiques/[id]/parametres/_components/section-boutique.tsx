@@ -7,10 +7,12 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
   Loader2, Save, Store, Mail, Phone, Globe, MapPin, Info, Clock,
-  Share2, Facebook, Instagram, Linkedin, Twitter, ImageIcon,
+  Share2, ImageIcon,
   Utensils, Shirt, Smartphone, Sparkles, HeartPulse, Hammer, BookOpen, HelpCircle,
 } from "lucide-react";
-import { WhatsAppIcon } from "@/components/icons/brand-icons";
+// lucide-react v1 a retiré les icônes de marque (marque déposée) → on utilise les
+// glyphes officiels du projet.
+import { WhatsAppIcon, FacebookIcon, InstagramIcon, LinkedInIcon, XIcon } from "@/components/icons/brand-icons";
 import { updateBoutiqueSchema, type UpdateBoutiqueInput } from "@/schemas/boutique.schema";
 import { updateBoutique } from "@/server/actions/boutique.actions";
 import { Button } from "@/components/ui/button";
@@ -283,7 +285,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <Facebook className="h-3.5 w-3.5 text-blue-500" /> Facebook
+                    <FacebookIcon className="h-3.5 w-3.5 text-blue-500" /> Facebook
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="facebook.com/maboutique" className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand" {...field} />
@@ -298,7 +300,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <Instagram className="h-3.5 w-3.5 text-pink-500" /> Instagram
+                    <InstagramIcon className="h-3.5 w-3.5 text-pink-500" /> Instagram
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="@maboutique" className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand" {...field} />
@@ -313,7 +315,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <Linkedin className="h-3.5 w-3.5 text-blue-700" /> LinkedIn
+                    <LinkedInIcon className="h-3.5 w-3.5 text-blue-700" /> LinkedIn
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="linkedin.com/company/..." className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand" {...field} />
@@ -328,7 +330,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
               render={({ field }) => (
                 <FormItem className="sm:col-span-2">
                   <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <Twitter className="h-3.5 w-3.5 text-sky-500" /> Twitter / X
+                    <XIcon className="h-3.5 w-3.5 text-sky-500" /> Twitter / X
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="@maboutique" className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand" {...field} />

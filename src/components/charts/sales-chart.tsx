@@ -47,7 +47,7 @@ export function SalesChart({
               tickFormatter={(value: number) => formatCurrency(value)}
             />
             <Tooltip
-              formatter={(value: number) => [formatCurrency(value), "Ventes"]}
+              formatter={(value) => [formatCurrency(Number(value)), "Ventes"]}
               contentStyle={{
                 backgroundColor: "var(--color-popover)",
                 border: "1px solid var(--color-border)",

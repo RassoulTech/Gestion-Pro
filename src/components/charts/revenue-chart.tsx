@@ -41,8 +41,8 @@ export function RevenueChart({
               tickFormatter={(value: number) => formatCurrency(value)}
             />
             <Tooltip
-              formatter={(value: number, name: string) => [
-                formatCurrency(value),
+              formatter={(value, name) => [
+                formatCurrency(Number(value)),
                 name === "revenus" ? "Revenus" : "Dépenses",
               ]}
               contentStyle={{
