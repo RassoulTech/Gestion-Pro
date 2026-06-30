@@ -5,11 +5,15 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, Zap, Store } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/brand-icons";
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence, MotionConfig } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+// Courbe d'apparition premium : easeOutQuint — décélération douce et naturelle
+// (pas le démarrage abrupt d'easeOutExpo qui donnait l'effet « saccadé »).
+const EASE = [0.22, 1, 0.36, 1] as const;
+// Durée d'entrée homogène + petit décalage régulier pour la cascade.
+const REVEAL = { duration: 0.6, ease: EASE } as const;
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -32,6 +36,7 @@ export function Hero() {
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
+    <MotionConfig reducedMotion="user">
     <section
       ref={containerRef}
       className="relative isolate min-h-[95vh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden bg-background"
@@ -101,9 +106,9 @@ export function Hero() {
       <div className="container-app relative z-10 w-full">
         <div className="mx-auto max-w-5xl text-center flex flex-col items-center">
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, ease: EASE }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...REVEAL }}
             className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 p-1.5 pr-4 text-xs font-semibold backdrop-blur-md shadow-md shadow-black/[0.02] transition-all hover:border-orange-500/30 hover:shadow-lg cursor-default group"
           >
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-sm shadow-orange-500/10">
@@ -119,9 +124,9 @@ export function Hero() {
           <h1 className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl tracking-tight text-foreground font-black leading-[1.05] select-none text-center">
             <span className="block overflow-hidden pb-1">
               <motion.span
-                initial={{ opacity: 0, y: "80%" }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: EASE, delay: 0.1 }}
+                transition={{ ...REVEAL, delay: 0.08 }}
                 className="block text-zinc-950 dark:text-white"
               >
                 {t("headline")}
@@ -131,10 +136,10 @@ export function Hero() {
               <AnimatePresence mode="wait">
                 <motion.span
                   key={wordIdx}
-                  initial={{ opacity: 0, y: 35 }}
+                  initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -35 }}
-                  transition={{ duration: 0.55, ease: EASE }}
+                  exit={{ opacity: 0, y: -18 }}
+                  transition={{ duration: 0.5, ease: EASE }}
                   className="block text-shimmer bg-clip-text text-transparent"
                 >
                   {words[wordIdx]}
@@ -147,7 +152,7 @@ export function Hero() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.35 }}
+            transition={{ ...REVEAL, delay: 0.22 }}
             className="mx-auto mt-8 max-w-3xl text-base sm:text-lg md:text-xl text-muted-foreground/90 leading-relaxed font-medium"
           >
             {t("subtitle")}
@@ -155,9 +160,9 @@ export function Hero() {
 
           {/* Call to Actions with glow effects */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
+            transition={{ ...REVEAL, delay: 0.34 }}
             className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
           >
             <Button
@@ -189,7 +194,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.65 }}
+            transition={{ ...REVEAL, delay: 0.46 }}
             className="mt-24 w-full max-w-4xl"
           >
             <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-6 text-center">
@@ -243,5 +248,6 @@ export function Hero() {
         </div>
       </div>
     </section>
+    </MotionConfig>
   );
 }
