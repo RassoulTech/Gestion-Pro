@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
 
 import { loginSchema, type LoginInput } from "@/schemas/auth.schema";
 import { loginPrecheck, resendVerificationEmail } from "@/server/actions/auth.actions";
-import { MailWarning } from "lucide-react";
+import { MailWarning, CheckCircle2 } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -37,6 +37,14 @@ export default function LoginPage() {
   const [devLink, setDevLink] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Bannière après vérification e-mail + redirection post-connexion.
+  const justVerified = searchParams.get("verified") === "1";
+  const rawCallback = searchParams.get("callbackUrl");
+  // 🔒 Anti open-redirect : on n'accepte QU'un chemin interne relatif
+  // (commence par "/" mais pas "//" ni "/\"), sinon on retombe sur /boutiques.
+  const safeCallback =
+    rawCallback && /^\/(?!\/|\\)/.test(rawCallback) ? rawCallback : "/boutiques";
 
   useEffect(() => {
     const oauthError = searchParams.get("error");
@@ -103,7 +111,10 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/boutiques");
+      // Atterrissage direct sur la boutique (Tableau de bord) via le callbackUrl
+      // interne validé ; à défaut, la liste /boutiques (qui redirige un vendeur
+      // mono-boutique vers sa boutique).
+      router.push(safeCallback);
       router.refresh();
     } catch {
       toast.error(t("genericError"));
@@ -128,6 +139,15 @@ export default function LoginPage() {
           {t("login.subtitle")}
         </p>
       </div>
+
+      {justVerified && !needsVerification && (
+        <div className="flex items-start gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5">
+          <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+          <p className="text-sm font-bold text-foreground leading-relaxed">
+            {t("login.verifiedBanner")}
+          </p>
+        </div>
+      )}
 
       {needsVerification && (
         <div className="flex flex-col items-start gap-3 rounded-2xl border border-warning/30 bg-warning/10 p-5">

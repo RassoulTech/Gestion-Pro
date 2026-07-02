@@ -27,6 +27,13 @@ export async function GET(req: NextRequest) {
 
   try {
     const result = await verifyEmailToken(token);
+    // Succès + boutique créée → on transmet l'id pour rediriger l'utilisateur
+    // DIRECTEMENT dans sa boutique (via /login avec callbackUrl) après connexion.
+    if (result.status === "success" && result.boutiqueId) {
+      return NextResponse.redirect(
+        new URL(`/verify-email?status=success&boutiqueId=${result.boutiqueId}`, origin)
+      );
+    }
     return redirectTo(result.status);
   } catch (e) {
     console.error("[verify-email] verification failed:", e);

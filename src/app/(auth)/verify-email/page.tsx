@@ -19,6 +19,8 @@ function VerifyEmailInner() {
   const router = useRouter();
   const token = searchParams.get("token");
   const status = searchParams.get("status");
+  const boutiqueId = searchParams.get("boutiqueId");
+  const [loginHref, setLoginHref] = useState("/login");
   const calledRef = useRef(false);
 
   useEffect(() => {
@@ -30,7 +32,12 @@ function VerifyEmailInner() {
     if (status) {
       if (status === "success") {
         setSuccess(t("verify.statusSuccess"));
-        setTimeout(() => router.push("/login"), 3000);
+        // Après connexion, atterrissage DIRECT dans la boutique (son Tableau de
+        // bord) grâce au callbackUrl. La connexion reste requise (sécurité).
+        const next = boutiqueId ? `/boutiques/${boutiqueId}` : "/boutiques";
+        const href = `/login?verified=1&callbackUrl=${encodeURIComponent(next)}`;
+        setLoginHref(href);
+        setTimeout(() => router.push(href), 2000);
       } else if (status === "expired") {
         setError(t("verify.statusExpired"));
       } else if (status === "invalid") {
@@ -54,13 +61,14 @@ function VerifyEmailInner() {
           setError(result.serverError);
         } else if (result?.data?.success) {
           setSuccess(result.data.success);
-          setTimeout(() => router.push("/login"), 3000);
+          setLoginHref("/login?verified=1");
+          setTimeout(() => router.push("/login?verified=1"), 3000);
         }
       } catch {
         setError(t("genericError"));
       }
     })();
-  }, [token, status, router, t]);
+  }, [token, status, boutiqueId, router, t]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8 text-center">
@@ -93,7 +101,7 @@ function VerifyEmailInner() {
               <p className="text-xs text-zinc-400 font-semibold italic">{t("verify.redirecting")}</p>
             </div>
             <Button asChild variant="brand" className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-orange-600/20 bg-orange-600 text-white hover:bg-orange-700 border-none transition-all active-press mt-2">
-              <Link href="/login">{t("verify.signinNow")}</Link>
+              <Link href={loginHref}>{t("verify.signinNow")}</Link>
             </Button>
           </div>
         )}

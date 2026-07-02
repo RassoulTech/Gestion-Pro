@@ -301,6 +301,7 @@
     "login": {
       "title": "Bon retour.",
       "subtitle": "Connectez-vous pour accéder à vos boutiques et gérer votre activité.",
+      "verifiedBanner": "E-mail vérifié ✓ Connectez-vous pour accéder à votre boutique.",
       "emailLabel": "Email",
       "emailPlaceholder": "votre@email.com",
       "passwordLabel": "Mot de passe",
@@ -356,7 +357,7 @@
       "audit": "Audit"
     },
     "items": {
-      "dashboard": "Dashboard",
+      "dashboard": "Tableau de bord",
       "myShops": "Mes Boutiques",
       "orders": "Commandes",
       "products": "Produits",
@@ -376,7 +377,7 @@
       "members": "Membres",
       "billing": "Facturation",
       "settings": "Paramètres",
-      "globalDashboard": "Dashboard Global",
+      "globalDashboard": "Tableau de bord global",
       "sellers": "Vendeurs",
       "users": "Utilisateurs",
       "shops": "Boutiques",
@@ -561,7 +562,7 @@
       "incidentsTitle": "Historique des incidents",
       "noIncidents": "Aucun incident majeur ou mineur signalé au cours des 90 derniers jours.",
       "services": [
-        { "name": "Portail Marchand (Dashboard SaaS)", "desc": "Interface d'administration pour les vendeurs" },
+        { "name": "Portail Marchand (Tableau de bord SaaS)", "desc": "Interface d'administration pour les vendeurs" },
         { "name": "Générateur E-Boutique (Public Shops)", "desc": "Vitrine e-commerce hébergée pour les clients finaux" },
         { "name": "Passerelle Notifications (SMS & WhatsApp)", "desc": "Envoi des alertes de stock et reçus clients" },
         { "name": "Passerelle de Paiement (Mobile Money / Cartes)", "desc": "Traitement des souscriptions d'abonnements" },
