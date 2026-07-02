@@ -136,6 +136,9 @@
 
   /* ── Animation : keyframes & utilities ──────────────────────────────── */
   --animate-shimmer: shimmer 2s linear infinite;
+  /* Version LENTE & subtile pour le dégradé des titres (lueur premium continue,
+     cycle de plusieurs secondes) — distincte du shimmer rapide des boutons. */
+  --animate-text-shimmer: shimmer 6s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-fade-in-up: fade-in-up var(--duration-slow) var(--ease-out) both;
   --animate-slide-in-right: slide-in-right var(--duration-slow) var(--ease-out) both;
@@ -403,13 +406,20 @@
   }
 
   .text-shimmer {
-    @apply bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer;
+    @apply bg-clip-text text-transparent bg-[length:200%_auto] animate-text-shimmer;
     background-image: linear-gradient(
       90deg,
       var(--color-foreground) 0%,
       var(--color-brand) 50%,
       var(--color-foreground) 100%
     );
+  }
+  /* Accessibilité : pas d'animation de dégradé si "réduire les animations". */
+  @media (prefers-reduced-motion: reduce) {
+    .text-shimmer {
+      animation: none;
+      background-position: 0 0;
+    }
   }
 
   /* Glassmorphism premium */

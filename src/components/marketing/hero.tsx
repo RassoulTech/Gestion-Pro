@@ -124,16 +124,24 @@ export function Hero() {
           <h1 className="text-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl tracking-tight text-foreground font-black leading-[1.05] select-none text-center">
             <span className="block overflow-hidden pb-1">
               <motion.span
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ ...REVEAL, delay: 0.08 }}
+                transition={{ ...REVEAL, delay: 0.12 }}
                 className="block text-zinc-950 dark:text-white"
               >
                 {t("headline")}
               </motion.span>
             </span>
-            <span className="block min-h-[1.25em] py-1 overflow-hidden">
-              <AnimatePresence mode="wait">
+            {/* Étape 3 de la cascade : la ligne en dégradé apparaît en fondu+montée
+                comme le reste ; `initial={false}` évite une double animation du 1er
+                mot (l'apparition est portée par ce wrapper, la rotation ensuite). */}
+            <motion.span
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...REVEAL, delay: 0.24 }}
+              className="block min-h-[1.25em] py-1 overflow-hidden"
+            >
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={wordIdx}
                   initial={{ opacity: 0, y: 18 }}
@@ -145,14 +153,14 @@ export function Hero() {
                   {words[wordIdx]}
                 </motion.span>
               </AnimatePresence>
-            </span>
+            </motion.span>
           </h1>
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ...REVEAL, delay: 0.22 }}
+            transition={{ ...REVEAL, delay: 0.36 }}
             className="mx-auto mt-8 max-w-3xl text-base sm:text-lg md:text-xl text-muted-foreground/90 leading-relaxed font-medium"
           >
             {t("subtitle")}
@@ -160,9 +168,9 @@ export function Hero() {
 
           {/* Call to Actions with glow effects */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ...REVEAL, delay: 0.34 }}
+            transition={{ ...REVEAL, delay: 0.48 }}
             className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
           >
             <Button
@@ -192,9 +200,9 @@ export function Hero() {
 
           {/* Premium Trust Cards Grid */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ...REVEAL, delay: 0.46 }}
+            transition={{ ...REVEAL, delay: 0.6 }}
             className="mt-24 w-full max-w-4xl"
           >
             <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-6 text-center">
