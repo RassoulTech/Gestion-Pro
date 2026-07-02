@@ -1,5 +1,6 @@
 "use server";
 
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { Prisma, SecteurActivite } from "@prisma/client";
 import { marketplaceAccessFilter } from "./marketplace-access";
@@ -27,6 +28,18 @@ export interface MarketplaceProductsParams {
  * On ne charge jamais l'intégralité du catalogue pour filtrer côté client.
  */
 export async function getMarketplaceProducts(params?: MarketplaceProductsParams) {
+  // ⚡ Perf : le filtre d'accès marketplace fait des jointures profondes
+  // (Boutique→Membre→Vendeur→Abonnement→Plan). On met le RÉSULTAT en cache 60 s
+  // (clé = filtres), donc les requêtes répétées ne refont pas ces jointures. Les
+  // données marketplace tolèrent 60 s de fraîcheur. Invalidable via le tag "marketplace".
+  return unstable_cache(
+    () => queryMarketplaceProducts(params),
+    ["marketplace-products", JSON.stringify(params ?? {})],
+    { revalidate: 60, tags: ["marketplace"] }
+  )();
+}
+
+async function queryMarketplaceProducts(params?: MarketplaceProductsParams) {
   const page = Math.max(1, params?.page ?? 1);
   const perPage = params?.perPage ?? 20;
 
@@ -120,6 +133,15 @@ export type MarketplaceProduct = Awaited<
  * Restreint aux boutiques publiquement visibles.
  */
 export async function getMarketplaceFilterOptions() {
+  // ⚡ Perf : options de filtres (catégories + boutiques) stables → cache 5 min.
+  // Retire 2 requêtes du chemin critique du marketplace à chaque chargement répété.
+  return unstable_cache(queryMarketplaceFilterOptions, ["marketplace-filter-options"], {
+    revalidate: 300,
+    tags: ["marketplace"],
+  })();
+}
+
+async function queryMarketplaceFilterOptions() {
   const boutiqueFilter: Prisma.BoutiqueWhereInput = {
     statut: "ACTIF",
     ...marketplaceAccessFilter(),
