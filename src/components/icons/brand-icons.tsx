@@ -71,13 +71,16 @@ export function GitHubIcon(props: SVGProps<SVGSVGElement>) {
  * Size with className (e.g. `h-5 w-auto`).
  */
 
-/** Wave — official asset /logos/wave.svg|png if present, else a clean brand badge. */
-export function WaveIcon({ className }: { className?: string }) {
+/** Wave — official asset /logos/wave.webp|png (optimisé), else a clean brand badge. */
+export function WaveIcon({ className, loading }: { className?: string; loading?: "lazy" | "eager" }) {
   return (
     <PaymentLogo
-      src={["/logos/wave.svg", "/logos/wave.png"]}
+      src={["/logos/wave.webp", "/logos/wave.png"]}
       alt="Wave"
       className={className}
+      width={320}
+      height={320}
+      loading={loading}
       fallback={
         <svg className={className} viewBox="0 0 64 64" fill="none" aria-hidden="true">
           <rect width="64" height="64" rx="13" fill="#29C3F4" />
@@ -95,13 +98,16 @@ export function WaveIcon({ className }: { className?: string }) {
   );
 }
 
-/** Orange Money — official asset /logos/orange-money.svg|png if present, else a brand badge. */
-export function OrangeMoneyIcon({ className }: { className?: string }) {
+/** Orange Money — official asset /logos/orange-money.webp|png (optimisé), else a brand badge. */
+export function OrangeMoneyIcon({ className, loading }: { className?: string; loading?: "lazy" | "eager" }) {
   return (
     <PaymentLogo
-      src={["/logos/orange-money.svg", "/logos/orange-money.png"]}
+      src={["/logos/orange-money.webp", "/logos/orange-money.png"]}
       alt="Orange Money"
       className={className}
+      width={275}
+      height={320}
+      loading={loading}
       fallback={
         <svg className={className} viewBox="0 0 64 64" fill="none" aria-hidden="true">
           <rect width="64" height="64" rx="13" fill="#FF7900" />

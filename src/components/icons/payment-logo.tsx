@@ -21,12 +21,20 @@ export function PaymentLogo({
   alt,
   className,
   fallback,
+  width,
+  height,
+  loading = "lazy",
 }: {
   /** Une source, ou une liste essayée dans l'ordre (1re qui charge gagne). */
   src: string | string[];
   alt: string;
   className?: string;
   fallback: ReactNode;
+  /** Dimensions intrinsèques (ratio) → réserve l'espace, évite le décalage (CLS). */
+  width?: number;
+  height?: number;
+  /** `lazy` par défaut : les logos hors écran ne chargent qu'à l'approche. */
+  loading?: "lazy" | "eager";
 }) {
   const sources = Array.isArray(src) ? src : [src];
   const [index, setIndex] = useState(0);
@@ -41,6 +49,10 @@ export function PaymentLogo({
       src={sources[index]}
       alt={alt}
       className={className}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding="async"
       style={{ objectFit: "contain" }}
       onError={() => setIndex((i) => i + 1)}
     />

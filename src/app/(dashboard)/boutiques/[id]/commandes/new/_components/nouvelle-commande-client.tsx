@@ -21,7 +21,7 @@ import {
   Gift
 } from "lucide-react";
 import Link from "next/link";
-import { WaveIcon } from "@/components/icons/brand-icons";
+import { WaveIcon, OrangeMoneyIcon } from "@/components/icons/brand-icons";
 
 import { createCommandeClient } from "@/server/actions/commande.actions";
 import { createClient } from "@/server/actions/client.actions";
@@ -423,7 +423,7 @@ export function NouvelleCommandeClient({
                         <span className="flex items-center gap-2"><Banknote className="h-4 w-4 text-emerald-500" /> Espèces / Physique</span>
                       </SelectItem>
                       <SelectItem value="MOBILE_MONEY" className="rounded-lg font-bold">
-                        <span className="flex items-center gap-2"><WaveIcon className="h-3.5 w-auto rounded-sm" /> Wave / Orange Money</span>
+                        <span className="flex items-center gap-2"><WaveIcon className="h-4 w-4 rounded-sm" /><OrangeMoneyIcon className="h-4 w-4" /> Wave / Orange Money</span>
                       </SelectItem>
                       <SelectItem value="CARTE" className="rounded-lg font-bold">
                         <span className="flex items-center gap-2"><CreditCard className="h-4 w-4 text-blue-500" /> Carte bancaire</span>

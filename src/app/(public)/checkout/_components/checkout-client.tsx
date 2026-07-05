@@ -15,10 +15,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { formatCurrency } from "@/lib/utils";
-import { Loader2, ArrowLeft, CheckCircle2, ShoppingBag, LogIn, UserCheck } from "lucide-react";
+import { formatCurrency, cn } from "@/lib/utils";
+import { Loader2, ArrowLeft, CheckCircle2, ShoppingBag, LogIn, UserCheck, Truck, Check } from "lucide-react";
 import Link from "next/link";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { WaveIcon, OrangeMoneyIcon } from "@/components/icons/brand-icons";
 import { useSession } from "next-auth/react";
 
 // Indicatifs courants (Afrique de l'Ouest / Centrale + quelques internationaux).
@@ -403,20 +404,51 @@ export function CheckoutClient() {
                   onValueChange={(val: string) =>
                     form.setValue("paymentMethod", val as CheckoutForm["paymentMethod"])
                   }
-                  className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                  className="grid grid-cols-3 gap-2.5 sm:gap-4"
                 >
-                  <Label className="h-14 flex items-center gap-3 px-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 shrink-0">
-                    <RadioGroupItem value="CASH_ON_DELIVERY" id="cod" />
-                    <span className="font-bold text-sm">{t("cod")}</span>
-                  </Label>
-                  <Label className="h-14 flex items-center gap-3 px-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 shrink-0">
-                    <RadioGroupItem value="WAVE" id="wave" />
-                    <span className="font-bold text-sm">Wave</span>
-                  </Label>
-                  <Label className="h-14 flex items-center gap-3 px-4 rounded-xl border-2 border-slate-100 dark:border-zinc-800 cursor-pointer hover:border-orange-500 transition-colors [&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 shrink-0">
-                    <RadioGroupItem value="ORANGE_MONEY" id="om" />
-                    <span className="font-bold text-sm">Orange Money</span>
-                  </Label>
+                  {[
+                    {
+                      value: "CASH_ON_DELIVERY",
+                      id: "cod",
+                      label: t("cod"),
+                      logo: <Truck className="h-7 w-7 text-emerald-600" aria-hidden />,
+                    },
+                    {
+                      value: "WAVE",
+                      id: "wave",
+                      label: "Wave",
+                      logo: <WaveIcon className="h-full w-full rounded-md" loading="eager" />,
+                    },
+                    {
+                      value: "ORANGE_MONEY",
+                      id: "om",
+                      label: "Orange Money",
+                      logo: <OrangeMoneyIcon className="h-full w-full" loading="eager" />,
+                    },
+                  ].map((m) => (
+                    <Label
+                      key={m.value}
+                      htmlFor={m.id}
+                      className={cn(
+                        "group relative flex flex-col items-center justify-start gap-2 rounded-2xl border-2 p-3 sm:p-4 cursor-pointer text-center min-h-[7rem]",
+                        "border-slate-200 dark:border-zinc-800 transition-all hover:border-orange-400 hover:shadow-sm active:scale-[.99]",
+                        "[&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 [&:has(:checked)]:ring-2 [&:has(:checked)]:ring-orange-500/25 [&:has(:checked)]:shadow-md"
+                      )}
+                    >
+                      <RadioGroupItem value={m.value} id={m.id} className="sr-only" />
+                      {/* Pastille claire : garde Wave (bleu) ET Orange Money (texte noir) nets sur thème clair ET sombre. */}
+                      <span className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden p-1.5 shrink-0">
+                        {m.logo}
+                      </span>
+                      <span className="font-bold text-xs sm:text-sm leading-tight">{m.label}</span>
+                      <span
+                        aria-hidden
+                        className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white opacity-0 scale-50 transition group-has-[:checked]:opacity-100 group-has-[:checked]:scale-100"
+                      >
+                        <Check className="h-3 w-3" strokeWidth={3} />
+                      </span>
+                    </Label>
+                  ))}
                 </RadioGroup>
                 <p className="text-[11px] font-medium text-slate-400">
                   {t("paytechNote")}
