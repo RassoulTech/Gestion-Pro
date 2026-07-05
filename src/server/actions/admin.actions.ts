@@ -7,6 +7,7 @@ import { z } from "zod";
 import { adminActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
+import { deleteUserCascade } from "@/server/services/account-deletion";
 
 const toggleVendeurSchema = z.object({
   vendeurId: z.string(),
@@ -111,62 +112,17 @@ export const deleteUserAccount = adminActionClient
     const vendeurId = target.vendeur?.id ?? null;
     const boutiqueIds = target.vendeur?.boutiques.map((b) => b.id) ?? [];
 
+    // Cascade ordonnée partagée (voir src/server/services/account-deletion.ts) :
+    // lignes RESTRICT → en-têtes → catalogue/tiers → boutiques → vendeur →
+    // jetons/staging e-mail → User (cascades DB pour Account/Session/…).
     await prisma.$transaction(
-      async (tx) => {
-        if (vendeurId) {
-          if (boutiqueIds.length > 0) {
-            const inB = { boutiqueId: { in: boutiqueIds } };
-
-            // 1) Lignes référençant Produit en RESTRICT → supprimées en premier.
-            await tx.ligneCommandeClient.deleteMany({
-              where: { commande: { boutiqueId: { in: boutiqueIds } } },
-            });
-            await tx.ligneCommandeFournisseur.deleteMany({
-              where: { commande: { boutiqueId: { in: boutiqueIds } } },
-            });
-            await tx.ligneVenteFlash.deleteMany({
-              where: { venteFlash: { boutiqueId: { in: boutiqueIds } } },
-            });
-            await tx.ligneFacture.deleteMany({
-              where: { facture: { boutiqueId: { in: boutiqueIds } } },
-            });
-            await tx.mouvementStock.deleteMany({ where: inB });
-
-            // 2) En-têtes de transactions (leurs lignes sont parties).
-            await tx.commandeClient.deleteMany({ where: inB });
-            await tx.commandeFournisseur.deleteMany({ where: inB }); // libère Fournisseur (Restrict)
-            await tx.venteFlash.deleteMany({ where: inB });
-            await tx.facture.deleteMany({ where: inB });
-
-            // 3) Produit (plus aucune réf Restrict) + autres entités de boutique.
-            await tx.produit.deleteMany({ where: inB });
-            await tx.categorie.deleteMany({ where: inB });
-            await tx.client.deleteMany({ where: inB });
-            await tx.fournisseur.deleteMany({ where: inB });
-            await tx.depense.deleteMany({ where: inB });
-            await tx.resumeJournalier.deleteMany({ where: inB });
-            await tx.membreBoutique.deleteMany({ where: inB }); // membres (staff) de ces boutiques
-
-            // 4) Boutiques.
-            await tx.boutique.deleteMany({ where: { id: { in: boutiqueIds } } });
-          }
-
-          // 5) Niveau vendeur.
-          await tx.paiement.deleteMany({ where: { abonnement: { vendeurId } } });
-          await tx.abonnement.deleteMany({ where: { vendeurId } });
-          await tx.membreBoutique.deleteMany({ where: { vendeurId } }); // appartenances ailleurs
-          await tx.vendeur.delete({ where: { id: vendeurId } });
-        }
-
-        // 6) Jetons / staging liés à l'email → libère l'email pour la réinscription.
-        await tx.verificationToken.deleteMany({ where: { identifier: target.email } });
-        await tx.passwordResetToken.deleteMany({ where: { identifier: target.email } });
-        await tx.pendingRegistration.deleteMany({ where: { email: target.email } });
-
-        // 7) User : cascade Account/Session/Notification/AiGeneration/AiUsage ;
-        //    ActivityLog.userId → SetNull (l'audit est conservé, anonymisé).
-        await tx.user.delete({ where: { id: userId } });
-      },
+      async (tx) =>
+        deleteUserCascade(tx, {
+          userId,
+          email: target.email,
+          vendeurId,
+          boutiqueIds,
+        }),
       { timeout: 30000 }
     );
 

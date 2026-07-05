@@ -7,6 +7,7 @@ import { env } from "@/env.mjs";
 import { vendeurActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
+import { deleteBoutiquesData, deleteUserCascade } from "@/server/services/account-deletion";
 import { requireBoutiqueOwner } from "@/lib/permissions";
 import { generateCode, slugify } from "@/lib/utils";
 import { boutiqueHasFeature, checkBoutiqueCreationLimit, checkMembreCreationLimit, clearQuotaCache, getVendeurQuotas } from "@/lib/quotas";
@@ -282,7 +283,13 @@ export const deleteBoutiquePermanent = vendeurActionClient
       select: { nom: true, slug: true },
     });
 
-    await prisma.boutique.delete({ where: { id: boutiqueId } });
+    // ⚠️ Pas de `boutique.delete` nu : les lignes de vente référencent Produit
+    // en RESTRICT → la cascade DB échoue (P2003) dès qu'il y a un historique.
+    // Cascade ordonnée partagée, atomique (tout ou rien).
+    await prisma.$transaction(
+      async (tx) => deleteBoutiquesData(tx, [boutiqueId]),
+      { timeout: 30000 }
+    );
 
     await logActivity({
       userId: user.id,
@@ -324,15 +331,33 @@ export const deleteVendorAccount = vendeurActionClient
       throw new Error("Mot de passe incorrect");
     }
 
+    // ⚠️ Pas de `user.delete` nu : la cascade User→Vendeur→Boutique→Produit est
+    // bloquée par les FK RESTRICT des lignes de vente (P2003) dès que le vendeur
+    // a un historique → le compte restait en base ("le compte existe déjà" à la
+    // réinscription). Cascade ordonnée partagée, atomique.
+    const boutiques = await prisma.boutique.findMany({
+      where: { vendeurId: ctx.vendeurId },
+      select: { id: true },
+    });
+    await prisma.$transaction(
+      async (tx) =>
+        deleteUserCascade(tx, {
+          userId: user.id,
+          email: dbUser.email,
+          vendeurId: ctx.vendeurId,
+          boutiqueIds: boutiques.map((b) => b.id),
+        }),
+      { timeout: 30000 }
+    );
+
+    // Journalisé APRÈS le succès (jamais avant : sinon audit menteur en cas
+    // d'échec). userId omis : le User n'existe plus (FK) ; l'email suffit.
     await logActivity({
-      userId: user.id,
       action: "USER_ACCOUNT_DELETED",
       subjectType: "User",
       subjectId: user.id,
       changes: { email: dbUser.email },
     });
-
-    await prisma.user.delete({ where: { id: user.id } });
 
     return { success: true };
   });
