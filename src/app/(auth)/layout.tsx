@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
+import { SupportWidget } from "@/components/support/support-widget";
 
 export default async function AuthLayout({
   children,
@@ -110,6 +111,7 @@ export default async function AuthLayout({
           </div>
         </main>
       </div>
+      <SupportWidget variant="visiteur" />
     </div>
   );
 }

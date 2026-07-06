@@ -13,6 +13,7 @@ import {
   Zap,
   BarChart3,
   Wallet,
+  MessageSquare,
   Settings,
   Users2,
   LayoutDashboard,
@@ -165,6 +166,7 @@ function getAdminNavGroups(): NavGroup[] {
     {
       labelKey: "audit",
       items: [
+        { labelKey: "messages", href: "/admin/messages", icon: MessageSquare },
         { labelKey: "logs", href: "/admin/logs", icon: FileText },
       ],
     },

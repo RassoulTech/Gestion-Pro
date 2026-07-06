@@ -594,6 +594,41 @@ export const sendSubscriptionActivatedEmailToClient = async (
   });
 };
 
+/** Réponse de l'équipe support (admin) à un message visiteur/vendeur. */
+export const sendSupportReplyEmail = async (params: {
+  to: string;
+  nom: string;
+  originalMessage: string;
+  replyBody: string;
+}): Promise<MailResult> => {
+  if (!isMailConfigured()) return { sent: false, error: "Service e-mail non configuré." };
+
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a; text-align: center;">
+      Réponse de l'équipe GestionPro
+    </h2>
+    <p style="margin: 0 0 20px 0; font-size: 15px; color: #334155; line-height: 1.7;">
+      Bonjour <strong>${escapeHtml(params.nom)}</strong>,
+    </p>
+    <div style="font-size: 15px; color: #334155; line-height: 1.7; white-space: pre-line; margin-bottom: 24px;">${escapeHtml(params.replyBody)}</div>
+    <div style="background-color: #f8fafc; border-left: 3px solid #e2e8f0; border-radius: 8px; padding: 14px 16px;">
+      <p style="margin: 0 0 6px 0; font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Votre message</p>
+      <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.6; white-space: pre-line;">${escapeHtml(params.originalMessage)}</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: params.to,
+    subject: "Réponse à votre message — GestionPro",
+    html: getEmailWrapper(
+      "Réponse de l'équipe",
+      htmlContent,
+      "Vous recevez cet e-mail en réponse au message envoyé via GestionPro. Répondez directement à cet e-mail si besoin."
+    ),
+    replyTo: process.env.ADMIN_EMAIL || "dionemhd1@gmail.com",
+  });
+};
+
 /**
  * Facture (commande ou facture manuelle) envoyée AU CLIENT d'une boutique,
  * avec le PDF en pièce jointe. Utilisé par les boutons « Envoyer par e-mail »

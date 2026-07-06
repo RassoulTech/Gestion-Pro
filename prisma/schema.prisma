@@ -609,9 +609,35 @@ model ContactMessage {
   sujet     String
   message   String   @db.Text
   lu        Boolean  @default(false)
+  // Messagerie support (2026-07-06) : visiteur OU vendeur connecté.
+  senderType String  @default("VISITEUR") @map("sender_type") // VISITEUR | VENDEUR
+  motif      String? // INFOS | ACCES | QUESTION | PROBLEME | SUGGESTION | AUTRE
+  telephone  String?
+  // Réfs douces (pas de FK : le message survit à la suppression du compte).
+  userId     String? @map("user_id")
+  vendeurId  String? @map("vendeur_id")
+  boutiqueId String? @map("boutique_id")
+  statut     String  @default("NOUVEAU") // NOUVEAU | LU | REPONDU | ARCHIVE
   createdAt DateTime @default(now()) @map("created_at")
 
+  replies   ContactReply[]
+
+  @@index([statut, createdAt])
+  @@index([email, createdAt])
   @@map("contact_messages")
+}
+
+/// Réponses de l'admin (envoyées par e-mail, persistées pour l'historique).
+model ContactReply {
+  id        String         @id @default(cuid())
+  messageId String         @map("message_id")
+  body      String         @db.Text
+  createdAt DateTime       @default(now()) @map("created_at")
+
+  message   ContactMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("contact_replies")
 }
 
 // ─── FACTURES MANUELLES (Pro / Enterprise) ────────────────────

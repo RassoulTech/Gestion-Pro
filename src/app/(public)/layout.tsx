@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { WhatsAppIcon, XIcon, GitHubIcon } from "@/components/icons/brand-icons";
 import { FloatingNavbar } from "@/components/marketing/floating-navbar";
+import { SupportWidget } from "@/components/support/support-widget";
 import { BrandLogo } from "@/components/brand-logo";
 import { getAdminWhatsAppLink } from "@/lib/whatsapp";
 
@@ -171,6 +172,7 @@ export default async function PublicLayout({
           </div>
         </div>
       </footer>
+      <SupportWidget variant="visiteur" />
     </div>
   );
 }

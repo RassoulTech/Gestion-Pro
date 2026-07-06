@@ -16,6 +16,7 @@ import {
   Truck,
   Zap,
   Wallet,
+  MessageSquare,
   Users2,
   Settings,
   Sun,
@@ -107,6 +108,7 @@ function getMoreMenuItems(boutiqueId?: string, isAdmin?: boolean, boutiqueSlug?:
       { labelKey: "users", href: "/admin/utilisateurs", icon: User },
       { labelKey: "subscriptions", href: "/admin/abonnements", icon: Wallet },
       { labelKey: "revenue", href: "/admin/revenus", icon: BarChart3 },
+      { labelKey: "messages", href: "/admin/messages", icon: MessageSquare },
       { labelKey: "logs", href: "/admin/logs", icon: FileText },
     ];
   }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { resolveVendeurId, getBoutiqueAccess } from "@/lib/permissions";
 import { BoutiqueProvider } from "@/components/layouts/boutique-provider";
+import { SupportWidget } from "@/components/support/support-widget";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
 interface BoutiqueLayoutProps {
@@ -29,6 +30,11 @@ export default async function BoutiqueLayout({
   if (!vendeurId) notFound();
   const access = await getBoutiqueAccess(id, vendeurId);
   if (!access) notFound();
+
+  const vendeur = await prisma.vendeur.findUnique({
+    where: { id: vendeurId },
+    select: { nom: true, prenom: true, email: true },
+  });
 
   const [boutique, quotas] = await Promise.all([
     prisma.boutique.findUnique({
@@ -61,6 +67,17 @@ export default async function BoutiqueLayout({
       }}
     >
       {children}
+      {/* Messagerie support vendeur — au-dessus de la bottom-nav mobile,
+          à gauche (le FAB d'action est à droite). */}
+      <SupportWidget
+        variant="vendeur"
+        prefill={{
+          nom: `${vendeur?.prenom ?? ""} ${vendeur?.nom ?? ""}`.trim(),
+          email: vendeur?.email ?? "",
+        }}
+        boutiqueId={id}
+        offsetClass="bottom-24 sm:bottom-4"
+      />
     </BoutiqueProvider>
   );
 }
