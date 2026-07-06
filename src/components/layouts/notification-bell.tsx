@@ -50,7 +50,13 @@ export function NotificationBell() {
   React.useEffect(() => {
     load();
     const id = setInterval(load, 45000);
-    return () => clearInterval(id);
+    // « Lu au passage » : les pages cibles marquent les notifs lues côté
+    // serveur puis émettent cet événement → badge à jour immédiatement.
+    window.addEventListener("gp:notifs-refresh", load);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener("gp:notifs-refresh", load);
+    };
   }, [load]);
 
   async function handleItemClick(n: Notif) {

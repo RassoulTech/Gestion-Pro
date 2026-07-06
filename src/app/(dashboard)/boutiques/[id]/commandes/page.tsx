@@ -5,6 +5,8 @@ import { headers } from "next/headers";
 
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { markNotificationsSeen } from "@/server/services/notifications";
+import { NotifsRefreshPing } from "@/components/notifications/notifs-refresh-ping";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import {
@@ -99,8 +101,13 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
     client: c.client ? { prenom: c.client.prenom, nom: c.client.nom } : null,
   }));
 
+  // « Lu au passage » : voir la liste des commandes efface les alertes de paiement.
+  await markNotificationsSeen(["PAIEMENT_CONFIRME", "NOUVELLE_COMMANDE"], id);
+
   return (
-    <div className="space-y-5 sm:space-y-8">
+    <>
+      <NotifsRefreshPing />
+      <div className="space-y-5 sm:space-y-8">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -147,6 +154,7 @@ export default async function CommandesPage({ params, searchParams }: CommandesP
           />
       </div>
     </div>
+  </>
   );
 }
 

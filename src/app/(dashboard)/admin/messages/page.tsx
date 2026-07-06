@@ -4,6 +4,8 @@ import { MessageSquare } from "lucide-react";
 import { auth, requireRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
+import { markNotificationsSeen } from "@/server/services/notifications";
+import { NotifsRefreshPing } from "@/components/notifications/notifs-refresh-ping";
 import { MessagesClient } from "./_components/messages-client";
 
 export const metadata: Metadata = { title: "Messages — Admin" };
@@ -38,14 +40,30 @@ export default async function AdminMessagesPage({
       : {}),
   };
 
-  const [messages, total, nouveaux] = await Promise.all([
-    prisma.contactMessage.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      take: PAGE_SIZE,
-      skip: (page - 1) * PAGE_SIZE,
-      include: { replies: { orderBy: { createdAt: "asc" } } },
-    }),
+  const messages = await prisma.contactMessage.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    take: PAGE_SIZE,
+    skip: (page - 1) * PAGE_SIZE,
+    include: { replies: { orderBy: { createdAt: "asc" } } },
+  });
+
+  // ── « LU AU PASSAGE » (type WhatsApp) ─────────────────────────────────
+  // Entrer sur la page suffit : les messages AFFICHÉS (cette page uniquement —
+  // précision pagination) passent NOUVEAU→LU, persisté immédiatement. Les
+  // statuts de traitement (RÉPONDU/ARCHIVÉ) ne sont jamais touchés ici.
+  const seenNewIds = messages.filter((m) => m.statut === "NOUVEAU").map((m) => m.id);
+  if (seenNewIds.length > 0) {
+    await prisma.contactMessage.updateMany({
+      where: { id: { in: seenNewIds }, statut: "NOUVEAU" },
+      data: { statut: "LU", lu: true },
+    });
+  }
+  // La cloche : les alertes « nouveau message » sont considérées vues dès
+  // l'entrée dans la boîte de réception.
+  await markNotificationsSeen(["MESSAGE_CONTACT"]);
+
+  const [total, nouveaux] = await Promise.all([
     prisma.contactMessage.count({ where }),
     prisma.contactMessage.count({ where: { statut: "NOUVEAU" } }),
   ]);
@@ -64,6 +82,7 @@ export default async function AdminMessagesPage({
 
   return (
     <div className="space-y-6 p-3 sm:p-6 pb-24">
+      <NotifsRefreshPing />
       <div className="flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/10 text-brand">
           <MessageSquare className="h-5 w-5" />
@@ -85,7 +104,10 @@ export default async function AdminMessagesPage({
           senderType: m.senderType,
           motif: m.motif ?? m.sujet,
           message: m.message,
-          statut: m.statut,
+          // Statut persisté (déjà passé LU au passage) + drapeau pour la
+          // transition douce « nouveau → lu » à l'écran.
+          statut: m.statut === "NOUVEAU" ? "LU" : m.statut,
+          wasNew: m.statut === "NOUVEAU",
           createdAt: m.createdAt.toISOString(),
           vendeurId: m.vendeurId,
           boutiqueId: m.boutiqueId,

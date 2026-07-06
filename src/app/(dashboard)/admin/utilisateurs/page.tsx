@@ -4,14 +4,21 @@ import { getAllUsersWithoutShop } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
 import { UsersClientTable } from "./_components/users-client-table";
 import { User } from "lucide-react";
+import { markNotificationsSeen } from "@/server/services/notifications";
+import { NotifsRefreshPing } from "@/components/notifications/notifs-refresh-ping";
 
 export const metadata: Metadata = { title: "Utilisateurs - Admin" };
 
 export default async function AdminUtilisateursPage() {
   const { data: users, total } = await getAllUsersWithoutShop();
 
+  // « Lu au passage » : entrer sur la page efface les alertes d'inscription.
+  await markNotificationsSeen(["NOUVEL_UTILISATEUR"]);
+
   return (
-    <div className="space-y-8 pb-20">
+    <>
+      <NotifsRefreshPing />
+      <div className="space-y-8 pb-20">
       {/* Dynamic Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 to-orange-950 p-6 sm:p-8 md:p-12 text-white shadow-2xl border border-white/10">
         <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-500/20 blur-[100px] pointer-events-none" />
@@ -36,5 +43,6 @@ export default async function AdminUtilisateursPage() {
         </div>
       </Suspense>
     </div>
+  </>
   );
 }

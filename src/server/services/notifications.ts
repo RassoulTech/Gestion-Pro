@@ -36,6 +36,35 @@ export async function notifyUser(userId: string, n: NotificationInput): Promise<
   }
 }
 
+/**
+ * « LU AU PASSAGE » (type WhatsApp) : marque comme lues les notifications de
+ * l'utilisateur COURANT pour les types associés à la page visitée. À appeler
+ * pendant le rendu serveur de la page cible → persisté immédiatement, scopé à
+ * la session (aucun marquage croisé). Ne touche PAS aux statuts de traitement
+ * (répondu/archivé) — uniquement le signalement.
+ */
+export async function markNotificationsSeen(
+  types: string[],
+  boutiqueId?: string
+): Promise<void> {
+  try {
+    const { auth } = await import("@/lib/auth");
+    const session = await auth();
+    if (!session?.user?.id || types.length === 0) return;
+    await prisma.notification.updateMany({
+      where: {
+        userId: session.user.id,
+        read: false,
+        type: { in: types },
+        ...(boutiqueId ? { boutiqueId } : {}),
+      },
+      data: { read: true },
+    });
+  } catch (err) {
+    console.error("[notifications] markNotificationsSeen:", err);
+  }
+}
+
 /** Notifie le vendeur propriétaire d'une boutique. */
 export async function notifyBoutiqueOwner(
   boutiqueId: string,
