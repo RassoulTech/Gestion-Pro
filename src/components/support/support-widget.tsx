@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
-import { HelpCircle, X, Loader2, Send, CheckCircle2 } from "lucide-react";
+import { MessageCircleQuestion, X, Loader2, Send, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -70,14 +70,25 @@ export function SupportWidget({ variant, prefill, boutiqueId, offsetClass }: Pro
 
   return (
     <>
-      {/* Bouton flottant (gauche, pour ne pas gêner les FAB d'action à droite) */}
+      {/* Bouton flottant (gauche, pour ne pas gêner les FAB d'action à droite).
+          Pastille de marque AVEC LIBELLÉ : l'utilisateur comprend l'utilité
+          sans cliquer. Halo animé discret pour attirer l'œil (respecte
+          prefers-reduced-motion via motion-safe). */}
       <button
         type="button"
         onClick={() => { setOpen((o) => !o); setSent(false); }}
-        aria-label={open ? "Fermer l'aide" : "Aide et suggestions"}
-        className={`fixed left-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-900 text-white shadow-xl shadow-black/20 transition-transform hover:scale-105 active:scale-95 dark:bg-white dark:text-zinc-900 ${offsetClass ?? "bottom-4"}`}
+        aria-label={open ? "Fermer l'aide" : variant === "vendeur" ? "Aide et suggestions" : "Besoin d'aide ?"}
+        className={`group fixed left-4 z-40 flex h-12 items-center gap-2.5 rounded-full bg-gradient-to-br from-orange-600 to-orange-900 pl-2 pr-4 text-white shadow-xl shadow-orange-600/30 ring-1 ring-white/20 transition-all duration-200 hover:scale-[1.04] hover:shadow-orange-600/45 active:scale-95 ${offsetClass ?? "bottom-4"}`}
       >
-        {open ? <X className="h-5 w-5" /> : <HelpCircle className="h-6 w-6" />}
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+          {!open && (
+            <span className="absolute inline-flex h-full w-full rounded-full bg-white/25 motion-safe:animate-ping [animation-duration:2.5s]" aria-hidden="true" />
+          )}
+          {open ? <X className="relative h-5 w-5" /> : <MessageCircleQuestion className="relative h-5 w-5" />}
+        </span>
+        <span className="text-[13px] font-black tracking-tight">
+          {open ? "Fermer" : variant === "vendeur" ? "Aide & suggestions" : "Besoin d'aide ?"}
+        </span>
       </button>
 
       {/* Panneau */}
