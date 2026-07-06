@@ -1,11 +1,20 @@
 "use client";
 
-import { Printer, Download, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import { Printer, Download, MessageCircle, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { generateInvoicePDF } from "@/lib/generate-invoice";
 import { buildInvoiceWhatsAppLink } from "@/lib/whatsapp";
+import { paymentMethodLabel } from "@/lib/payment-method";
 import { formatCurrency } from "@/lib/utils";
+import {
+  canSharePdf,
+  downloadPdfBlob,
+  printPdfBlob,
+  sharePdfBlob,
+} from "@/lib/pdf-delivery";
+import { sendCommandeInvoiceByEmail } from "@/server/actions/commande.actions";
 
 type FactureBoutique = {
   nom: string;
@@ -13,6 +22,8 @@ type FactureBoutique = {
   telephone: string | null;
   email: string | null;
   adresse: string | null;
+  /** Personnalisation de la facture (Boutique.factureSettings, jsonb brut). */
+  factureSettings?: unknown;
 };
 
 type FactureCommande = {
@@ -22,6 +33,8 @@ type FactureCommande = {
   /** Numéro déjà généré (commandes marketplace) — sinon dérivé du code. */
   invoiceNumber: string | null;
   statutPaiement: string | null;
+  /** Code du moyen de paiement (WAVE, ESPECES…) — affiché en clair sur le PDF. */
+  modePaiement?: string | null;
   remise: number;
   total: number;
   notes: string | null;
@@ -36,16 +49,24 @@ type FactureCommande = {
 };
 
 /**
- * Facture imprimable / téléchargeable générée depuis une commande
- * (même rendu PDF que le module Factures).
+ * Facture d'une commande : téléchargement / impression / WhatsApp / e-mail —
+ * fiable sur desktop, Android et iPhone (voir src/lib/pdf-delivery.ts).
+ * Sur mobile, WhatsApp reçoit le PDF en VRAIE pièce jointe via la feuille de
+ * partage native ; sur desktop, wa.me ne joignant pas de fichier, le PDF est
+ * téléchargé puis la conversation pré-remplie s'ouvre.
  */
 export function FactureCommandeButtons({
+  boutiqueId,
+  commandeId,
   boutique,
   commande,
 }: {
+  boutiqueId: string;
+  commandeId: string;
   boutique: FactureBoutique;
   commande: FactureCommande;
 }) {
+  const [mailBusy, setMailBusy] = useState(false);
   const date = new Date(commande.date);
   // Numérotation stable, alignée sur le marketplace : FAC-YYYYMMDD-<code>.
   const dateSuffix = date.toISOString().slice(0, 10).replace(/-/g, "");
@@ -55,6 +76,7 @@ export function FactureCommandeButtons({
   const clientName = commande.client
     ? [commande.client.prenom, commande.client.nom].filter(Boolean).join(" ").trim() || null
     : null;
+  const fileName = `Facture-${commande.code}.pdf`;
 
   function buildPdf() {
     return generateInvoicePDF({
@@ -74,14 +96,19 @@ export function FactureCommandeButtons({
       total: commande.total,
       remise: commande.remise,
       notes: commande.notes,
+      modePaiement: paymentMethodLabel(commande.modePaiement),
+      settings: boutique.factureSettings,
     });
+  }
+
+  async function buildBlob(): Promise<Blob> {
+    const doc = await buildPdf();
+    return doc.output("blob");
   }
 
   async function printPdf() {
     try {
-      const doc = await buildPdf();
-      doc.autoPrint();
-      doc.output("dataurlnewwindow");
+      printPdfBlob(await buildBlob());
     } catch {
       toast.error("Impression impossible.");
     }
@@ -89,14 +116,36 @@ export function FactureCommandeButtons({
 
   async function downloadPdf() {
     try {
-      const doc = await buildPdf();
-      doc.save(`Facture-${commande.code}.pdf`);
+      const outcome = downloadPdfBlob(await buildBlob(), fileName);
+      if (outcome === "opened") {
+        toast.success("Facture ouverte — utilisez Partager → Enregistrer dans Fichiers.");
+      }
     } catch {
       toast.error("Échec de la génération du PDF.");
     }
   }
 
   async function sendWhatsApp() {
+    let blob: Blob;
+    try {
+      blob = await buildBlob();
+    } catch {
+      toast.error("Échec de la génération du PDF.");
+      return;
+    }
+
+    // Mobile : feuille de partage native → le PDF part en PIÈCE JOINTE
+    // (WhatsApp, Mail, etc.). Annulation utilisateur = pas d'erreur.
+    if (canSharePdf()) {
+      const shared = await sharePdfBlob(blob, fileName, {
+        title: `Facture ${invoiceNumber}`,
+        text: `Facture ${invoiceNumber} — ${boutique.nom} — ${formatCurrency(commande.total)}`,
+      });
+      if (shared === "shared") return;
+      if (shared === "aborted") return;
+      // "unsupported" → on retombe sur le flux wa.me ci-dessous.
+    }
+
     const link = buildInvoiceWhatsAppLink({
       phone: commande.client?.telephone,
       invoiceNumber,
@@ -110,13 +159,29 @@ export function FactureCommandeButtons({
     }
     // wa.me ne joint pas de fichier : on télécharge le PDF pour qu'il soit prêt à
     // être joint dans la conversation, puis on ouvre WhatsApp avec le bon numéro.
-    try {
-      (await buildPdf()).save(`Facture-${commande.code}.pdf`);
-    } catch {
-      /* le téléchargement est un confort ; on continue vers WhatsApp */
-    }
+    downloadPdfBlob(blob, fileName);
     window.open(link, "_blank", "noopener,noreferrer");
     toast.success("Facture téléchargée — joignez le PDF dans WhatsApp.");
+  }
+
+  async function sendEmail() {
+    if (!commande.client?.email?.trim()) {
+      toast.error("Ce client n'a pas d'adresse e-mail. Ajoutez-la sur sa fiche client.");
+      return;
+    }
+    setMailBusy(true);
+    try {
+      const res = await sendCommandeInvoiceByEmail({ boutiqueId, commandeId });
+      if (res?.serverError) {
+        toast.error(res.serverError);
+        return;
+      }
+      toast.success(`Facture envoyée par e-mail à ${res?.data?.email}.`);
+    } catch {
+      toast.error("L'envoi de l'e-mail a échoué. Veuillez réessayer.");
+    } finally {
+      setMailBusy(false);
+    }
   }
 
   return (
@@ -126,6 +191,15 @@ export function FactureCommandeButtons({
         onClick={sendWhatsApp}
       >
         <MessageCircle className="mr-2 h-4 w-4" /> Envoyer sur WhatsApp
+      </Button>
+      <Button
+        variant="outline"
+        className="h-10 flex-1 rounded-xl font-bold sm:flex-none"
+        onClick={sendEmail}
+        disabled={mailBusy}
+      >
+        {mailBusy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mail className="mr-2 h-4 w-4" />}
+        E-mail
       </Button>
       <Button variant="brand-outline" className="h-10 flex-1 rounded-xl font-bold sm:flex-none" onClick={printPdf}>
         <Printer className="mr-2 h-4 w-4" /> Imprimer

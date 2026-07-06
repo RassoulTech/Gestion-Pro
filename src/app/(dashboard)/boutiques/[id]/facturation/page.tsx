@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { QuotaIndicator } from "@/components/dashboard/quota-indicators";
 import Link from "next/link";
 import { RenewSubscriptionButton } from "./_components/renew-subscription-button";
+import { SubscriptionInvoiceButton } from "./_components/subscription-invoice-button";
 import { PaymentFeedbackToast } from "./_components/payment-feedback-toast";
 import { PaytechSandboxBadge } from "@/components/payments/paytech-sandbox-badge";
 import { Suspense } from "react";
@@ -274,6 +275,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                           <th className="py-4 px-6">Montant</th>
                           <th className="py-4 px-6">Méthode</th>
                           <th className="py-4 px-6 text-right">Statut</th>
+                          <th className="py-4 px-6 text-right">Facture</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
@@ -297,6 +299,13 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                             </td>
                             <td className="py-4 px-6 text-right">
                               <PaymentStatusBadge status={payment.statut} />
+                            </td>
+                            <td className="py-4 px-6 text-right">
+                              {payment.statut === "CONFIRME" ? (
+                                <SubscriptionInvoiceButton paiementId={payment.id} />
+                              ) : (
+                                <span className="text-[10px] font-bold text-zinc-300 dark:text-zinc-700">—</span>
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -322,6 +331,9 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                             {payment.methode}
                           </span>
                         </div>
+                        {payment.statut === "CONFIRME" ? (
+                          <SubscriptionInvoiceButton paiementId={payment.id} />
+                        ) : null}
                       </div>
                     ))}
                   </div>

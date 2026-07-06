@@ -77,6 +77,7 @@ export async function getBoutiqueForSettings(boutiqueId: string) {
       linkedin: true,
       twitter: true,
       horaires: true,
+      factureSettings: true,
     },
   });
 }

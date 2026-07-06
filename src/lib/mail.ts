@@ -594,6 +594,101 @@ export const sendSubscriptionActivatedEmailToClient = async (
   });
 };
 
+/**
+ * Facture (commande ou facture manuelle) envoyée AU CLIENT d'une boutique,
+ * avec le PDF en pièce jointe. Utilisé par les boutons « Envoyer par e-mail »
+ * des fiches commande / facture (renvoi manuel à tout moment).
+ */
+export const sendInvoiceEmailToClient = async (params: {
+  email: string;
+  clientNom: string;
+  invoiceNumber: string;
+  total: number;
+  shopName: string;
+  pdfBuffer: Buffer;
+}): Promise<MailResult> => {
+  if (!isMailConfigured()) {
+    console.warn("[mail] Not configured. Invoice email skipped.");
+    return { sent: false, error: "Service e-mail non configuré." };
+  }
+
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a; text-align: center;">
+      Votre facture ${escapeHtml(params.invoiceNumber)}
+    </h2>
+    <p style="margin: 0 0 24px 0; text-align: center; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
+      Bonjour <strong>${escapeHtml(params.clientNom)}</strong>,<br/>
+      <strong>${escapeHtml(params.shopName)}</strong> vous adresse votre facture en pièce jointe (PDF).
+    </p>
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: center;">
+      <p style="margin: 0 0 4px 0; font-size: 12px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Montant total</p>
+      <p style="margin: 0; font-size: 24px; color: #0f172a; font-weight: 900;">${params.total.toLocaleString("fr-FR")} FCFA</p>
+    </div>
+    <p style="margin: 0; text-align: center; font-size: 13px; color: #94a3b8; font-weight: 500;">
+      Merci pour votre confiance !
+    </p>
+  `;
+
+  return sendEmail({
+    to: params.email,
+    subject: `Facture ${params.invoiceNumber} — ${params.shopName}`,
+    html: getEmailWrapper(
+      "Votre facture",
+      htmlContent,
+      `Cette facture vous est envoyée par ${escapeHtml(params.shopName)} via GestionPro.`
+    ),
+    attachments: [{ filename: `${params.invoiceNumber}.pdf`, content: params.pdfBuffer }],
+  });
+};
+
+/**
+ * Facture d'abonnement (forfait) — envoyée automatiquement au vendeur après un
+ * paiement confirmé, avec le PDF en pièce jointe.
+ */
+export const sendSubscriptionInvoiceEmail = async (
+  email: string,
+  userNom: string,
+  planName: string,
+  montant: number,
+  invoiceNumber: string,
+  pdfBuffer: Buffer
+): Promise<MailResult> => {
+  if (!isMailConfigured()) {
+    console.warn("[mail] Not configured. Subscription invoice skipped.");
+    return { sent: false };
+  }
+
+  const htmlContent = `
+    <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 800; color: #0f172a; text-align: center;">
+      Votre facture GestionPro
+    </h2>
+    <p style="margin: 0 0 24px 0; text-align: center; font-size: 15px; color: #64748b; font-weight: 500; line-height: 1.6;">
+      Bonjour <strong>${escapeHtml(userNom)}</strong>, merci pour votre paiement.
+      Vous trouverez ci-joint la facture <strong>${escapeHtml(invoiceNumber)}</strong> de votre forfait
+      <strong>${escapeHtml(planName)}</strong>.
+    </p>
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: center;">
+      <p style="margin: 0 0 4px 0; font-size: 12px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Montant réglé</p>
+      <p style="margin: 0; font-size: 24px; color: #0f172a; font-weight: 900;">${montant.toLocaleString("fr-FR")} FCFA</p>
+    </div>
+    <p style="margin: 0; text-align: center; font-size: 13px; color: #94a3b8; font-weight: 500;">
+      La facture reste retéléchargeable à tout moment depuis votre espace Facturation.
+    </p>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: `Facture ${invoiceNumber} — forfait ${planName} — GestionPro`,
+    html: getEmailWrapper("Facture d'abonnement", htmlContent, "Cette facture vous est adressée suite à votre paiement sur GestionPro."),
+    attachments: [
+      {
+        filename: `${invoiceNumber}.pdf`,
+        content: pdfBuffer,
+      },
+    ],
+  });
+};
+
 export const sendSubscriptionAlertToAdmin = async (
   boutiqueNom: string,
   planName: string,

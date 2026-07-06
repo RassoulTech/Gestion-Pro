@@ -102,6 +102,31 @@ export const getPlansAction = vendeurActionClient
   });
 
 /**
+ * RETÉLÉCHARGEMENT de la facture d'un paiement d'abonnement confirmé (PDF
+ * régénéré côté serveur depuis la base — montants jamais fournis par l'UI).
+ * Autorisation : le paiement doit appartenir au vendeur connecté.
+ */
+export const downloadSubscriptionInvoice = vendeurActionClient
+  .schema(z.object({ paiementId: z.string().min(1) }))
+  .action(async ({ parsedInput: { paiementId }, ctx }) => {
+    const paiement = await prisma.paiement.findUnique({
+      where: { id: paiementId },
+      select: { statut: true, abonnement: { select: { vendeurId: true } } },
+    });
+    if (!paiement || paiement.abonnement.vendeurId !== ctx.vendeurId) {
+      throw new Error("Paiement introuvable.");
+    }
+    if (paiement.statut !== "CONFIRME") {
+      throw new Error("La facture n'est disponible que pour un paiement confirmé.");
+    }
+
+    const { getSubscriptionInvoicePdf } = await import(
+      "@/server/services/subscription-invoice"
+    );
+    return getSubscriptionInvoicePdf(paiementId);
+  });
+
+/**
  * Renouvelle l'abonnement courant (ou le dernier en date) avec la méthode choisie.
  * Réutilise un Abonnement EN_ATTENTE non payé pour le même plan puis redirige le
  * vendeur vers la page de paiement PayTech.

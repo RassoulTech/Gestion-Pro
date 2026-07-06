@@ -18,6 +18,7 @@ import {
 } from "@/lib/quotas";
 import { SectionProfil } from "./_components/section-profil";
 import { SectionBoutique } from "./_components/section-boutique";
+import { SectionFacture } from "./_components/section-facture";
 import { SectionLienPublic } from "./_components/section-lien-public";
 import { SectionCompte } from "./_components/section-compte";
 import { SectionSecurite } from "./_components/section-securite";
@@ -161,6 +162,19 @@ export default async function ParametresPage({ params }: PageProps) {
                     linkedin: boutique.linkedin,
                     twitter: boutique.twitter,
                     horaires: boutique.horaires,
+                  }}
+                />
+              ),
+              facture: (
+                <SectionFacture
+                  boutiqueId={id}
+                  initial={boutique.factureSettings}
+                  boutique={{
+                    nom: boutique.nom,
+                    logo: boutique.logo,
+                    telephone: boutique.telephone,
+                    email: boutique.email,
+                    adresse: boutique.adresse,
                   }}
                 />
               ),

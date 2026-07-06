@@ -3,6 +3,7 @@ import "server-only";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { generateInvoicePDF } from "@/lib/generate-invoice";
+import { paymentMethodLabel } from "@/lib/payment-method";
 import {
   sendOrderConfirmationToClient,
   sendOrderNotificationToVendedor,
@@ -26,8 +27,10 @@ export async function generateAndSendOrderInvoice(orderId: string): Promise<void
 
   if (!order || !order.client) return;
 
+  // Numéro stable : on RÉUTILISE le numéro déjà émis (rejeu d'IPN, renvoi
+  // manuel) au lieu d'en dériver un nouveau de la date du jour.
   const dateSuffix = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const invoiceNumber = `FAC-${dateSuffix}-${order.code.substring(4)}`;
+  const invoiceNumber = order.invoiceNumber || `FAC-${dateSuffix}-${order.code.substring(4)}`;
 
   const doc = await generateInvoicePDF({
     invoiceNumber,
@@ -54,6 +57,8 @@ export async function generateAndSendOrderInvoice(orderId: string): Promise<void
     })),
     total: order.total,
     remise: order.remise,
+    modePaiement: paymentMethodLabel(order.modePaiement),
+    settings: order.boutique.factureSettings,
   });
 
   const pdfBase64 = doc.output("datauristring").split(",")[1] || "";

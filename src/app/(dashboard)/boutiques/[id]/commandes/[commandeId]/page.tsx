@@ -68,18 +68,22 @@ export default async function CommandeDetailPage({
         <div className="flex flex-col gap-3 sm:ml-auto sm:flex-row sm:items-center">
           <StatusBadge status={commande.etat} />
           <FactureCommandeButtons
+            boutiqueId={boutiqueId}
+            commandeId={commandeId}
             boutique={{
               nom: boutique.nom,
               logo: boutique.logo,
               telephone: boutique.telephone,
               email: boutique.email,
               adresse: boutique.adresse,
+              factureSettings: boutique.factureSettings,
             }}
             commande={{
               code: commande.code,
               date: commande.date.toISOString(),
               invoiceNumber: commande.invoiceNumber,
               statutPaiement: commande.statutPaiement,
+              modePaiement: commande.modePaiement,
               remise: commande.remise,
               total: commande.total,
               notes: commande.notes,

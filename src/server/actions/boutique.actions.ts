@@ -16,6 +16,40 @@ import {
   createBoutiqueSchema,
   updateBoutiqueSchema,
 } from "@/schemas/boutique.schema";
+import { factureSettingsSchema } from "@/schemas/facture-settings.schema";
+
+/**
+ * Personnalisation de la facture (couleur, coordonnées affichées, mentions,
+ * remerciement). Réservé au PROPRIÉTAIRE ; appliqué à toutes les factures
+ * futures de la boutique (le gabarit lit Boutique.factureSettings).
+ */
+export const updateFactureSettings = vendeurActionClient
+  .schema(
+    z.object({
+      boutiqueId: z.string().min(1),
+      settings: factureSettingsSchema,
+    })
+  )
+  .action(async ({ parsedInput: { boutiqueId, settings }, ctx }) => {
+    await requireBoutiqueOwner(boutiqueId, ctx.vendeurId);
+
+    await prisma.boutique.update({
+      where: { id: boutiqueId },
+      data: { factureSettings: settings },
+    });
+
+    await logActivity({
+      userId: ctx.user.id,
+      action: "FACTURE_SETTINGS_UPDATED",
+      subjectType: "Boutique",
+      subjectId: boutiqueId,
+      changes: settings,
+    });
+
+    revalidatePath(`/boutiques/${boutiqueId}/parametres`);
+    revalidatePath(`/boutiques/${boutiqueId}/factures`);
+    return { success: true };
+  });
 
 export const createBoutique = vendeurActionClient
   .schema(createBoutiqueSchema)

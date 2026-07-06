@@ -136,6 +136,102 @@ async function createCommandeTransaction({
   });
 }
 
+/**
+ * Envoi (ou RENVOI) manuel de la facture d'une commande par E-MAIL au client.
+ * Le PDF et les montants sont reconstruits CÔTÉ SERVEUR depuis la base — rien
+ * ne vient de l'interface. Erreur claire si le client n'a pas d'e-mail.
+ */
+export const sendCommandeInvoiceByEmail = vendeurActionClient
+  .schema(z.object({ boutiqueId: z.string().min(1), commandeId: z.string().min(1) }))
+  .action(async ({ parsedInput: { boutiqueId, commandeId }, ctx }) => {
+    await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
+
+    const order = await prisma.commandeClient.findFirst({
+      where: { id: commandeId, boutiqueId },
+      include: {
+        client: true,
+        boutique: true,
+        lignes: { include: { produit: true } },
+      },
+    });
+    if (!order) throw new Error("Commande introuvable.");
+    if (!order.client?.email?.trim()) {
+      throw new Error(
+        "Ce client n'a pas d'adresse e-mail. Ajoutez-la sur sa fiche client, puis réessayez."
+      );
+    }
+
+    const { generateInvoicePDF } = await import("@/lib/generate-invoice");
+    const { paymentMethodLabel } = await import("@/lib/payment-method");
+    const { sendInvoiceEmailToClient } = await import("@/lib/mail");
+
+    const dateSuffix = order.date.toISOString().slice(0, 10).replace(/-/g, "");
+    const invoiceNumber =
+      order.invoiceNumber || `FAC-${dateSuffix}-${order.code.replace(/^CMD-/, "")}`;
+    const paid = order.statutPaiement === "CONFIRME";
+
+    const doc = await generateInvoicePDF({
+      invoiceNumber,
+      date: order.date,
+      status: paid ? "PAYEE" : "IMPAYEE",
+      statusLabel: paid ? "Payée" : "À payer",
+      boutique: {
+        nom: order.boutique.nom,
+        logo: order.boutique.logo,
+        telephone: order.boutique.telephone,
+        email: order.boutique.email,
+        adresse: order.boutique.adresse,
+      },
+      client: {
+        nom: order.client.nom,
+        prenom: order.client.prenom,
+        telephone: order.client.telephone,
+        email: order.client.email,
+        adresse: order.client.adresse,
+      },
+      lignes: order.lignes.map((l) => ({
+        nom: l.produit.nom,
+        quantite: l.quantite,
+        prixUnitaire: l.prixUnitaire,
+      })),
+      total: order.total,
+      remise: order.remise,
+      notes: order.notes,
+      modePaiement: paymentMethodLabel(order.modePaiement),
+      settings: order.boutique.factureSettings,
+    });
+
+    const result = await sendInvoiceEmailToClient({
+      email: order.client.email,
+      clientNom: [order.client.prenom, order.client.nom].filter(Boolean).join(" ").trim(),
+      invoiceNumber,
+      total: order.total,
+      shopName: order.boutique.nom,
+      pdfBuffer: Buffer.from(doc.output("arraybuffer")),
+    });
+    if (!result.sent) {
+      throw new Error("L'envoi de l'e-mail a échoué. Veuillez réessayer dans un instant.");
+    }
+
+    // Persiste le numéro si c'était la première émission.
+    if (!order.invoiceNumber) {
+      await prisma.commandeClient.update({
+        where: { id: order.id },
+        data: { invoiceNumber },
+      });
+    }
+
+    await logActivity({
+      userId: ctx.user.id,
+      action: "FACTURE_EMAIL_SENT",
+      subjectType: "CommandeClient",
+      subjectId: order.id,
+      changes: { invoiceNumber, to: order.client.email },
+    });
+
+    return { success: true, email: order.client.email };
+  });
+
 export const updateEtatCommande = vendeurActionClient
   .schema(
     z.object({

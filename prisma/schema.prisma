@@ -203,6 +203,9 @@ model Boutique {
   logo             String?
   banner           String?
   ticketMessage    String?         @map("ticket_message") @db.Text
+  /// Personnalisation de la facture (couleur d'accent, mentions, remerciement,
+  /// affichage des coordonnées). Null = défauts de la marque.
+  factureSettings  Json?           @map("facture_settings")
   statut           StatutBoutique  @default(ACTIF)
   qrCodeUrl        String?         @map("qr_code_url")
   qrCodeGeneratedAt DateTime?      @map("qr_code_generated_at")

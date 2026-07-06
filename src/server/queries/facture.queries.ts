@@ -84,6 +84,7 @@ export async function getFactureById(boutiqueId: string, factureId: string) {
           telephone: true,
           email: true,
           adresse: true,
+          factureSettings: true,
         },
       },
     },

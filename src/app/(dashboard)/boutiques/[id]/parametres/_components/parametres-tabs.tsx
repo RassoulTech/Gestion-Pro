@@ -3,7 +3,7 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  User, Store, KeyRound, ShieldCheck, Sparkles, Bell, Sliders, Download, AlertTriangle, Link2,
+  User, Store, KeyRound, ShieldCheck, Sparkles, Bell, Sliders, Download, AlertTriangle, Link2, FileText,
 } from "lucide-react";
 
 interface Section {
@@ -18,6 +18,7 @@ interface Props {
   sections: {
     profil: React.ReactNode;
     boutique: React.ReactNode;
+    facture: React.ReactNode;
     lienPublic: React.ReactNode;
     compte: React.ReactNode;
     securite: React.ReactNode;
@@ -33,6 +34,7 @@ export function ParametresTabs({ defaultValue = "profil", sections }: Props) {
   const items: Section[] = [
     { value: "profil", label: "Profil", icon: User, content: sections.profil },
     { value: "boutique", label: "Ma Boutique", icon: Store, content: sections.boutique },
+    { value: "facture", label: "Facture", icon: FileText, content: sections.facture },
     { value: "lien", label: "Lien public", icon: Link2, content: sections.lienPublic },
     { value: "compte", label: "Compte", icon: KeyRound, content: sections.compte },
     { value: "securite", label: "Sécurité", icon: ShieldCheck, content: sections.securite },

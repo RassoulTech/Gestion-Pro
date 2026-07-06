@@ -150,6 +150,85 @@ export const createFacture = vendeurActionClient
     return result;
   });
 
+/**
+ * Envoi (ou RENVOI) manuel d'une facture par E-MAIL au client. PDF et montants
+ * reconstruits CÔTÉ SERVEUR depuis la base. Erreur claire si e-mail manquant.
+ */
+export const sendFactureByEmail = vendeurActionClient
+  .schema(z.object({ boutiqueId: z.string().min(1), factureId: z.string().min(1) }))
+  .action(async ({ parsedInput: { boutiqueId, factureId }, ctx }) => {
+    await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
+
+    const facture = await prisma.facture.findFirst({
+      where: { id: factureId, boutiqueId },
+      include: { lignes: true, boutique: true },
+    });
+    if (!facture) throw new Error("Facture introuvable.");
+    if (!facture.clientEmail?.trim()) {
+      throw new Error(
+        "Aucune adresse e-mail sur cette facture. Renseignez l'e-mail du client, puis réessayez."
+      );
+    }
+
+    const { generateInvoicePDF } = await import("@/lib/generate-invoice");
+    const { sendInvoiceEmailToClient } = await import("@/lib/mail");
+    const { FACTURE_STATUT_CONFIG } = await import("@/lib/facture-statut");
+
+    const doc = await generateInvoicePDF({
+      invoiceNumber: facture.numero,
+      date: facture.date,
+      status: facture.statut,
+      statusLabel: FACTURE_STATUT_CONFIG[facture.statut]?.label ?? facture.statut,
+      boutique: {
+        nom: facture.boutique.nom,
+        logo: facture.boutique.logo,
+        telephone: facture.boutique.telephone,
+        email: facture.boutique.email,
+        adresse: facture.boutique.adresse,
+      },
+      client: {
+        nom: facture.clientNom || "Client occasionnel",
+        prenom: null,
+        telephone: facture.clientTelephone,
+        email: facture.clientEmail,
+        adresse: facture.clientAdresse,
+      },
+      lignes: facture.lignes.map((l) => ({
+        nom: l.designation,
+        quantite: l.quantite,
+        prixUnitaire: l.prixUnitaire,
+      })),
+      total: facture.total,
+      remise: facture.remise,
+      montantTva: facture.montantTva,
+      tauxTva: facture.tauxTva,
+      notes: facture.notes,
+      settings: facture.boutique.factureSettings,
+    });
+
+    const result = await sendInvoiceEmailToClient({
+      email: facture.clientEmail,
+      clientNom: facture.clientNom || "Cher client",
+      invoiceNumber: facture.numero,
+      total: facture.total,
+      shopName: facture.boutique.nom,
+      pdfBuffer: Buffer.from(doc.output("arraybuffer")),
+    });
+    if (!result.sent) {
+      throw new Error("L'envoi de l'e-mail a échoué. Veuillez réessayer dans un instant.");
+    }
+
+    await logActivity({
+      userId: ctx.user.id,
+      action: "FACTURE_EMAIL_SENT",
+      subjectType: "Facture",
+      subjectId: facture.id,
+      changes: { numero: facture.numero, to: facture.clientEmail },
+    });
+
+    return { success: true, email: facture.clientEmail };
+  });
+
 export const updateFactureStatut = vendeurActionClient
   .schema(
     z.object({

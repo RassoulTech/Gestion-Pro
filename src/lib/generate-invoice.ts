@@ -1,5 +1,9 @@
 import type jsPDF from "jspdf";
 import { GESTIONPRO_LOGO_BASE64 } from "./brand-logo-base64";
+import {
+  parseFactureSettings,
+  type FactureSettings,
+} from "@/schemas/facture-settings.schema";
 
 // ⚡ Perf : `jspdf` + `jspdf-autotable` (~150 Ko) ne sont PAS chargés au rendu des
 // pages factures/commandes. Ils sont importés dynamiquement à l'appel (impression
@@ -9,6 +13,14 @@ const BRAND_COLOR: [number, number, number] = [234, 88, 12]; // #ea580c (Orange 
 const DARK_COLOR: [number, number, number] = [15, 23, 42]; // Slate-900
 const MUTED_COLOR: [number, number, number] = [100, 116, 139]; // Slate-500
 const BORDER_COLOR: [number, number, number] = [241, 245, 249]; // Slate-100
+
+/** #RRGGBB → [r,g,b] ; retombe sur l'orange de marque si invalide. */
+function hexToRgb(hex: string): [number, number, number] {
+  const m = /^#([0-9a-fA-F]{6})$/.exec(hex);
+  if (!m?.[1]) return BRAND_COLOR;
+  const n = parseInt(m[1], 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
 
 interface InvoiceBoutique {
   nom: string;
@@ -50,6 +62,13 @@ interface InvoiceData {
   tauxTva?: number;
   /** Notes libres affichées sous le tableau (optionnel). */
   notes?: string | null;
+  /** Moyen de paiement RÉEL (libellé FR, ex. "Wave") — "—" si inconnu. */
+  modePaiement?: string | null;
+  /**
+   * Personnalisation de la boutique (Boutique.factureSettings, jsonb brut ou
+   * déjà résolu). Absent = défauts de la marque.
+   */
+  settings?: FactureSettings | unknown;
 }
 
 function formatCurrencyCFA(amount: number): string {
@@ -61,6 +80,9 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
     import("jspdf"),
     import("jspdf-autotable"),
   ]);
+  // Personnalisation boutique (défauts de marque si absente/invalide).
+  const settings = parseFactureSettings(data.settings);
+  const ACCENT = hexToRgb(settings.accentColor);
   const doc = new JsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -70,9 +92,12 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   // ─── Logo & Header ───
   if (data.boutique.logo) {
     try {
-      // If logo is Base64 data URL, we can embed it
+      // If logo is Base64 data URL, we can embed it — format détecté depuis le
+      // mime (le "WEBP" codé en dur cassait les logos PNG/JPEG).
       if (data.boutique.logo.startsWith("data:image")) {
-        doc.addImage(data.boutique.logo, "WEBP", margin, y, 20, 20);
+        const mime = /^data:image\/(\w+)/.exec(data.boutique.logo)?.[1]?.toLowerCase();
+        const format = mime === "png" ? "PNG" : mime === "webp" ? "WEBP" : "JPEG";
+        doc.addImage(data.boutique.logo, format, margin, y, 20, 20);
       }
     } catch (e) {
       console.error("[invoice-pdf] Logo image loading failed:", e);
@@ -89,9 +114,9 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   doc.setFontSize(9);
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   let boutiqueDetails = "";
-  if (data.boutique.adresse) boutiqueDetails += `${data.boutique.adresse}  |  `;
-  if (data.boutique.telephone) boutiqueDetails += `Tél: ${data.boutique.telephone}  |  `;
-  if (data.boutique.email) boutiqueDetails += `Email: ${data.boutique.email}`;
+  if (settings.showAdresse && data.boutique.adresse) boutiqueDetails += `${data.boutique.adresse}  |  `;
+  if (settings.showTelephone && data.boutique.telephone) boutiqueDetails += `Tél: ${data.boutique.telephone}  |  `;
+  if (settings.showEmail && data.boutique.email) boutiqueDetails += `Email: ${data.boutique.email}`;
   
   doc.text(
     boutiqueDetails.endsWith("  |  ") ? boutiqueDetails.slice(0, -5) : boutiqueDetails,
@@ -102,7 +127,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   // Top-right "FACTURE" indicator
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-  doc.setTextColor(BRAND_COLOR[0], BRAND_COLOR[1], BRAND_COLOR[2]);
+  doc.setTextColor(ACCENT[0], ACCENT[1], ACCENT[2]);
   doc.text("FACTURE", pageWidth - margin, y + 6, { align: "right" });
 
   doc.setFont("helvetica", "normal");
@@ -170,7 +195,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   } else if (data.status === "ANNULEE") {
     doc.setTextColor(239, 68, 68);
   } else {
-    doc.setTextColor(BRAND_COLOR[0], BRAND_COLOR[1], BRAND_COLOR[2]);
+    doc.setTextColor(ACCENT[0], ACCENT[1], ACCENT[2]);
   }
   doc.text(data.statusLabel ?? data.status, metaX + 30, y + 5);
 
@@ -179,7 +204,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   doc.text("Mode de paiement :", metaX, y + 10);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
-  doc.text("Paiement Direct", metaX + 30, y + 10);
+  doc.text(data.modePaiement || "—", metaX + 30, y + 10);
 
   y = Math.max(clientY + 12, y + 20);
 
@@ -278,23 +303,32 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   doc.setFontSize(11);
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
   doc.text("Total à payer :", summaryX, y);
-  doc.setTextColor(BRAND_COLOR[0], BRAND_COLOR[1], BRAND_COLOR[2]);
+  doc.setTextColor(ACCENT[0], ACCENT[1], ACCENT[2]);
   doc.text(formatCurrencyCFA(data.total), pageWidth - margin, y, { align: "right" });
 
   // ─── Footer ───
   const footerY = pageHeight - 20;
+
+  // Mentions personnalisées (légales / conditions) — au-dessus du séparateur.
+  if (settings.mentions) {
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
+    const mentionLines = doc.splitTextToSize(settings.mentions, pageWidth - margin * 2);
+    doc.text(mentionLines, margin, footerY - 7 - (mentionLines.length - 1) * 3.2);
+  }
 
   // Separator
   doc.setDrawColor(...BORDER_COLOR);
   doc.setLineWidth(0.5);
   doc.line(margin, footerY - 4, pageWidth - margin, footerY - 4);
 
-  // Left side: thank you note
+  // Left side: thank you note (personnalisable)
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text(
-    "Merci pour votre confiance ! Pour toute question, contactez notre support.",
+    doc.splitTextToSize(settings.merci, pageWidth - margin * 2 - 45),
     margin,
     footerY + 3
   );

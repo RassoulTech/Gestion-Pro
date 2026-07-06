@@ -223,6 +223,19 @@ export class PaymentService {
         );
       }
 
+      // --- FACTURE D'ABONNEMENT (auto) ---
+      // PDF généré + envoyé par e-mail au vendeur, référencé dans paiement.metadata
+      // (retéléchargeable depuis Facturation). Best-effort : un échec de facture
+      // n'annule JAMAIS l'activation de l'abonnement (déjà commitée ci-dessus).
+      try {
+        const { generateAndSendSubscriptionInvoice } = await import(
+          "@/server/services/subscription-invoice"
+        );
+        await generateAndSendSubscriptionInvoice(paiement.id);
+      } catch (err) {
+        console.error("[payment.service] facture d'abonnement échouée:", err);
+      }
+
       return { success: true, message: "Abonnement activé avec succès." };
     }
 

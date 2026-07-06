@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
-  Download, Printer, Trash2, Loader2, CheckCircle2, Clock, Ban, Package, MessageCircle,
+  Download, Printer, Trash2, Loader2, CheckCircle2, Clock, Ban, Package, MessageCircle, Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,13 @@ import { FACTURE_STATUT_CONFIG } from "@/lib/facture-statut";
 import type { FactureStatut } from "@/schemas/facture.schema";
 import { generateInvoicePDF } from "@/lib/generate-invoice";
 import { buildInvoiceWhatsAppLink } from "@/lib/whatsapp";
-import { updateFactureStatut, deleteFacture } from "@/server/actions/facture.actions";
+import {
+  canSharePdf,
+  downloadPdfBlob,
+  printPdfBlob,
+  sharePdfBlob,
+} from "@/lib/pdf-delivery";
+import { updateFactureStatut, deleteFacture, sendFactureByEmail } from "@/server/actions/facture.actions";
 
 interface FactureDetailData {
   id: string;
@@ -35,7 +41,11 @@ interface FactureDetailData {
   stockDeduit: boolean;
   notes: string | null;
   lignes: { id: string; designation: string; quantite: number; prixUnitaire: number }[];
-  boutique: { nom: string; logo: string | null; telephone: string | null; email: string | null; adresse: string | null };
+  boutique: {
+    nom: string; logo: string | null; telephone: string | null; email: string | null; adresse: string | null;
+    /** Personnalisation de la facture (Boutique.factureSettings, jsonb brut). */
+    factureSettings?: unknown;
+  };
 }
 
 export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; facture: FactureDetailData }) {
@@ -63,28 +73,52 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
       montantTva: facture.montantTva,
       tauxTva: facture.tauxTva,
       notes: facture.notes,
+      settings: facture.boutique.factureSettings,
     });
+  }
+
+  async function buildBlob(): Promise<Blob> {
+    const doc = await buildPdf();
+    return doc.output("blob");
   }
 
   async function downloadPdf() {
     try {
-      const doc = await buildPdf();
-      doc.save(`${facture.numero}.pdf`);
+      const outcome = downloadPdfBlob(await buildBlob(), `${facture.numero}.pdf`);
+      if (outcome === "opened") {
+        toast.success("Facture ouverte — utilisez Partager → Enregistrer dans Fichiers.");
+      }
     } catch {
       toast.error("Échec de la génération du PDF.");
     }
   }
   async function printPdf() {
     try {
-      const doc = await buildPdf();
-      doc.autoPrint();
-      doc.output("dataurlnewwindow");
+      printPdfBlob(await buildBlob());
     } catch {
       toast.error("Impression impossible.");
     }
   }
 
   async function sendWhatsApp() {
+    let blob: Blob;
+    try {
+      blob = await buildBlob();
+    } catch {
+      toast.error("Échec de la génération du PDF.");
+      return;
+    }
+
+    // Mobile : feuille de partage native → PDF en VRAIE pièce jointe (WhatsApp…).
+    if (canSharePdf()) {
+      const shared = await sharePdfBlob(blob, `${facture.numero}.pdf`, {
+        title: `Facture ${facture.numero}`,
+        text: `Facture ${facture.numero} — ${facture.boutique.nom} — ${formatCurrency(facture.total)}`,
+      });
+      if (shared === "shared" || shared === "aborted") return;
+      // "unsupported" → flux wa.me ci-dessous.
+    }
+
     const link = buildInvoiceWhatsAppLink({
       phone: facture.clientTelephone,
       invoiceNumber: facture.numero,
@@ -98,13 +132,26 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
     }
     // wa.me ne joint pas de fichier : on télécharge le PDF (prêt à joindre) puis
     // on ouvre WhatsApp avec le bon numéro et un message clair.
-    try {
-      (await buildPdf()).save(`${facture.numero}.pdf`);
-    } catch {
-      /* le téléchargement est un confort ; on continue vers WhatsApp */
-    }
+    downloadPdfBlob(blob, `${facture.numero}.pdf`);
     window.open(link, "_blank", "noopener,noreferrer");
     toast.success("Facture téléchargée — joignez le PDF dans WhatsApp.");
+  }
+
+  async function sendEmail() {
+    if (!facture.clientEmail?.trim()) {
+      toast.error("Aucune adresse e-mail sur cette facture. Renseignez l'e-mail du client.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const r = await sendFactureByEmail({ boutiqueId, factureId: facture.id });
+      if (r?.serverError) return toast.error(r.serverError);
+      toast.success(`Facture envoyée par e-mail à ${r?.data?.email}.`);
+    } catch {
+      toast.error("L'envoi de l'e-mail a échoué. Veuillez réessayer.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function changeStatut(statut: FactureStatut) {
@@ -224,6 +271,9 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
             className="w-full h-11 rounded-xl bg-[#25D366] font-bold text-white hover:bg-[#1ebe57]"
           >
             <MessageCircle className="mr-2 h-4 w-4" /> Envoyer sur WhatsApp
+          </Button>
+          <Button onClick={sendEmail} disabled={busy} variant="outline" className="w-full h-11 rounded-xl font-bold">
+            <Mail className="mr-2 h-4 w-4" /> Envoyer par e-mail
           </Button>
 
           <h3 className="text-sm font-black uppercase tracking-wider text-zinc-400 pt-2">Statut</h3>
