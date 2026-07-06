@@ -253,6 +253,8 @@ model MembreBoutique {
   vendeur    Vendeur       @relation(fields: [vendeurId], references: [id], onDelete: Cascade)
 
   @@unique([boutiqueId, vendeurId])
+  // Contrôles d'accès « boutiques de ce vendeur » (chemin critique).
+  @@index([vendeurId])
   @@map("membres_boutique")
 }
 
@@ -303,6 +305,8 @@ model Abonnement {
   plan           Plan              @relation(fields: [planId], references: [id])
   paiements      Paiement[]
 
+  // Contrôle de quota interrogé à chaque page du dashboard → index vital.
+  @@index([vendeurId, statut])
   @@map("abonnements")
 }
 
@@ -325,6 +329,9 @@ model Paiement {
 
   abonnement     Abonnement      @relation(fields: [abonnementId], references: [id], onDelete: Cascade)
 
+  // Webhook PayTech (recherche par transactionRef) + historique Facturation.
+  @@index([transactionRef])
+  @@index([abonnementId])
   @@map("paiements")
 }
 
@@ -456,6 +463,9 @@ model CommandeClient {
 
   @@unique([boutiqueId, code])
   @@index([boutiqueId, date])
+  // Repli IPN (recherche par code seul) + « Mes commandes » de l'acheteur.
+  @@index([code])
+  @@index([userId, createdAt])
   @@map("commandes_client")
 }
 

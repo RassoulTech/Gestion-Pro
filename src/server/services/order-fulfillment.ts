@@ -61,15 +61,15 @@ export async function generateAndSendOrderInvoice(orderId: string): Promise<void
     settings: order.boutique.factureSettings,
   });
 
-  const pdfBase64 = doc.output("datauristring").split(",")[1] || "";
-  const pdfBuffer = Buffer.from(pdfBase64, "base64");
+  const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
 
+  // ⚠️ Scalabilité : on ne stocke PLUS le PDF en base64 dans la base
+  // (~70-100 Ko × chaque commande payée = poids mort, jamais lu nulle part).
+  // Le PDF est déterministe → régénéré à la demande (boutons de la fiche
+  // commande, renvoi e-mail). Seul le numéro est persisté.
   await prisma.commandeClient.update({
     where: { id: order.id },
-    data: {
-      invoiceNumber,
-      invoicePdfUrl: `data:application/pdf;base64,${pdfBase64}`,
-    },
+    data: { invoiceNumber },
   });
 
   if (order.client.email) {
