@@ -118,10 +118,10 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-20 px-4 sm:px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 text-white py-20 px-4 sm:px-6 relative overflow-hidden">
       {/* Background radial glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-brand/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-slate-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-zinc-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-5xl mx-auto space-y-16 relative z-10">
         {/* Title */}
@@ -289,7 +289,7 @@ export default function PricingPage() {
                               "mt-0.5 w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300",
                               isIncluded
                                 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
-                                : "bg-rose-500/5 border-rose-500/10 text-rose-500/30"
+                                : "bg-red-500/5 border-red-500/10 text-red-500/30"
                             )}
                           >
                             {isIncluded ? (

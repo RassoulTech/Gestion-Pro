@@ -98,7 +98,7 @@ function getQuickActions(boutiqueId?: string): QuickAction[] {
     { labelKey: "newOrder", href: `${base}/commandes/new`, icon: ShoppingCart, color: "bg-brand text-white" },
     { labelKey: "addProduct", href: `${base}/produits/new`, icon: Package, color: "bg-emerald-500 text-white" },
     { labelKey: "addClient", href: `${base}/clients/new`, icon: Users, color: "bg-blue-500 text-white" },
-    { labelKey: "addExpense", href: `${base}/depenses/new`, icon: Wallet, color: "bg-rose-500 text-white" },
+    { labelKey: "addExpense", href: `${base}/depenses/new`, icon: Wallet, color: "bg-red-500 text-white" },
   ];
 }
 
@@ -169,7 +169,7 @@ function SheetFooter({ onClose }: { onClose: () => void }) {
       </button>
       <button
         onClick={() => signOut({ callbackUrl: "/login" })}
-        className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 transition-colors hover:bg-rose-500/20 hover:text-rose-300 active:scale-90 shrink-0"
+        className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-400 transition-colors hover:bg-red-500/20 hover:text-red-300 active:scale-90 shrink-0"
         aria-label={t("logout")}
       >
         <LogOut className="h-5 w-5" />

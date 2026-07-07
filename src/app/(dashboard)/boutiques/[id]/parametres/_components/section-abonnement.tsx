@@ -39,7 +39,7 @@ function statutBadge(statut: string) {
   if (statut === "ESSAI") {
     return <Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" variant="outline">Période d&apos;essai</Badge>;
   }
-  return <Badge className="bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20" variant="outline">Expiré</Badge>;
+  return <Badge className="bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20" variant="outline">Expiré</Badge>;
 }
 
 function QuotaCard({ label, count, max, icon: Icon }: Quota) {
@@ -60,7 +60,7 @@ function QuotaCard({ label, count, max, icon: Icon }: Quota) {
       </p>
       {!unlimited && (
         <div className="h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all ${danger ? "bg-rose-500" : "bg-brand"}`} style={{ width: `${pct}%` }} />
+          <div className={`h-full rounded-full transition-all ${danger ? "bg-red-500" : "bg-brand"}`} style={{ width: `${pct}%` }} />
         </div>
       )}
     </div>

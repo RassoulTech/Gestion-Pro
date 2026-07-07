@@ -171,7 +171,7 @@ export default async function BoutiquesPage() {
       {/* Main Section - Boutiques Grid */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg sm:text-xl font-black text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
             <Store className="w-6 h-6 text-orange-500" />
             Mes boutiques actives
           </h2>
@@ -189,14 +189,14 @@ export default async function BoutiquesPage() {
               return (
                 <div 
                   key={boutique.id} 
-                  className="group relative flex flex-col bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2rem] shadow-sm hover:shadow-xl hover:border-orange-500/20 hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+                  className="group relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2rem] shadow-sm hover:shadow-xl hover:border-orange-500/20 hover:-translate-y-2 transition-all duration-300 overflow-hidden"
                 >
                   {/* Decorative background glow on hover */}
                   <div className="absolute top-0 right-0 -mr-12 -mt-12 w-32 h-32 bg-orange-500/5 blur-3xl rounded-full group-hover:scale-150 transition-all duration-700 pointer-events-none" />
                   
                   {/* Card Header */}
                   <div className="p-6 pb-0 flex items-start justify-between relative z-10">
-                    <div className="h-16 w-16 rounded-[1.5rem] bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center text-orange-500 overflow-hidden relative shadow-inner group-hover:scale-110 transition-transform duration-300">
+                    <div className="h-16 w-16 rounded-[1.5rem] bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 flex items-center justify-center text-orange-500 overflow-hidden relative shadow-inner group-hover:scale-110 transition-transform duration-300">
                       {boutique.logo ? (
                         <Image 
                           src={boutique.logo} 
@@ -223,7 +223,7 @@ export default async function BoutiquesPage() {
                   {/* Card Title & Desc */}
                   <div className="p-6 pb-2 space-y-2 relative z-10 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <h3 className="text-xl font-bold text-slate-800 dark:text-zinc-100 tracking-tight group-hover:text-orange-500 transition-colors truncate">
+                      <h3 className="text-xl font-bold text-zinc-800 dark:text-zinc-100 tracking-tight group-hover:text-orange-500 transition-colors truncate">
                         {boutique.nom}
                       </h3>
                       <CheckCircle2 className="w-4 h-4 text-orange-500 shrink-0 fill-orange-500/10" />
@@ -237,30 +237,30 @@ export default async function BoutiquesPage() {
                         </div>
                       );
                     })()}
-                    <p className="text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
                       {boutique.description || "Découvrez nos produits exceptionnels et notre service premium."}
                     </p>
                   </div>
 
                   {/* Card Stats Grid */}
-                  <div className="px-6 py-4 mx-6 rounded-2xl bg-slate-50 dark:bg-zinc-800/50 grid grid-cols-2 gap-3 border border-slate-100/50 dark:border-zinc-800/30">
+                  <div className="px-6 py-4 mx-6 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 grid grid-cols-2 gap-3 border border-zinc-100/50 dark:border-zinc-800/30">
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Produits</span>
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-zinc-400">Produits</span>
                       <div className="flex items-center gap-1">
                         <Package className="w-3.5 h-3.5 text-orange-500" />
-                        <span className="font-extrabold text-slate-700 dark:text-zinc-200 text-sm">{boutique._count.produits}</span>
+                        <span className="font-extrabold text-zinc-700 dark:text-zinc-200 text-sm">{boutique._count.produits}</span>
                       </div>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Ventes</span>
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-zinc-400">Ventes</span>
                       <div className="flex items-center gap-1">
                         <ShoppingCart className="w-3.5 h-3.5 text-emerald-500" />
-                        <span className="font-extrabold text-slate-700 dark:text-zinc-200 text-sm">{boutique._count.commandesClient}</span>
+                        <span className="font-extrabold text-zinc-700 dark:text-zinc-200 text-sm">{boutique._count.commandesClient}</span>
                       </div>
                     </div>
-                    <div className="space-y-0.5 col-span-2 pt-2 border-t border-slate-200/50 dark:border-zinc-800/50 flex items-center justify-between">
+                    <div className="space-y-0.5 col-span-2 pt-2 border-t border-zinc-200/50 dark:border-zinc-800/50 flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Revenus</span>
+                        <span className="text-[9px] font-extrabold uppercase tracking-wider text-zinc-400">Revenus</span>
                         <p className="font-extrabold text-xs text-emerald-500">{boutiqueRevenue.toLocaleString()} FCFA</p>
                       </div>
                       <div className="flex items-center gap-1 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-lg text-amber-500">
@@ -280,14 +280,14 @@ export default async function BoutiquesPage() {
                     
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-slate-200 hover:bg-slate-50 dark:border-zinc-700 dark:hover:bg-zinc-800 shrink-0">
-                          <MoreVertical className="h-4.5 w-4.5 text-slate-600 dark:text-zinc-400" />
+                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border border-zinc-200 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800 shrink-0">
+                          <MoreVertical className="h-4.5 w-4.5 text-zinc-600 dark:text-zinc-400" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl w-52 p-2.5">
                         <DropdownMenuItem asChild className="rounded-xl cursor-pointer h-10 px-3">
                           <Link href={`/boutiques/${boutique.id}/parametres`}>
-                            <Settings className="mr-3 h-4 w-4 text-slate-500" />
+                            <Settings className="mr-3 h-4 w-4 text-zinc-500" />
                             <span className="font-bold">Paramètres boutique</span>
                           </Link>
                         </DropdownMenuItem>
@@ -311,13 +311,13 @@ export default async function BoutiquesPage() {
               );
             })
           ) : (
-            <Card className="col-span-full border-dashed border-2 border-slate-200 dark:border-zinc-800 bg-transparent rounded-[3rem] p-12 sm:p-24 flex flex-col items-center text-center space-y-6">
+            <Card className="col-span-full border-dashed border-2 border-zinc-200 dark:border-zinc-800 bg-transparent rounded-[3rem] p-12 sm:p-24 flex flex-col items-center text-center space-y-6">
               <div className="h-20 w-20 sm:h-28 sm:w-28 rounded-full bg-orange-50 dark:bg-zinc-800/80 flex items-center justify-center text-orange-500 shadow-xl shadow-orange-500/5">
                 <Store className="h-10 w-10 sm:h-14 sm:w-14" />
               </div>
               <div className="space-y-2">
                 <h3 className="text-2xl font-extrabold tracking-tight">Prêt à lancer votre business ?</h3>
-                <p className="text-sm text-slate-500 dark:text-zinc-400 font-medium max-w-sm">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium max-w-sm">
                   Créez votre première boutique pour commencer à gérer vos stocks et vos ventes dès aujourd&apos;hui.
                 </p>
               </div>

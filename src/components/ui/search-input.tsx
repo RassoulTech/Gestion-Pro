@@ -27,15 +27,15 @@ export function SearchInput({ placeholder = "Rechercher..." }: { placeholder?: s
 
   return (
     <div className="relative flex-1 max-w-sm">
-      <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-slate-400 dark:text-zinc-500 shrink-0" />
+      <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 shrink-0" />
       <Input
         defaultValue={searchParams.get("q") || ""}
         onChange={(e) => handleSearch(e.target.value)}
         placeholder={placeholder}
-        className="pl-10 h-11 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 font-bold text-xs sm:text-sm"
+        className="pl-10 h-11 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 font-bold text-xs sm:text-sm"
       />
       {isPending && (
-        <Loader2 className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400" />
+        <Loader2 className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-zinc-400" />
       )}
     </div>
   );

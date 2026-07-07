@@ -156,7 +156,7 @@ export function CategoriesClient({ categories, boutiqueId }: { categories: Categ
                   </Button>
                   <ConfirmDialog
                     trigger={
-                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-rose-50 text-destructive dark:hover:bg-rose-950">
+                      <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-red-50 text-destructive dark:hover:bg-red-950">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     }

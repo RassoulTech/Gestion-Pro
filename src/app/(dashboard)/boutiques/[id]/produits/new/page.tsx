@@ -150,13 +150,13 @@ export default function NewProductPage({ params }: NewProductPageProps) {
       >
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button asChild variant="ghost" className="rounded-full h-12 w-12 p-0 hover:bg-slate-100/50">
+            <Button asChild variant="ghost" className="rounded-full h-12 w-12 p-0 hover:bg-zinc-100/50">
               <Link href={`/boutiques/${boutiqueId}/produits`}>
-                <ArrowLeft className="h-6 w-6 text-slate-500" />
+                <ArrowLeft className="h-6 w-6 text-zinc-500" />
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
                 Nouveau Produit
               </h1>
               <p className="text-muted-foreground text-sm font-medium">Ajoutez un article à votre inventaire boutique</p>
@@ -180,11 +180,11 @@ export default function NewProductPage({ params }: NewProductPageProps) {
                   <AlertTriangle className="h-7 w-7" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-zinc-100">
+                  <h3 className="text-xl sm:text-2xl font-black text-zinc-800 dark:text-zinc-100">
                     Limite de produits atteinte
                   </h3>
-                  <p className="text-slate-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed font-medium">
-                    Vous avez atteint la limite de <strong className="text-red-500 font-extrabold">{limitData.maxProduits} produits</strong> du forfait <span className="font-extrabold text-slate-900 dark:text-white uppercase">{limitData.planName}</span>.{" "}
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed font-medium">
+                    Vous avez atteint la limite de <strong className="text-red-500 font-extrabold">{limitData.maxProduits} produits</strong> du forfait <span className="font-extrabold text-zinc-900 dark:text-white uppercase">{limitData.planName}</span>.{" "}
                     {limitData.planName?.toLowerCase().includes("pro")
                       ? "Passez au forfait Enterprise pour bénéficier de capacités illimitées."
                       : "Passez au forfait supérieur pour développer votre catalogue."}
@@ -199,7 +199,7 @@ export default function NewProductPage({ params }: NewProductPageProps) {
                     <ArrowUpRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="h-14 rounded-2xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-100/50">
+                <Button asChild size="lg" variant="outline" className="h-14 rounded-2xl font-bold border-zinc-200 dark:border-zinc-800 text-xs sm:text-sm bg-zinc-50/50 hover:bg-zinc-100/50">
                   <Link href={`/boutiques/${boutiqueId}/produits`}>
                     Retourner à l&apos;inventaire
                   </Link>

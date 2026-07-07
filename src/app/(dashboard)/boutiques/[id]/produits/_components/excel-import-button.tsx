@@ -113,7 +113,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="h-12 rounded-xl font-bold border-slate-200 dark:border-zinc-800 text-xs sm:text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border-blue-200">
+        <Button variant="outline" className="h-12 rounded-xl font-bold border-zinc-200 dark:border-zinc-800 text-xs sm:text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border-blue-200">
           <FileSpreadsheet className="mr-2 h-4.5 w-4.5" />
           Importer Excel
         </Button>
@@ -131,18 +131,18 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
 
         <div className="space-y-4 py-4">
           {!file ? (
-            <div className="border-2 border-dashed border-slate-200 dark:border-zinc-800 rounded-xl p-8 text-center bg-slate-50 dark:bg-zinc-900/50 hover:bg-slate-100 transition-colors cursor-pointer relative">
+            <div className="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-8 text-center bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 transition-colors cursor-pointer relative">
               <input
                 type="file"
                 accept=".xlsx, .xls, .csv"
                 onChange={handleFileUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <Upload className="h-8 w-8 text-slate-400 mx-auto mb-3" />
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <Upload className="h-8 w-8 text-zinc-400 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
                 Cliquez ou glissez un fichier ici
               </p>
-              <p className="text-xs text-slate-500 mt-1">.xlsx, .xls, .csv</p>
+              <p className="text-xs text-zinc-500 mt-1">.xlsx, .xls, .csv</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -160,8 +160,8 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
 
               {preview.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase">Aperçu (3 premières lignes)</span>
-                  <div className="text-xs bg-slate-100 dark:bg-zinc-900 p-3 rounded-lg overflow-x-auto whitespace-pre">
+                  <span className="text-xs font-bold text-zinc-500 uppercase">Aperçu (3 premières lignes)</span>
+                  <div className="text-xs bg-zinc-100 dark:bg-zinc-900 p-3 rounded-lg overflow-x-auto whitespace-pre">
                     {JSON.stringify(preview, null, 2)}
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export function ExcelImportButton({ boutiqueId }: ExcelImportButtonProps) {
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-zinc-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
           <Button variant="ghost" onClick={() => setOpen(false)}>
             Annuler
           </Button>

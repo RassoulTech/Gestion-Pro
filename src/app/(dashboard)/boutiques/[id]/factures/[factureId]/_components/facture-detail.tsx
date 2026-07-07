@@ -186,7 +186,7 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
   const statutActions: { statut: FactureStatut; label: string; icon: typeof CheckCircle2; cls: string }[] = [
     { statut: "PAYEE", label: "Payée", icon: CheckCircle2, cls: "border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-900/40 dark:text-emerald-400" },
     { statut: "IMPAYEE", label: "Impayée", icon: Clock, cls: "border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-900/40 dark:text-amber-400" },
-    { statut: "ANNULEE", label: "Annuler", icon: Ban, cls: "border-rose-300 text-rose-700 hover:bg-rose-50 dark:border-rose-900/40 dark:text-rose-400" },
+    { statut: "ANNULEE", label: "Annuler", icon: Ban, cls: "border-red-300 text-red-700 hover:bg-red-50 dark:border-red-900/40 dark:text-red-400" },
   ];
 
   return (
@@ -243,7 +243,7 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
         {/* Totaux */}
         <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 space-y-2 text-sm max-w-xs ml-auto">
           <div className="flex justify-between font-semibold text-zinc-500"><span>Sous-total</span><span>{formatCurrency(facture.sousTotal)}</span></div>
-          {facture.remise > 0 && <div className="flex justify-between font-semibold text-rose-500"><span>Remise</span><span>- {formatCurrency(facture.remise)}</span></div>}
+          {facture.remise > 0 && <div className="flex justify-between font-semibold text-red-500"><span>Remise</span><span>- {formatCurrency(facture.remise)}</span></div>}
           {facture.montantTva > 0 && <div className="flex justify-between font-semibold text-zinc-500"><span>TVA ({facture.tauxTva} %)</span><span>{formatCurrency(facture.montantTva)}</span></div>}
           <div className="flex justify-between text-base font-black pt-1"><span>Total</span><span className="text-brand">{formatCurrency(facture.total)}</span></div>
         </div>
@@ -297,7 +297,7 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" disabled={busy} className="w-full h-11 rounded-xl font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 mt-1">
+              <Button variant="ghost" disabled={busy} className="w-full h-11 rounded-xl font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 mt-1">
                 <Trash2 className="mr-2 h-4 w-4" /> Supprimer la facture
               </Button>
             </AlertDialogTrigger>
@@ -310,7 +310,7 @@ export function FactureDetail({ boutiqueId, facture }: { boutiqueId: string; fac
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel className="rounded-xl">Annuler</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} className="rounded-xl bg-rose-600 hover:bg-rose-700">
+                <AlertDialogAction onClick={handleDelete} className="rounded-xl bg-red-600 hover:bg-red-700">
                   {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Supprimer
                 </AlertDialogAction>
               </AlertDialogFooter>

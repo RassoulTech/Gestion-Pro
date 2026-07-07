@@ -106,16 +106,16 @@ export function MarketplacePagination({
   const pageRange = getPageRange(currentPage, totalPages);
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-8 border border-slate-100 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 shadow-xl backdrop-blur-xl rounded-2xl sm:rounded-[2rem] mt-8 sm:mt-12">
+    <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-8 border border-zinc-100 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 shadow-xl backdrop-blur-xl rounded-2xl sm:rounded-[2rem] mt-8 sm:mt-12">
       {/* Première ligne : Informations de pagination + Taille de page + Aller à la page */}
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-zinc-800/80">
-        <div className="text-sm font-bold text-slate-500 dark:text-zinc-400 text-center lg:text-left">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-4 pb-4 border-b border-zinc-100 dark:border-zinc-800/80">
+        <div className="text-sm font-bold text-zinc-500 dark:text-zinc-400 text-center lg:text-left">
           Affichage de :{" "}
-          <span className="font-extrabold text-slate-900 dark:text-white">
+          <span className="font-extrabold text-zinc-900 dark:text-white">
             {totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}
           </span>
           –
-          <span className="font-extrabold text-slate-900 dark:text-white">
+          <span className="font-extrabold text-zinc-900 dark:text-white">
             {Math.min(currentPage * itemsPerPage, totalItems)}
           </span>{" "}
           sur{" "}
@@ -126,11 +126,11 @@ export function MarketplacePagination({
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
           {/* Produits par page */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 dark:text-zinc-400">
+            <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
               Produits par page :
             </span>
             <Select value={String(itemsPerPage)} onValueChange={handlePerPageChange}>
-              <SelectTrigger className="h-9 w-20 rounded-xl font-bold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:ring-orange-500">
+              <SelectTrigger className="h-9 w-20 rounded-xl font-bold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 focus:ring-orange-500">
                 <SelectValue placeholder="20" />
               </SelectTrigger>
               <SelectContent>
@@ -146,7 +146,7 @@ export function MarketplacePagination({
             <form onSubmit={handleGoToSubmit} className="flex items-center gap-2">
               <label
                 htmlFor="go-to-page"
-                className="text-xs font-bold text-slate-500 dark:text-zinc-400 whitespace-nowrap"
+                className="text-xs font-bold text-zinc-500 dark:text-zinc-400 whitespace-nowrap"
               >
                 Aller à la page :
               </label>
@@ -158,7 +158,7 @@ export function MarketplacePagination({
                 max={totalPages}
                 value={goToPage}
                 onChange={(e) => setGoToPage(e.target.value)}
-                className="h-9 w-16 text-center rounded-xl font-extrabold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 px-1 focus-visible:ring-orange-500 focus-visible:ring-offset-0"
+                className="h-9 w-16 text-center rounded-xl font-extrabold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 px-1 focus-visible:ring-orange-500 focus-visible:ring-offset-0"
               />
               <Button
                 type="submit"
@@ -181,7 +181,7 @@ export function MarketplacePagination({
               variant="outline"
               onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="h-10 px-4 rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-transparent transition-all"
+              className="h-10 px-4 rounded-xl font-extrabold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-transparent transition-all"
             >
               <ChevronLeft className="h-4 w-4 mr-1.5" />
               Précédent
@@ -192,7 +192,7 @@ export function MarketplacePagination({
                 return (
                   <span
                     key={`ellipsis-${index}`}
-                    className="w-10 text-center text-slate-400 dark:text-zinc-500 font-extrabold select-none"
+                    className="w-10 text-center text-zinc-400 dark:text-zinc-500 font-extrabold select-none"
                   >
                     ...
                   </span>
@@ -213,7 +213,7 @@ export function MarketplacePagination({
                     "h-10 w-10 p-0 rounded-xl font-extrabold transition-all duration-300 transform active:scale-95",
                     isActive
                       ? "bg-brand hover:bg-brand/90 text-white border-transparent shadow-lg shadow-brand/25 scale-105"
-                      : "border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300"
+                      : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
                   )}
                 >
                   {pageNum}
@@ -225,7 +225,7 @@ export function MarketplacePagination({
               variant="outline"
               onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="h-10 px-4 rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-transparent transition-all"
+              className="h-10 px-4 rounded-xl font-extrabold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:hover:bg-transparent transition-all"
             >
               Suivant
               <ChevronRight className="h-4 w-4 ml-1.5" />
@@ -239,13 +239,13 @@ export function MarketplacePagination({
               size="sm"
               onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="h-10 px-3 rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 disabled:opacity-40 disabled:hover:bg-white text-slate-700 dark:text-zinc-300"
+              className="h-10 px-3 rounded-xl font-extrabold border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 disabled:opacity-40 disabled:hover:bg-white text-zinc-700 dark:text-zinc-300"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
               Précédent
             </Button>
 
-            <span className="text-sm font-extrabold text-slate-800 dark:text-zinc-200">
+            <span className="text-sm font-extrabold text-zinc-800 dark:text-zinc-200">
               Page {currentPage} sur {totalPages}
             </span>
 
@@ -254,7 +254,7 @@ export function MarketplacePagination({
               size="sm"
               onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="h-10 px-3 rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 disabled:opacity-40 disabled:hover:bg-white text-slate-700 dark:text-zinc-300"
+              className="h-10 px-3 rounded-xl font-extrabold border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 disabled:opacity-40 disabled:hover:bg-white text-zinc-700 dark:text-zinc-300"
             >
               Suivant
               <ChevronRight className="h-4 w-4 ml-1" />

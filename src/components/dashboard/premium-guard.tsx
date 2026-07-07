@@ -45,7 +45,7 @@ export function PremiumGuard({
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 max-w-xl w-full max-h-full overflow-y-auto scrollbar-hide bg-white dark:bg-zinc-900/90 rounded-2xl sm:rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/80 shadow-2xl p-6 sm:p-10 text-center space-y-4 sm:space-y-6 backdrop-blur-xl"
       >
-        <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-brand to-slate-800 flex items-center justify-center text-white shadow-xl shadow-brand/10">
+        <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-brand to-zinc-800 flex items-center justify-center text-white shadow-xl shadow-brand/10">
           <Lock className="h-7 w-7" />
         </div>
 
@@ -53,16 +53,16 @@ export function PremiumGuard({
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-brand text-[10px] font-black uppercase tracking-widest">
             <Sparkles className="h-3 w-3 text-brand" /> Option Premium
           </div>
-          <h3 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-zinc-100">
+          <h3 className="text-2xl sm:text-3xl font-black text-zinc-800 dark:text-zinc-100">
             {featureName}
           </h3>
-          <p className="text-slate-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed font-semibold">
+          <p className="text-zinc-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed font-semibold">
             {featureDescription}
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-zinc-950/50 border border-slate-100 dark:border-zinc-800 text-left space-y-3">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+        <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 text-left space-y-3">
+          <p className="text-xs font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
             Inclus dans les abonnements Pro :
           </p>
           <ul className="grid grid-cols-2 gap-2">
@@ -74,7 +74,7 @@ export function PremiumGuard({
               "Export PDF / Excel",
               "Support prioritaire",
             ].map((item, idx) => (
-              <li key={idx} className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-zinc-300">
+              <li key={idx} className="flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-300">
                 <Check className="h-4.5 w-4.5 text-emerald-500 shrink-0" strokeWidth={3} />
                 <span>{item}</span>
               </li>
@@ -86,7 +86,7 @@ export function PremiumGuard({
           <Button
             onClick={() => setModalOpen(true)}
             size="lg"
-            className="flex-1 h-14 rounded-2xl font-black text-sm bg-gradient-to-r from-brand to-slate-800 hover:from-brand/90 hover:to-slate-800/90 text-white shadow-xl shadow-brand/10 border-none"
+            className="flex-1 h-14 rounded-2xl font-black text-sm bg-gradient-to-r from-brand to-zinc-800 hover:from-brand/90 hover:to-zinc-800/90 text-white shadow-xl shadow-brand/10 border-none"
           >
             Débloquer maintenant
             <ArrowRight className="h-4 w-4 ml-2" />

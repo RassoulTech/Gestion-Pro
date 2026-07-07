@@ -33,7 +33,7 @@ export function UpgradeBanner({ currentPlanName, essaiFin, className }: UpgradeB
     <>
       <div
         className={cn(
-          "relative overflow-hidden rounded-2xl p-4 bg-gradient-to-r from-brand/10 via-slate-500/5 to-transparent border border-brand/20 dark:border-brand/30 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md",
+          "relative overflow-hidden rounded-2xl p-4 bg-gradient-to-r from-brand/10 via-zinc-500/5 to-transparent border border-brand/20 dark:border-brand/30 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md",
           className
         )}
       >
@@ -42,14 +42,14 @@ export function UpgradeBanner({ currentPlanName, essaiFin, className }: UpgradeB
             {isTrial ? <AlertTriangle className="h-5 w-5 animate-bounce" /> : <Sparkles className="h-5 w-5" />}
           </div>
           <div>
-            <h5 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100 flex items-center gap-1.5 justify-center sm:justify-start">
+            <h5 className="font-extrabold text-sm text-zinc-800 dark:text-zinc-100 flex items-center gap-1.5 justify-center sm:justify-start">
               {isTrial ? (
                 <>Votre période d&apos;essai expire bientôt !</>
               ) : (
                 <>Vous utilisez le forfait Starter gratuit</>
               )}
             </h5>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 font-semibold mt-0.5">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold mt-0.5">
               {isTrial ? (
                 <>Il vous reste {daysRemaining} jours d&apos;essai gratuit. Passez au plan supérieur pour conserver vos accès.</>
               ) : (
@@ -92,15 +92,15 @@ export function QuotaIndicator({ label, count, max, className }: QuotaIndicatorP
     <>
       <div className={cn("p-4 rounded-xl border border-zinc-100 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/30 space-y-3", className)}>
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">{label}</span>
-          <span className="text-xs font-black text-slate-800 dark:text-zinc-100">
+          <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400">{label}</span>
+          <span className="text-xs font-black text-zinc-800 dark:text-zinc-100">
             {count} / {isUnlimited ? "∞" : max}
           </span>
         </div>
 
         {!isUnlimited && (
           <div className="space-y-1.5">
-            <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-zinc-800 overflow-hidden">
+            <div className="h-2 w-full rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-500",
@@ -162,7 +162,7 @@ export function FeatureLock({
   return (
     <>
       <div className={cn("relative group cursor-not-allowed", className)} onClick={() => setModalOpen(true)}>
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-brand to-slate-800 rounded-xl blur opacity-0 group-hover:opacity-10 transition duration-500" />
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-brand to-zinc-800 rounded-xl blur opacity-0 group-hover:opacity-10 transition duration-500" />
         
         {/* Lock Overlay Badge */}
         <div className="absolute top-2 right-2 z-10 h-6 w-6 rounded-lg bg-zinc-950/80 border border-white/10 flex items-center justify-center text-brand shadow backdrop-blur-sm">

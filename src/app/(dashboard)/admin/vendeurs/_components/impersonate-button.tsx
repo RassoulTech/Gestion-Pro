@@ -25,7 +25,7 @@ export function ImpersonateButton({ userId }: { userId: string }) {
     <Button
       variant="ghost"
       size="sm"
-      className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+      className="h-8 w-8 p-0 text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
       onClick={handleImpersonate}
       disabled={isPending}
       title="Se connecter en tant que ce vendeur"

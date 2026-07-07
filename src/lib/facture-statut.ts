@@ -22,8 +22,8 @@ export const FACTURE_STATUT_CONFIG: Record<
   },
   ANNULEE: {
     label: "Annulée",
-    badge: "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400",
-    dot: "bg-rose-500",
+    badge: "bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400",
+    dot: "bg-red-500",
   },
 };
 

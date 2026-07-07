@@ -28,8 +28,8 @@ type Msg = {
 
 const MOTIF_CHIP: Record<string, string> = {
   SUGGESTION: "border-amber-500/25 bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  PROBLEME: "border-rose-500/25 bg-rose-500/10 text-rose-600 dark:text-rose-400",
-  ACCES: "border-rose-500/25 bg-rose-500/10 text-rose-600 dark:text-rose-400",
+  PROBLEME: "border-red-500/25 bg-red-500/10 text-red-600 dark:text-red-400",
+  ACCES: "border-red-500/25 bg-red-500/10 text-red-600 dark:text-red-400",
   QUESTION: "border-blue-500/25 bg-blue-500/10 text-blue-600 dark:text-blue-400",
   INFOS: "border-zinc-300 bg-zinc-100 text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
   AUTRE: "border-zinc-300 bg-zinc-100 text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
@@ -50,7 +50,7 @@ function Avatar({ nom, senderType }: { nom: string; senderType: string }) {
       className={cn(
         "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-xs font-black text-white shadow-sm",
         senderType === "VENDEUR"
-          ? "bg-gradient-to-br from-blue-500 to-indigo-700"
+          ? "bg-gradient-to-br from-blue-500 to-blue-700"
           : "bg-gradient-to-br from-zinc-500 to-zinc-700"
       )}
     >

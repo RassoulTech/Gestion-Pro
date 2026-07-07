@@ -27,7 +27,7 @@ export async function generateBoutiqueQRCodeDataURL(slug: string): Promise<strin
     margin: 1,
     width: 600,
     color: {
-      dark: "#0f172a", // slate-900
+      dark: "#0f172a", // zinc-900
       light: "#ffffff",
     },
   });

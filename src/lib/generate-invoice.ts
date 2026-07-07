@@ -340,7 +340,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   doc.addImage(GESTIONPRO_LOGO_BASE64, "PNG", appBadgeX, footerY - 1.2, 5, 5);
 
   // "GestionPro" text
-  doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]); // slate-900
+  doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]); // zinc-900
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7.5);
   doc.text("Gestion", appBadgeX + 6.5, footerY + 2.5);

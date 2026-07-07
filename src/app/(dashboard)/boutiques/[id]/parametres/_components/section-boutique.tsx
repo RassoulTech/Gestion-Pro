@@ -300,7 +300,7 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                    <InstagramIcon className="h-3.5 w-3.5 text-pink-500" /> Instagram
+                    <InstagramIcon className="h-3.5 w-3.5 text-orange-500" /> Instagram
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="@maboutique" className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand" {...field} />

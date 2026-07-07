@@ -49,7 +49,7 @@ function PaymentStatusBadge({ status }: { status: string }) {
   if (status === "EN_ATTENTE") {
     return <span className="inline-flex px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider border border-amber-500/20">En attente</span>;
   }
-  return <span className="inline-flex px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-wider border border-rose-500/20">Échoué</span>;
+  return <span className="inline-flex px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-wider border border-red-500/20">Échoué</span>;
 }
 
 export default async function FacturationPage({ params }: FacturationPageProps) {
@@ -187,7 +187,7 @@ export default async function FacturationPage({ params }: FacturationPageProps) 
                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                     : quotas.statut === "ESSAI"
                     ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse"
-                    : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                    : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                 }`}
                 variant="outline"
               >

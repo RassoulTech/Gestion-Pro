@@ -257,7 +257,7 @@ export function QRCodeClient({
         <Card className="border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-xl bg-white dark:bg-zinc-950 overflow-hidden relative p-5">
           <div className="flex flex-col gap-3">
             <Label className="text-xs font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Lien de votre Boutique Marketplace</Label>
-            <div className="flex items-center gap-2 bg-slate-50 dark:bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-850">
+            <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-850">
               <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 truncate flex-1">
                 {getStoreUrl()}
               </span>
@@ -307,7 +307,7 @@ export function QRCodeClient({
                     value={customSlogan}
                     onChange={(e) => setCustomSlogan(e.target.value)}
                     maxLength={50}
-                    className="h-10 rounded-xl bg-slate-50 dark:bg-zinc-900 border-none font-bold text-sm"
+                    className="h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none font-bold text-sm"
                   />
                 </div>
 
@@ -324,7 +324,7 @@ export function QRCodeClient({
                     value={customMessage}
                     onChange={(e) => setCustomMessage(e.target.value)}
                     maxLength={100}
-                    className="h-10 rounded-xl bg-slate-50 dark:bg-zinc-900 border-none font-bold text-sm"
+                    className="h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none font-bold text-sm"
                   />
                 </div>
 
@@ -356,7 +356,7 @@ export function QRCodeClient({
                     placeholder="#ea580c" 
                     value={customColor || selectedColor} 
                     onChange={handleCustomColor}
-                    className="h-10 rounded-xl bg-slate-50 dark:bg-zinc-900 border-none font-bold text-sm"
+                    className="h-10 rounded-xl bg-zinc-50 dark:bg-zinc-900 border-none font-bold text-sm"
                   />
                 </div>
               </div>

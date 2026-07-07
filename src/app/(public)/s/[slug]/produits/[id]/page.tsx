@@ -56,9 +56,9 @@ export default async function ProduitPublicPage({ params }: Props) {
         
         {/* Back Link */}
         <div>
-          <Button asChild variant="ghost" className="rounded-2xl font-bold group hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 px-4 py-2">
+          <Button asChild variant="ghost" className="rounded-2xl font-bold group hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-4 py-2">
             <Link href={`/s/${slug}`}>
-              <ArrowLeft className="mr-2 h-4.5 w-4.5 transition-transform group-hover:-translate-x-1 text-slate-400" />
+              <ArrowLeft className="mr-2 h-4.5 w-4.5 transition-transform group-hover:-translate-x-1 text-zinc-400" />
               Retour à {boutique.nom}
             </Link>
           </Button>
@@ -72,7 +72,7 @@ export default async function ProduitPublicPage({ params }: Props) {
             {/* Ambient background glow */}
             <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 opacity-20 blur-3xl rounded-[2.5rem] group-hover:opacity-30 transition-all duration-700 pointer-events-none" />
             
-            <div className="relative aspect-square w-full rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 flex items-center justify-center overflow-hidden shadow-xl">
+            <div className="relative aspect-square w-full rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-center overflow-hidden shadow-xl">
               {produit.photo ? (
                 <Image
                   src={produit.photo}
@@ -82,9 +82,9 @@ export default async function ProduitPublicPage({ params }: Props) {
                   unoptimized
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center text-slate-300 dark:text-zinc-700 space-y-3">
+                <div className="flex flex-col items-center justify-center text-zinc-300 dark:text-zinc-700 space-y-3">
                   <Package className="h-24 w-24 stroke-[1.25]" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Aucun visuel disponible</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Aucun visuel disponible</span>
                 </div>
               )}
               
@@ -99,7 +99,7 @@ export default async function ProduitPublicPage({ params }: Props) {
           {/* Product Info Section */}
           <div className="flex flex-col space-y-8 min-w-0">
             <div className="space-y-4 min-w-0">
-              <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-slate-800 dark:text-zinc-100 leading-tight break-words">
+              <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-zinc-800 dark:text-zinc-100 leading-tight break-words">
                 {produit.nom}
               </h1>
               
@@ -117,28 +117,28 @@ export default async function ProduitPublicPage({ params }: Props) {
                     <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">En stock</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                    <span className="text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest">Indisponible</span>
+                  <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <span className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest">Indisponible</span>
                   </div>
                 )}
               </div>
               
-              <p className="text-[11px] font-mono text-slate-400 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800/80 px-3 py-1 rounded-md w-fit font-bold">
+              <p className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800/80 px-3 py-1 rounded-md w-fit font-bold">
                 RÉFÉRENCE : {produit.code || "NON RENSEIGNÉE"}
               </p>
             </div>
 
-            <Separator className="bg-slate-100 dark:bg-zinc-800/80" />
+            <Separator className="bg-zinc-100 dark:bg-zinc-800/80" />
 
             {/* Product description card */}
-            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2rem] p-7 shadow-sm">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Description du produit</h3>
-              <div className="text-sm text-slate-600 dark:text-zinc-300 leading-relaxed font-medium">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/80 rounded-[2rem] p-7 shadow-sm">
+              <h3 className="text-xs font-black uppercase tracking-wider text-zinc-400 mb-3">Description du produit</h3>
+              <div className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
                 {produit.description ? (
                   <p className="whitespace-pre-line">{produit.description}</p>
                 ) : (
-                  <p className="italic text-slate-400">
+                  <p className="italic text-zinc-400">
                     Aucune description détaillée n&apos;a été fournie pour ce produit. Contactez la boutique directement pour plus d&apos;informations.
                   </p>
                 )}
@@ -146,13 +146,13 @@ export default async function ProduitPublicPage({ params }: Props) {
             </div>
 
             {/* Call to Actions Section */}
-            <div className="bg-white/80 dark:bg-zinc-900/80 border border-slate-100 dark:border-zinc-800/80 rounded-[2.5rem] p-6 sm:p-8 shadow-xl relative overflow-hidden backdrop-blur-md">
+            <div className="bg-white/80 dark:bg-zinc-900/80 border border-zinc-100 dark:border-zinc-800/80 rounded-[2.5rem] p-6 sm:p-8 shadow-xl relative overflow-hidden backdrop-blur-md">
               <div className="absolute top-0 right-0 -mr-10 -mt-10 w-24 h-24 bg-orange-500/5 blur-2xl rounded-full" />
               
               <div className="relative z-10 space-y-6">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-orange-500" />
-                  <h3 className="text-lg font-black text-slate-800 dark:text-zinc-100">
+                  <h3 className="text-lg font-black text-zinc-800 dark:text-zinc-100">
                     Passer commande
                   </h3>
                 </div>
@@ -179,9 +179,9 @@ export default async function ProduitPublicPage({ params }: Props) {
 
                     {/* Direct Call Action */}
                     {boutique.telephone && (
-                      <Button asChild size="lg" variant="outline" className="h-14 rounded-2xl font-black text-sm border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:-translate-y-0.5 transition-all">
+                      <Button asChild size="lg" variant="outline" className="h-14 rounded-2xl font-black text-sm border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:-translate-y-0.5 transition-all">
                         <a href={`tel:${cleanPhone}`}>
-                          <Phone className="mr-2 h-5 w-5 text-slate-500" />
+                          <Phone className="mr-2 h-5 w-5 text-zinc-500" />
                           Appeler directement
                         </a>
                       </Button>
@@ -189,20 +189,20 @@ export default async function ProduitPublicPage({ params }: Props) {
                   </div>
                 </div>
 
-                <p className="text-center text-[10px] font-extrabold text-slate-400 dark:text-zinc-500 uppercase tracking-widest">
+                <p className="text-center text-[10px] font-extrabold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                   Paiement sécurisé et direct avec le commerçant
                 </p>
               </div>
             </div>
 
             {/* Boutique vendeuse */}
-            <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2rem] p-6 shadow-sm">
-              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4">Boutique vendeuse</h3>
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/80 rounded-[2rem] p-6 shadow-sm">
+              <h3 className="text-xs font-black uppercase tracking-wider text-zinc-400 mb-4">Boutique vendeuse</h3>
 
               <div className="flex items-center gap-4">
                 <Link
                   href={`/s/${slug}`}
-                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 text-orange-500 overflow-hidden relative shrink-0"
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 text-orange-500 overflow-hidden relative shrink-0"
                 >
                   {boutiqueLogo ? (
                     <Image src={boutiqueLogo} alt={boutique.nom} fill className="object-cover" sizes="56px" unoptimized />
@@ -213,12 +213,12 @@ export default async function ProduitPublicPage({ params }: Props) {
 
                 <div className="flex-1 min-w-0">
                   <Link href={`/s/${slug}`} className="block">
-                    <p className="font-extrabold text-slate-800 dark:text-zinc-100 truncate hover:text-orange-500 transition-colors">
+                    <p className="font-extrabold text-zinc-800 dark:text-zinc-100 truncate hover:text-orange-500 transition-colors">
                       {boutique.nom}
                     </p>
                   </Link>
                   {boutique.adresse && (
-                    <p className="text-xs text-slate-500 dark:text-zinc-400 truncate">{boutique.adresse}</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">{boutique.adresse}</p>
                   )}
                 </div>
               </div>
@@ -235,9 +235,9 @@ export default async function ProduitPublicPage({ params }: Props) {
                     </Button>
                   )}
                   {boutique.telephone && (
-                    <Button asChild variant="outline" className="h-11 rounded-2xl font-bold border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800">
+                    <Button asChild variant="outline" className="h-11 rounded-2xl font-bold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800">
                       <a href={`tel:${cleanPhone}`}>
-                        <Phone className="mr-2 h-4 w-4 text-slate-500" />
+                        <Phone className="mr-2 h-4 w-4 text-zinc-500" />
                         Appeler
                       </a>
                     </Button>
@@ -270,7 +270,7 @@ export default async function ProduitPublicPage({ params }: Props) {
             title="Commander via WhatsApp"
             aria-label="Commander via WhatsApp"
           >
-            <span className="absolute right-20 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl shadow-lg border border-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+            <span className="absolute right-20 bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl shadow-lg border border-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
               Commander via WhatsApp
             </span>
             <WhatsAppIcon className="h-7 w-7" />
@@ -279,10 +279,10 @@ export default async function ProduitPublicPage({ params }: Props) {
       )}
 
       {/* CTA principal sticky en bas (mobile uniquement) */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 shrink-0">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
               {produit.quantite > 0 ? "En stock" : "Épuisé"}
             </p>
             <p className="text-lg font-black text-orange-600 dark:text-orange-400 tabular-nums leading-none">

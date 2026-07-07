@@ -67,7 +67,7 @@ export function DeleteAccountButton({ userId, label, email, boutiqueCount = 0 }:
           variant="outline"
           size="sm"
           aria-label={`Supprimer définitivement le compte de ${label}`}
-          className="h-9 rounded-xl border-rose-200 font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/40 dark:text-rose-400 dark:hover:bg-rose-950/30"
+          className="h-9 rounded-xl border-red-200 font-bold text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/40 dark:text-red-400 dark:hover:bg-red-950/30"
         >
           <Trash2 className="h-4 w-4" />
           <span className="ml-1.5 hidden sm:inline">Supprimer</span>
@@ -75,7 +75,7 @@ export function DeleteAccountButton({ userId, label, email, boutiqueCount = 0 }:
       </AlertDialogTrigger>
       <AlertDialogContent className="rounded-2xl">
         <AlertDialogHeader>
-          <div className="mx-auto mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400">
+          <div className="mx-auto mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400">
             <AlertTriangle className="h-6 w-6" />
           </div>
           <AlertDialogTitle className="text-center">Supprimer définitivement ce compte ?</AlertDialogTitle>
@@ -104,7 +104,7 @@ export function DeleteAccountButton({ userId, label, email, boutiqueCount = 0 }:
               handleDelete();
             }}
             disabled={busy}
-            className="rounded-xl bg-rose-600 hover:bg-rose-700 focus:ring-rose-600"
+            className="rounded-xl bg-red-600 hover:bg-red-700 focus:ring-red-600"
           >
             {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
             Supprimer définitivement

@@ -487,7 +487,7 @@ export default async function BoutiqueDashboardPage({
 
         {/* Sidebar Status & Critical Info */}
         <div className="lg:col-span-4 space-y-6 sm:space-y-8">
-          <Card className="border-none bg-rose-600 text-white shadow-2xl shadow-rose-600/20 rounded-[1.5rem] sm:rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden">
+          <Card className="border-none bg-red-600 text-white shadow-2xl shadow-red-600/20 rounded-[1.5rem] sm:rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden">
             <CardHeader className="p-5 sm:p-8 pb-3 sm:pb-4">
               <CardTitle className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2 sm:gap-3">
                 <AlertTriangle className="h-6 w-6 sm:h-7 sm:w-7 animate-bounce" />
@@ -513,14 +513,14 @@ export default async function BoutiqueDashboardPage({
                               unoptimized
                             />
                           ) : (
-                            <Package className="h-4 w-4 sm:h-5 sm:w-5 text-rose-600" />
+                            <Package className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
                           )}
                         </div>
                         <p className="font-black text-xs sm:text-sm truncate">
                           {p.nom}
                         </p>
                       </div>
-                      <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-white flex items-center justify-center font-black text-rose-600 shadow-lg text-sm shrink-0">
+                      <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-white flex items-center justify-center font-black text-red-600 shadow-lg text-sm shrink-0">
                         {p.quantite}
                       </div>
                     </div>
@@ -557,7 +557,7 @@ export default async function BoutiqueDashboardPage({
                     className="flex items-start justify-between gap-3 sm:gap-4"
                   >
                     <div className="flex gap-3 sm:gap-4 min-w-0">
-                      <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-rose-500 shrink-0">
+                      <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-red-500 shrink-0">
                         <Wallet className="h-4 w-4 sm:h-5 sm:w-5" />
                       </div>
                       <div className="min-w-0">
@@ -569,7 +569,7 @@ export default async function BoutiqueDashboardPage({
                         </p>
                       </div>
                     </div>
-                    <span className="font-black text-rose-500 text-xs sm:text-sm whitespace-nowrap shrink-0">
+                    <span className="font-black text-red-500 text-xs sm:text-sm whitespace-nowrap shrink-0">
                       {dep.montant.toLocaleString()} FCFA
                     </span>
                   </div>
@@ -613,7 +613,7 @@ export default async function BoutiqueDashboardPage({
               <div className="h-px bg-white/20 my-2" />
               <div className="flex items-center justify-between">
                 <span className="text-white/70 font-bold text-xs sm:text-sm">Bénéfice total</span>
-                <span className={cn("font-black text-base sm:text-lg", allTimeBenefice >= 0 ? "text-emerald-300" : "text-rose-300")}>
+                <span className={cn("font-black text-base sm:text-lg", allTimeBenefice >= 0 ? "text-emerald-300" : "text-red-300")}>
                   {allTimeBenefice.toLocaleString()} FCFA
                 </span>
               </div>

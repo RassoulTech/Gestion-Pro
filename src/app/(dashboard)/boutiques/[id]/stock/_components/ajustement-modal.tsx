@@ -117,7 +117,7 @@ export function AjustementStockModal({
               type="button"
               variant="outline"
               className={`h-20 rounded-xl flex flex-col gap-2 border-2 ${
-                watchType === "SORTIE" ? "border-rose-500 bg-rose-50 text-rose-700" : "border-transparent bg-zinc-50 text-zinc-500 hover:bg-zinc-100"
+                watchType === "SORTIE" ? "border-red-500 bg-red-50 text-red-700" : "border-transparent bg-zinc-50 text-zinc-500 hover:bg-zinc-100"
               }`}
               onClick={() => form.setValue("type", "SORTIE")}
             >

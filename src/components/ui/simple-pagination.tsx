@@ -31,23 +31,26 @@ export function SimplePagination({
     } else {
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", String(page));
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+      // Retour en haut de liste, fluide (les filtres/recherche sont conservés
+      // via URLSearchParams ci-dessus).
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5 px-6 border border-slate-100 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-3xl mt-8">
-      <p className="text-xs sm:text-sm font-bold text-slate-500 dark:text-zinc-400 text-center sm:text-left">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-5 px-6 border border-border bg-card/60 rounded-3xl mt-8">
+      <p className="text-xs sm:text-sm font-bold text-zinc-500 dark:text-zinc-400 text-center sm:text-left">
         Affichage de{" "}
-        <span className="font-extrabold text-slate-900 dark:text-white">
+        <span className="font-extrabold text-zinc-900 dark:text-white">
           {(currentPage - 1) * itemsPerPage + 1}
         </span>{" "}
         à{" "}
-        <span className="font-extrabold text-slate-900 dark:text-white">
+        <span className="font-extrabold text-zinc-900 dark:text-white">
           {Math.min(currentPage * itemsPerPage, totalItems)}
         </span>{" "}
         sur{" "}
-        <span className="font-extrabold text-slate-900 dark:text-white">{totalItems}</span>{" "}
+        <span className="font-extrabold text-zinc-900 dark:text-white">{totalItems}</span>{" "}
         éléments
       </p>
 
@@ -57,7 +60,8 @@ export function SimplePagination({
           size="icon"
           onClick={() => handlePageClick(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="h-10 w-10 rounded-xl font-bold border-slate-200 dark:border-zinc-800 disabled:opacity-50"
+          aria-label="Page précédente"
+          className="h-10 w-10 rounded-xl font-bold border-zinc-200 dark:border-zinc-800 disabled:opacity-50"
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
@@ -77,14 +81,14 @@ export function SimplePagination({
             return (
               <React.Fragment key={page}>
                 {showEllipsis && (
-                  <span className="text-slate-400 dark:text-zinc-500 px-1 font-bold text-xs select-none">
+                  <span className="text-zinc-400 dark:text-zinc-500 px-1 font-bold text-xs select-none">
                     ...
                   </span>
                 )}
                 <Button
                   variant={currentPage === page ? "default" : "outline"}
                   onClick={() => handlePageClick(page)}
-                  className={`h-10 w-10 p-0 text-xs rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 ${
+                  className={`h-10 w-10 p-0 text-xs rounded-xl font-extrabold border-zinc-200 dark:border-zinc-800 ${
                     currentPage === page
                       ? "bg-brand hover:bg-brand/90 text-white border-transparent"
                       : "hover:bg-zinc-100/50"
@@ -101,7 +105,8 @@ export function SimplePagination({
           size="icon"
           onClick={() => handlePageClick(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="h-10 w-10 rounded-xl font-bold border-slate-200 dark:border-zinc-800 disabled:opacity-50"
+          aria-label="Page suivante"
+          className="h-10 w-10 rounded-xl font-bold border-zinc-200 dark:border-zinc-800 disabled:opacity-50"
         >
           <ChevronRight className="h-5 w-5" />
         </Button>

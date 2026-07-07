@@ -80,7 +80,7 @@ export function FinanceSection({ data }: { data: FinanceData }) {
                 Ventes validées {periodeLabel}
               </p>
             </div>
-            <div className="p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-rose-500 text-white shadow-2xl shadow-rose-500/20">
+            <div className="p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-red-500 text-white shadow-2xl shadow-red-500/20">
               <div className="flex items-center gap-2 opacity-80 mb-2">
                 <TrendingDown className="h-4 w-4" />
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">
@@ -109,7 +109,7 @@ export function FinanceSection({ data }: { data: FinanceData }) {
             <div
               className={cn(
                 "text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter break-words",
-                benefice >= 0 ? "text-emerald-600" : "text-rose-600"
+                benefice >= 0 ? "text-emerald-600" : "text-red-600"
               )}
             >
               {benefice.toLocaleString()}
@@ -123,7 +123,7 @@ export function FinanceSection({ data }: { data: FinanceData }) {
                 <span
                   className={cn(
                     "text-xs sm:text-sm font-black",
-                    benefice >= 0 ? "text-emerald-600" : "text-rose-600"
+                    benefice >= 0 ? "text-emerald-600" : "text-red-600"
                   )}
                 >
                   {marge.toFixed(1)}%
@@ -133,7 +133,7 @@ export function FinanceSection({ data }: { data: FinanceData }) {
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-500",
-                    benefice >= 0 ? "bg-emerald-500" : "bg-rose-500"
+                    benefice >= 0 ? "bg-emerald-500" : "bg-red-500"
                   )}
                   style={{
                     width: `${Math.max(0, Math.min(100, Math.abs(marge)))}%`,

@@ -35,16 +35,16 @@ export default async function BoutiquePubliquePage({ params }: Props) {
         
         {/* Back to Marketplace */}
         <div>
-          <Button asChild variant="ghost" className="rounded-xl font-bold group hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400">
+          <Button asChild variant="ghost" className="rounded-xl font-bold group hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
             <Link href="/marketplace">
-              <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1 text-slate-400" />
+              <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1 text-zinc-400" />
               Retour au marketplace
             </Link>
           </Button>
         </div>
 
         {/* Boutique Header */}
-        <div className="relative p-5 sm:p-8 md:p-12 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl">
+        <div className="relative p-5 sm:p-8 md:p-12 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl">
           {/* Subtle colored ambient glow */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
           
@@ -64,7 +64,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
 
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
             
-            <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 text-orange-500 shadow-md overflow-hidden relative shrink-0">
+            <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 text-orange-500 shadow-md overflow-hidden relative shrink-0">
               {boutique.logo || boutique.vendeur?.photo ? (
                 <Image 
                   src={(boutique.logo || boutique.vendeur?.photo)!} 
@@ -81,7 +81,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
 
             <div className="flex-1 space-y-4">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-fluid-h1 font-extrabold tracking-tight text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+                <h1 className="text-fluid-h1 font-extrabold tracking-tight text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
                   {boutique.nom}
                   <CheckCircle2 className="w-5 h-5 text-orange-500 fill-orange-500/10 shrink-0" />
                 </h1>
@@ -98,7 +98,7 @@ export default async function BoutiquePubliquePage({ params }: Props) {
               </div>
 
               {boutique.description && (
-                <p className="max-w-3xl text-fluid-body text-slate-500 dark:text-zinc-400 leading-relaxed font-medium">
+                <p className="max-w-3xl text-fluid-body text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
                   {boutique.description}
                 </p>
               )}
@@ -139,13 +139,13 @@ export default async function BoutiquePubliquePage({ params }: Props) {
         {/* Catalogue : recherche + filtres + pagination + CTA WhatsApp */}
         <div className="pt-4">
           {boutique.produits.length === 0 ? (
-            <div className="py-24 bg-white dark:bg-zinc-900 border border-dashed border-slate-200 dark:border-zinc-800 rounded-[2.5rem] text-center space-y-4 shadow-sm">
-              <div className="h-16 w-16 bg-slate-50 dark:bg-zinc-800 rounded-full flex items-center justify-center text-slate-400 mx-auto">
-                <Store className="w-8 h-8 text-slate-400" />
+            <div className="py-24 bg-white dark:bg-zinc-900 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] text-center space-y-4 shadow-sm">
+              <div className="h-16 w-16 bg-zinc-50 dark:bg-zinc-800 rounded-full flex items-center justify-center text-zinc-400 mx-auto">
+                <Store className="w-8 h-8 text-zinc-400" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-extrabold text-slate-800 dark:text-zinc-200">Catalogue vide</h3>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-xs mx-auto leading-relaxed">
+                <h3 className="font-extrabold text-zinc-800 dark:text-zinc-200">Catalogue vide</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs mx-auto leading-relaxed">
                   Cette boutique n&apos;a pas encore publié d&apos;articles en vente.
                 </p>
               </div>

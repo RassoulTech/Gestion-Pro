@@ -175,7 +175,7 @@ export function SectionSecurite({ initial }: Props) {
           onClick={handleSignOutThis}
           disabled={signingOut}
           variant="outline"
-          className="h-12 rounded-xl font-bold text-xs border-rose-200 text-rose-600 hover:bg-rose-50 dark:border-rose-900/30 dark:hover:bg-rose-950/20"
+          className="h-12 rounded-xl font-bold text-xs border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900/30 dark:hover:bg-red-950/20"
         >
           {signingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
           Se déconnecter ici

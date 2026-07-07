@@ -27,7 +27,7 @@ export default async function FacturesPage({ params }: { params: Promise<{ id: s
     { label: t("invoicesStatTotal"), value: String(stats.total), icon: FileText, tint: "text-brand bg-brand/10" },
     { label: t("invoicesStatPaid"), value: String(stats.counts.PAYEE), icon: CheckCircle2, tint: "text-emerald-600 bg-emerald-500/10" },
     { label: t("invoicesStatUnpaid"), value: String(stats.counts.IMPAYEE), icon: Clock, tint: "text-amber-600 bg-amber-500/10" },
-    { label: t("invoicesStatCollected"), value: formatCurrency(stats.montantPaye), icon: FileEdit, tint: "text-slate-700 dark:text-slate-200 bg-slate-500/10" },
+    { label: t("invoicesStatCollected"), value: formatCurrency(stats.montantPaye), icon: FileEdit, tint: "text-zinc-700 dark:text-zinc-200 bg-zinc-500/10" },
   ];
 
   return (

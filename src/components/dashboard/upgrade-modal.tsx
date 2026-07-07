@@ -174,7 +174,7 @@ export function UpgradeModal({
                                     "mt-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300",
                                     isIncluded
                                       ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
-                                      : "bg-rose-500/5 border-rose-500/10 text-rose-500/30"
+                                      : "bg-red-500/5 border-red-500/10 text-red-500/30"
                                   )}
                                 >
                                   {isIncluded ? (

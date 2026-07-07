@@ -138,7 +138,7 @@ export default function NewDepensePage({ params }: NewDepensePageProps) {
                     <FormItem>
                       <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Montant (FCFA) *</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="0" className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border-none px-6 font-black text-rose-500" {...field} />
+                        <Input type="number" placeholder="0" className="h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border-none px-6 font-black text-red-500" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

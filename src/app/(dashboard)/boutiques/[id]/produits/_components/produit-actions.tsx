@@ -92,7 +92,7 @@ export function ProduitActions({ produitId, boutiqueId, produitNom }: ProduitAct
           <DropdownMenuSeparator className="mx-1" />
           
           <DropdownMenuItem 
-            className="rounded-lg cursor-pointer h-10 px-3 text-rose-500 hover:bg-rose-500/10 hover:text-rose-600 focus:bg-rose-500/10 focus:text-rose-600"
+            className="rounded-lg cursor-pointer h-10 px-3 text-red-500 hover:bg-red-500/10 hover:text-red-600 focus:bg-red-500/10 focus:text-red-600"
             onClick={() => setShowDeleteDialog(true)}
           >
             <Trash2 className="mr-3 h-4 w-4" /> 
@@ -116,7 +116,7 @@ export function ProduitActions({ produitId, boutiqueId, produitNom }: ProduitAct
                 e.preventDefault();
                 handleDelete();
               }}
-              className="rounded-xl h-12 font-black bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20"
+              className="rounded-xl h-12 font-black bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20"
               disabled={isDeleting}
             >
               {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}

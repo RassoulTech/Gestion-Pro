@@ -210,7 +210,7 @@ export function FilterPanel({
     <div className="space-y-6">
       {showPeriod && (
         <div className="space-y-2.5">
-          <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">
+          <p className="text-[11px] font-black uppercase tracking-widest text-zinc-400">
             {t("period")}
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -225,7 +225,7 @@ export function FilterPanel({
                     PILL_BASE,
                     active
                       ? "bg-brand text-white border-transparent shadow-sm"
-                      : "border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/60"
+                      : "border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
                   )}
                 >
                   {t(`presets.${p}`)}
@@ -236,7 +236,7 @@ export function FilterPanel({
           {draftRange === "custom" && (
             <div className="grid grid-cols-2 gap-2.5 pt-1">
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <label className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
                   {t("from")}
                 </label>
                 <Input
@@ -247,7 +247,7 @@ export function FilterPanel({
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <label className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
                   {t("to")}
                 </label>
                 <Input
@@ -267,7 +267,7 @@ export function FilterPanel({
         const isAll = !current || current === "ALL" || current === "all";
         return (
           <div key={s.param} className="space-y-2.5">
-            <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-black uppercase tracking-widest text-zinc-400">
               {s.label}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -278,7 +278,7 @@ export function FilterPanel({
                   PILL_BASE,
                   isAll
                     ? "bg-brand text-white border-transparent shadow-sm"
-                    : "border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/60"
+                    : "border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
                 )}
               >
                 {s.allLabel ?? t("all")}
@@ -294,7 +294,7 @@ export function FilterPanel({
                       PILL_BASE,
                       active
                         ? "bg-brand text-white border-transparent shadow-sm"
-                        : "border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/60"
+                        : "border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
                     )}
                   >
                     {o.label}
@@ -314,9 +314,9 @@ export function FilterPanel({
         type="button"
         variant="outline"
         onClick={resetAll}
-        className="flex-1 h-11 rounded-xl font-bold border-slate-200 dark:border-zinc-800"
+        className="flex-1 h-11 rounded-xl font-bold border-zinc-200 dark:border-zinc-800"
       >
-        <RotateCcw className="mr-2 h-4 w-4 text-slate-400" />
+        <RotateCcw className="mr-2 h-4 w-4 text-zinc-400" />
         {t("reset")}
       </Button>
       <Button
@@ -333,7 +333,7 @@ export function FilterPanel({
   const triggerButton = (
     <Button
       variant="outline"
-      className="h-11 sm:h-12 rounded-xl font-extrabold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 gap-2 shrink-0"
+      className="h-11 sm:h-12 rounded-xl font-extrabold border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 gap-2 shrink-0"
     >
       <SlidersHorizontal className="h-4 w-4 text-orange-500" />
       {t("filters")}
@@ -350,15 +350,15 @@ export function FilterPanel({
       <div className="flex flex-col sm:flex-row gap-3">
         {searchPlaceholder && (
           <div className="relative flex-1 min-w-0">
-            <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-slate-400 dark:text-zinc-500" />
+            <Search className="absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
             <Input
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder={searchPlaceholder}
-              className="pl-10 h-11 sm:h-12 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 font-bold text-xs sm:text-sm w-full"
+              className="pl-10 h-11 sm:h-12 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 font-bold text-xs sm:text-sm w-full"
             />
             {isPending && (
-              <Loader2 className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400" />
+              <Loader2 className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-zinc-400" />
             )}
           </div>
         )}
@@ -369,10 +369,10 @@ export function FilterPanel({
             <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
             <PopoverContent
               align="end"
-              className="w-[min(360px,calc(100vw-1.5rem))] p-4 rounded-2xl border border-slate-100 dark:border-zinc-800 shadow-2xl bg-white dark:bg-zinc-900 max-h-[70vh] overflow-y-auto overscroll-contain z-50"
+              className="w-[min(360px,calc(100vw-1.5rem))] p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-2xl bg-white dark:bg-zinc-900 max-h-[70vh] overflow-y-auto overscroll-contain z-50"
             >
               {panelFields}
-              <div className="sticky bottom-0 -mx-4 -mb-4 mt-4 px-4 pb-4 pt-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur border-t border-slate-100 dark:border-zinc-800">
+              <div className="sticky bottom-0 -mx-4 -mb-4 mt-4 px-4 pb-4 pt-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur border-t border-zinc-100 dark:border-zinc-800">
                 {footer}
               </div>
             </PopoverContent>
@@ -394,7 +394,7 @@ export function FilterPanel({
                 </SheetTitle>
               </SheetHeader>
               <div className="flex-1">{panelFields}</div>
-              <div className="sticky bottom-0 -mx-5 -mb-5 mt-4 px-5 pb-5 pt-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur border-t border-slate-100 dark:border-zinc-800">
+              <div className="sticky bottom-0 -mx-5 -mb-5 mt-4 px-5 pb-5 pt-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur border-t border-zinc-100 dark:border-zinc-800">
                 {footer}
               </div>
             </SheetContent>
@@ -419,7 +419,7 @@ export function FilterPanel({
           <button
             type="button"
             onClick={resetAll}
-            className="text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 underline underline-offset-2"
+            className="text-[11px] font-bold text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline underline-offset-2"
           >
             {t("clearAll")}
           </button>

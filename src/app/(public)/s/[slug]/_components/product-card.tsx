@@ -45,9 +45,9 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
   return (
     <Link 
       href={`/s/${boutiqueSlug}/produits/${produit.id}`} 
-      className="flex flex-col h-full rounded-[2rem] border border-slate-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 shadow-sm hover:shadow-xl hover:border-orange-500/25 hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
+      className="flex flex-col h-full rounded-[2rem] border border-zinc-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 shadow-sm hover:shadow-xl hover:border-orange-500/25 hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
     >
-      <div className="aspect-square bg-slate-50 dark:bg-zinc-900/50 flex items-center justify-center relative overflow-hidden">
+      <div className="aspect-square bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center relative overflow-hidden">
         {produit.photo ? (
           <Image
             src={produit.photo}
@@ -57,7 +57,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
             unoptimized
           />
         ) : (
-          <Package className="h-16 w-16 text-slate-300 dark:text-zinc-700 transition-transform duration-500 group-hover:scale-105" />
+          <Package className="h-16 w-16 text-zinc-300 dark:text-zinc-700 transition-transform duration-500 group-hover:scale-105" />
         )}
         
         <div className="absolute top-4 right-4">
@@ -65,7 +65,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
             className={`rounded-full px-2.5 py-0.5 font-extrabold text-[9px] uppercase tracking-widest border-none ${
               produit.quantite > 0 
                 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" 
-                : "bg-rose-500 text-white shadow-lg shadow-rose-500/20"
+                : "bg-red-500 text-white shadow-lg shadow-red-500/20"
             }`}
           >
             {produit.quantite > 0 ? t("inStockShort") : t("soldOut")}
@@ -74,7 +74,7 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
       </div>
 
       <div className="p-5 flex flex-col flex-1 space-y-2">
-        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 text-fluid-body leading-snug min-h-[2.5rem] flex items-center">
+        <h3 className="font-extrabold text-zinc-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 text-fluid-body leading-snug min-h-[2.5rem] flex items-center">
           {produit.nom}
         </h3>
         
@@ -85,12 +85,12 @@ export function ProductCard({ produit, boutiqueSlug, boutiqueNom }: ProductCardP
         )}
         
         {produit.description && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2rem]">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2rem]">
             {produit.description}
           </p>
         )}
 
-        <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-slate-100/50 dark:border-zinc-800/50">
+        <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-zinc-100/50 dark:border-zinc-800/50">
           <p className="text-fluid-body font-black text-orange-600 dark:text-orange-400 tracking-tight whitespace-nowrap">
             {formatCurrency(produit.prixUnitaire)}
           </p>

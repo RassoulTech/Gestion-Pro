@@ -30,7 +30,7 @@ const ETAT_META: Record<
   EN_ATTENTE: { icon: Clock, color: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
   VALIDEE: { icon: CheckCircle2, color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
   LIVREE: { icon: Truck, color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
-  ANNULEE: { icon: XCircle, color: "bg-rose-500/10 text-rose-400 border-rose-500/20" },
+  ANNULEE: { icon: XCircle, color: "bg-red-500/10 text-red-400 border-red-500/20" },
 };
 
 export default async function MesCommandesPage() {
@@ -58,7 +58,7 @@ export default async function MesCommandesPage() {
   const totalSpent = commandes.reduce((sum, c) => sum + c.total, 0);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-12 lg:py-20 relative overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 text-white py-12 lg:py-20 relative overflow-hidden">
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
 

@@ -75,7 +75,7 @@ export function RenewSubscriptionButton({
           variant={urgent ? "destructive" : "brand"}
           className={`w-full sm:w-auto h-12 rounded-xl font-black shadow-lg ${
             urgent
-              ? "shadow-rose-500/30 animate-pulse"
+              ? "shadow-red-500/30 animate-pulse"
               : "shadow-brand/20 hover:scale-[1.02] transition-transform"
           }`}
         >
@@ -129,8 +129,8 @@ export function RenewSubscriptionButton({
         </div>
 
         {error && (
-          <div className="rounded-lg bg-rose-500/10 border border-rose-500/20 p-3">
-            <p className="text-xs font-bold text-rose-600 dark:text-rose-400">
+          <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+            <p className="text-xs font-bold text-red-600 dark:text-red-400">
               {error}
             </p>
           </div>

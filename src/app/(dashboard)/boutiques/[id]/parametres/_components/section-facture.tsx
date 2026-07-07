@@ -229,41 +229,41 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
                   ) : null}
                   <div className="min-w-0">
                     <p className="truncate text-sm font-black leading-tight">{boutique.nom}</p>
-                    <p className="mt-0.5 line-clamp-2 text-[8px] leading-snug text-slate-500">{contactLine}</p>
+                    <p className="mt-0.5 line-clamp-2 text-[8px] leading-snug text-zinc-500">{contactLine}</p>
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="text-sm font-black" style={{ color: s.accentColor }}>FACTURE</p>
-                  <p className="text-[8px] text-slate-500"># FAC-2026-0042</p>
+                  <p className="text-[8px] text-zinc-500"># FAC-2026-0042</p>
                 </div>
               </div>
 
-              <div className="my-2 border-t border-slate-100" />
+              <div className="my-2 border-t border-zinc-100" />
 
               {/* Facturé à / détails */}
               <div className="flex justify-between gap-2 text-[8px]">
                 <div>
-                  <p className="font-black text-slate-800">FACTURÉ À</p>
-                  <p className="mt-0.5 text-slate-500">Awa Diop</p>
-                  <p className="text-slate-500">Tél: +221 77 000 00 00</p>
+                  <p className="font-black text-zinc-800">FACTURÉ À</p>
+                  <p className="mt-0.5 text-zinc-500">Awa Diop</p>
+                  <p className="text-zinc-500">Tél: +221 77 000 00 00</p>
                 </div>
                 <div className="text-right">
-                  <p><span className="text-slate-500">Date : </span><b>{new Date().toLocaleDateString("fr-FR")}</b></p>
-                  <p><span className="text-slate-500">Statut : </span><b style={{ color: "#10b981" }}>Payée</b></p>
-                  <p><span className="text-slate-500">Paiement : </span><b>Wave</b></p>
+                  <p><span className="text-zinc-500">Date : </span><b>{new Date().toLocaleDateString("fr-FR")}</b></p>
+                  <p><span className="text-zinc-500">Statut : </span><b style={{ color: "#10b981" }}>Payée</b></p>
+                  <p><span className="text-zinc-500">Paiement : </span><b>Wave</b></p>
                 </div>
               </div>
 
               {/* Tableau */}
               <div className="mt-3 overflow-hidden rounded">
-                <div className="grid grid-cols-[1fr_auto_auto] gap-2 bg-slate-900 px-2 py-1 text-[7.5px] font-bold text-white">
+                <div className="grid grid-cols-[1fr_auto_auto] gap-2 bg-zinc-900 px-2 py-1 text-[7.5px] font-bold text-white">
                   <span>Description</span><span>Qté</span><span className="text-right">Montant</span>
                 </div>
                 {[
                   ["Riz parfumé 25 kg", "2", "25 000 FCFA"],
                   ["Huile 5 L", "1", "8 500 FCFA"],
                 ].map(([n, q, m], i) => (
-                  <div key={n} className={`grid grid-cols-[1fr_auto_auto] gap-2 px-2 py-1 text-[7.5px] ${i % 2 ? "bg-slate-50" : "bg-white"}`}>
+                  <div key={n} className={`grid grid-cols-[1fr_auto_auto] gap-2 px-2 py-1 text-[7.5px] ${i % 2 ? "bg-zinc-50" : "bg-white"}`}>
                     <span>{n}</span><span>{q}</span><span className="text-right">{m}</span>
                   </div>
                 ))}
@@ -279,11 +279,11 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
               {/* Pied */}
               <div className="mt-auto">
                 {s.mentions ? (
-                  <p className="mb-1 line-clamp-2 text-[6.5px] leading-snug text-slate-400">{s.mentions}</p>
+                  <p className="mb-1 line-clamp-2 text-[6.5px] leading-snug text-zinc-400">{s.mentions}</p>
                 ) : null}
-                <div className="border-t border-slate-100 pt-1">
+                <div className="border-t border-zinc-100 pt-1">
                   <div className="flex items-end justify-between gap-2">
-                    <p className="line-clamp-2 max-w-[70%] text-[7px] leading-snug text-slate-500">{s.merci}</p>
+                    <p className="line-clamp-2 max-w-[70%] text-[7px] leading-snug text-zinc-500">{s.merci}</p>
                     <p className="shrink-0 text-[7.5px] font-black">
                       Gestion<span className="text-[#EA580C]">Pro</span>
                     </p>

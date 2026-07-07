@@ -595,7 +595,7 @@ export function NouvelleCommandeClient({
                       placeholder="0"
                       value={remise || ""}
                       onChange={(e) => setRemise(Math.max(0, Number(e.target.value)))}
-                      className="h-9 rounded-lg bg-zinc-50 dark:bg-zinc-800 border-none font-extrabold text-xs text-right text-rose-500 px-3 max-w-[100px]"
+                      className="h-9 rounded-lg bg-zinc-50 dark:bg-zinc-800 border-none font-extrabold text-xs text-right text-red-500 px-3 max-w-[100px]"
                     />
                   </div>
 

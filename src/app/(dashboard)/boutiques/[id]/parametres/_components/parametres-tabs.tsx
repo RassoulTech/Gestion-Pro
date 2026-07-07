@@ -57,7 +57,7 @@ export function ParametresTabs({ defaultValue = "profil", sections }: Props) {
                 key={item.value}
                 value={item.value}
                 className={`inline-flex items-center gap-2 rounded-xl px-3 sm:px-4 py-2 text-xs font-bold whitespace-nowrap transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-zinc-800 ${
-                  isDanger ? "data-[state=active]:text-rose-600" : "data-[state=active]:text-zinc-900 dark:data-[state=active]:text-white"
+                  isDanger ? "data-[state=active]:text-red-600" : "data-[state=active]:text-zinc-900 dark:data-[state=active]:text-white"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />

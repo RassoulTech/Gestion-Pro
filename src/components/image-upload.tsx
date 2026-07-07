@@ -219,7 +219,7 @@ export function ImageUpload({ value, onChange, className, mode = "upload" }: Ima
             <button
               type="button"
               onClick={() => onChange("")}
-              className="h-9 w-9 rounded-xl bg-white text-rose-600 flex items-center justify-center shadow-md transform scale-90 group-hover:scale-100 transition-all duration-300 hover:bg-rose-600 hover:text-white"
+              className="h-9 w-9 rounded-xl bg-white text-red-600 flex items-center justify-center shadow-md transform scale-90 group-hover:scale-100 transition-all duration-300 hover:bg-red-600 hover:text-white"
               title="Supprimer"
             >
               <X className="h-4.5 w-4.5" />

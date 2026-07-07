@@ -80,14 +80,14 @@ export function ShopCatalog({
   return (
     <div className="space-y-6">
       {/* Search + categories (sticky) */}
-      <div className="sticky top-2 z-20 space-y-3 rounded-[1.5rem] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-3 sm:p-4 border border-slate-100 dark:border-zinc-800 shadow-sm">
+      <div className="sticky top-2 z-20 space-y-3 rounded-[1.5rem] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-3 sm:p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <Input
             value={search}
             onChange={(e) => changeSearch(e.target.value)}
             placeholder={t("searchPlaceholder")}
-            className="h-12 rounded-2xl border-slate-150 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-800/60 pl-11 font-semibold text-sm"
+            className="h-12 rounded-2xl border-zinc-150 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/60 pl-11 font-semibold text-sm"
           />
         </div>
 
@@ -107,11 +107,11 @@ export function ShopCatalog({
       {/* Grid */}
       {pageItems.length === 0 ? (
         <div className="py-20 text-center space-y-3">
-          <div className="mx-auto h-14 w-14 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-400">
+          <div className="mx-auto h-14 w-14 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
             <PackageOpen className="h-7 w-7" />
           </div>
-          <p className="font-extrabold text-slate-700 dark:text-zinc-200">{t("emptyTitle")}</p>
-          <p className="text-xs text-slate-500 dark:text-zinc-400">{t("emptyDesc")}</p>
+          <p className="font-extrabold text-zinc-700 dark:text-zinc-200">{t("emptyTitle")}</p>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">{t("emptyDesc")}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:gap-6 grid-cols-1 min-[370px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -132,18 +132,18 @@ export function ShopCatalog({
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
-            className="h-10 w-10 rounded-xl border border-slate-150 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-slate-600 dark:text-zinc-300 disabled:opacity-40"
+            className="h-10 w-10 rounded-xl border border-zinc-150 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-600 dark:text-zinc-300 disabled:opacity-40"
             aria-label={t("prevPage")}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <span className="px-4 h-10 inline-flex items-center rounded-xl bg-white dark:bg-zinc-900 border border-slate-150 dark:border-zinc-800 text-xs font-black text-slate-600 dark:text-zinc-300">
+          <span className="px-4 h-10 inline-flex items-center rounded-xl bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-800 text-xs font-black text-zinc-600 dark:text-zinc-300">
             {t("pageOf", { current: safePage, total: totalPages })}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage === totalPages}
-            className="h-10 w-10 rounded-xl border border-slate-150 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-slate-600 dark:text-zinc-300 disabled:opacity-40"
+            className="h-10 w-10 rounded-xl border border-zinc-150 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-600 dark:text-zinc-300 disabled:opacity-40"
             aria-label={t("nextPage")}
           >
             <ChevronRight className="h-4 w-4" />
@@ -177,7 +177,7 @@ function Chip({ active, onClick, label }: { active: boolean; onClick: () => void
         "shrink-0 px-4 h-9 rounded-full text-xs font-black whitespace-nowrap border transition-colors",
         active
           ? "bg-orange-500 text-white border-orange-500"
-          : "bg-white dark:bg-zinc-900 text-slate-600 dark:text-zinc-300 border-slate-150 dark:border-zinc-800 hover:border-orange-300"
+          : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border-zinc-150 dark:border-zinc-800 hover:border-orange-300"
       )}
     >
       {label}

@@ -107,7 +107,7 @@ export function ClientActions({ clientId, boutiqueId, clientNom, clientData }: C
       <Button
         variant="ghost"
         size="icon"
-        className="h-10 w-10 rounded-xl hover:bg-rose-50 text-rose-500 hover:text-rose-600 dark:hover:bg-rose-950"
+        className="h-10 w-10 rounded-xl hover:bg-red-50 text-red-500 hover:text-red-600 dark:hover:bg-red-950"
         onClick={() => setShowDeleteDialog(true)}
         aria-label={`Supprimer ${clientNom}`}
       >
@@ -174,7 +174,7 @@ export function ClientActions({ clientId, boutiqueId, clientNom, clientData }: C
             <AlertDialogCancel className="rounded-xl h-12 font-bold border-none bg-zinc-100 hover:bg-zinc-200">Annuler</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => { e.preventDefault(); handleDelete(); }}
-              className="rounded-xl h-12 font-black bg-rose-500 hover:bg-rose-600 shadow-lg shadow-rose-500/20"
+              className="rounded-xl h-12 font-black bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20"
               disabled={isDeleting}
             >
               {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}

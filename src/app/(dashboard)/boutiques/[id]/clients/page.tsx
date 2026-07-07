@@ -109,7 +109,7 @@ export default async function ClientsPage({ params, searchParams }: ClientsPageP
       <div className="space-y-6">
           <Card className="border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-zinc-900 overflow-hidden">
             <CardHeader className="p-8 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="text-sm text-slate-800 dark:text-zinc-200 font-extrabold">
+              <div className="text-sm text-zinc-800 dark:text-zinc-200 font-extrabold">
                 {q ? `Résultats de recherche pour "${q}"` : "Liste des clients"}
               </div>
               {q && (

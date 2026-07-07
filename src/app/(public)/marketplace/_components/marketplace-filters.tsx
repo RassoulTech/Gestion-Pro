@@ -141,7 +141,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       {/* Catégorie produit */}
       <Select value={currentCategorie} onValueChange={(v) => setParam("categorie", v)}>
-        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
           <SelectValue placeholder={t("categoryPlaceholder")} />
         </SelectTrigger>
         <SelectContent>
@@ -156,7 +156,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
 
       {/* Boutique */}
       <Select value={currentBoutique} onValueChange={(v) => setParam("boutique", v)}>
-        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
           <SelectValue placeholder={t("boutiquePlaceholder")} />
         </SelectTrigger>
         <SelectContent>
@@ -171,7 +171,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
 
       {/* Disponibilité */}
       <Select value={currentDispo} onValueChange={(v) => setParam("dispo", v)}>
-        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
+        <SelectTrigger className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
           <SelectValue placeholder={t("dispoPlaceholder")} />
         </SelectTrigger>
         <SelectContent>
@@ -190,9 +190,9 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
           placeholder={t("prixMin")}
           value={prixMin}
           onChange={(e) => setPrixMin(e.target.value)}
-          className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+          className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800"
         />
-        <span className="text-slate-400 font-bold">–</span>
+        <span className="text-zinc-400 font-bold">–</span>
         <Input
           type="number"
           inputMode="numeric"
@@ -200,7 +200,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
           placeholder={t("prixMax")}
           value={prixMax}
           onChange={(e) => setPrixMax(e.target.value)}
-          className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+          className="h-11 rounded-2xl font-semibold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800"
         />
       </div>
     </div>
@@ -211,15 +211,15 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
       {/* Barre de recherche globale */}
       <div className="relative group max-w-2xl mx-auto">
         <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-orange-600 rounded-[2rem] opacity-20 blur-2xl group-hover:opacity-40 group-focus-within:opacity-40 transition-all duration-700 pointer-events-none" />
-        <div className="relative bg-white/70 dark:bg-zinc-900/70 border border-slate-100 dark:border-zinc-800 p-3 sm:p-4 rounded-[2rem] shadow-2xl backdrop-blur-xl">
+        <div className="relative bg-white/70 dark:bg-zinc-900/70 border border-zinc-100 dark:border-zinc-800 p-3 sm:p-4 rounded-[2rem] shadow-2xl backdrop-blur-xl">
           <div className="relative flex items-center">
-            <Search className="absolute left-4 sm:left-5 h-5 w-5 sm:h-6 sm:w-6 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+            <Search className="absolute left-4 sm:left-5 h-5 w-5 sm:h-6 sm:w-6 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
             <Input
               type="text"
               placeholder={t("searchPlaceholder")}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="h-12 sm:h-16 pl-12 sm:pl-14 pr-6 rounded-2xl bg-transparent border-none text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 text-base sm:text-lg font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-12 sm:h-16 pl-12 sm:pl-14 pr-6 rounded-2xl bg-transparent border-none text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 text-base sm:text-lg font-bold focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             {isPending && (
               <div className="absolute right-5">
@@ -246,10 +246,10 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
                 "h-11 px-4 sm:px-5 py-2 rounded-2xl text-sm font-extrabold flex items-center gap-2 transition-all duration-300 transform active:scale-95 shrink-0",
                 isActive
                   ? "bg-brand text-white shadow-xl shadow-brand/20 hover:-translate-y-0.5"
-                  : "bg-white/80 dark:bg-zinc-900/80 border border-slate-100 dark:border-zinc-800/80 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 hover:-translate-y-0.5 shadow-sm"
+                  : "bg-white/80 dark:bg-zinc-900/80 border border-zinc-100 dark:border-zinc-800/80 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:-translate-y-0.5 shadow-sm"
               )}
             >
-              <Icon className={cn("w-4 h-4", isActive ? "text-white" : "text-slate-400 dark:text-zinc-500")} />
+              <Icon className={cn("w-4 h-4", isActive ? "text-white" : "text-zinc-400 dark:text-zinc-500")} />
               {t(`secteurs.${secteur.value}`)}
             </button>
           );
@@ -261,8 +261,8 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
         {/* Tri (toujours visible) */}
         <div className="flex items-center gap-2 sm:w-auto">
           <Select value={currentSort} onValueChange={(v) => setParam("sort", v, "recent")}>
-            <SelectTrigger className="h-11 w-full sm:w-52 rounded-2xl font-bold bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800">
-              <ArrowDownUp className="h-4 w-4 text-slate-400 mr-1" />
+            <SelectTrigger className="h-11 w-full sm:w-52 rounded-2xl font-bold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+              <ArrowDownUp className="h-4 w-4 text-zinc-400 mr-1" />
               <SelectValue placeholder={t("sortPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
@@ -284,9 +284,9 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
             <SheetTrigger asChild>
               <Button
                 variant="outline"
-                className="h-11 w-full rounded-2xl font-bold border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 justify-center"
+                className="h-11 w-full rounded-2xl font-bold border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 justify-center"
               >
-                <SlidersHorizontal className="h-4 w-4 mr-2 text-slate-400" />
+                <SlidersHorizontal className="h-4 w-4 mr-2 text-zinc-400" />
                 {t("filters")}
                 {activeFilterCount > 0 && (
                   <span className="ml-2 h-5 min-w-5 px-1.5 rounded-full bg-brand text-white text-[10px] font-black flex items-center justify-center">
@@ -306,7 +306,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
               <Button
                 variant="ghost"
                 onClick={resetFilters}
-                className="w-full rounded-2xl font-bold text-slate-500"
+                className="w-full rounded-2xl font-bold text-zinc-500"
               >
                 <X className="h-4 w-4 mr-1" />
                 {t("resetFilters")}
@@ -320,7 +320,7 @@ export function MarketplaceFilters({ categories, boutiques }: MarketplaceFilters
           <Button
             variant="ghost"
             onClick={resetFilters}
-            className="hidden lg:flex h-11 rounded-2xl font-bold text-slate-500 shrink-0"
+            className="hidden lg:flex h-11 rounded-2xl font-bold text-zinc-500 shrink-0"
           >
             <X className="h-4 w-4 mr-1" />
             {t("reset")}

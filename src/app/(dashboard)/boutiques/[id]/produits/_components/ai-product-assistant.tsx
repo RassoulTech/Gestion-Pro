@@ -143,7 +143,7 @@ export function AiProductAssistant({
             <span className="text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-200">Assistant IA Produit</span>
           </div>
           {quota && (
-            <span className={cn("text-[10px] font-black", disabled ? "text-rose-500" : "text-zinc-400")}>
+            <span className={cn("text-[10px] font-black", disabled ? "text-red-500" : "text-zinc-400")}>
               {quota.unlimited ? "Illimité" : `${quota.remaining} restante${quota.remaining > 1 ? "s" : ""}`}
             </span>
           )}
@@ -242,7 +242,7 @@ export function AiProductAssistant({
         )}
 
         {disabled && (
-          <p className="text-[11px] font-bold text-rose-500">
+          <p className="text-[11px] font-bold text-red-500">
             Quota IA mensuel atteint. Passez à un forfait supérieur pour continuer à utiliser l&apos;IA.
           </p>
         )}

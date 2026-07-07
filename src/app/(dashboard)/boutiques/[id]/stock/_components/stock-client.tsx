@@ -133,12 +133,12 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties, ava
         </Card>
 
         <Card className="border-none shadow-md bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden p-6 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-2xl bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center text-rose-500 shrink-0">
+          <div className="h-12 w-12 rounded-2xl bg-red-50 dark:bg-red-950/30 flex items-center justify-center text-red-500 shrink-0">
             <ArrowDownLeft className="h-6 w-6" />
           </div>
           <div>
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Sorties</p>
-            <p className="text-2xl font-black text-rose-600 dark:text-rose-400">-{totalSorties}</p>
+            <p className="text-2xl font-black text-red-600 dark:text-red-400">-{totalSorties}</p>
           </div>
         </Card>
 
@@ -212,17 +212,17 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties, ava
                               className={`rounded-xl px-3.5 py-1.5 font-black uppercase text-[10px] tracking-wider border border-transparent shadow-sm inline-flex items-center gap-1.5 ${
                                 isEntree
                                   ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                                  : "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                                  : "bg-red-500/10 text-red-600 border-red-500/20"
                               }`}
                             >
-                              <span className={`h-1.5 w-1.5 rounded-full ${isEntree ? "bg-emerald-500" : "bg-rose-500"}`} />
+                              <span className={`h-1.5 w-1.5 rounded-full ${isEntree ? "bg-emerald-500" : "bg-red-500"}`} />
                               {isEntree ? "Entrée" : "Sortie"}
                             </Badge>
                           </TableCell>
 
                           {/* Quantity Cell */}
                           <TableCell className="py-5 text-right font-black text-lg">
-                            <span className={isEntree ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}>
+                            <span className={isEntree ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}>
                               {isEntree ? "+" : "-"}
                               {m.quantite}
                             </span>
@@ -283,10 +283,10 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties, ava
                     className={`rounded-xl px-2.5 py-1 font-black uppercase text-[9px] tracking-wider border border-transparent shadow-sm inline-flex items-center gap-1.5 ${
                       isEntree
                         ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                        : "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                        : "bg-red-500/10 text-red-600 border-red-500/20"
                     }`}
                   >
-                    <span className={`h-1.5 w-1.5 rounded-full ${isEntree ? "bg-emerald-500" : "bg-rose-500"}`} />
+                    <span className={`h-1.5 w-1.5 rounded-full ${isEntree ? "bg-emerald-500" : "bg-red-500"}`} />
                     {isEntree ? "Entrée" : "Sortie"}
                   </Badge>
                 </div>
@@ -294,7 +294,7 @@ export function StockClient({ mouvements, total, totalEntrees, totalSorties, ava
                 <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
                   <div>
                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Quantité</span>
-                    <span className={cn("font-black text-lg", isEntree ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
+                    <span className={cn("font-black text-lg", isEntree ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400")}>
                       {isEntree ? "+" : "-"}{m.quantite}
                     </span>
                   </div>

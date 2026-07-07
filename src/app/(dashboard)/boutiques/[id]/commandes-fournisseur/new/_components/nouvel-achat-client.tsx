@@ -441,7 +441,7 @@ export function NouvelAchatClient({
                       <div className="min-w-0 pr-2">
                         <p className="font-black text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-brand transition-colors">{produit.nom}</p>
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{produit.code}</p>
-                        <p className="text-xs font-black text-rose-500 mt-1">PA: {formatCurrency(produit.prixAchat || 0)}</p>
+                        <p className="text-xs font-black text-red-500 mt-1">PA: {formatCurrency(produit.prixAchat || 0)}</p>
                       </div>
                       <div className="shrink-0 text-right">
                         <span className="inline-block text-[10px] font-black px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
@@ -502,7 +502,7 @@ export function NouvelAchatClient({
                             min={0}
                             value={item.prixUnitaire}
                             onChange={(e) => updatePrice(item.produitId, Number(e.target.value))}
-                            className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 font-extrabold text-xs px-2 w-full text-rose-500"
+                            className="h-8 rounded-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 font-extrabold text-xs px-2 w-full text-red-500"
                           />
                         </div>
 
@@ -526,7 +526,7 @@ export function NouvelAchatClient({
                 <div className="space-y-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
                   <div className="flex justify-between items-baseline">
                     <span className="text-sm font-black uppercase">Total Achat</span>
-                    <span className="text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight">
+                    <span className="text-2xl font-black text-red-600 dark:text-red-400 tracking-tight">
                       {formatCurrency(total)}
                     </span>
                   </div>

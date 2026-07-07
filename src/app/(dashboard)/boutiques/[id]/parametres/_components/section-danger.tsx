@@ -71,9 +71,9 @@ export function SectionDanger({ boutiqueId, boutiqueNom, boutiqueStatut, stats }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-start gap-3 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30">
-        <AlertTriangle className="h-4 w-4 text-rose-600 mt-0.5 shrink-0" />
-        <p className="text-xs font-medium text-rose-800 dark:text-rose-200">
+      <div className="flex items-start gap-3 p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30">
+        <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
+        <p className="text-xs font-medium text-red-800 dark:text-red-200">
           Les actions de cette section sont sensibles et certaines sont <strong>irréversibles</strong>. Lisez attentivement avant de confirmer.
         </p>
       </div>
@@ -105,13 +105,13 @@ export function SectionDanger({ boutiqueId, boutiqueNom, boutiqueStatut, stats }
         </Button>
       </div>
 
-      <div className="rounded-2xl border-2 border-rose-200 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-950/10 p-5 sm:p-6 space-y-4">
+      <div className="rounded-2xl border-2 border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-950/10 p-5 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex-1">
-            <h4 className="text-sm font-black text-rose-700 dark:text-rose-400 flex items-center gap-2">
+            <h4 className="text-sm font-black text-red-700 dark:text-red-400 flex items-center gap-2">
               <Trash2 className="h-4 w-4" /> Supprimer définitivement la boutique
             </h4>
-            <p className="text-xs font-medium text-rose-700/80 dark:text-rose-300/70 mt-1 leading-relaxed">
+            <p className="text-xs font-medium text-red-700/80 dark:text-red-300/70 mt-1 leading-relaxed">
               Supprime <strong>{boutiqueNom}</strong> et toutes ses données : produits, commandes, clients, fournisseurs, dépenses, factures, mouvements stock. <strong>Cette action est irréversible.</strong>
             </p>
           </div>
@@ -133,21 +133,21 @@ export function SectionDanger({ boutiqueId, boutiqueNom, boutiqueStatut, stats }
               { label: "Clients", value: stats.clients },
               { label: "Factures", value: stats.factures },
             ].map((s) => (
-              <div key={s.label} className="rounded-xl bg-white/70 dark:bg-zinc-900/40 border border-rose-100 dark:border-rose-900/20 px-3 py-2 text-center">
-                <p className="text-base font-black text-rose-700 dark:text-rose-300 tabular-nums">{s.value}</p>
-                <p className="text-[9px] font-bold uppercase tracking-wider text-rose-500/70">{s.label}</p>
+              <div key={s.label} className="rounded-xl bg-white/70 dark:bg-zinc-900/40 border border-red-100 dark:border-red-900/20 px-3 py-2 text-center">
+                <p className="text-base font-black text-red-700 dark:text-red-300 tabular-nums">{s.value}</p>
+                <p className="text-[9px] font-bold uppercase tracking-wider text-red-500/70">{s.label}</p>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl border-2 border-rose-200 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-950/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="rounded-2xl border-2 border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-950/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex-1">
-          <h4 className="text-sm font-black text-rose-700 dark:text-rose-400 flex items-center gap-2">
+          <h4 className="text-sm font-black text-red-700 dark:text-red-400 flex items-center gap-2">
             <UserMinus className="h-4 w-4" /> Supprimer définitivement mon compte vendeur
           </h4>
-          <p className="text-xs font-medium text-rose-700/80 dark:text-rose-300/70 mt-1 leading-relaxed">
+          <p className="text-xs font-medium text-red-700/80 dark:text-red-300/70 mt-1 leading-relaxed">
             Supprime votre compte, toutes vos boutiques et l&apos;ensemble des données associées. <strong>Cette action est irréversible.</strong>
           </p>
         </div>
@@ -216,7 +216,7 @@ function DeleteBoutiqueDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-base font-black flex items-center gap-2 text-rose-600">
+          <DialogTitle className="text-base font-black flex items-center gap-2 text-red-600">
             <AlertTriangle className="h-4 w-4" /> Suppression définitive
           </DialogTitle>
           <DialogDescription className="text-xs leading-relaxed">
@@ -226,13 +226,13 @@ function DeleteBoutiqueDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-              Tapez <span className="font-black text-rose-600">SUPPRIMER MA BOUTIQUE</span> pour confirmer
+              Tapez <span className="font-black text-red-600">SUPPRIMER MA BOUTIQUE</span> pour confirmer
             </label>
             <Input
               autoComplete="off"
               value={confirmation}
               onChange={(e) => setConfirmation(e.target.value)}
-              className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-rose-500"
+              className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-red-500"
               placeholder="SUPPRIMER MA BOUTIQUE"
               required
             />
@@ -245,7 +245,7 @@ function DeleteBoutiqueDialog({
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 pr-12 font-semibold text-sm focus:ring-2 focus:ring-rose-500"
+                className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 pr-12 font-semibold text-sm focus:ring-2 focus:ring-red-500"
                 required
               />
               <button
@@ -300,7 +300,7 @@ function DeleteAccountDialog({ open, onOpenChange }: { open: boolean; onOpenChan
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-base font-black flex items-center gap-2 text-rose-600">
+          <DialogTitle className="text-base font-black flex items-center gap-2 text-red-600">
             <AlertTriangle className="h-4 w-4" /> Suppression du compte
           </DialogTitle>
           <DialogDescription className="text-xs leading-relaxed">
@@ -310,13 +310,13 @@ function DeleteAccountDialog({ open, onOpenChange }: { open: boolean; onOpenChan
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-              Tapez <span className="font-black text-rose-600">SUPPRIMER</span> pour confirmer
+              Tapez <span className="font-black text-red-600">SUPPRIMER</span> pour confirmer
             </label>
             <Input
               autoComplete="off"
               value={confirmation}
               onChange={(e) => setConfirmation(e.target.value)}
-              className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-rose-500"
+              className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-red-500"
               placeholder="SUPPRIMER"
               required
             />
@@ -329,7 +329,7 @@ function DeleteAccountDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 pr-12 font-semibold text-sm focus:ring-2 focus:ring-rose-500"
+                className="h-11 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 pr-12 font-semibold text-sm focus:ring-2 focus:ring-red-500"
                 required
               />
               <button

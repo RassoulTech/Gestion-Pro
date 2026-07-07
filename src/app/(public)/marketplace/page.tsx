@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
 import { MarketplaceFilters } from "./_components/marketplace-filters";
 import { MarketplaceProductCard } from "./_components/marketplace-product-card";
-import { MarketplacePagination } from "@/components/ui/marketplace-pagination";
+import { SimplePagination } from "@/components/ui/simple-pagination";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("marketplace");
@@ -24,7 +24,7 @@ function ProductGridSkeleton() {
   return (
     <div className="grid gap-4 sm:gap-6 grid-cols-1 min-[370px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
-        <Skeleton key={i} className="h-80 rounded-2xl sm:rounded-[2rem] bg-slate-100 dark:bg-zinc-800" />
+        <Skeleton key={i} className="h-80 rounded-2xl sm:rounded-[2rem] bg-zinc-100 dark:bg-zinc-800" />
       ))}
     </div>
   );
@@ -75,7 +75,7 @@ async function ProductGrid({
   if (data.length === 0) {
     const t = await getTranslations("marketplace");
     return (
-      <div className="py-20 bg-white dark:bg-zinc-900 border border-dashed border-slate-200 dark:border-zinc-800 rounded-[2rem] shadow-sm">
+      <div className="py-20 bg-white dark:bg-zinc-900 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-[2rem] shadow-sm">
         <EmptyState
           icon={PackageSearch}
           title={t("emptyTitle")}
@@ -93,7 +93,7 @@ async function ProductGrid({
         ))}
       </div>
 
-      <MarketplacePagination totalItems={total} itemsPerPage={perPage} currentPage={currentPage} />
+      <SimplePagination totalItems={total} itemsPerPage={perPage} currentPage={currentPage} />
     </div>
   );
 }
@@ -128,12 +128,12 @@ export default async function MarketplacePage({
             {t("eyebrow")}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] relative z-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.15] relative z-10">
             {t("titleLead")} <br />
             <span className="bg-gradient-to-r from-[#EA580C] to-orange-500 bg-clip-text text-transparent">{t("titleHighlight")}</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-500 dark:text-zinc-400 max-w-lg mx-auto leading-relaxed relative z-10 font-medium">
+          <p className="text-sm sm:text-base text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto leading-relaxed relative z-10 font-medium">
             {t("subtitle")}
           </p>
         </div>

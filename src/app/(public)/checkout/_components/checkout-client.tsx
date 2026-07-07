@@ -205,7 +205,7 @@ export function CheckoutClient() {
 
   const busy = isExecuting || registering;
   const fieldClass =
-    "h-12 rounded-xl bg-slate-50 dark:bg-zinc-800 border-none font-medium focus-visible:ring-2 focus-visible:ring-orange-500/40";
+    "h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none font-medium focus-visible:ring-2 focus-visible:ring-orange-500/40";
   const errClass = "text-xs font-semibold text-red-500 mt-1";
 
   return (
@@ -218,16 +218,16 @@ export function CheckoutClient() {
           </Link>
         </Button>
 
-        <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-slate-900 dark:text-white mb-3">
+        <h1 className="text-fluid-h1 sm:text-fluid-display font-black tracking-tight text-zinc-900 dark:text-white mb-3">
           {t("title")}
         </h1>
-        <p className="text-fluid-body font-semibold text-slate-400 mb-8">
+        <p className="text-fluid-body font-semibold text-zinc-400 mb-8">
           {t("subtitle")}
         </p>
 
         <div className="grid gap-8 lg:grid-cols-12 items-start">
           {/* Formulaire */}
-          <div className="lg:col-span-8 bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-[2rem] border border-slate-100 dark:border-zinc-800 shadow-xl relative overflow-hidden">
+          <div className="lg:col-span-8 bg-white dark:bg-zinc-900 p-6 sm:p-8 rounded-[2rem] border border-zinc-100 dark:border-zinc-800 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 bg-orange-500/5 blur-3xl rounded-full pointer-events-none" />
 
             {/* Bandeau optionnel : connexion (ne bloque jamais la commande) */}
@@ -239,8 +239,8 @@ export function CheckoutClient() {
                 </p>
               </div>
             ) : (
-              <div className="relative z-10 mb-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800 px-4 py-3">
-                <p className="text-xs font-bold text-slate-500 dark:text-zinc-400">
+              <div className="relative z-10 mb-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800 px-4 py-3">
+                <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
                   {t("alreadyClient")}
                 </p>
                 <Link
@@ -261,7 +261,7 @@ export function CheckoutClient() {
               noValidate
             >
               <div className="space-y-4">
-                <h2 className="text-xl font-bold border-b border-slate-100 dark:border-zinc-800 pb-2">
+                <h2 className="text-xl font-bold border-b border-zinc-100 dark:border-zinc-800 pb-2">
                   {t("yourInfo")}
                 </h2>
 
@@ -291,7 +291,7 @@ export function CheckoutClient() {
                     placeholder={t("emailPlaceholder")}
                     className={`mt-1.5 ${fieldClass}`}
                   />
-                  <p className="text-[11px] font-medium text-slate-400 mt-1">
+                  <p className="text-[11px] font-medium text-zinc-400 mt-1">
                     {t("emailHint")}
                   </p>
                   {form.formState.errors.emailClient && (
@@ -304,7 +304,7 @@ export function CheckoutClient() {
                   <div className="mt-1.5 flex gap-2">
                     <select
                       {...form.register("indicatif")}
-                      className="h-12 rounded-xl bg-slate-50 dark:bg-zinc-800 border-none font-semibold text-sm px-3 shrink-0 max-w-[8.5rem] focus-visible:ring-2 focus-visible:ring-orange-500/40 outline-none"
+                      className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none font-semibold text-sm px-3 shrink-0 max-w-[8.5rem] focus-visible:ring-2 focus-visible:ring-orange-500/40 outline-none"
                       aria-label={t("phoneAria")}
                     >
                       {INDICATIFS.map((i) => (
@@ -331,7 +331,7 @@ export function CheckoutClient() {
                   <Textarea
                     {...form.register("adresseLivraison")}
                     placeholder={t("addressPlaceholder")}
-                    className="mt-1.5 rounded-xl bg-slate-50 dark:bg-zinc-800 border-none min-h-[88px] focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                    className="mt-1.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none min-h-[88px] focus-visible:ring-2 focus-visible:ring-orange-500/40"
                   />
                   {form.formState.errors.adresseLivraison && (
                     <p className={errClass}>{form.formState.errors.adresseLivraison.message}</p>
@@ -360,23 +360,23 @@ export function CheckoutClient() {
                   <Textarea
                     {...form.register("notes")}
                     placeholder={t("commentPlaceholder")}
-                    className="mt-1.5 rounded-xl bg-slate-50 dark:bg-zinc-800 border-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                    className="mt-1.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
                   />
                 </div>
               </div>
 
               {/* Création de compte facultative (masquée si déjà connecté) */}
               {!isAuthenticated && (
-                <div className="rounded-2xl border border-slate-100 dark:border-zinc-800 bg-slate-50/60 dark:bg-zinc-800/40 p-4 space-y-3">
+                <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-800/40 p-4 space-y-3">
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       {...form.register("createAccount")}
                       className="mt-1 h-4 w-4 rounded accent-orange-600 cursor-pointer"
                     />
-                    <span className="text-sm font-bold text-slate-700 dark:text-zinc-200">
+                    <span className="text-sm font-bold text-zinc-700 dark:text-zinc-200">
                       {t("createAccount")}
-                      <span className="block text-[11px] font-medium text-slate-400">
+                      <span className="block text-[11px] font-medium text-zinc-400">
                         {t("createAccountHint")}
                       </span>
                     </span>
@@ -398,7 +398,7 @@ export function CheckoutClient() {
               )}
 
               <div className="space-y-4 pt-2">
-                <h2 className="text-xl font-bold border-b border-slate-100 dark:border-zinc-800 pb-2">{t("payment")}</h2>
+                <h2 className="text-xl font-bold border-b border-zinc-100 dark:border-zinc-800 pb-2">{t("payment")}</h2>
                 <RadioGroup
                   defaultValue="CASH_ON_DELIVERY"
                   onValueChange={(val: string) =>
@@ -431,13 +431,13 @@ export function CheckoutClient() {
                       htmlFor={m.id}
                       className={cn(
                         "group relative flex flex-col items-center justify-start gap-2 rounded-2xl border-2 p-3 sm:p-4 cursor-pointer text-center min-h-[7rem]",
-                        "border-slate-200 dark:border-zinc-800 transition-all hover:border-orange-400 hover:shadow-sm active:scale-[.99]",
+                        "border-zinc-200 dark:border-zinc-800 transition-all hover:border-orange-400 hover:shadow-sm active:scale-[.99]",
                         "[&:has(:checked)]:border-orange-500 [&:has(:checked)]:bg-orange-50 dark:[&:has(:checked)]:bg-orange-500/10 [&:has(:checked)]:ring-2 [&:has(:checked)]:ring-orange-500/25 [&:has(:checked)]:shadow-md"
                       )}
                     >
                       <RadioGroupItem value={m.value} id={m.id} className="sr-only" />
                       {/* Pastille claire : garde Wave (bleu) ET Orange Money (texte noir) nets sur thème clair ET sombre. */}
-                      <span className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200 shadow-sm overflow-hidden p-1.5 shrink-0">
+                      <span className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-white ring-1 ring-zinc-200 shadow-sm overflow-hidden p-1.5 shrink-0">
                         {m.logo}
                       </span>
                       <span className="font-bold text-xs sm:text-sm leading-tight">{m.label}</span>
@@ -450,7 +450,7 @@ export function CheckoutClient() {
                     </Label>
                   ))}
                 </RadioGroup>
-                <p className="text-[11px] font-medium text-slate-400">
+                <p className="text-[11px] font-medium text-zinc-400">
                   {t("paytechNote")}
                 </p>
               </div>
@@ -471,7 +471,7 @@ export function CheckoutClient() {
           </div>
 
           {/* Résumé */}
-          <div className="lg:col-span-4 bg-slate-50 dark:bg-zinc-800/50 p-6 sm:p-8 rounded-[2rem] border border-slate-100 dark:border-zinc-800 lg:sticky lg:top-28">
+          <div className="lg:col-span-4 bg-zinc-50 dark:bg-zinc-800/50 p-6 sm:p-8 rounded-[2rem] border border-zinc-100 dark:border-zinc-800 lg:sticky lg:top-28">
             <h2 className="text-xl font-black mb-6 flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-orange-500" />
               {t("summary")}
@@ -480,20 +480,20 @@ export function CheckoutClient() {
               {items.map((item) => (
                 <div key={item.produitId} className="flex items-center justify-between">
                   <div className="flex flex-col">
-                    <span className="font-bold text-sm text-slate-800 dark:text-zinc-200">{item.nom}</span>
-                    <span className="text-xs text-slate-500 font-medium">{item.boutiqueNom}</span>
+                    <span className="font-bold text-sm text-zinc-800 dark:text-zinc-200">{item.nom}</span>
+                    <span className="text-xs text-zinc-500 font-medium">{item.boutiqueNom}</span>
                   </div>
                   <div className="flex flex-col items-end">
                     <span className="font-black">{formatCurrency(item.prixUnitaire * item.quantite)}</span>
-                    <span className="text-xs text-slate-400 font-bold">{t("qty", { count: item.quantite })}</span>
+                    <span className="text-xs text-zinc-400 font-bold">{t("qty", { count: item.quantite })}</span>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-slate-200 dark:border-zinc-700 mt-6 pt-6">
+            <div className="border-t border-zinc-200 dark:border-zinc-700 mt-6 pt-6">
               <div className="flex justify-between items-center text-lg">
-                <span className="font-bold text-slate-500">{t("totalToPay")}</span>
+                <span className="font-bold text-zinc-500">{t("totalToPay")}</span>
                 <span className="font-black text-2xl text-orange-600 dark:text-orange-400">
                   {formatCurrency(totalPrice)}
                 </span>

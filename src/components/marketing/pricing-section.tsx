@@ -228,7 +228,7 @@ export function PricingSection() {
                         className={cn(
                           "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300",
                           !isIncluded
-                            ? "bg-rose-500/5 border-rose-500/10 text-rose-500/30"
+                            ? "bg-red-500/5 border-red-500/10 text-red-500/30"
                             : isHighlight
                             ? "bg-orange-600/10 border-orange-500/20 text-orange-600 dark:text-orange-400"
                             : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"

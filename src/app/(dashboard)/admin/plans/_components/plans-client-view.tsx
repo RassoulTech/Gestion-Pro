@@ -25,7 +25,7 @@ function getPlanDesign(nomPlan: string) {
       return {
         gradient: "from-orange-500/10 via-orange-600/5 to-transparent",
         accentBorder: "border-orange-500/40 dark:border-orange-500/60 shadow-[0_0_20px_rgba(249,115,22,0.15)]",
-        textClass: "text-slate-950 dark:text-slate-50",
+        textClass: "text-zinc-950 dark:text-zinc-50",
         badgeColor: "bg-gradient-to-r from-orange-500 to-orange-600 text-white border-none shadow-[0_0_12px_rgba(249,115,22,0.4)]",
         icon: Flame,
         iconColor: "text-orange-500 dark:text-orange-400",
@@ -35,20 +35,20 @@ function getPlanDesign(nomPlan: string) {
     }
   if (name.includes("gratuit") || name.includes("free") || name.includes("essai") || name.includes("basic")) {
     return {
-      gradient: "from-slate-500/5 to-transparent",
-      accentBorder: "border-slate-200/50 dark:border-slate-700/60",
-      textClass: "text-slate-950 dark:text-slate-50",
-      badgeColor: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200/50 dark:border-slate-700",
+      gradient: "from-zinc-500/5 to-transparent",
+      accentBorder: "border-zinc-200/50 dark:border-zinc-700/60",
+      textClass: "text-zinc-950 dark:text-zinc-50",
+      badgeColor: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border-zinc-200/50 dark:border-zinc-700",
       icon: ShieldCheck,
-      iconColor: "text-slate-500 dark:text-slate-400",
-      bgGlow: "bg-slate-500/5",
+      iconColor: "text-zinc-500 dark:text-zinc-400",
+      bgGlow: "bg-zinc-500/5",
       popular: false,
     };
   }
   return {
     gradient: "from-orange-500/5 via-amber-500/2 to-transparent",
     accentBorder: "border-orange-500/20 dark:border-orange-800/40 shadow-[0_0_15px_rgba(99,102,241,0.05)]",
-    textClass: "text-slate-950 dark:text-slate-50",
+    textClass: "text-zinc-950 dark:text-zinc-50",
     badgeColor: "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-900/30",
     icon: Star,
     iconColor: "text-orange-500 dark:text-orange-400",
@@ -71,7 +71,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className={`relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/70 p-8 shadow-xl backdrop-blur-xl dark:bg-slate-900/70 transition-all duration-300 ${design.accentBorder}`}
+            className={`relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/70 p-8 shadow-xl backdrop-blur-xl dark:bg-zinc-900/70 transition-all duration-300 ${design.accentBorder}`}
           >
             {/* Background Glow Effect */}
             <div className={`absolute -right-16 -top-16 h-36 w-36 rounded-full ${design.bgGlow} blur-3xl opacity-60`} />
@@ -89,14 +89,14 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
               {/* Header section of the pricing card */}
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200/20 shadow-inner">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200/20 shadow-inner">
                     <PlanIcon className={`h-5 w-5 ${design.iconColor}`} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 leading-tight">
+                    <h3 className="text-xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight">
                       {plan.nom}
                     </h3>
-                    <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest font-mono">
+                    <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-widest font-mono">
                       Tier #{index + 1}
                     </span>
                   </div>
@@ -114,13 +114,13 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
 
               {/* Pricing details */}
               <div className="mb-6 flex flex-wrap items-baseline gap-1.5">
-                <span className="text-3xl sm:text-4xl xl:text-5xl font-black tracking-tight text-slate-950 dark:text-slate-50 truncate">
+                <span className="text-3xl sm:text-4xl xl:text-5xl font-black tracking-tight text-zinc-950 dark:text-zinc-50 truncate">
                   {formatCurrency(plan.prix)}
                 </span>
-                <span className="text-sm font-bold text-slate-400 dark:text-slate-500">/ mois</span>
+                <span className="text-sm font-bold text-zinc-400 dark:text-zinc-500">/ mois</span>
               </div>
 
-              <div className="h-px bg-slate-100 dark:bg-slate-800/60 mb-6" />
+              <div className="h-px bg-zinc-100 dark:bg-zinc-800/60 mb-6" />
 
               {/* Quotas & Features */}
               <div className="space-y-4 mb-8">
@@ -128,7 +128,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                     <Check className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                  <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
                     {plan.maxBoutiques >= 999999 ? (
                       "Boutiques illimitées"
                     ) : (
@@ -141,12 +141,12 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                     <Check className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                  <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
                     {plan.maxProduits >= 999999 ? (
                       "Produits illimités"
                     ) : (
                       <>
-                        Jusqu&apos;à <span className="font-extrabold text-slate-950 dark:text-slate-50">{plan.maxProduits}</span> produits
+                        Jusqu&apos;à <span className="font-extrabold text-zinc-950 dark:text-zinc-50">{plan.maxProduits}</span> produits
                       </>
                     )}
                   </span>
@@ -157,7 +157,7 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
                     <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
                       <Check className="h-3.5 w-3.5" />
                     </div>
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                    <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
                       {plan.dureeEssaiJours} jours d&apos;essai gratuit
                     </span>
                   </div>
@@ -166,10 +166,10 @@ export function PlansClientView({ plans }: PlansClientViewProps) {
             </div>
 
             {/* Bottom metadata / call to action preview */}
-            <div className="mt-auto pt-4 border-t border-dashed border-slate-100 dark:border-slate-800/60">
-              <div className="flex justify-between items-center text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+            <div className="mt-auto pt-4 border-t border-dashed border-zinc-100 dark:border-zinc-800/60">
+              <div className="flex justify-between items-center text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                 <span>Auto-renouvelable</span>
-                <HelpCircle className="h-4 w-4 text-slate-300 dark:text-slate-700" />
+                <HelpCircle className="h-4 w-4 text-zinc-300 dark:text-zinc-700" />
               </div>
             </div>
           </motion.div>

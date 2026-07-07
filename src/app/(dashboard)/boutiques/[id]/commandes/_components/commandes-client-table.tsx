@@ -78,8 +78,8 @@ const statusMap: Record<Etat, { label: string; icon: typeof Clock; color: string
   ANNULEE: {
     label: "Annulée",
     icon: XCircle,
-    color: "text-rose-600 bg-rose-500/10 border-rose-500/30",
-    selectColor: "text-rose-700 dark:text-rose-300",
+    color: "text-red-600 bg-red-500/10 border-red-500/30",
+    selectColor: "text-red-700 dark:text-red-300",
   },
 };
 

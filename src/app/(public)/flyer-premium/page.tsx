@@ -105,32 +105,32 @@ export default function FlyerPremiumPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-zinc-950 flex flex-col items-center py-8 px-4 sm:px-6 relative">
+    <div className="min-h-screen bg-zinc-100 dark:bg-zinc-950 flex flex-col items-center py-8 px-4 sm:px-6 relative">
       {/* ── ACTION BAR (no print) ─────────────────────────────────────────── */}
-      <div className="w-full max-w-[210mm] mb-8 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg z-20 no-print">
+      <div className="w-full max-w-[210mm] mb-8 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg z-20 no-print">
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-slate-500 hover:text-slate-900 dark:hover:text-zinc-100 transition-all"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all"
             aria-label="Retour à l'accueil"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
-            <h1 className="text-sm font-bold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
+            <h1 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
               <span className="text-orange-600 font-extrabold uppercase text-[10px] tracking-widest px-2 py-0.5 rounded bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20">
                 Officiel
               </span>
               Flyer plateforme
             </h1>
-            <p className="text-xs text-slate-500">A4 / A5 · Imprimable · PNG HD</p>
+            <p className="text-xs text-zinc-500">A4 / A5 · Imprimable · PNG HD</p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => window.print()}
-            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 text-sm font-bold text-slate-700 dark:text-zinc-200 transition-all shadow-sm active:scale-95 cursor-pointer"
+            className="inline-flex h-10 items-center gap-2 px-4 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 text-sm font-bold text-zinc-700 dark:text-zinc-200 transition-all shadow-sm active:scale-95 cursor-pointer"
           >
             <Printer className="h-4 w-4" />
             <span>Imprimer / PDF</span>
@@ -149,21 +149,21 @@ export default function FlyerPremiumPage() {
       {/* ── FLYER CANVAS (A4 portrait) ────────────────────────────────────── */}
       <div
         id="flyer-canvas"
-        className="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 shadow-2xl relative flex flex-col overflow-hidden select-none"
+        className="w-full max-w-[210mm] min-h-[297mm] bg-white text-zinc-900 shadow-2xl relative flex flex-col overflow-hidden select-none"
         style={{ aspectRatio: "1 / 1.4142" }}
       >
         <div className="h-2 w-full bg-orange-600 shrink-0" />
 
         <div className="flex flex-1 flex-col p-8 sm:p-10">
           {/* ── En-tête ── */}
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
             <div className="flex items-center gap-2.5">
               <BrandLogo size={38} rounded={9} className="shadow-sm" />
-              <span className="text-2xl font-black tracking-tight text-slate-900">
+              <span className="text-2xl font-black tracking-tight text-zinc-900">
                 Gestion<span className="text-orange-600">Pro</span>
               </span>
             </div>
-            <div className="hidden sm:block text-xs font-black uppercase tracking-widest text-slate-400">
+            <div className="hidden sm:block text-xs font-black uppercase tracking-widest text-zinc-400">
               Commerçants · Boutiques · PME
             </div>
           </div>
@@ -173,11 +173,11 @@ export default function FlyerPremiumPage() {
             <span className="inline-block rounded-full bg-orange-50 border border-orange-100 px-3.5 py-1 text-[11px] font-black uppercase tracking-widest text-orange-600">
               Solution de gestion commerciale
             </span>
-            <h2 className="text-4xl sm:text-[2.9rem] font-black leading-[1.04] tracking-tight text-slate-950">
+            <h2 className="text-4xl sm:text-[2.9rem] font-black leading-[1.04] tracking-tight text-zinc-950">
               Gérez votre commerce<br />
               <span className="text-orange-600">simplement</span>
             </h2>
-            <p className="text-slate-600 text-base leading-relaxed max-w-xl">
+            <p className="text-zinc-600 text-base leading-relaxed max-w-xl">
               La solution moderne et tout-en-un pour piloter votre activité au
               quotidien — accessible depuis votre navigateur, sur mobile comme
               sur ordinateur.
@@ -188,7 +188,7 @@ export default function FlyerPremiumPage() {
           <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-12 items-start">
             {/* Bénéfices (valeur, pas seulement des fonctions) */}
             <div className="md:col-span-7">
-              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">
+              <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-3">
                 Ce que GestionPro vous apporte
               </h3>
               <ul className="space-y-2.5">
@@ -197,7 +197,7 @@ export default function FlyerPremiumPage() {
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-600 text-white">
                       <Check className="h-3 w-3" strokeWidth={4} />
                     </span>
-                    <span className="text-[15px] font-semibold text-slate-800 leading-snug">
+                    <span className="text-[15px] font-semibold text-zinc-800 leading-snug">
                       {b}
                     </span>
                   </li>
@@ -207,22 +207,22 @@ export default function FlyerPremiumPage() {
 
             {/* Mockup téléphone premium & réaliste */}
             <div className="md:col-span-5 flex items-start justify-center">
-              <div className="relative h-[372px] w-[184px] rounded-[34px] border-[5px] border-slate-900 bg-slate-900 shadow-2xl">
+              <div className="relative h-[372px] w-[184px] rounded-[34px] border-[5px] border-zinc-900 bg-zinc-900 shadow-2xl">
                 {/* Dynamic island */}
                 <div className="absolute left-1/2 top-2 z-20 h-3.5 w-16 -translate-x-1/2 rounded-full bg-black" />
-                <div className="flex h-full w-full flex-col overflow-hidden rounded-[28px] bg-slate-50 text-slate-900">
+                <div className="flex h-full w-full flex-col overflow-hidden rounded-[28px] bg-zinc-50 text-zinc-900">
                   {/* Status bar */}
-                  <div className="flex items-center justify-between px-3 pt-2 pb-1 text-[7px] font-bold text-slate-500">
+                  <div className="flex items-center justify-between px-3 pt-2 pb-1 text-[7px] font-bold text-zinc-500">
                     <span>14:32</span>
                     <span className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-                      <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
                       <span>100%</span>
                     </span>
                   </div>
 
                   {/* App header */}
-                  <div className="flex items-center justify-between border-b border-slate-100 bg-white px-3 py-2">
+                  <div className="flex items-center justify-between border-b border-zinc-100 bg-white px-3 py-2">
                     <div className="flex items-center gap-1.5">
                       <BrandLogo size={16} rounded={4} />
                       <span className="text-[9px] font-black tracking-tighter">
@@ -250,23 +250,23 @@ export default function FlyerPremiumPage() {
 
                     {/* Deux tuiles */}
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="rounded-xl border border-slate-100 bg-white p-2">
-                        <p className="text-[6.5px] font-bold uppercase tracking-wide text-slate-400">
+                      <div className="rounded-xl border border-zinc-100 bg-white p-2">
+                        <p className="text-[6.5px] font-bold uppercase tracking-wide text-zinc-400">
                           Bénéfice net
                         </p>
-                        <p className="text-[11px] font-black text-slate-900">48 000 F</p>
+                        <p className="text-[11px] font-black text-zinc-900">48 000 F</p>
                       </div>
-                      <div className="rounded-xl border border-slate-100 bg-white p-2">
-                        <p className="text-[6.5px] font-bold uppercase tracking-wide text-slate-400">
+                      <div className="rounded-xl border border-zinc-100 bg-white p-2">
+                        <p className="text-[6.5px] font-bold uppercase tracking-wide text-zinc-400">
                           Commandes
                         </p>
-                        <p className="text-[11px] font-black text-slate-900">23</p>
+                        <p className="text-[11px] font-black text-zinc-900">23</p>
                       </div>
                     </div>
 
                     {/* Mini graphe */}
-                    <div className="rounded-xl border border-slate-100 bg-white p-2">
-                      <p className="text-[6.5px] font-bold text-slate-500">
+                    <div className="rounded-xl border border-zinc-100 bg-white p-2">
+                      <p className="text-[6.5px] font-bold text-zinc-500">
                         7 derniers jours
                       </p>
                       <div className="mt-1 flex h-9 items-end gap-1">
@@ -281,27 +281,27 @@ export default function FlyerPremiumPage() {
                     </div>
 
                     {/* Dernières ventes */}
-                    <div className="rounded-xl border border-slate-100 bg-white p-2">
-                      <p className="mb-1 text-[6.5px] font-bold text-slate-500">
+                    <div className="rounded-xl border border-zinc-100 bg-white p-2">
+                      <p className="mb-1 text-[6.5px] font-bold text-zinc-500">
                         Dernières ventes
                       </p>
                       <div className="flex items-center justify-between text-[7px]">
-                        <span className="font-semibold text-slate-700">Café Touba ×3</span>
-                        <span className="font-black text-slate-900">4 500 F</span>
+                        <span className="font-semibold text-zinc-700">Café Touba ×3</span>
+                        <span className="font-black text-zinc-900">4 500 F</span>
                       </div>
                       <div className="mt-1 flex items-center justify-between text-[7px]">
-                        <span className="font-semibold text-slate-700">Savon de Marseille</span>
-                        <span className="font-black text-slate-900">2 500 F</span>
+                        <span className="font-semibold text-zinc-700">Savon de Marseille</span>
+                        <span className="font-black text-zinc-900">2 500 F</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Barre d'onglets */}
-                  <div className="flex items-center justify-around border-t border-slate-100 bg-white py-1.5">
+                  <div className="flex items-center justify-around border-t border-zinc-100 bg-white py-1.5">
                     <LayoutDashboard className="h-3.5 w-3.5 text-orange-600" />
-                    <Package className="h-3.5 w-3.5 text-slate-300" />
-                    <ShoppingCart className="h-3.5 w-3.5 text-slate-300" />
-                    <BarChart3 className="h-3.5 w-3.5 text-slate-300" />
+                    <Package className="h-3.5 w-3.5 text-zinc-300" />
+                    <ShoppingCart className="h-3.5 w-3.5 text-zinc-300" />
+                    <BarChart3 className="h-3.5 w-3.5 text-zinc-300" />
                   </div>
                 </div>
               </div>
@@ -309,8 +309,8 @@ export default function FlyerPremiumPage() {
           </div>
 
           {/* ── Moyens de paiement ── */}
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-slate-100 bg-slate-50/60 px-5 py-3">
-            <span className="text-[11px] font-black uppercase tracking-widest text-slate-500">
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-zinc-100 bg-zinc-50/60 px-5 py-3">
+            <span className="text-[11px] font-black uppercase tracking-widest text-zinc-500">
               Paiement Mobile Money
             </span>
             <div className="flex items-center gap-3">
@@ -329,7 +329,7 @@ export default function FlyerPremiumPage() {
                   className="h-28 w-28 object-contain"
                 />
               ) : (
-                <div className="h-28 w-28 animate-pulse rounded bg-slate-100" />
+                <div className="h-28 w-28 animate-pulse rounded bg-zinc-100" />
               )}
             </div>
             <div className="min-w-0">
@@ -347,7 +347,7 @@ export default function FlyerPremiumPage() {
         </div>
 
         {/* ── Pied de page : contact (div → conservé à l'impression) ── */}
-        <div className="border-t border-slate-100 px-8 sm:px-10 py-4">
+        <div className="border-t border-zinc-100 px-8 sm:px-10 py-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <a
               href={waLink}
@@ -359,38 +359,38 @@ export default function FlyerPremiumPage() {
                 <WhatsAppIcon className="h-4 w-4" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                <span className="block text-[10px] font-bold uppercase tracking-wide text-zinc-400">
                   WhatsApp
                 </span>
-                <span className="block text-[13px] font-black text-slate-900 truncate">
+                <span className="block text-[13px] font-black text-zinc-900 truncate">
                   {phone}
                 </span>
               </span>
             </a>
 
             <a href={`tel:${phoneIntl}`} className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700 border border-zinc-200">
                 <Phone className="h-4 w-4" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                <span className="block text-[10px] font-bold uppercase tracking-wide text-zinc-400">
                   Téléphone
                 </span>
-                <span className="block text-[13px] font-black text-slate-900 truncate">
+                <span className="block text-[13px] font-black text-zinc-900 truncate">
                   {phone}
                 </span>
               </span>
             </a>
 
             <a href={`mailto:${email}`} className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-700 border border-zinc-200">
                 <Mail className="h-4 w-4" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                <span className="block text-[10px] font-bold uppercase tracking-wide text-zinc-400">
                   Email
                 </span>
-                <span className="block text-[13px] font-black text-slate-900 truncate">
+                <span className="block text-[13px] font-black text-zinc-900 truncate">
                   {email}
                 </span>
               </span>

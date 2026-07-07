@@ -480,9 +480,18 @@
       "titleEnd": "africain.",
       "subtitle": "GestionPro est né d'un constat simple : la gestion d'une boutique physique ou en ligne en Afrique de l'Ouest ne devrait pas être un casse-tête quotidien.",
       "stats": [
-        { "value": "10K+", "label": "Boutiques digitalisées" },
-        { "value": "15M+", "label": "Ventes enregistrées" },
-        { "value": "99.9%", "label": "Taux de disponibilité" }
+        {
+          "value": "10K+",
+          "label": "Boutiques digitalisées"
+        },
+        {
+          "value": "15M+",
+          "label": "Ventes enregistrées"
+        },
+        {
+          "value": "99.9%",
+          "label": "Taux de disponibilité"
+        }
       ],
       "storyTitle": "Simplifier, connecter, automatiser.",
       "storyP1": "Créé par des ingénieurs passionnés basés au Sénégal et en Côte d'Ivoire, GestionPro répond à la complexité de la gestion manuelle. Du suivi de stock au grand livre des dépenses, nous éliminons les erreurs pour libérer votre temps.",
@@ -492,9 +501,18 @@
       "valuesTitle": "Nos Valeurs Fondamentales",
       "valuesSubtitle": "Ce qui nous guide au quotidien pour concevoir la meilleure plateforme de commerce d'Afrique.",
       "values": [
-        { "title": "Notre Vision", "description": "Permettre à chaque commerçant d'Afrique de l'Ouest d'accéder à des outils de gestion modernes, intuitifs et puissants pour propulser leur croissance." },
-        { "title": "Fiabilité Absolue", "description": "Nous construisons des technologies ultra-robustes sur lesquelles les entreprises peuvent compter chaque jour pour sécuriser leurs transactions et stocks." },
-        { "title": "Proximité client", "description": "Nous sommes fiers de concevoir notre solution en pensant d'abord aux réalités et aux besoins des entrepreneurs locaux de la zone UEMOA." }
+        {
+          "title": "Notre Vision",
+          "description": "Permettre à chaque commerçant d'Afrique de l'Ouest d'accéder à des outils de gestion modernes, intuitifs et puissants pour propulser leur croissance."
+        },
+        {
+          "title": "Fiabilité Absolue",
+          "description": "Nous construisons des technologies ultra-robustes sur lesquelles les entreprises peuvent compter chaque jour pour sécuriser leurs transactions et stocks."
+        },
+        {
+          "title": "Proximité client",
+          "description": "Nous sommes fiers de concevoir notre solution en pensant d'abord aux réalités et aux besoins des entrepreneurs locaux de la zone UEMOA."
+        }
       ],
       "ctaTitle": "Prêt à propulser la croissance de votre boutique ?",
       "ctaText": "Rejoignez des milliers de marchands africains qui font confiance à GestionPro pour digitaliser et piloter leurs activités en toute simplicité.",
@@ -517,10 +535,30 @@
         "tips": "Conseils Pro"
       },
       "articles": [
-        { "title": "Comment gérer ses stocks en période de fêtes de fin d'année au Sénégal", "excerpt": "La fin d'année est synonyme de forte demande. Découvrez nos stratégies incontournables pour anticiper vos approvisionnements et éviter les ruptures de stock.", "date": "15 Mai 2026", "readTime": "6 min" },
-        { "title": "Guide complet de la facturation et calcul de la TVA 18% en zone UEMOA", "excerpt": "Comprendre et appliquer correctement la TVA de 18% est crucial pour votre conformité fiscale. Suivez notre guide pas-à-pas pour éviter tout redressement.", "date": "12 Mai 2026", "readTime": "8 min" },
-        { "title": "5 astuces pour optimiser les livraisons de votre e-boutique à Abidjan", "excerpt": "La logistique du dernier kilomètre est le principal défi du e-commerce en Côte d'Ivoire. Voici comment réduire vos délais et satisfaire vos clients.", "date": "08 Mai 2026", "readTime": "5 min" },
-        { "title": "Pourquoi digitaliser les finances de votre commerce physique est urgent", "excerpt": "Le passage des carnets papier à un système de gestion automatisé multiplie par deux la rentabilité des commerçants. Découvrez pourquoi et comment sauter le pas.", "date": "02 Mai 2026", "readTime": "7 min" }
+        {
+          "title": "Comment gérer ses stocks en période de fêtes de fin d'année au Sénégal",
+          "excerpt": "La fin d'année est synonyme de forte demande. Découvrez nos stratégies incontournables pour anticiper vos approvisionnements et éviter les ruptures de stock.",
+          "date": "15 Mai 2026",
+          "readTime": "6 min"
+        },
+        {
+          "title": "Guide complet de la facturation et calcul de la TVA 18% en zone UEMOA",
+          "excerpt": "Comprendre et appliquer correctement la TVA de 18% est crucial pour votre conformité fiscale. Suivez notre guide pas-à-pas pour éviter tout redressement.",
+          "date": "12 Mai 2026",
+          "readTime": "8 min"
+        },
+        {
+          "title": "5 astuces pour optimiser les livraisons de votre e-boutique à Abidjan",
+          "excerpt": "La logistique du dernier kilomètre est le principal défi du e-commerce en Côte d'Ivoire. Voici comment réduire vos délais et satisfaire vos clients.",
+          "date": "08 Mai 2026",
+          "readTime": "5 min"
+        },
+        {
+          "title": "Pourquoi digitaliser les finances de votre commerce physique est urgent",
+          "excerpt": "Le passage des carnets papier à un système de gestion automatisé multiplie par deux la rentabilité des commerçants. Découvrez pourquoi et comment sauter le pas.",
+          "date": "02 Mai 2026",
+          "readTime": "7 min"
+        }
       ]
     },
     "support": {
@@ -543,14 +581,46 @@
         "eboutique": "E-Boutique"
       },
       "faqs": [
-        { "category": "getting-started", "q": "Comment créer ma première boutique sur GestionPro ?", "a": "Après votre inscription, cliquez sur 'Créer une boutique' depuis votre tableau de bord central. Saisissez le nom de votre boutique, choisissez votre devise (par défaut le FCFA pour la zone UEMOA), puis sélectionnez votre secteur d'activité parmi notre liste enrichie. Votre espace de gestion est instantanément configuré !" },
-        { "category": "getting-started", "q": "Puis-je gérer plusieurs boutiques physiques avec un seul compte ?", "a": "Oui ! La formule Premium de GestionPro vous permet de piloter jusqu'à 5 boutiques distinctes depuis un unique compte. Vous pouvez basculer d'une boutique à l'autre en un clic depuis le menu déroulant en haut de votre tableau de bord, sans avoir à vous reconnecter." },
-        { "category": "stock", "q": "Comment fonctionne le système d'alerte de stock bas ?", "a": "Pour chaque produit ajouté à votre catalogue, vous pouvez définir un 'Seuil d'alerte'. Dès que la quantité disponible en stock est inférieure ou égale à ce seuil suite à des ventes, une notification visuelle s'affiche en rouge sur votre tableau de bord pour vous éviter toute rupture de stock." },
-        { "category": "stock", "q": "Puis-je importer mon catalogue produit depuis un fichier Excel ?", "a": "Absolument. Depuis le module 'Stocks', cliquez sur 'Importer' et téléchargez notre modèle de fichier Excel/CSV standard. Remplissez les colonnes (Désignation, Prix d'achat, Prix de vente, Quantité, Seuil) puis importez-le pour configurer tout votre catalogue en quelques secondes." },
-        { "category": "billing", "q": "Comment activer le calcul automatique de la TVA UEMOA à 18% ?", "a": "Lors de la création de vos factures ou devis, cochez l'option 'Appliquer la TVA (18%)'. Notre algorithme calcule instantanément le montant HT, le montant de la TVA ainsi que le TTC total en Francs CFA, assurant une parfaite conformité avec la réglementation fiscale en vigueur." },
-        { "category": "billing", "q": "Puis-je exporter mes factures et dépenses pour mon comptable ?", "a": "Oui, tous vos journaux de ventes, de factures émises et de dépenses enregistrées sont exportables en un clic au format standard Excel/CSV ou PDF. Ces documents sont structurés de manière à simplifier la tenue de votre comptabilité de fin de mois." },
-        { "category": "eboutique", "q": "Comment ma boutique en ligne est-elle créée ?", "a": "Dès que vous ajoutez des produits dans votre catalogue et activez l'option 'Boutique en ligne', GestionPro génère automatiquement un site web e-commerce public pour votre marque. Vos clients locaux peuvent parcourir vos produits, remplir leur panier et soumettre leurs commandes directement vers votre WhatsApp !" },
-        { "category": "eboutique", "q": "Comment lier mon propre nom de domaine personnalisé ?", "a": "Les abonnés Premium peuvent associer leur propre nom de domaine (ex: maboutique.com). Rendez-vous dans Paramètres > E-Boutique, saisissez votre nom de domaine puis configurez les enregistrements DNS (CNAME et A) indiqués. Notre équipe s'occupe de l'installation du certificat SSL gratuit sous 24h." }
+        {
+          "category": "getting-started",
+          "q": "Comment créer ma première boutique sur GestionPro ?",
+          "a": "Après votre inscription, cliquez sur 'Créer une boutique' depuis votre tableau de bord central. Saisissez le nom de votre boutique, choisissez votre devise (par défaut le FCFA pour la zone UEMOA), puis sélectionnez votre secteur d'activité parmi notre liste enrichie. Votre espace de gestion est instantanément configuré !"
+        },
+        {
+          "category": "getting-started",
+          "q": "Puis-je gérer plusieurs boutiques physiques avec un seul compte ?",
+          "a": "Oui ! La formule Premium de GestionPro vous permet de piloter jusqu'à 5 boutiques distinctes depuis un unique compte. Vous pouvez basculer d'une boutique à l'autre en un clic depuis le menu déroulant en haut de votre tableau de bord, sans avoir à vous reconnecter."
+        },
+        {
+          "category": "stock",
+          "q": "Comment fonctionne le système d'alerte de stock bas ?",
+          "a": "Pour chaque produit ajouté à votre catalogue, vous pouvez définir un 'Seuil d'alerte'. Dès que la quantité disponible en stock est inférieure ou égale à ce seuil suite à des ventes, une notification visuelle s'affiche en rouge sur votre tableau de bord pour vous éviter toute rupture de stock."
+        },
+        {
+          "category": "stock",
+          "q": "Puis-je importer mon catalogue produit depuis un fichier Excel ?",
+          "a": "Absolument. Depuis le module 'Stocks', cliquez sur 'Importer' et téléchargez notre modèle de fichier Excel/CSV standard. Remplissez les colonnes (Désignation, Prix d'achat, Prix de vente, Quantité, Seuil) puis importez-le pour configurer tout votre catalogue en quelques secondes."
+        },
+        {
+          "category": "billing",
+          "q": "Comment activer le calcul automatique de la TVA UEMOA à 18% ?",
+          "a": "Lors de la création de vos factures ou devis, cochez l'option 'Appliquer la TVA (18%)'. Notre algorithme calcule instantanément le montant HT, le montant de la TVA ainsi que le TTC total en Francs CFA, assurant une parfaite conformité avec la réglementation fiscale en vigueur."
+        },
+        {
+          "category": "billing",
+          "q": "Puis-je exporter mes factures et dépenses pour mon comptable ?",
+          "a": "Oui, tous vos journaux de ventes, de factures émises et de dépenses enregistrées sont exportables en un clic au format standard Excel/CSV ou PDF. Ces documents sont structurés de manière à simplifier la tenue de votre comptabilité de fin de mois."
+        },
+        {
+          "category": "eboutique",
+          "q": "Comment ma boutique en ligne est-elle créée ?",
+          "a": "Dès que vous ajoutez des produits dans votre catalogue et activez l'option 'Boutique en ligne', GestionPro génère automatiquement un site web e-commerce public pour votre marque. Vos clients locaux peuvent parcourir vos produits, remplir leur panier et soumettre leurs commandes directement vers votre WhatsApp !"
+        },
+        {
+          "category": "eboutique",
+          "q": "Comment lier mon propre nom de domaine personnalisé ?",
+          "a": "Les abonnés Premium peuvent associer leur propre nom de domaine (ex: maboutique.com). Rendez-vous dans Paramètres > E-Boutique, saisissez votre nom de domaine puis configurez les enregistrements DNS (CNAME et A) indiqués. Notre équipe s'occupe de l'installation du certificat SSL gratuit sous 24h."
+        }
       ]
     },
     "status": {
@@ -563,11 +633,26 @@
       "incidentsTitle": "Historique des incidents",
       "noIncidents": "Aucun incident majeur ou mineur signalé au cours des 90 derniers jours.",
       "services": [
-        { "name": "Portail Marchand (Tableau de bord SaaS)", "desc": "Interface d'administration pour les vendeurs" },
-        { "name": "Générateur E-Boutique (Public Shops)", "desc": "Vitrine e-commerce hébergée pour les clients finaux" },
-        { "name": "Passerelle Notifications (SMS & WhatsApp)", "desc": "Envoi des alertes de stock et reçus clients" },
-        { "name": "Passerelle de Paiement (Mobile Money / Cartes)", "desc": "Traitement des souscriptions d'abonnements" },
-        { "name": "Base de Données Principale (PostgreSQL)", "desc": "Hébergement sécurisé des catalogues et transactions" }
+        {
+          "name": "Portail Marchand (Tableau de bord SaaS)",
+          "desc": "Interface d'administration pour les vendeurs"
+        },
+        {
+          "name": "Générateur E-Boutique (Public Shops)",
+          "desc": "Vitrine e-commerce hébergée pour les clients finaux"
+        },
+        {
+          "name": "Passerelle Notifications (SMS & WhatsApp)",
+          "desc": "Envoi des alertes de stock et reçus clients"
+        },
+        {
+          "name": "Passerelle de Paiement (Mobile Money / Cartes)",
+          "desc": "Traitement des souscriptions d'abonnements"
+        },
+        {
+          "name": "Base de Données Principale (PostgreSQL)",
+          "desc": "Hébergement sécurisé des catalogues et transactions"
+        }
       ]
     }
   },
@@ -848,5 +933,25 @@
       "all": "Toutes les données",
       "custom": "Personnalisé"
     }
+  },
+  "periodFilter": {
+    "today": "Aujourd’hui",
+    "yesterday": "Hier",
+    "d7": "7 jours",
+    "d30": "30 jours",
+    "thisMonth": "Ce mois",
+    "m6": "6 mois",
+    "year": "Année",
+    "custom": "Personnalisé",
+    "customTitle": "Plage personnalisée",
+    "from": "Du",
+    "to": "Au",
+    "apply": "Appliquer",
+    "loading": "Mise à jour…"
+  },
+  "pagination": {
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "of": "{from}–{to} sur {total}"
   }
 }

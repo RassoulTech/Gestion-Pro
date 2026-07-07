@@ -35,10 +35,10 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
   return (
     <Link
       href={href}
-      className="flex flex-col h-full rounded-2xl sm:rounded-[2rem] border border-slate-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 shadow-sm hover:shadow-xl hover:border-orange-500/25 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden group"
+      className="flex flex-col h-full rounded-2xl sm:rounded-[2rem] border border-zinc-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 shadow-sm hover:shadow-xl hover:border-orange-500/25 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden group"
     >
       {/* Image */}
-      <div className="aspect-square bg-slate-50 dark:bg-zinc-900/50 flex items-center justify-center relative overflow-hidden">
+      <div className="aspect-square bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-center relative overflow-hidden">
         {produit.photo ? (
           <Image
             src={produit.photo}
@@ -50,7 +50,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
             unoptimized
           />
         ) : (
-          <Package className="h-14 w-14 text-slate-300 dark:text-zinc-700 transition-transform duration-500 group-hover:scale-105" />
+          <Package className="h-14 w-14 text-zinc-300 dark:text-zinc-700 transition-transform duration-500 group-hover:scale-105" />
         )}
 
         {/* Étiquettes en ligne au-dessus de l'image : la catégorie tronque
@@ -68,7 +68,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
             className={`shrink-0 rounded-full px-2.5 py-0.5 font-extrabold text-[9px] uppercase tracking-widest border-none ${
               enStock
                 ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
-                : "bg-rose-500 text-white shadow-lg shadow-rose-500/20"
+                : "bg-red-500 text-white shadow-lg shadow-red-500/20"
             }`}
           >
             {enStock ? t("inStock") : t("soldOut")}
@@ -78,12 +78,12 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
 
       {/* Content */}
       <div className="p-4 sm:p-5 flex flex-col flex-1 space-y-2">
-        <h3 className="font-extrabold text-slate-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 min-h-[2.5rem] text-fluid-body leading-snug">
+        <h3 className="font-extrabold text-zinc-800 dark:text-zinc-100 group-hover:text-orange-500 transition-colors line-clamp-2 min-h-[2.5rem] text-fluid-body leading-snug">
           {produit.nom}
         </h3>
 
         {produit.description && (
-          <p className="text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2rem]">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed min-h-[2rem]">
             {produit.description}
           </p>
         )}
@@ -94,7 +94,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
 
         {/* Boutique row */}
         <div className="flex items-center gap-2 pt-1">
-          <div className="h-6 w-6 rounded-lg bg-slate-50 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-700/50 flex items-center justify-center shrink-0 overflow-hidden relative">
+          <div className="h-6 w-6 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700/50 flex items-center justify-center shrink-0 overflow-hidden relative">
             {boutiqueLogo ? (
               <Image
                 src={boutiqueLogo}
@@ -109,13 +109,13 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
               <Store className="h-3 w-3 text-orange-500" />
             )}
           </div>
-          <span className="text-[11px] font-bold text-slate-600 dark:text-zinc-400 truncate">
+          <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 truncate">
             {produit.boutique.nom}
           </span>
         </div>
 
         {produit.boutique.adresse && (
-          <div className="flex items-center gap-1 text-slate-400 dark:text-zinc-500 text-[10px]">
+          <div className="flex items-center gap-1 text-zinc-400 dark:text-zinc-500 text-[10px]">
             <MapPin className="w-3 h-3 shrink-0" />
             <span className="truncate">{produit.boutique.adresse}</span>
           </div>
@@ -124,7 +124,7 @@ export function MarketplaceProductCard({ produit }: { produit: MarketplaceProduc
         {/* Footer actions — à 375px (2 colonnes), le bouton prend toute la
             largeur et le libellé « Voir détails » (redondant, la carte est
             cliquable) n'apparaît qu'à partir de sm. */}
-        <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-slate-100/60 dark:border-zinc-800/50">
+        <div className="pt-3 mt-auto flex flex-col min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between gap-2.5 border-t border-zinc-100/60 dark:border-zinc-800/50">
           <span className="hidden sm:inline text-[10px] font-extrabold text-orange-500 uppercase tracking-widest">
             {t("viewDetails")}
           </span>

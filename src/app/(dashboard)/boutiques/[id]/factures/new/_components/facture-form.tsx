@@ -237,7 +237,7 @@ export function FactureForm({
                       {isProduit ? <Package className="h-3 w-3" /> : <PenLine className="h-3 w-3" />}
                       {isProduit ? "Produit" : "Ligne libre"}
                     </span>
-                    <button type="button" onClick={() => removeLine(l.uid)} className="ml-auto text-zinc-300 hover:text-rose-500">
+                    <button type="button" onClick={() => removeLine(l.uid)} className="ml-auto text-zinc-300 hover:text-red-500">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -284,7 +284,7 @@ export function FactureForm({
                   </div>
 
                   {isProduit && deduireStock && stockProduit && l.quantite > stockProduit.quantite && (
-                    <p className="text-[11px] font-bold text-rose-500">Stock insuffisant ({stockProduit.quantite} disponible).</p>
+                    <p className="text-[11px] font-bold text-red-500">Stock insuffisant ({stockProduit.quantite} disponible).</p>
                   )}
 
                   <div className="text-right text-xs font-black text-zinc-700 dark:text-zinc-300">
@@ -372,7 +372,7 @@ export function FactureForm({
               <span>{formatCurrency(totals.sousTotal)}</span>
             </div>
             {remise > 0 && (
-              <div className="flex justify-between font-semibold text-rose-500">
+              <div className="flex justify-between font-semibold text-red-500">
                 <span>Remise</span>
                 <span>- {formatCurrency(remise)}</span>
               </div>

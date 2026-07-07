@@ -47,8 +47,8 @@ const ETAT_META: Record<Etat, { label: string; icon: typeof Clock; trigger: stri
   ANNULEE: {
     label: "Annulée",
     icon: XCircle,
-    trigger: "bg-rose-500/10 text-rose-700 border-rose-500/30 dark:text-rose-300",
-    option: "text-rose-700 dark:text-rose-300",
+    trigger: "bg-red-500/10 text-red-700 border-red-500/30 dark:text-red-300",
+    option: "text-red-700 dark:text-red-300",
     toast: "Commande annulée",
   },
 };
