@@ -19,9 +19,9 @@ import {
   locales,
   localeFlags,
   localeNames,
+  LOCALE_COOKIE,
   type Locale,
 } from "@/i18n/config";
-import { setUserLocale } from "@/i18n/locale";
 
 interface LocaleSwitcherProps {
   /** Classe appliquée au bouton déclencheur (taille/forme selon le contexte). */
@@ -43,8 +43,12 @@ export function LocaleSwitcher({ className, withLabel = false }: LocaleSwitcherP
 
   function onSelect(next: Locale) {
     if (next === activeLocale) return;
-    startTransition(async () => {
-      await setUserLocale(next);
+    // ⚡ Perf : le cookie est posé CÔTÉ CLIENT (il n'est pas httpOnly) puis un
+    // SEUL rafraîchissement serveur relit la langue. Avant : action serveur
+    // (aller-retour n°1) PUIS router.refresh() (aller-retour n°2) en série —
+    // le temps de bascule était doublé.
+    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+    startTransition(() => {
       router.refresh();
     });
   }

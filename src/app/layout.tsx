@@ -62,9 +62,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  const locale = await getLocale();
-  const messages = await getMessages();
+  // ⚡ Perf : exécutés sur CHAQUE requête → en parallèle (avant : 3 await en série).
+  const [session, locale, messages] = await Promise.all([
+    auth(),
+    getLocale(),
+    getMessages(),
+  ]);
 
   return (
     <html lang={locale} suppressHydrationWarning>
