@@ -36,12 +36,13 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "STARTER",
     nom: "Starter",
     prix: 0,
-    dureeEssaiJours: 0,
+    dureeEssaiJours: 15, // essai gratuit de 15 jours (source : plan-capabilities.TRIAL_DAYS)
     maxBoutiques: 1,
     maxProduits: 15,
     maxMembres: 1,
-    shortDescription: "Pour démarrer et tester sans engagement.",
+    shortDescription: "Essai gratuit de 15 jours pour découvrir GestionPro.",
     features: [
+      { text: "Essai gratuit 15 jours", included: true },
       { text: "1 boutique maximum", included: true },
       { text: "15 produits maximum", included: true },
       { text: "Gestion des commandes", included: true },

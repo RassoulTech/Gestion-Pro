@@ -70,13 +70,11 @@ export default async function BoutiquesPage() {
   const maxBoutiques = currentPlan?.maxBoutiques ?? 1;
   const canCreate = boutiques.length < maxBoutiques;
 
-  // Vendeur mono-boutique ayant atteint sa limite (nouveau vendeur Starter) :
-  // après connexion, on l'amène DIRECTEMENT dans sa boutique plutôt que sur la
-  // liste. Les vendeurs pouvant encore créer des boutiques gardent la vue
-  // portefeuille (pour en ajouter).
-  if (boutiques.length === 1 && !canCreate) {
-    redirect(`/boutiques/${boutiques[0]!.id}`);
-  }
+  // 🐛 CAUSE RACINE du « Mes boutiques n'affiche rien » : une redirection
+  // automatique envoyait TOUT vendeur mono-boutique (le cas Starter standard :
+  // 1 boutique / max 1) directement dans sa boutique — la page ne s'affichait
+  // donc jamais. Supprimée : la page portefeuille s'affiche toujours ; le
+  // vendeur clique « Dashboard » sur la carte pour entrer dans sa boutique.
 
   // Global calculations for the portfolio header stats
   const totalBoutiques = boutiques.length;

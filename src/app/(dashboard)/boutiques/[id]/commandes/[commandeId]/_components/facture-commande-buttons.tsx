@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Printer, Download, MessageCircle, Mail, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Printer, Download, MessageCircle, Mail, Loader2, FileLock2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { generateInvoicePDF } from "@/lib/generate-invoice";
@@ -60,11 +61,14 @@ export function FactureCommandeButtons({
   commandeId,
   boutique,
   commande,
+  facturationEnabled = true,
 }: {
   boutiqueId: string;
   commandeId: string;
   boutique: FactureBoutique;
   commande: FactureCommande;
+  /** Capacité par plan, calculée CÔTÉ SERVEUR (les actions re-vérifient). */
+  facturationEnabled?: boolean;
 }) {
   const [mailBusy, setMailBusy] = useState(false);
   const date = new Date(commande.date);
@@ -182,6 +186,21 @@ export function FactureCommandeButtons({
     } finally {
       setMailBusy(false);
     }
+  }
+
+  // Plan d'essai : pas de facturation → incitation propre, sans les boutons.
+  if (!facturationEnabled) {
+    return (
+      <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3">
+        <FileLock2 className="h-5 w-5 shrink-0 text-brand" />
+        <div className="min-w-0">
+          <p className="text-xs font-black">Facturation disponible avec un forfait payant</p>
+          <Link href="/pricing" className="text-xs font-bold text-brand hover:underline">
+            Voir les forfaits →
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

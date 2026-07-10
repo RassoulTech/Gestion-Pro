@@ -58,12 +58,18 @@ export async function provisionVendeurWorkspace(
   });
 
   if (starterPlanId) {
+    // Starter = ESSAI de 15 jours : le décompte démarre ICI (création du
+    // compte + boutique après vérification e-mail), persisté via essaiFin —
+    // que le vendeur se connecte ou non ensuite.
+    const { TRIAL_DAYS } = await import("@/lib/plan-capabilities");
+    const now = new Date();
     await tx.abonnement.create({
       data: {
         vendeurId: vendeur.id,
         planId: starterPlanId,
-        statut: "ACTIF",
-        dateDebut: new Date(),
+        statut: "ESSAI",
+        dateDebut: now,
+        essaiFin: new Date(now.getTime() + TRIAL_DAYS * 24 * 3600 * 1000),
         montant: 0,
       },
     });

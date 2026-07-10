@@ -43,9 +43,10 @@ export function clearQuotaCache(vendeurId: string) {
 }
 
 export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
-  // 1. Check memory cache
+  // 1. Check memory cache (TTL court : l'expiration d'essai doit être vue
+  //    rapidement, y compris en session déjà ouverte).
   const cached = quotaCache.get(vendeurId);
-  if (cached && Date.now() - cached.timestamp < 300000) {
+  if (cached && Date.now() - cached.timestamp < 60000) {
     return cached.data;
   }
 
@@ -81,18 +82,16 @@ export async function getVendeurQuotas(vendeurId: string): Promise<PlanQuotas> {
       statut: "EXPIRE",
     };
   } else {
-    // Starter is free forever — never expire it, even if an old row still has
-    // an essaiFin set from before the "free-for-life" change.
-    const isStarter = activeSubscription.plan.codePlan === "STARTER";
-
+    // Le Starter est un ESSAI de 15 jours : il expire comme les autres plans
+    // (essaiFin fait foi, posée à la création du compte). Détection à CHAQUE
+    // lecture des quotas → couvre les sessions déjà ouvertes au moment du
+    // passage des 15 jours (pas seulement à la connexion).
     const isTrialExpired =
-      !isStarter &&
       activeSubscription.statut === "ESSAI" &&
       activeSubscription.essaiFin &&
       new Date() > activeSubscription.essaiFin;
 
     const isPlanExpired =
-      !isStarter &&
       activeSubscription.statut === "ACTIF" &&
       activeSubscription.dateFin &&
       new Date() > activeSubscription.dateFin;

@@ -159,6 +159,15 @@ export const sendFactureByEmail = vendeurActionClient
   .action(async ({ parsedInput: { boutiqueId, factureId }, ctx }) => {
     await requireBoutiqueAccess(boutiqueId, ctx.vendeurId);
 
+    // Capacité par plan (contrôle SERVEUR — l'UI ne fait que refléter).
+    {
+      const { getVendeurQuotas } = await import("@/lib/quotas");
+      const { canUseFacturation, FACTURATION_LOCKED_MESSAGE } = await import("@/lib/plan-capabilities");
+      if (!canUseFacturation(await getVendeurQuotas(ctx.vendeurId))) {
+        throw new Error(FACTURATION_LOCKED_MESSAGE);
+      }
+    }
+
     const facture = await prisma.facture.findFirst({
       where: { id: factureId, boutiqueId },
       include: { lignes: true, boutique: true },

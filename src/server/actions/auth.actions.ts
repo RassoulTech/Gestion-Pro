@@ -494,13 +494,16 @@ export const createVendeurProfile = authActionClient
         });
 
         if (starterPlan) {
+          // Starter = ESSAI de 15 jours (décompte depuis la création, persisté).
+          const { TRIAL_DAYS } = await import("@/lib/plan-capabilities");
+          const nowTrial = new Date();
           await tx.abonnement.create({
             data: {
               vendeurId: v.id,
               planId: starterPlan.id,
-              statut: "ACTIF",
-              dateDebut: new Date(),
-              essaiFin: null,
+              statut: "ESSAI",
+              dateDebut: nowTrial,
+              essaiFin: new Date(nowTrial.getTime() + TRIAL_DAYS * 24 * 3600 * 1000),
               dateFin: null,
               montant: 0,
             },

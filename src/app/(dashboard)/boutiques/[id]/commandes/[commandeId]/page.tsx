@@ -48,6 +48,11 @@ export default async function CommandeDetailPage({
 
   if (!commande || !boutique) notFound();
 
+  // Capacité facturation par plan (source unique) — calculée côté serveur.
+  const { getBoutiqueOwnerQuotas } = await import("@/lib/quotas");
+  const { canUseFacturation } = await import("@/lib/plan-capabilities");
+  const facturationEnabled = canUseFacturation(await getBoutiqueOwnerQuotas(boutiqueId));
+
   return (
     <div className="space-y-5 sm:space-y-6 p-3 sm:p-6">
       {/* Header — stack on mobile, inline on desktop */}
@@ -70,6 +75,7 @@ export default async function CommandeDetailPage({
           <FactureCommandeButtons
             boutiqueId={boutiqueId}
             commandeId={commandeId}
+            facturationEnabled={facturationEnabled}
             boutique={{
               nom: boutique.nom,
               logo: boutique.logo,

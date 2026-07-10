@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { vendeurActionClient } from "@/lib/safe-action";
+import { vendeurBillingActionClient } from "@/lib/safe-action";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 import { PaymentService, type PaymentMethod } from "@/server/services/payment.service";
@@ -10,7 +10,7 @@ import { PaymentService, type PaymentMethod } from "@/server/services/payment.se
  * Initialise le processus d'abonnement pour un plan choisi par le vendeur.
  * Crée un enregistrement d'abonnement temporaire/pendent et génère le lien de paiement mocké.
  */
-export const initiatePlanSubscription = vendeurActionClient
+export const initiatePlanSubscription = vendeurBillingActionClient
   .schema(
     z.object({
       planId: z.string().min(1),
@@ -93,7 +93,7 @@ export const initiatePlanSubscription = vendeurActionClient
 /**
  * Récupère la liste de tous les plans actifs de la base de données.
  */
-export const getPlansAction = vendeurActionClient
+export const getPlansAction = vendeurBillingActionClient
   .action(async () => {
     return await prisma.plan.findMany({
       where: { actif: true },
@@ -106,7 +106,7 @@ export const getPlansAction = vendeurActionClient
  * régénéré côté serveur depuis la base — montants jamais fournis par l'UI).
  * Autorisation : le paiement doit appartenir au vendeur connecté.
  */
-export const downloadSubscriptionInvoice = vendeurActionClient
+export const downloadSubscriptionInvoice = vendeurBillingActionClient
   .schema(z.object({ paiementId: z.string().min(1) }))
   .action(async ({ parsedInput: { paiementId }, ctx }) => {
     const paiement = await prisma.paiement.findUnique({
@@ -131,7 +131,7 @@ export const downloadSubscriptionInvoice = vendeurActionClient
  * Réutilise un Abonnement EN_ATTENTE non payé pour le même plan puis redirige le
  * vendeur vers la page de paiement PayTech.
  */
-export const renewCurrentSubscription = vendeurActionClient
+export const renewCurrentSubscription = vendeurBillingActionClient
   .schema(
     z.object({
       method: z.enum(["WAVE", "ORANGE_MONEY"]),

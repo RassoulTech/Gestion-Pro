@@ -27,6 +27,31 @@ export async function generateAndSendOrderInvoice(orderId: string): Promise<void
 
   if (!order || !order.client) return;
 
+  // ── Capacité par plan (source unique : plan-capabilities) ──
+  // Sur le plan d'essai (Starter), AUCUNE facture automatique n'est générée :
+  // la commande reste normale, seule la facturation est réservée aux forfaits
+  // payants. Après souscription, les commandes passées pendant l'essai restent
+  // facturables à la demande (PDF régénéré depuis la base).
+  const { getVendeurQuotas } = await import("@/lib/quotas");
+  const { canUseFacturation } = await import("@/lib/plan-capabilities");
+  const quotas = await getVendeurQuotas(order.boutique.vendeur.id);
+  if (!canUseFacturation(quotas)) {
+    console.log(`[order-fulfillment] facture auto ignorée (plan ${quotas.codePlan}) pour ${order.code}`);
+    // Le vendeur reste informé de la commande (sans facture jointe).
+    if (order.boutique.vendeur.email) {
+      await sendOrderNotificationToVendedor(
+        order.boutique.vendeur.email,
+        `${order.boutique.vendeur.prenom} ${order.boutique.vendeur.nom}`,
+        order.boutique.nom,
+        order.code,
+        order.total,
+        order.client.nom,
+        order.client.telephone || "N/A"
+      );
+    }
+    return;
+  }
+
   // Numéro stable : on RÉUTILISE le numéro déjà émis (rejeu d'IPN, renvoi
   // manuel) au lieu d'en dériver un nouveau de la date du jour.
   const dateSuffix = new Date().toISOString().slice(0, 10).replace(/-/g, "");

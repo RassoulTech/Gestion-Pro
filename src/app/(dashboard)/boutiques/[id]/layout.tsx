@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { resolveVendeurId, getBoutiqueAccess } from "@/lib/permissions";
 import { BoutiqueProvider } from "@/components/layouts/boutique-provider";
 import { SupportWidget } from "@/components/support/support-widget";
+import { TrialBanner, TrialExpiredScreen } from "@/components/dashboard/trial-status";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 
 interface BoutiqueLayoutProps {
@@ -55,6 +56,19 @@ export default async function BoutiqueLayout({
     notFound();
   }
 
+  // ── FIN D'ESSAI = BLOCAGE SERVEUR de toutes les pages /boutiques/[id]/* ──
+  // Vérifié à CHAQUE requête (l'expiration est détectée à la lecture des
+  // quotas, y compris en session déjà ouverte). Les données restent intactes ;
+  // la souscription d'un forfait (page /pricing, hors de ce layout) redonne
+  // l'accès immédiatement. Le widget support reste monté ci-dessous.
+  const isBlocked = !quotas.isActive;
+
+  // Indicateur d'essai : jours restants (arrondi supérieur), visible pendant l'ESSAI.
+  const trialDaysLeft =
+    !isBlocked && quotas.statut === "ESSAI" && quotas.essaiFin
+      ? Math.max(0, Math.ceil((quotas.essaiFin.getTime() - Date.now()) / 86_400_000))
+      : null;
+
   return (
     <BoutiqueProvider
       boutique={{
@@ -66,7 +80,8 @@ export default async function BoutiqueLayout({
         },
       }}
     >
-      {children}
+      {trialDaysLeft !== null && <TrialBanner daysLeft={trialDaysLeft} />}
+      {isBlocked ? <TrialExpiredScreen boutiqueId={id} /> : children}
       {/* Messagerie support vendeur — au-dessus de la bottom-nav mobile,
           à gauche (le FAB d'action est à droite). */}
       <SupportWidget

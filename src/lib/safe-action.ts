@@ -60,7 +60,13 @@ export const authActionClient = actionClient.use(async ({ next }) => {
  * Vendeur existe pour ce user. Ce coût (1 SELECT indexé) ne se paye
  * que lorsque le token est désynchronisé.
  */
-export const vendeurActionClient = authActionClient.use(
+/**
+ * Client vendeur SANS contrôle d'abonnement — réservé aux actions qui doivent
+ * rester accessibles après expiration de l'essai : souscription/renouvellement
+ * de forfait, factures d'abonnement. Tout le reste passe par
+ * `vendeurActionClient` (bloqué à l'expiration).
+ */
+export const vendeurBillingActionClient = authActionClient.use(
   async ({ ctx, next }) => {
     let vendeurId = ctx.user.vendeurId;
 
@@ -81,6 +87,21 @@ export const vendeurActionClient = authActionClient.use(
         vendeurId,
       },
     });
+  }
+);
+
+export const vendeurActionClient = vendeurBillingActionClient.use(
+  async ({ ctx, next }) => {
+    // ⚠️ FIN D'ESSAI = BLOCAGE CÔTÉ SERVEUR de toutes les mutations vendeur
+    // (un appel direct d'API ne contourne pas l'interface masquée). Vérifié à
+    // chaque action via les quotas (l'expiration est détectée à la lecture).
+    const { getVendeurQuotas } = await import("@/lib/quotas");
+    const quotas = await getVendeurQuotas(ctx.vendeurId);
+    if (!quotas.isActive) {
+      const { TRIAL_EXPIRED_MESSAGE } = await import("@/lib/plan-capabilities");
+      throw new Error(TRIAL_EXPIRED_MESSAGE);
+    }
+    return next({ ctx });
   }
 );
 

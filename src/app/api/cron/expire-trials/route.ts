@@ -53,12 +53,12 @@ export async function GET(request: Request) {
     );
 
     // ─── STEP 1 ─ Send reminders for subscriptions expiring within REMINDER_WINDOW_DAYS ───
-    // Starter is free forever (codePlan STARTER) and excluded from both reminders and expiration.
+    // Le Starter est un ESSAI de 15 jours : il reçoit les rappels et expire
+    // comme les autres plans (fin du « Starter gratuit à vie »).
     const upcomingExpirations = await prisma.abonnement.findMany({
       where: {
         statut: { in: ["ESSAI", "ACTIF"] },
         lastReminderAt: null,
-        plan: { codePlan: { not: "STARTER" } },
         OR: [
           {
             statut: "ESSAI",
@@ -112,7 +112,6 @@ export async function GET(request: Request) {
     const expiredAbonnements = await prisma.abonnement.findMany({
       where: {
         statut: { in: ["ESSAI", "ACTIF"] },
-        plan: { codePlan: { not: "STARTER" } },
         OR: [
           {
             statut: "ESSAI",
