@@ -71,8 +71,42 @@ interface InvoiceData {
   settings?: FactureSettings | unknown;
 }
 
-function formatCurrencyCFA(amount: number): string {
-  return new Intl.NumberFormat("fr-FR", { style: "decimal" }).format(amount) + " FCFA";
+/**
+ * Montants des DOCUMENTS (PDF) — formateur DÉTERMINISTE, sans locale.
+ * Cause racine du « 200/000 » : Intl fr-FR émet U+202F (espace fine insécable)
+ * comme séparateur ; les polices standard jsPDF encodent en WinAnsi (1 octet)
+ * et tronquent le code point → 0x202F & 0xFF = 0x2F = « / ». On groupe donc
+ * nous-mêmes avec U+00A0 (insécable, PRÉSENT dans WinAnsi) → rendu garanti
+ * identique quel que soit l'ICU du serveur.
+ */
+export function formatMontantFCFA(amount: number): string {
+  const entier = Math.round(amount).toString();
+  const groupe = entier.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return `${groupe} FCFA`;
+}
+const formatCurrencyCFA = formatMontantFCFA;
+
+/** Libellés FR des statuts — jamais de clé technique sur un document. */
+const STATUS_LABELS: Record<string, string> = {
+  EN_ATTENTE: "En attente",
+  VALIDEE: "Validée",
+  LIVREE: "Livrée",
+  ANNULEE: "Annulée",
+  CONFIRME: "Confirmée",
+  PAYEE: "Payée",
+  IMPAYEE: "Impayée",
+  BROUILLON: "Brouillon",
+  REMBOURSE: "Remboursée",
+};
+
+/** Texte lisible sur la couleur d'accent (luminance relative → blanc ou encre). */
+function contrastOn(rgb: [number, number, number]): [number, number, number] {
+  const [r, g, b] = rgb.map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  const L = 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+  return L > 0.45 ? [15, 23, 42] : [255, 255, 255];
 }
 
 export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
@@ -83,6 +117,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   // Personnalisation boutique (défauts de marque si absente/invalide).
   const settings = parseFactureSettings(data.settings);
   const ACCENT = hexToRgb(settings.accentColor);
+  const PDF_FONT = settings.font; // helvetica | times | courier (polices standard PDF, rendu identique partout sans embarquement)
   const doc = new JsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -106,11 +141,11 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
 
   // Shop Name & Info
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setFontSize(20);
   doc.text(data.boutique.nom, data.boutique.logo ? margin + 24 : margin, y + 6);
 
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setFontSize(9);
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   let boutiqueDetails = "";
@@ -125,12 +160,12 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   );
 
   // Top-right "FACTURE" indicator
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setFontSize(16);
   doc.setTextColor(ACCENT[0], ACCENT[1], ACCENT[2]);
   doc.text("FACTURE", pageWidth - margin, y + 6, { align: "right" });
 
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setFontSize(10);
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text(`# ${data.invoiceNumber}`, pageWidth - margin, y + 12, { align: "right" });
@@ -145,16 +180,16 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   y += 12;
 
   // ─── Client Info (Left) vs Invoice Metadata (Right) ───
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setFontSize(10);
-  doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
+  doc.setTextColor(ACCENT[0], ACCENT[1], ACCENT[2]);
   doc.text("FACTURÉ À", margin, y);
   doc.text("DÉTAILS", pageWidth - margin - 50, y);
 
   y += 6;
 
   // Client Details
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setFontSize(9);
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   
@@ -177,14 +212,14 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   // Invoice Details Table-like layout on the right
   const metaX = pageWidth - margin - 50;
   doc.text("Date de facture :", metaX, y);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
   doc.text(data.date.toLocaleDateString("fr-FR"), metaX + 30, y);
   
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text("Statut :", metaX, y + 5);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   if (
     data.status === "VALIDEE" ||
     data.status === "CONFIRME" ||
@@ -197,12 +232,12 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   } else {
     doc.setTextColor(ACCENT[0], ACCENT[1], ACCENT[2]);
   }
-  doc.text(data.statusLabel ?? data.status, metaX + 30, y + 5);
+  doc.text(data.statusLabel ?? STATUS_LABELS[data.status] ?? data.status, metaX + 30, y + 5);
 
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text("Mode de paiement :", metaX, y + 10);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
   doc.text(data.modePaiement || "—", metaX + 30, y + 10);
 
@@ -220,8 +255,8 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
       formatCurrencyCFA(item.prixUnitaire * item.quantite),
     ]),
     headStyles: {
-      fillColor: DARK_COLOR,
-      textColor: [255, 255, 255],
+      fillColor: ACCENT,
+      textColor: contrastOn(ACCENT),
       fontStyle: "bold",
       fontSize: 9,
     },
@@ -234,13 +269,14 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
     },
     columnStyles: {
       0: { cellWidth: "auto" },
-      1: { halign: "center", cellWidth: 20 },
-      2: { halign: "right", cellWidth: 35 },
-      3: { halign: "right", cellWidth: 35 },
+      1: { halign: "center", cellWidth: 16 },
+      2: { halign: "right", cellWidth: 40 },
+      3: { halign: "right", cellWidth: 40 },
     },
     styles: {
       cellPadding: 5,
       lineWidth: 0,
+      font: PDF_FONT,
     },
     tableLineWidth: 0,
   });
@@ -251,11 +287,11 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
 
   // ─── Notes (left, optional) ───
   if (data.notes && data.notes.trim()) {
-    doc.setFont("helvetica", "bold");
+    doc.setFont(PDF_FONT, "bold");
     doc.setFontSize(8);
     doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
     doc.text("NOTES", margin, tableFinalY);
-    doc.setFont("helvetica", "normal");
+    doc.setFont(PDF_FONT, "normal");
     doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
     const noteLines = doc.splitTextToSize(data.notes.trim(), pageWidth - margin - 75);
     doc.text(noteLines, margin, tableFinalY + 5);
@@ -264,32 +300,32 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   // ─── Summary (Totals) ───
   const summaryX = pageWidth - margin - 60;
   
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setFontSize(9);
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text("Sous-total :", summaryX, y);
   
   const sousTotalVal = data.lignes.reduce((sum, l) => sum + l.prixUnitaire * l.quantite, 0);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
   doc.text(formatCurrencyCFA(sousTotalVal), pageWidth - margin, y, { align: "right" });
 
   if (data.remise > 0) {
     y += 6;
-    doc.setFont("helvetica", "normal");
+    doc.setFont(PDF_FONT, "normal");
     doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
     doc.text("Remise :", summaryX, y);
-    doc.setFont("helvetica", "bold");
+    doc.setFont(PDF_FONT, "bold");
     doc.setTextColor(239, 68, 68);
     doc.text(`- ${formatCurrencyCFA(data.remise)}`, pageWidth - margin, y, { align: "right" });
   }
 
   if (data.montantTva && data.montantTva > 0) {
     y += 6;
-    doc.setFont("helvetica", "normal");
+    doc.setFont(PDF_FONT, "normal");
     doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
     doc.text(`TVA${data.tauxTva ? ` (${data.tauxTva} %)` : ""} :`, summaryX, y);
-    doc.setFont("helvetica", "bold");
+    doc.setFont(PDF_FONT, "bold");
     doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
     doc.text(formatCurrencyCFA(data.montantTva), pageWidth - margin, y, { align: "right" });
   }
@@ -299,7 +335,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   doc.setLineWidth(0.5);
   doc.line(summaryX, y - 4, pageWidth - margin, y - 4);
 
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setFontSize(11);
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]);
   doc.text("Total à payer :", summaryX, y);
@@ -312,7 +348,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   // Mentions personnalisées (légales / conditions) — au-dessus du séparateur.
   if (settings.mentions) {
     doc.setFontSize(7);
-    doc.setFont("helvetica", "normal");
+    doc.setFont(PDF_FONT, "normal");
     doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
     const mentionLines = doc.splitTextToSize(settings.mentions, pageWidth - margin * 2);
     doc.text(mentionLines, margin, footerY - 7 - (mentionLines.length - 1) * 3.2);
@@ -325,7 +361,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
 
   // Left side: thank you note (personnalisable)
   doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text(
     doc.splitTextToSize(settings.merci, pageWidth - margin * 2 - 45),
@@ -341,7 +377,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
 
   // "GestionPro" text
   doc.setTextColor(DARK_COLOR[0], DARK_COLOR[1], DARK_COLOR[2]); // zinc-900
-  doc.setFont("helvetica", "bold");
+  doc.setFont(PDF_FONT, "bold");
   doc.setFontSize(7.5);
   doc.text("Gestion", appBadgeX + 6.5, footerY + 2.5);
   
@@ -349,7 +385,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<jsPDF> {
   doc.text("Pro", appBadgeX + 16.5, footerY + 2.5);
 
   // Smaller copyright / security text below
-  doc.setFont("helvetica", "normal");
+  doc.setFont(PDF_FONT, "normal");
   doc.setFontSize(7);
   doc.setTextColor(MUTED_COLOR[0], MUTED_COLOR[1], MUTED_COLOR[2]);
   doc.text(

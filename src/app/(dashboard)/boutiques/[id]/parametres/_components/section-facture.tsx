@@ -16,6 +16,24 @@ import {
   type FactureSettings,
 } from "@/schemas/facture-settings.schema";
 
+/** Polices STANDARD PDF (rendu identique partout, sans embarquement) + équivalents écran. */
+const FONT_OPTIONS: { value: "helvetica" | "times" | "courier"; nom: string; desc: string; css: string }[] = [
+  { value: "helvetica", nom: "Helvetica", desc: "Moderne · sans-serif", css: "Helvetica, Arial, sans-serif" },
+  { value: "times", nom: "Times", desc: "Classique · empattements", css: "Georgia, 'Times New Roman', serif" },
+  { value: "courier", nom: "Courier", desc: "Neutre · chasse fixe", css: "'Courier New', Courier, monospace" },
+];
+
+/** Texte lisible sur la couleur choisie (même règle que le PDF). */
+function contrastText(hex: string): string {
+  const n = parseInt(hex.slice(1), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  const L = 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+  return L > 0.45 ? "#0f172a" : "#ffffff";
+}
+
 const ACCENT_PRESETS = [
   { hex: "#EA580C", nom: "Orange (marque)" },
   { hex: "#0F766E", nom: "Vert canard" },
@@ -72,6 +90,7 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
           showAdresse: s.showAdresse,
           merci: s.merci.trim() || undefined,
           mentions: s.mentions?.trim() || undefined,
+          font: s.font,
         },
       });
       if (result?.serverError) {
@@ -167,6 +186,35 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
           </div>
 
           <div className="space-y-2">
+            <Label className="text-xs font-black uppercase tracking-wider text-zinc-500">
+              Police du document
+            </Label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {FONT_OPTIONS.map((f) => (
+                <button
+                  key={f.value}
+                  type="button"
+                  onClick={() => set("font", f.value)}
+                  aria-pressed={s.font === f.value}
+                  className={`rounded-xl border px-3 py-2.5 text-left transition-all active:scale-[0.98] ${
+                    s.font === f.value
+                      ? "border-brand bg-brand/10 ring-1 ring-brand/30"
+                      : "border-zinc-200 hover:border-zinc-300 dark:border-zinc-800"
+                  }`}
+                >
+                  <span className="block text-base font-bold" style={{ fontFamily: f.css }}>
+                    {f.nom}
+                  </span>
+                  <span className="block text-[10px] font-semibold text-zinc-400">{f.desc}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] font-medium text-zinc-400">
+              Polices standard PDF : rendu garanti identique sur tout appareil, sans fichier embarqué.
+            </p>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="facture-merci" className="text-xs font-black uppercase tracking-wider text-zinc-500">
               Message de remerciement
             </Label>
@@ -219,7 +267,10 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
             Aperçu en direct
           </Label>
           <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-3 sm:p-5 dark:border-zinc-800 dark:bg-zinc-950">
-            <div className="mx-auto flex aspect-[210/260] w-full max-w-[430px] flex-col rounded-lg bg-white p-4 text-left shadow-lg sm:p-5" style={{ color: "#0f172a" }}>
+            <div
+              className="mx-auto flex aspect-[210/260] w-full max-w-[430px] flex-col rounded-lg bg-white p-4 text-left shadow-lg sm:p-5"
+              style={{ color: "#0f172a", fontFamily: FONT_OPTIONS.find((f) => f.value === s.font)?.css }}
+            >
               {/* En-tête */}
               <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 items-start gap-2">
@@ -243,7 +294,7 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
               {/* Facturé à / détails */}
               <div className="flex justify-between gap-2 text-[8px]">
                 <div>
-                  <p className="font-black text-zinc-800">FACTURÉ À</p>
+                  <p className="font-black" style={{ color: s.accentColor }}>FACTURÉ À</p>
                   <p className="mt-0.5 text-zinc-500">Awa Diop</p>
                   <p className="text-zinc-500">Tél: +221 77 000 00 00</p>
                 </div>
@@ -256,7 +307,10 @@ export function SectionFacture({ boutiqueId, initial, boutique }: Props) {
 
               {/* Tableau */}
               <div className="mt-3 overflow-hidden rounded">
-                <div className="grid grid-cols-[1fr_auto_auto] gap-2 bg-zinc-900 px-2 py-1 text-[7.5px] font-bold text-white">
+                <div
+                  className="grid grid-cols-[1fr_auto_auto] gap-2 px-2 py-1 text-[7.5px] font-bold"
+                  style={{ backgroundColor: s.accentColor, color: contrastText(s.accentColor) }}
+                >
                   <span>Description</span><span>Qté</span><span className="text-right">Montant</span>
                 </div>
                 {[

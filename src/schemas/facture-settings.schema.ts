@@ -20,11 +20,20 @@ export const factureSettingsSchema = z.object({
   merci: z.string().max(160, "160 caractères maximum").optional(),
   /** Mentions personnalisées (légales, conditions, RC/NINEA…) — pied de page. */
   mentions: z.string().max(300, "300 caractères maximum").optional(),
+  /**
+   * Police du document. Polices STANDARD PDF (rendu garanti identique sur tout
+   * appareil/lecteur, sans embarquement de fichier) :
+   * helvetica = moderne sans-serif · times = classique à empattements ·
+   * courier = neutre à chasse fixe.
+   */
+  font: z.enum(["helvetica", "times", "courier"]).optional(),
 });
 
 export type FactureSettingsInput = z.infer<typeof factureSettingsSchema>;
 
 /** Réglages résolus (défauts appliqués) — consommés par le gabarit PDF. */
+export type FactureFont = "helvetica" | "times" | "courier";
+
 export interface FactureSettings {
   accentColor: string;
   showTelephone: boolean;
@@ -32,6 +41,7 @@ export interface FactureSettings {
   showAdresse: boolean;
   merci: string;
   mentions: string | null;
+  font: FactureFont;
 }
 
 export const FACTURE_SETTINGS_DEFAULTS: FactureSettings = {
@@ -41,6 +51,7 @@ export const FACTURE_SETTINGS_DEFAULTS: FactureSettings = {
   showAdresse: true,
   merci: "Merci pour votre confiance ! Pour toute question, contactez notre support.",
   mentions: null,
+  font: "helvetica",
 };
 
 /**
@@ -57,5 +68,6 @@ export function parseFactureSettings(raw: unknown): FactureSettings {
     showAdresse: s.showAdresse ?? FACTURE_SETTINGS_DEFAULTS.showAdresse,
     merci: (s.merci ?? "").trim() || FACTURE_SETTINGS_DEFAULTS.merci,
     mentions: (s.mentions ?? "").trim() || null,
+    font: s.font ?? FACTURE_SETTINGS_DEFAULTS.font,
   };
 }
