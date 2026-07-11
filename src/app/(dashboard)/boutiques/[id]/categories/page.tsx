@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { CategoriesClient } from "./_components/categories-client";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 
@@ -35,7 +35,7 @@ export default async function CategoriesPage({
   const skip = (page - 1) * limit;
   const t = await getTranslations("dashboard.pages");
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
 
   const whereClause: any = {
     boutiqueId,

@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
 import { EmptyState } from "@/components/empty-state";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 
@@ -38,7 +38,7 @@ export default async function CommandesFournisseurPage({ params, searchParams }:
   const limit = isMobile ? 20 : 30;
   const page = pageStr ? parseInt(pageStr, 10) : 1;
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
   const t = await getTranslations("dashboard.pages");
 

@@ -34,7 +34,7 @@ import { cn, getSectorLabel, getSectorIcon } from "@/lib/utils";
 import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 import { AiInsightsCard } from "./_components/ai-insights-card";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { PeriodQuickFilter } from "@/components/dashboard/period-quick-filter";
 import { Fab } from "@/components/ui/fab";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
@@ -58,7 +58,7 @@ export default async function BoutiqueDashboardPage({
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);

@@ -86,7 +86,12 @@ export default async function AdminDashboardPage({
   searchParams: Promise<{ p?: string; du?: string; au?: string }>;
 }) {
   const sp = await searchParams;
-  const period = resolvePeriod(sp.p, sp.du, sp.au);
+  // FILTRE GLOBAL : URL (réglage local) > cookie de session > défaut 30 j.
+  const { cookies } = await import("next/headers");
+  const { GLOBAL_FILTER_COOKIE, resolveCanonicalParams } = await import("@/lib/global-filter");
+  const cookieRaw = (await cookies()).get(GLOBAL_FILTER_COOKIE)?.value;
+  const eff = resolveCanonicalParams(sp, cookieRaw ? decodeURIComponent(cookieRaw) : undefined, "30j");
+  const period = resolvePeriod(eff.p, eff.du, eff.au);
   const iso = (d: Date) => d.toISOString().slice(0, 10);
 
   return (
@@ -119,7 +124,7 @@ export default async function AdminDashboardPage({
       </div>
 
       {/* Filtre de période — pilote TOUTES les données ci-dessous via l'URL. */}
-      <PeriodFilter active={period.key} from={iso(period.from)} to={iso(period.to)} />
+      <PeriodFilter active={period.key} from={iso(period.from)} to={iso(period.to)} writesGlobal source={eff.source} />
 
       <Suspense fallback={<PageSkeleton />}>
         <DashboardContent period={period} />

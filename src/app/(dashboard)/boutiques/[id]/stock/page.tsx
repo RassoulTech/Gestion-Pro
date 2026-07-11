@@ -6,7 +6,7 @@ import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
 import { getBoutiqueProduits } from "@/server/queries/produit.queries";
 import { AjustementStockModal } from "./_components/ajustement-modal";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { getTranslations } from "next-intl/server";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
@@ -42,7 +42,7 @@ export default async function StockPage({ params, searchParams }: StockPageProps
   const { data: produits } = await getBoutiqueProduits(id, { perPage: 1000 });
   const t = await getTranslations("dashboard.pages");
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
 
   // Les cartes "Total Entrées" / "Total Sorties" reflètent la recherche, la

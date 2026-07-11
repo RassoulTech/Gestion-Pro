@@ -4,11 +4,14 @@ import { getAllBoutiques } from "@/server/queries/admin.queries";
 import { TableSkeleton } from "@/components/loading";
 import { BoutiquesClientTable } from "./_components/boutiques-client-table";
 import { Store } from "lucide-react";
+import { PeriodFilter } from "@/components/dashboard/period-filter";
+import { resolvePagePeriod } from "@/lib/period-server";
+import type { Period } from "@/lib/periods";
 
 export const metadata: Metadata = { title: "Boutiques - Admin" };
 
-async function BoutiquesContent() {
-  const { data: boutiques, total } = await getAllBoutiques();
+async function BoutiquesContent({ period }: { period: Period }) {
+  const { data: boutiques, total } = await getAllBoutiques({ from: period.from, to: period.to });
 
   // Cast statut to meet expected type exactly
   const typedBoutiques = boutiques.map((b: any) => ({
@@ -19,7 +22,14 @@ async function BoutiquesContent() {
   return <BoutiquesClientTable initialBoutiques={typedBoutiques} total={total} />;
 }
 
-export default function AdminBoutiquesPage() {
+export default async function AdminBoutiquesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ p?: string; du?: string; au?: string }>;
+}) {
+  // Registre long → défaut « Année » ; réglage local > filtre global > défaut.
+  const { period, source, fromIso, toIso } = await resolvePagePeriod(await searchParams, "annee");
+
   return (
     <div className="space-y-8 pb-20">
       {/* Dynamic Header */}
@@ -40,9 +50,11 @@ export default function AdminBoutiquesPage() {
         </div>
       </div>
 
+      <PeriodFilter active={period.key} from={fromIso} to={toIso} source={source} />
+
       <Suspense fallback={<TableSkeleton />}>
         <div className="rounded-3xl border border-zinc-200/50 bg-white/60 backdrop-blur-xl p-2 sm:p-4 shadow-xl shadow-zinc-200/30 dark:border-white/10 dark:bg-zinc-900/50 dark:shadow-none">
-          <BoutiquesContent />
+          <BoutiquesContent period={period} />
         </div>
       </Suspense>
     </div>

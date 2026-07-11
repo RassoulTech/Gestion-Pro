@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { getBoutiqueFournisseurs } from "@/server/queries/fournisseur.queries";
 import { FournisseursClient } from "./_components/fournisseurs-client";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 
@@ -30,7 +30,7 @@ export default async function FournisseursPage({ params, searchParams }: Fournis
   const page = pageStr ? parseInt(pageStr, 10) : 1;
   const t = await getTranslations("dashboard.pages");
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
 
   const filterParam = dateFilter.startDate || dateFilter.endDate ? dateFilter.whereClause : undefined;
 

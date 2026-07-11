@@ -6,11 +6,20 @@ import { UsersClientTable } from "./_components/users-client-table";
 import { User } from "lucide-react";
 import { markNotificationsSeen } from "@/server/services/notifications";
 import { NotifsRefreshPing } from "@/components/notifications/notifs-refresh-ping";
+import { PeriodFilter } from "@/components/dashboard/period-filter";
+import { resolvePagePeriod } from "@/lib/period-server";
 
 export const metadata: Metadata = { title: "Utilisateurs - Admin" };
 
-export default async function AdminUtilisateursPage() {
-  const { data: users, total } = await getAllUsersWithoutShop();
+export default async function AdminUtilisateursPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ p?: string; du?: string; au?: string }>;
+}) {
+  // Registre long → défaut « Année » ; le filtre global de session s'applique
+  // si le dashboard en a défini un.
+  const { period, source, fromIso, toIso } = await resolvePagePeriod(await searchParams, "annee");
+  const { data: users, total } = await getAllUsersWithoutShop({ from: period.from, to: period.to });
 
   // « Lu au passage » : entrer sur la page efface les alertes d'inscription.
   await markNotificationsSeen(["NOUVEL_UTILISATEUR"]);
@@ -19,6 +28,7 @@ export default async function AdminUtilisateursPage() {
     <>
       <NotifsRefreshPing />
       <div className="space-y-8 pb-20">
+      <PeriodFilter active={period.key} from={fromIso} to={toIso} source={source} />
       {/* Dynamic Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-950 to-orange-950 p-6 sm:p-8 md:p-12 text-white shadow-2xl border border-white/10">
         <div className="absolute right-[-10%] top-[-20%] h-64 w-64 rounded-full bg-orange-500/20 blur-[100px] pointer-events-none" />

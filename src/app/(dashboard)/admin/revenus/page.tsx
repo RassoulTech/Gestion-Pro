@@ -2,20 +2,28 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { RevenusClientView } from "./_components/revenus-client-view";
 import { TrendingUp } from "lucide-react";
+import { PeriodFilter } from "@/components/dashboard/period-filter";
+import { resolvePagePeriod } from "@/lib/period-server";
 
 export const metadata: Metadata = { title: "Revenus - Admin" };
 
-export default async function AdminRevenusPage() {
+export default async function AdminRevenusPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ p?: string; du?: string; au?: string }>;
+}) {
+  // Période : URL (local) > filtre global de session > 30 jours.
+  const { period, source, fromIso, toIso } = await resolvePagePeriod(await searchParams, "30j");
+  const inPeriod = { gte: period.from, lte: period.to };
+
   const [totalRevenu, revenuMois, recentPaiements] = await Promise.all([
     prisma.paiement.aggregate({ where: { statut: "CONFIRME" }, _sum: { montant: true } }),
     prisma.paiement.aggregate({
-      where: {
-        statut: "CONFIRME",
-        createdAt: { gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) },
-      },
+      where: { statut: "CONFIRME", createdAt: inPeriod },
       _sum: { montant: true },
     }),
     prisma.paiement.findMany({
+      where: { createdAt: inPeriod },
       include: {
         abonnement: {
           select: {
@@ -56,6 +64,8 @@ export default async function AdminRevenusPage() {
           </div>
         </div>
       </div>
+
+      <PeriodFilter active={period.key} from={fromIso} to={toIso} source={source} />
 
       <div className="rounded-3xl border border-zinc-200/50 bg-white/60 backdrop-blur-xl p-2 sm:p-4 shadow-xl shadow-zinc-200/30 dark:border-white/10 dark:bg-zinc-900/50 dark:shadow-none">
         <RevenusClientView total={total} mensuel={mensuel} recentPaiements={typedPaiements} />

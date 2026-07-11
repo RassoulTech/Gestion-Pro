@@ -929,6 +929,7 @@
       "30days": "Last 30 days",
       "thismonth": "This month",
       "3months": "Last 3 months",
+      "6months": "Last 6 months",
       "thisyear": "This year",
       "all": "All data",
       "custom": "Custom"

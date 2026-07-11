@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import { markNotificationsSeen } from "@/server/services/notifications";
 import { NotifsRefreshPing } from "@/components/notifications/notifs-refresh-ping";
+import { PeriodFilter } from "@/components/dashboard/period-filter";
 import { MessagesClient } from "./_components/messages-client";
 
 export const metadata: Metadata = { title: "Messages — Admin" };
@@ -16,7 +17,7 @@ const PAGE_SIZE = 20;
 export default async function AdminMessagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ statut?: string; type?: string; motif?: string; q?: string; page?: string }>;
+  searchParams: Promise<{ statut?: string; type?: string; motif?: string; q?: string; page?: string; p?: string; du?: string; au?: string }>;
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
@@ -25,7 +26,17 @@ export default async function AdminMessagesPage({
   const sp = await searchParams;
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
 
+  // Période : URL (local) > filtre global de session > défaut 30 j.
+  const { cookies } = await import("next/headers");
+  const { GLOBAL_FILTER_COOKIE, resolveCanonicalParams } = await import("@/lib/global-filter");
+  const { resolvePeriod } = await import("@/lib/periods");
+  const cookieRaw = (await cookies()).get(GLOBAL_FILTER_COOKIE)?.value;
+  const eff = resolveCanonicalParams(sp, cookieRaw ? decodeURIComponent(cookieRaw) : undefined, "30j");
+  const period = resolvePeriod(eff.p, eff.du, eff.au);
+  const iso = (d: Date) => d.toISOString().slice(0, 10);
+
   const where: Prisma.ContactMessageWhereInput = {
+    createdAt: { gte: period.from, lte: period.to },
     ...(sp.statut ? { statut: sp.statut } : {}),
     ...(sp.type ? { senderType: sp.type } : {}),
     ...(sp.motif ? { motif: sp.motif } : {}),
@@ -83,6 +94,7 @@ export default async function AdminMessagesPage({
   return (
     <div className="space-y-6 p-3 sm:p-6 pb-24">
       <NotifsRefreshPing />
+      <PeriodFilter active={period.key} from={iso(period.from)} to={iso(period.to)} source={eff.source} />
       <div className="flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/10 text-brand">
           <MessageSquare className="h-5 w-5" />

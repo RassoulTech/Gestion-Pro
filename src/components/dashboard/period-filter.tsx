@@ -3,11 +3,15 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { CalendarRange, Check, Loader2 } from "lucide-react";
+import { CalendarRange, Check, Loader2, Globe2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { PeriodKey } from "@/lib/periods";
+import {
+  globalFilterCookieString,
+  type FilterSource,
+} from "@/lib/global-filter";
 
 const OPTIONS: { key: PeriodKey; labelKey: string }[] = [
   { key: "aujourdhui", labelKey: "today" },
@@ -29,11 +33,20 @@ export function PeriodFilter({
   active,
   from,
   to,
+  source = "local",
+  writesGlobal = false,
+  extra,
 }: {
   active: PeriodKey;
   /** Bornes résolues (ISO yyyy-MM-dd) — pour l'affichage et le mode perso. */
   from: string;
   to: string;
+  /** Provenance du filtre appliqué (badge discret + « Revenir au global »). */
+  source?: FilterSource;
+  /** Dashboard = setter : chaque choix devient le filtre GLOBAL de session. */
+  writesGlobal?: boolean;
+  /** Critères additionnels propres à la page (mêmes styles, même barre). */
+  extra?: React.ReactNode;
 }) {
   const t = useTranslations("periodFilter");
   const locale = useLocale();
@@ -55,15 +68,31 @@ export function PeriodFilter({
   const periodLabel = `${fmt.format(new Date(`${from}T00:00:00`))} → ${fmt.format(new Date(`${to}T00:00:00`))}`;
 
   function apply(params: Record<string, string | null>) {
+    // Dashboard = setter du FILTRE GLOBAL de session (cookie lu par toutes
+    // les pages sans réglage local).
+    if (writesGlobal) {
+      const p = (params.p ?? "30j") as PeriodKey;
+      document.cookie = globalFilterCookieString({
+        p,
+        du: params.du ?? undefined,
+        au: params.au ?? undefined,
+      });
+    }
     const next = new URLSearchParams(sp.toString());
     for (const [k, v] of Object.entries(params)) {
       if (v) next.set(k, v); else next.delete(k);
     }
+    next.delete("page"); // la pagination repart proprement à la 1ʳᵉ page
     startTransition(() => router.push(`${pathname}?${next.toString()}`, { scroll: false }));
   }
 
+  /** Efface le réglage local → la page retombe sur le filtre global. */
+  function backToGlobal() {
+    apply({ p: null, du: null, au: null });
+  }
+
   return (
-    <div className="space-y-2">
+    <div className="sticky top-2 z-30 space-y-2 rounded-2xl border border-border/70 bg-background/75 p-3 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="flex flex-wrap items-center gap-2">
         {/* Sélecteur segmenté */}
         <div className="scrollbar-none -mx-1 flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1 shadow-sm">
@@ -137,15 +166,39 @@ export function PeriodFilter({
           </Popover>
         </div>
 
+        {/* Critères additionnels propres à la page (même barre, même style) */}
+        {extra}
+
         {/* Indicateur discret pendant la mise à jour */}
         {pending && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" aria-label={t("loading")} />}
       </div>
 
-      {/* Période active lisible */}
-      <p className="text-xs font-bold text-muted-foreground">
-        <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand align-middle" />
-        {periodLabel}
-      </p>
+      {/* Période active + provenance (global / réglage local) */}
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-xs font-bold text-muted-foreground">
+          <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand align-middle" />
+          {periodLabel}
+        </p>
+        {!writesGlobal && source === "global" && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-black text-muted-foreground">
+            <Globe2 className="h-3 w-3 text-brand" /> Filtre global
+          </span>
+        )}
+        {!writesGlobal && source === "local" && (
+          <>
+            <span className="inline-flex items-center rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10px] font-black text-brand">
+              Réglage local
+            </span>
+            <button
+              type="button"
+              onClick={backToGlobal}
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+            >
+              <Undo2 className="h-3 w-3" /> Revenir au filtre global
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

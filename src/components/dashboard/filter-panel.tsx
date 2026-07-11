@@ -19,6 +19,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { GLOBAL_FILTER_COOKIE, globalCookieToVendorRange } from "@/lib/global-filter";
+import { Globe } from "lucide-react";
 
 /**
  * Presets de période — les valeurs correspondent aux clés de parseDateFilter
@@ -33,6 +35,7 @@ const PERIOD_VALUES = [
   "30days",
   "thismonth",
   "3months",
+  "6months",
   "thisyear",
   "all",
   "custom",
@@ -79,6 +82,22 @@ export function FilterPanel({
   const urlFrom = searchParams.get("from") || "";
   const urlTo = searchParams.get("to") || "";
   const urlSearch = searchParams.get("q") || "";
+
+  // ── FILTRE GLOBAL de session (cookie posé par le dashboard) ──────────────
+  // Sans réglage local dans l'URL, le serveur applique le global : on lit le
+  // cookie côté client uniquement pour le BADGE et l'affichage du preset actif.
+  const [globalRange, setGlobalRange] = useState<string | null>(null);
+  useEffect(() => {
+    const m = document.cookie.match(new RegExp(`(?:^|; )${GLOBAL_FILTER_COOKIE}=([^;]+)`));
+    const g = m?.[1] ? globalCookieToVendorRange(decodeURIComponent(m[1])) : null;
+    setGlobalRange(g?.range ?? null);
+  }, [searchParams]);
+  const hasLocal = Boolean(urlRange || urlFrom || urlTo);
+  const filterSource: "local" | "global" | "defaut" = hasLocal
+    ? "local"
+    : globalRange
+      ? "global"
+      : "defaut";
 
   // ── Recherche : input débouncé instantané (séparé du brouillon) ───────────
   const [searchValue, setSearchValue] = useState(urlSearch);
@@ -346,7 +365,33 @@ export function FilterPanel({
   );
 
   return (
-    <div className="space-y-3">
+    <div className="sticky top-2 z-30 space-y-3 rounded-2xl border border-border/70 bg-background/75 p-3 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+      {/* Provenance du filtre (global vs réglage local) */}
+      {filterSource !== "defaut" && (
+        <div className="flex flex-wrap items-center gap-2">
+          {filterSource === "global" ? (
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-black text-muted-foreground">
+              <Globe className="h-3 w-3 text-brand" /> Filtre global
+              {globalRange && (PERIOD_VALUES as readonly string[]).includes(globalRange)
+                ? ` · ${t(`presets.${globalRange}`)}`
+                : ""}
+            </span>
+          ) : (
+            <>
+              <span className="inline-flex items-center rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10px] font-black text-brand">
+                Réglage local
+              </span>
+              <button
+                type="button"
+                onClick={() => removeParams(["range", "from", "to"])}
+                className="text-[11px] font-bold text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                Revenir au filtre global
+              </button>
+            </>
+          )}
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row gap-3">
         {searchPlaceholder && (
           <div className="relative flex-1 min-w-0">

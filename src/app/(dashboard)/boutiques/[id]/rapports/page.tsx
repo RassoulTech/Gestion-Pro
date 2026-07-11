@@ -12,7 +12,7 @@ import { PageSkeleton } from "@/components/loading";
 import { PDFDownloadButton } from "@/components/pdf-download-button";
 import { PremiumGuard } from "@/components/dashboard/premium-guard";
 import { getBoutiqueOwnerQuotas } from "@/lib/quotas";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { getTranslations } from "next-intl/server";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 
@@ -117,7 +117,7 @@ export default async function RapportsPage({ params, searchParams }: RapportsPag
   const currentPlanName = quotas.nom;
   const t = await getTranslations("dashboard.pages");
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-6 sm:pb-10">

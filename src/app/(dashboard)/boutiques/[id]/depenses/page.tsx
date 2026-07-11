@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { DepensesClient } from "./_components/depenses-client";
-import { parseDateFilter } from "@/lib/date-filters";
+import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
 import { SimplePagination } from "@/components/ui/simple-pagination";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
 
@@ -37,7 +37,7 @@ export default async function DepensesPage({ params, searchParams }: DepensesPag
   const page = pageStr ? parseInt(pageStr, 10) : 1;
   const skip = (page - 1) * limit;
 
-  const dateFilter = parseDateFilter(range, from, to);
+  const dateFilter = await parseDateFilterWithGlobal(range, from, to);
 
   const whereClause: any = {
     boutiqueId,

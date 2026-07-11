@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { vendorGlobalCookieString } from "@/lib/global-filter";
 
 /**
  * Filtre de période premium "pills" (7j / 30j / Perso).
@@ -54,6 +55,10 @@ export function PeriodQuickFilter({ className }: { className?: string }) {
   }, [urlFrom, urlTo]);
 
   const pushRange = (value: string, from?: string, to?: string) => {
+    // FILTRE GLOBAL : la période choisie sur le DASHBOARD devient celle de
+    // toute la session (cookie lu en repli par toutes les pages sans réglage
+    // local). Les autres pages gardent leur priorité URL (affinage local).
+    document.cookie = vendorGlobalCookieString(value || "30days", from, to);
     const params = new URLSearchParams(searchParams.toString());
     // range=30days est le défaut serveur → on retire le param pour une URL propre.
     if (value && value !== "30days") params.set("range", value);
