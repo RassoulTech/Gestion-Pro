@@ -50,11 +50,39 @@ export function SectorSelect({ value, onValueChange, placeholder, className }: S
   const tw = useTranslations("auth.wizard");
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
+  // Navigation clavier : index surligné, piloté par ↑/↓, validé par Entrée.
+  const [highlight, setHighlight] = React.useState(0);
+  const listRef = React.useRef<HTMLDivElement>(null);
 
   const selected = SECTORS.find((s) => s.value === value);
   const filtered = SECTORS.filter((s) =>
     tm(`secteurs.${s.value}`).toLowerCase().includes(query.trim().toLowerCase()),
   );
+
+  React.useEffect(() => setHighlight(0), [query, open]);
+
+  function pick(v: string) {
+    onValueChange(v);
+    setOpen(false);
+    setQuery("");
+  }
+
+  function onSearchKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const next =
+        e.key === "ArrowDown"
+          ? Math.min(highlight + 1, filtered.length - 1)
+          : Math.max(highlight - 1, 0);
+      setHighlight(next);
+      listRef.current?.children[next]?.scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const opt = filtered[highlight];
+      if (opt) pick(opt.value);
+    }
+    // Échap : fermeture native du Popover (Radix).
+  }
 
   return (
     <Popover
@@ -104,28 +132,32 @@ export function SectorSelect({ value, onValueChange, placeholder, className }: S
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={tw("sectorSearch")}
+              onKeyDown={onSearchKeyDown}
+              role="listbox"
+              aria-activedescendant={filtered[highlight] ? `sector-${filtered[highlight].value}` : undefined}
               className="h-10 rounded-xl border-none bg-foreground/5 pl-9 text-sm font-bold focus-visible:ring-1 focus-visible:ring-brand"
               autoFocus
             />
           </div>
         </div>
-        <div className="max-h-64 overflow-y-auto overscroll-contain p-1.5">
+        <div ref={listRef} className="max-h-64 overflow-y-auto overscroll-contain p-1.5">
           {filtered.length > 0 ? (
-            filtered.map((s) => {
+            filtered.map((s, i) => {
               const Icon = s.icon;
               const active = s.value === value;
+              const highlighted = i === highlight;
               return (
                 <button
                   key={s.value}
+                  id={`sector-${s.value}`}
                   type="button"
-                  onClick={() => {
-                    onValueChange(s.value);
-                    setOpen(false);
-                    setQuery("");
-                  }}
+                  onClick={() => pick(s.value)}
+                  onMouseEnter={() => setHighlight(i)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition-colors active:scale-[0.99]",
-                    active ? "bg-brand/10 text-brand" : "text-foreground hover:bg-foreground/5",
+                    active ? "bg-brand/10 text-brand" : "text-foreground",
+                    highlighted && !active && "bg-foreground/5",
+                    highlighted && active && "ring-1 ring-brand/40",
                   )}
                 >
                   <span

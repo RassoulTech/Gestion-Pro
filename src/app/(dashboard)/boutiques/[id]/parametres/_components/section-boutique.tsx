@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { SectorSelect } from "@/components/auth/sector-select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -155,36 +156,15 @@ export function SectionBoutique({ boutiqueId, initial }: Props) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Secteur d&apos;activité</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="h-12 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none px-4 font-semibold text-sm focus:ring-2 focus:ring-brand">
-                      <span className="flex items-center gap-2">
-                        {field.value && (() => {
-                          const current = SECTEURS.find((s) => s.value === field.value);
-                          if (current) {
-                            const Icon = current.icon;
-                            return <Icon className="h-4 w-4 text-brand shrink-0" />;
-                          }
-                          return null;
-                        })()}
-                        <SelectValue placeholder="Choisir un secteur" />
-                      </span>
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {SECTEURS.map((s) => {
-                      const Icon = s.icon;
-                      return (
-                        <SelectItem key={s.value} value={s.value}>
-                          <span className="flex items-center gap-2">
-                            <Icon className="h-4 w-4 text-zinc-400 shrink-0" />
-                            <span>{s.label}</span>
-                          </span>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
+                {/* Sélecteur premium partagé (recherche + icônes + clavier),
+                    même valeur de sortie que l'ancien <Select>. */}
+                <FormControl>
+                  <SectorSelect
+                    value={field.value ?? "AUTRE"}
+                    onValueChange={field.onChange}
+                    className="h-12"
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

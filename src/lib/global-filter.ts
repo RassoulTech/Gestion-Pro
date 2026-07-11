@@ -14,7 +14,12 @@ import type { PeriodKey } from "@/lib/periods";
  * Valeur du cookie : clé canonique (`30j`, `6mois`…) ou `perso|<du>|<au>`
  * (dates ISO yyyy-MM-dd).
  */
-export const GLOBAL_FILTER_COOKIE = "gp_filtre";
+// ÉTANCHÉITÉ entre espaces : le global VENDEUR ne touche que l'espace vendeur,
+// le global ADMIN que l'espace admin (deux cookies distincts).
+export const GLOBAL_FILTER_COOKIE_VENDOR = "gp_filtre_v";
+export const GLOBAL_FILTER_COOKIE_ADMIN = "gp_filtre_a";
+/** Alias historique (espace vendeur). */
+export const GLOBAL_FILTER_COOKIE = GLOBAL_FILTER_COOKIE_VENDOR;
 
 export interface GlobalFilterValue {
   p: PeriodKey;
@@ -45,7 +50,7 @@ export function parseGlobalFilterCookie(
 
 /** Chaîne `document.cookie` à poser côté client (1 an). */
 export function globalFilterCookieString(v: GlobalFilterValue): string {
-  return `${GLOBAL_FILTER_COOKIE}=${encodeURIComponent(serializeGlobalFilter(v))}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+  return `${GLOBAL_FILTER_COOKIE_ADMIN}=${encodeURIComponent(serializeGlobalFilter(v))}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
 }
 
 /** Provenance du filtre appliqué (pour le badge discret). */
@@ -112,5 +117,5 @@ export function vendorGlobalCookieString(range: string, from?: string, to?: stri
     range === "custom" && from && to
       ? `perso|${from}|${to}`
       : (VENDOR_TO_CANONICAL[range] ?? range);
-  return `${GLOBAL_FILTER_COOKIE}=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+  return `${GLOBAL_FILTER_COOKIE_VENDOR}=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
 }

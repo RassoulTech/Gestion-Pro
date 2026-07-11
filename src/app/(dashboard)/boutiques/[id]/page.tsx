@@ -35,7 +35,7 @@ import Link from "next/link";
 import { FinanceSection } from "./_components/finance-section";
 import { AiInsightsCard } from "./_components/ai-insights-card";
 import { parseDateFilterWithGlobal } from "@/lib/date-filters-server";
-import { PeriodQuickFilter } from "@/components/dashboard/period-quick-filter";
+import { FilterPanel } from "@/components/dashboard/filter-panel";
 import { Fab } from "@/components/ui/fab";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { env } from "@/env.mjs";
@@ -350,7 +350,6 @@ export default async function BoutiqueDashboardPage({
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:shrink-0">
-            <PeriodQuickFilter />
             <div className="flex gap-2">
               <Button
                 asChild
@@ -393,6 +392,10 @@ export default async function BoutiqueDashboardPage({
           </div>
         )}
       </section>
+
+      {/* Filtre de période — SETTER GLOBAL : la période choisie ici devient
+          celle de toutes les pages de l'espace vendeur (cookie de session). */}
+      <FilterPanel showPeriod writesGlobal />
 
       {/* Contenu principal */}
       <div className="space-y-6 sm:space-y-10">

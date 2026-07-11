@@ -88,8 +88,8 @@ export default async function AdminDashboardPage({
   const sp = await searchParams;
   // FILTRE GLOBAL : URL (réglage local) > cookie de session > défaut 30 j.
   const { cookies } = await import("next/headers");
-  const { GLOBAL_FILTER_COOKIE, resolveCanonicalParams } = await import("@/lib/global-filter");
-  const cookieRaw = (await cookies()).get(GLOBAL_FILTER_COOKIE)?.value;
+  const { GLOBAL_FILTER_COOKIE_ADMIN, resolveCanonicalParams } = await import("@/lib/global-filter");
+  const cookieRaw = (await cookies()).get(GLOBAL_FILTER_COOKIE_ADMIN)?.value;
   const eff = resolveCanonicalParams(sp, cookieRaw ? decodeURIComponent(cookieRaw) : undefined, "30j");
   const period = resolvePeriod(eff.p, eff.du, eff.au);
   const iso = (d: Date) => d.toISOString().slice(0, 10);

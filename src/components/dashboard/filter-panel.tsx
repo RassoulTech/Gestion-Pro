@@ -19,7 +19,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { GLOBAL_FILTER_COOKIE, globalCookieToVendorRange } from "@/lib/global-filter";
+import { GLOBAL_FILTER_COOKIE, globalCookieToVendorRange, vendorGlobalCookieString } from "@/lib/global-filter";
 import { Globe } from "lucide-react";
 
 /**
@@ -61,6 +61,8 @@ interface FilterPanelProps {
   defaultRange?: string;
   /** Filtres à choix (statut, type, source…) rendus en pills inline. */
   selects?: FilterSelectConfig[];
+  /** Dashboard = setter : chaque période choisie devient le filtre GLOBAL. */
+  writesGlobal?: boolean;
 }
 
 const PILL_BASE =
@@ -71,6 +73,7 @@ export function FilterPanel({
   showPeriod = true,
   defaultRange,
   selects = [],
+  writesGlobal = false,
 }: FilterPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -390,6 +393,54 @@ export function FilterPanel({
               </button>
             </>
           )}
+        </div>
+      )}
+      {/* Période — SEGMENTS VISIBLES (mêmes styles que l'admin), application immédiate.
+          Actif = réglage local (URL) > filtre GLOBAL (cookie) > défaut de la page. */}
+      {showPeriod && (
+        <div className="scrollbar-none -mx-1 flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1 shadow-sm">
+          {(["today", "yesterday", "7days", "30days", "thismonth", "6months", "thisyear"] as const).map((v) => {
+            const effective = urlRange || globalRange || defaultRange || "30days";
+            const isActive = effective === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => {
+                  if (writesGlobal) document.cookie = vendorGlobalCookieString(v);
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.set("range", v);
+                  params.delete("from");
+                  params.delete("to");
+                  params.delete("page");
+                  startTransition(() => router.push(`${pathname}?${params.toString()}`, { scroll: false }));
+                }}
+                className={cn(
+                  "whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition-all duration-200",
+                  isActive
+                    ? "bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+              >
+                {t(`presets.${v}`)}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            aria-pressed={urlRange === "custom"}
+            onClick={() => handleOpenChange(true)}
+            className={cn(
+              "whitespace-nowrap rounded-xl px-3 py-2 text-xs font-bold transition-all duration-200",
+              urlRange === "custom"
+                ? "bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            {t("presets.custom")}
+          </button>
+          {isPending && <Loader2 className="ml-1 h-4 w-4 shrink-0 animate-spin text-muted-foreground" />}
         </div>
       )}
       <div className="flex flex-col sm:flex-row gap-3">
