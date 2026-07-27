@@ -5,7 +5,7 @@ import {
   Plus_Jakarta_Sans,
 } from "next/font/google";
 import { Toaster } from "sonner";
-import { NextIntlClientProvider } from "next-intl";
+import { I18nClientProvider } from "@/components/i18n-client-provider";
 import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "@/components/providers";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
@@ -74,12 +74,12 @@ export default async function RootLayout({
       <body
         className={`${jakarta.variable} ${geistMono.variable} ${bricolage.variable} font-sans`}
       >
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <I18nClientProvider locale={locale as "fr" | "en"} messages={messages}>
           <Providers session={session}>
             {children}
             <Toaster richColors position="top-right" />
           </Providers>
-        </NextIntlClientProvider>
+        </I18nClientProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

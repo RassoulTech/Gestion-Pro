@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Check, Globe, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -19,9 +18,9 @@ import {
   locales,
   localeFlags,
   localeNames,
-  LOCALE_COOKIE,
   type Locale,
 } from "@/i18n/config";
+import { useLocaleSwitch } from "@/components/i18n-client-provider";
 
 interface LocaleSwitcherProps {
   /** Classe appliquée au bouton déclencheur (taille/forme selon le contexte). */
@@ -38,19 +37,12 @@ interface LocaleSwitcherProps {
 export function LocaleSwitcher({ className, withLabel = false }: LocaleSwitcherProps) {
   const t = useTranslations("localeSwitcher");
   const activeLocale = useLocale() as Locale;
-  const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const { setLocaleInstant, isSyncing: isPending } = useLocaleSwitch();
 
   function onSelect(next: Locale) {
-    if (next === activeLocale) return;
-    // ⚡ Perf : le cookie est posé CÔTÉ CLIENT (il n'est pas httpOnly) puis un
-    // SEUL rafraîchissement serveur relit la langue. Avant : action serveur
-    // (aller-retour n°1) PUIS router.refresh() (aller-retour n°2) en série —
-    // le temps de bascule était doublé.
-    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
-    startTransition(() => {
-      router.refresh();
-    });
+    // ⚡ Bascule INSTANTANÉE en mémoire (les 2 catalogues sont côté client) ;
+    // cookie + refresh serveur gérés par I18nClientProvider, en arrière-plan.
+    setLocaleInstant(next);
   }
 
   return (

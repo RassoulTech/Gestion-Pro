@@ -91,6 +91,9 @@ export async function getAllVendeurs(params?: {
   search?: string;
   page?: number;
   perPage?: number;
+  /** Plage d'inscription (filtre de période, optionnel). */
+  from?: Date;
+  to?: Date;
 }) {
   noStore();
   const page = params?.page ?? 1;
@@ -98,6 +101,7 @@ export async function getAllVendeurs(params?: {
 
   const where = {
     boutiques: { some: {} },
+    ...(params?.from && params?.to && { createdAt: { gte: params.from, lte: params.to } }),
     ...(params?.search && {
       OR: [
         { nom: { contains: params.search, mode: "insensitive" as const } },
@@ -135,12 +139,16 @@ export async function getAllUsersWithoutShop(params?: {
   search?: string;
   page?: number;
   perPage?: number;
+  /** Plage d'inscription (filtre de période, optionnel). */
+  from?: Date;
+  to?: Date;
 }) {
   noStore();
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
   const where = {
+    ...(params?.from && params?.to && { createdAt: { gte: params.from, lte: params.to } }),
     // Only fetch users who either don't have a Vendeur profile,
     // OR have a Vendeur profile but 0 boutiques.
     // Also exclude ADMIN role if we only want regular users/vendeurs.
@@ -189,12 +197,16 @@ export async function getAllBoutiques(params?: {
   search?: string;
   page?: number;
   perPage?: number;
+  /** Plage de création (filtre de période, optionnel). */
+  from?: Date;
+  to?: Date;
 }) {
   noStore();
   const page = params?.page ?? 1;
   const perPage = params?.perPage ?? 20;
 
   const where = {
+    ...(params?.from && params?.to && { createdAt: { gte: params.from, lte: params.to } }),
     ...(params?.search && {
       nom: { contains: params.search, mode: "insensitive" as const },
     }),

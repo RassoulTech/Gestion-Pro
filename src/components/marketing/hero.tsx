@@ -42,7 +42,11 @@ export function Hero() {
       className="relative isolate min-h-[95vh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden bg-background"
     >
       {/* ─── Premium Background Elements ─── */}
-      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none">
+      {/* ⚡ Perf (preuve 1 : bascule de thème 145-638 ms) : `contain: paint`
+          borne la re-peinture à ce conteneur et les calques flous ci-dessous
+          sont isolés sur leur propre couche de composition → le changement de
+          thème ne repeint plus la page À TRAVERS les filtres blur(110-120px). */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none [contain:paint]">
         {/* Subtle grid with radial mask */}
         <svg
           className="absolute inset-0 w-full h-full stroke-zinc-200/40 dark:stroke-zinc-800/30 [mask-image:radial-gradient(80%_80%_at_50%_40%,white,transparent)]"
@@ -75,7 +79,7 @@ export function Hero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute left-1/2 top-[-10%] -translate-x-1/2 w-[600px] sm:w-[800px] h-[500px] bg-brand/10 dark:bg-brand/5 blur-[120px] rounded-full"
+          className="transform-gpu will-change-transform absolute left-1/2 top-[-10%] -translate-x-1/2 w-[600px] sm:w-[800px] h-[500px] bg-brand/10 dark:bg-brand/5 blur-[120px] rounded-full"
         />
         
         <motion.div
@@ -90,7 +94,7 @@ export function Hero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute right-[5%] top-[20%] w-[300px] sm:w-[500px] h-[400px] bg-blue-500/10 dark:bg-blue-500/5 blur-[110px] rounded-full"
+          className="transform-gpu will-change-transform absolute right-[5%] top-[20%] w-[300px] sm:w-[500px] h-[400px] bg-blue-500/10 dark:bg-blue-500/5 blur-[110px] rounded-full"
         />
 
         {/* Subtly superimpose base64 SVG grain noise */}
